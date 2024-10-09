@@ -1,7 +1,7 @@
 
 import { AggregateRoot } from "../../../shared/domain/AggregateRoot ";
 import { DomainError } from "../../../shared/domain/DomainError";
-import { Location } from "./Location";
+import { Location } from "../../../shared/domain/Location";
 
 export class Event extends AggregateRoot {
     private readonly MAX_SIZE: number = 1000000; // 1MB
@@ -125,7 +125,7 @@ export class Event extends AggregateRoot {
 
     public isValidThumbnail(file: File): boolean {
         // Comprobar si es una imagen
-        const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
         // Verificar el tamaño y el tipo
         if (file.size > this.MAX_SIZE) {
