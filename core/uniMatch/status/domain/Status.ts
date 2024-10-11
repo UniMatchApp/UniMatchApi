@@ -1,4 +1,4 @@
-import { UUID } from "../../shared/domain/UUID";
+import { UUID } from "../../../shared/domain/UUID";
 
 export class Status {
     private _id: UUID;

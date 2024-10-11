@@ -3,7 +3,7 @@ import { Entity } from "../../../shared/domain/Entity";
 import { StatusEnum } from "../../../shared/domain/StatusEnum";
 import { NotificationTypeEnum } from "./NotificationTypeEnum";
 
-class Notification extends Entity {
+export class Notification extends Entity {
     private _type: string;
     private _status: string;
     private _message: string;
