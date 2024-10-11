@@ -1,6 +1,7 @@
 
 import { AggregateRoot } from "../../../shared/domain/AggregateRoot ";
 import { DomainError } from "../../../shared/domain/DomainError";
+import { NewMessage } from "./events/NewMessage";
 
 export class Message extends AggregateRoot {
     private _content: string;
@@ -20,11 +21,20 @@ export class Message extends AggregateRoot {
     ) {
         super();
         this._content = content;
-        this._status = status;
+        this.status = status;
         this._timestamp = timestamp;
         this._sender = sender;
         this._recipient = recipient;
         this._attachment = attachment;
+
+        this.recordEvent(new NewMessage(
+            this.getId().toString(), 
+            content, 
+            sender, 
+            recipient,
+            attachment
+        ));
+
     }
 
     public get content(): string {

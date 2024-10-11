@@ -46,4 +46,12 @@ export class Location {
     public toString(): string {
         return `Lat: ${this._latitude}, Lon: ${this._longitude}, Alt: ${this._altitude ?? 'N/A'}`;
     }
+
+    public stringToLocation(location: string): Location {
+        const locationArray = location.split(', ');
+        const latitude = Number(locationArray[0].split(': ')[1]);
+        const longitude = Number(locationArray[1].split(': ')[1]);
+        const altitude = locationArray[2].split(': ')[1] === 'N/A' ? undefined : Number(locationArray[2].split(': ')[1]);
+        return new Location(latitude, longitude, altitude);
+    }
 }
