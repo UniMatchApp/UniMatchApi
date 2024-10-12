@@ -1,6 +1,10 @@
 
 import { AggregateRoot } from "../../../shared/domain/AggregateRoot ";
 import { DomainError } from "../../../shared/domain/DomainError";
+import { UserHasChangedEmail } from "./events/UserHasChangedEmail";
+import { UserHasChangedPassword } from "./events/UserHasChangedPassword";
+import { Profile } from "./Profile";
+import { UserHasDeletedTheAccount } from "./events/UserHasDeletedTheAccount";
 
 export class User extends AggregateRoot {
     private _code: string;
@@ -8,6 +12,7 @@ export class User extends AggregateRoot {
     private _email: string;
     private _password: string;
     private _blockedUsers: string[] = [];
+    private _profile?: Profile
 
     constructor(
         code: string,
@@ -43,6 +48,8 @@ export class User extends AggregateRoot {
             throw new DomainError("Invalid email format.");
         }
         this._email = value;
+
+        this.recordEvent(new UserHasChangedEmail(this.getId().toString(), value));
     }
 
     public get password(): string {
@@ -67,6 +74,8 @@ export class User extends AggregateRoot {
         }
 
         this._password = value;
+
+        this.recordEvent(new UserHasChangedPassword(this.getId().toString()));
     }
 
     public get blockedUsers(): string[] {
@@ -75,6 +84,14 @@ export class User extends AggregateRoot {
 
     public set blockedUsers(value: string[]) {
         this._blockedUsers = value;
+    }
+
+    public get profile(): Profile | undefined {
+        return this._profile;
+    }
+
+    public set profile(value: Profile | undefined) {
+        this._profile = value;
     }
 
     public blockUser(userId: string): void {
@@ -91,5 +108,10 @@ export class User extends AggregateRoot {
 
     public isUserBlocked(userId: string): boolean {
         return this._blockedUsers.includes(userId);
+    }
+
+    public delete(): void {
+        this.makeInactive();
+        this.recordEvent(new UserHasDeletedTheAccount(this.getId().toString()));
     }
 }

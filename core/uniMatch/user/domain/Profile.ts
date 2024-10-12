@@ -4,9 +4,12 @@ import { Gender } from "./Gender";
 import { Horoscope } from "./Horoscope";
 import { RelationshipType } from "./RelationshipType";
 import { SexualOrientation } from "./SexualOrientation";
+import { UserHasChangedAge} from "./events/UserHasChangedAge";
+import { UserHasChangedDistance } from "./events/UserHasChangedDistance";
+import { UserHasChangedPriority } from "./events/UserHasChangedPriority";
+import { UserHasChangedTypeOfRelationship } from "./events/UserHasChangedTypeOfRelationship";
 
 export class Profile extends AggregateRoot {
-    private _userId: string;
     private _name: string;
     private _age: number;
     private _aboutMe: string;
@@ -48,7 +51,6 @@ export class Profile extends AggregateRoot {
         wall: string[]
     ) {
         super();
-        this._userId = userId;
         this.name = name;
         this.age = age;
         this._aboutMe = aboutMe;
@@ -60,10 +62,6 @@ export class Profile extends AggregateRoot {
         this._birthday = birthday;
         this._interests = interests;
         this._wall = wall;
-    }
-
-    public get userId(): string {
-        return this._userId;
     }
 
     public get name(): string {
@@ -86,6 +84,8 @@ export class Profile extends AggregateRoot {
             throw new DomainError("Age must be between 18 and 100.");
         }
         this._age = value;
+
+        this.recordEvent(new UserHasChangedAge(this.getId().toString(), value));
     }
 
     public get location(): Location {
@@ -118,6 +118,8 @@ export class Profile extends AggregateRoot {
 
     public set relationshipType(value: RelationshipType) {
         this._relationshipType = value;
+
+        this.recordEvent(new UserHasChangedTypeOfRelationship(this.getId().toString(), value));
     }
 
     public get sexualOrientation(): SexualOrientation {
@@ -137,6 +139,8 @@ export class Profile extends AggregateRoot {
             throw new DomainError("Max distance must be greater than 0.");
         }
         this._maxDistance = value;
+
+        this.recordEvent(new UserHasChangedDistance(this.getId().toString(), value));
     }
 
     public get ageRange(): [number, number] {
@@ -250,6 +254,8 @@ export class Profile extends AggregateRoot {
 
     public set genderPriority(value: Gender | undefined) {
         this._genderPriority = value;
+
+        this.recordEvent(new UserHasChangedPriority(this.getId().toString(), value));
     }
 
     public get genderPriority(): Gender | undefined {
