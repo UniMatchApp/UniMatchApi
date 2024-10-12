@@ -2,6 +2,8 @@
 import { AggregateRoot } from "../../../shared/domain/AggregateRoot ";
 import { DomainError } from "../../../shared/domain/DomainError";
 import { Location } from "../../../shared/domain/Location";
+import { EventIsDeleted } from "./events/EventIsDeletedEvent";
+import { EventIsModified } from "./events/EventIsModifiedEvent";
 
 export class Event extends AggregateRoot {
     private readonly MAX_SIZE: number = 1000000; // 1MB
@@ -138,4 +140,28 @@ export class Event extends AggregateRoot {
 
         return true;
     }
+
+    public delete(): void {
+        this.makeInactive();
+        this.recordEvent(new EventIsDeleted(
+            this.getId().toString(),
+            this.title
+        ));
+    }
+
+    public edit(title: string, location: Location, date: Date, price?: number, thumbnail?: string): void {
+        this.title = title;
+        this.location = location;
+        this.date = date;
+        this.price = price;
+        this.thumbnail = thumbnail;
+
+        this.recordEvent(new EventIsModified(
+            this.getId().toString(),
+            this.title,
+            this.location.toString(),
+            this.thumbnail
+        ));
+    }
+    
 }
