@@ -37,7 +37,7 @@ export class Status {
 
     public set status(value: string) {
         const validStatuses = ['TYPING', 'NONE'];
-        if (!validStatuses.includes(value.toUpperCase())) {
+        if (validStatuses[value.toUpperCase()] === undefined) {
             throw new Error("Invalid profile status. Allowed statuses: 'TYPING' or 'NONE'.");
         }
         this._status = value;
