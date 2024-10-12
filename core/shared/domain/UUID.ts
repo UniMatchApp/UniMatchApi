@@ -12,6 +12,10 @@ export class UUID {
         return new UUID(newValue);
     }
 
+    public static fromString(value: string): UUID {
+        return new UUID(value);
+    }
+
     public toString(): string {
         return this.value;
     }
