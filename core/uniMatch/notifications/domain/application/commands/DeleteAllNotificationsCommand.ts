@@ -1,37 +1,20 @@
-import { ICommand } from "../../../../shared/application/ICommand";
-import { Result } from "../../../../shared/domain/Result";
-import { Event } from "../../domain/Event";
-import { DeleteEventDTO } from "../DTO/DeleteEventDTO";
-import { IEventRepository } from "../ports/IEventRepository";
-import { IEventBus } from "../../../../shared/application/IEventBus";
-import { EventIsDeleted } from "../../domain/events/EventIsDeletedEvent";
-import { UUID } from "../../../../shared/domain/UUID";
+import { ICommand } from "../../../../../shared/application/ICommand";
+import { Result } from "../../../../../shared/domain/Result";
+import { UUID } from "../../../../../shared/domain/UUID";
+import { DeleteAllNotificationsDTO } from "../DTO/DeleteAllNotificationsDTO";
+import { INotificationsRepository } from "../ports/INotificationsRepository";
 
+export class DeleteAllNotificationsCommand implements ICommand<DeleteAllNotificationsDTO, void> {
+    private readonly repository: INotificationsRepository;
 
-export class DeleteEventCommand implements ICommand<DeleteEventDTO, void> {
-    private repository: IEventRepository;
-    private eventBus: IEventBus;
-
-    run(request: DeleteEventDTO): Result<void> {
+    run(request: DeleteAllNotificationsDTO): Result<void> {
          
        try {
+            const recipientUserId = UUID.fromString(request.recipientUserId);
         
-            // busco evento en repositorio
-            const eventId = UUID.fromString(request.eventId); // Transformar el string a UUID
-            const event = this.repository.findById(eventId);
+            this.repository.deleteAllNotificationsByRecipient(recipientUserId);
 
-            if (!event) {
-                return Result.failure<void>("Event not found");
-            }
-
-            this.repository.deleteById(eventId);
-
-            // Publicar el evento de dominio EventIsDeleted
-            const eventDeleted = EventIsDeleted.from(event);
-            
-            this.eventBus.publish([eventDeleted]);
-
-            return Result.success<void>(undefined);  // TODO
+            return Result.success<void>(undefined);
             
         } catch (error) {
             return Result.failure<void>(error);

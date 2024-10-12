@@ -5,6 +5,7 @@ export interface IRepository<T> {
     findById(id: UUID): T | null;
     findAll(): T[];
     deleteById(id: UUID): void;
+    deleteAll(): void;
     existsById(id: UUID): boolean;
     update(entity: T, id: UUID): T;
 }

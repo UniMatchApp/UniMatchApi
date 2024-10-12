@@ -1,4 +1,7 @@
-import { IRepository } from "../../../../../shared/application/IRepository";
-import { Notification } from "../../Notification";
+import {IRepository} from "../../../../../shared/application/IRepository";
+import {Notification} from "../../Notification";
+import { UUID } from "../../../../../shared/domain/UUID";
 
-export interface INotificationRepository extends IRepository<Notification> {}
+export interface INotificationsRepository extends IRepository<Notification> {
+    deleteAllNotificationsByRecipient(recipient: UUID): void;
+}

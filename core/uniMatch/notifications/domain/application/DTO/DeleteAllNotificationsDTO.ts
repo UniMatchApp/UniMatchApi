@@ -1,5 +1,5 @@
-export class DeleteEventDTO {
+export class DeleteAllNotificationsDTO {
     constructor(
-        public readonly eventId: string
+        public readonly recipientUserId: string
     ) {}
 }

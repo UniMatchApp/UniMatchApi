@@ -1,6 +1,5 @@
 import { ICommand } from "../../../../shared/application/ICommand";
 import { Result } from "../../../../shared/domain/Result";
-import { Event } from "../../domain/Event";
 import { DeleteEventDTO } from "../DTO/DeleteEventDTO";
 import { IEventRepository } from "../ports/IEventRepository";
 import { IEventBus } from "../../../../shared/application/IEventBus";
@@ -9,8 +8,8 @@ import { UUID } from "../../../../shared/domain/UUID";
 
 
 export class DeleteEventCommand implements ICommand<DeleteEventDTO, void> {
-    private repository: IEventRepository;
-    private eventBus: IEventBus;
+    private readonly repository: IEventRepository;
+    private readonly eventBus: IEventBus;
 
     run(request: DeleteEventDTO): Result<void> {
          
