@@ -1,4 +1,6 @@
 import { UUID } from "../../../shared/domain/UUID";
+import {StatusEnum} from "./StatusEnum";
+
 
 export class Status {
     private _id: UUID;
@@ -36,8 +38,7 @@ export class Status {
     }
 
     public set status(value: string) {
-        const validStatuses = ['TYPING', 'NONE'];
-        if (validStatuses[value.toUpperCase()] === undefined) {
+        if (StatusEnum[value.toUpperCase()] === undefined) {
             throw new Error("Invalid profile status. Allowed statuses: 'TYPING' or 'NONE'.");
         }
         this._status = value;
