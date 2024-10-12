@@ -1,3 +1,4 @@
 import {IRepository} from "../../../../shared/application/IRepository";
+import { Message } from "../../domain/Message";
 
-interface IMessageRepository extends IRepository<Event> {}
+export interface IMessageRepository extends IRepository<Message> {}

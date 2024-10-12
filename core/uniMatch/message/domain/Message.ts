@@ -2,6 +2,9 @@
 import { AggregateRoot } from "../../../shared/domain/AggregateRoot ";
 import { DomainError } from "../../../shared/domain/DomainError";
 import { NewMessage } from "./events/NewMessage";
+import { DeletedMessage } from "./events/DeletedMessage";
+import { EditedMessage } from "./events/EditedMessage";
+
 
 export class Message extends AggregateRoot {
     private _content: string;
@@ -78,5 +81,18 @@ export class Message extends AggregateRoot {
 
     public set attachment(value: string | undefined) {
         this._attachment = value;
+    }
+
+    public delete(): void {
+        this.setIsActive(false);
+        this.recordEvent(new DeletedMessage(this.getId().toString()));
+    }
+
+    public edit(): void {
+        this.recordEvent(new EditedMessage(
+            this.getId().toString(),
+            this._content,
+            this._attachment
+        ));
     }
 }
