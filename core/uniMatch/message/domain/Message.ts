@@ -12,7 +12,7 @@ export class Message extends AggregateRoot {
     private _timestamp: Date;
     private _sender: string;
     private _recipient: string;
-    private _attachment?: string; // Opcional
+    private _attachment?: string;
 
     constructor(
         content: string,
@@ -67,6 +67,10 @@ export class Message extends AggregateRoot {
         return this._timestamp;
     }
 
+    public set timestamp(value: Date) {
+        this._timestamp = value;
+    }
+
     public get sender(): string {
         return this._sender;
     }
@@ -88,7 +92,10 @@ export class Message extends AggregateRoot {
         this.recordEvent(new DeletedMessage(this.getId().toString()));
     }
 
-    public edit(): void {
+    public edit(content: string, attachment?: string): void {
+        this.content = content;
+        this.attachment = attachment;
+        this.timestamp = new Date();
         this.recordEvent(new EditedMessage(
             this.getId().toString(),
             this._content,

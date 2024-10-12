@@ -19,19 +19,14 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, void> {
             if (!messageToUpdate) {
                 return Result.failure<void>("Message not found");
             }
-            const message = new Message(
+
+            messageToUpdate.edit(
                 request.content,
-                messageToUpdate.status,
-                new Date(),
-                messageToUpdate.sender,
-                messageToUpdate.recipient,
                 request.attachment
-            )
+            );
 
-            message.edit();
-
-            this.repository.update(message, messageId);
-            this.eventBus.publish(message.pullDomainEvents());
+            this.repository.update(messageToUpdate, messageId);
+            this.eventBus.publish(messageToUpdate.pullDomainEvents());
 
             return Result.success<void>(undefined);
         } catch (error) {
