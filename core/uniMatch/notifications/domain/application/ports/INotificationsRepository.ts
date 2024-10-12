@@ -1,4 +1,4 @@
-import {IRepository} from "../../../../shared/application/IRepository";
-import {Event} from "../../domain/Event";
+import { IRepository } from "../../../../../shared/application/IRepository";
+import { Notification } from "../../Notification";
 
-export interface IEventRepository extends IRepository<Event> {}
+export interface INotificationRepository extends IRepository<Notification> {}
