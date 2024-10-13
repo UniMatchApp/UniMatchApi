@@ -4,13 +4,18 @@ import { Message } from "../../domain/Message";
 import { CreateNewMessageDTO } from "../DTO/CreateNewMessageDTO";
 import { IMessageRepository } from "../ports/IMessageRepository";
 import { IEventBus } from "../../../../shared/application/IEventBus";
+import { IFileHandler } from "../../../../shared/application/IFileHandler";
 
 export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Message> {
     private repository: IMessageRepository;
     private eventBus: IEventBus;
+    private fileHandler: IFileHandler;
 
     run(request: CreateNewMessageDTO): Result<Message> {
-         
+        
+        
+
+        const attachmentUrl = "";
         try {
             const message = new Message(
                 request.content,
@@ -18,7 +23,7 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
                 request.timestamp,
                 request.sender,
                 request.recipient,
-                request.attachment
+                attachmentUrl
             )
 
             this.repository.save(message);

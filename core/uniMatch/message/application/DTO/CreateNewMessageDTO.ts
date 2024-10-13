@@ -5,6 +5,6 @@ export class CreateNewMessageDTO {
         public readonly timestamp: Date,
         public readonly sender: string,
         public readonly recipient: string,
-        public readonly attachment?: string
+        public readonly attachment?: File
     ) {}
 }
