@@ -4,6 +4,7 @@ import { DomainError } from "../../../shared/domain/DomainError";
 import { NewMessage } from "./events/NewMessage";
 import { DeletedMessage } from "./events/DeletedMessage";
 import { EditedMessage } from "./events/EditedMessage";
+import { StatusEnum } from "../../../shared/domain/StatusEnum";
 
 
 export class Message extends AggregateRoot {
@@ -26,7 +27,7 @@ export class Message extends AggregateRoot {
         this._sender = sender;
         this._recipient = recipient;
         this._attachment = attachment;
-        this._status = "SENT";
+        this._status = StatusEnum.SENT;
         this.recordEvent(new NewMessage(
             this.getId().toString(), 
             content, 
@@ -53,8 +54,7 @@ export class Message extends AggregateRoot {
     }
 
     public set status(value: string) {
-        const validStatuses = ['SENT', 'DELIVERED', 'READ'];
-        if (!validStatuses.includes(value.toUpperCase())) {
+        if (StatusEnum[value.toUpperCase()] === undefined) {
             throw new DomainError("Invalid message status.");
         }
         this._status = value;

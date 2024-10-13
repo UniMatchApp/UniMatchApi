@@ -3,6 +3,7 @@ import { Result } from "../../../../shared/domain/Result";
 import { IMessageRepository } from "../ports/IMessageRepository";
 import { IEventBus } from "../../../../shared/application/IEventBus";
 import { MessageHasBeenSeenDTO } from "../DTO/MessageHasBeenSeenDTO";
+import { StatusEnum } from "../../../../shared/domain/StatusEnum";
 
 export class MessageHasBeenSeenCommand implements ICommand<MessageHasBeenSeenDTO, void> {
     private repository: IMessageRepository;
@@ -24,11 +25,11 @@ export class MessageHasBeenSeenCommand implements ICommand<MessageHasBeenSeenDTO
                 return Result.failure<void>("User is not the recipient of the message.");
             }
 
-            if (message.status === 'READ') {
+            if (message.status === StatusEnum.READ) {
                 return Result.failure<void>("Message has already been marked as read.");
             }
 
-            message.status = 'READ';
+            message.status = StatusEnum.READ;
             this.repository.save(message);
             return Result.success<void>(undefined);
         } catch (error) {
