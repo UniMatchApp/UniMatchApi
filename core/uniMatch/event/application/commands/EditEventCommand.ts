@@ -3,12 +3,13 @@ import { Result } from "../../../../shared/domain/Result";
 import { EditEventDTO } from "../DTO/EditEventDTO";
 import { IEventRepository } from "../ports/IEventRepository";
 import { IEventBus } from "../../../../shared/application/IEventBus";
-import { UUID } from "../../../../shared/domain/UUID";
+import { IFileHandler } from "../../../../shared/application/IFileHandler";
 import { Location } from "../../../../shared/domain/Location";
 
 export class EditEventCommand implements ICommand<EditEventDTO, void> {
     private repository: IEventRepository;
     private eventBus: IEventBus;
+    private fileHandler: IFileHandler;
 
     constructor(repository: IEventRepository) {
         this.repository = repository;
@@ -26,8 +27,22 @@ export class EditEventCommand implements ICommand<EditEventDTO, void> {
                 request.longitude,
                 request.altitude
             )
+            const thumbnail = request.thumbnail;
+            if (thumbnail && !this.fileHandler.isValid(thumbnail)) {
+                return Result.failure<void>("Invalid thumbnail file");
+            }
 
-            event.edit(request.title, location, request.date,request.price, request.thumbnail);
+            const thumbnailName = thumbnail?.name;
+            if(!thumbnailName) {
+                return Result.failure<void>("Thumbnail name is invalid");
+            }
+
+            let thumbnailPath: string | undefined = undefined;
+            if(thumbnail) {
+                thumbnailPath = this.fileHandler.save(thumbnailName, thumbnail);
+            }
+            
+            event.edit(request.title, location, request.date,request.price, thumbnailPath);
 
             this.repository.update(event, request.eventId);
             this.eventBus.publish(event.pullDomainEvents());

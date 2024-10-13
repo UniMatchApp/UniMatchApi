@@ -5,10 +5,11 @@ import { CreateNewEventDTO } from "../DTO/CreateNewEventDTO";
 import { IEventRepository } from "../ports/IEventRepository";
 import { IEventBus } from "../../../../shared/application/IEventBus";
 import { Location } from "../../../../shared/domain/Location";
-
+import { IFileHandler } from "../../../../shared/application/IFileHandler";
 
 export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, Event> {
     private repository: IEventRepository;
+    private fileHandler: IFileHandler;
     private eventBus: IEventBus;
 
     run(request: CreateNewEventDTO): Result<Event> {
@@ -19,11 +20,21 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, Event>
                 request.longitude,
                 request.altitude
             )
+          
+            const thumbnail = request.thumbnail;
+            if (thumbnail && !this.fileHandler.isValid(thumbnail)) {
+                return Result.failure<Event>("Invalid thumbnail file");
+            }
 
-            //TODO: Add validation for location thumbnail and save
-            
+            const thumbnailName = thumbnail?.name;
+            if(!thumbnailName) {
+                return Result.failure<Event>("Thumbnail name is invalid");
+            }
 
-            const thumbnail = "thumbnail"; //TODO: Thumbnail URL
+            let thumbnailPath: string | undefined = undefined;
+            if(thumbnail) {
+                thumbnailPath = this.fileHandler.save(thumbnailName, thumbnail);
+            }
 
             const event = new Event(
                 request.title,
@@ -33,8 +44,7 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, Event>
                 [],
                 [],
                 request.price,
-                thumbnail
-
+                thumbnailPath
             )
 
             this.repository.save(event);
