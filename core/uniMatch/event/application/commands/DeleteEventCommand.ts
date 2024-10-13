@@ -13,9 +13,7 @@ export class DeleteEventCommand implements ICommand<DeleteEventDTO, void> {
     run(request: DeleteEventDTO): Result<void> {
          
        try {
-
-            const eventId = UUID.fromString(request.eventId);
-            const event = this.repository.findById(eventId);
+            const event = this.repository.findById(request.eventId);
 
             if (!event) {
                 return Result.failure<void>("Event not found");
@@ -23,7 +21,7 @@ export class DeleteEventCommand implements ICommand<DeleteEventDTO, void> {
 
             event.delete();
 
-            this.repository.deleteById(eventId);
+            this.repository.deleteById(request.eventId);
             
             this.eventBus.publish(event.pullDomainEvents());
 

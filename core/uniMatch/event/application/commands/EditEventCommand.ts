@@ -16,8 +16,7 @@ export class EditEventCommand implements ICommand<EditEventDTO, void> {
 
     run(request: EditEventDTO): Result<void> {
         try {
-            const eventId = UUID.fromString(request.eventId)
-            const event = this.repository.findById(eventId);
+            const event = this.repository.findById(request.eventId);
 
             if (!event) {
                 return Result.failure<void>("Event not found");
@@ -30,7 +29,7 @@ export class EditEventCommand implements ICommand<EditEventDTO, void> {
 
             event.edit(request.title, location, request.date,request.price, request.thumbnail);
 
-            this.repository.update(event, eventId);
+            this.repository.update(event, request.eventId);
             this.eventBus.publish(event.pullDomainEvents());
 
             return Result.success<void>(undefined);

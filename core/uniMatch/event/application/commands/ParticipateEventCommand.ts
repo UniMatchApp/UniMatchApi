@@ -14,8 +14,7 @@ export class ParticipateEventCommand implements ICommand<ParticipateEventDTO, Ev
 
     run(request: ParticipateEventDTO): Result<Event> {
         try {
-            const eventId = UUID.fromString(request.eventId);
-            const event = this.repository.findById(eventId);
+            const event = this.repository.findById(request.eventId);
             
             if (!event) {
                 return Result.failure<Event>("Event not found");
