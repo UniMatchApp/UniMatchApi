@@ -3,14 +3,17 @@ import { Result } from "../../../../shared/domain/Result";
 import { IMessageRepository } from "../ports/IMessageRepository";
 import { IEventBus } from "../../../../shared/application/IEventBus";
 import { DeleteAllUserMessagesDTO } from "../DTO/DeleteAllMessagesWithUserDTO";
+import { IFileHandler } from "../../../../shared/application/IFileHandler";
 
 export class DeleteAllMessagesWithUserCommand implements ICommand<DeleteAllUserMessagesDTO, void> {
     private repository: IMessageRepository;
     private eventBus: IEventBus;
+    private fileHandler: IFileHandler;
 
-    constructor(repository: IMessageRepository, eventBus: IEventBus) {
+    constructor(repository: IMessageRepository, eventBus: IEventBus, fileHandler: IFileHandler) {
         this.repository = repository;
         this.eventBus = eventBus;
+        this.fileHandler = fileHandler;
     }
 
     run(request: DeleteAllUserMessagesDTO): Result<void> {
@@ -25,6 +28,9 @@ export class DeleteAllMessagesWithUserCommand implements ICommand<DeleteAllUserM
             }
 
             for (const message of userMessages) {
+                if (message.attachment) {
+                    this.fileHandler.delete(message.attachment);
+                }
                 message.delete();
                 this.repository.deleteById(message.getId());
                 this.eventBus.publish(message.pullDomainEvents());

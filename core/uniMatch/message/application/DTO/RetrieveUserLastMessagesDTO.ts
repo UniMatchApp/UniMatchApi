@@ -1,5 +1,3 @@
-export class RetrieveUserLastMessagesDTO {
-    constructor(
-        public readonly user: string
-    ) {}
+export interface RetrieveUserLastMessagesDTO {
+    user: string;
 }

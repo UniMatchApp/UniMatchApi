@@ -16,20 +16,17 @@ export class Message extends AggregateRoot {
 
     constructor(
         content: string,
-        status: string,
-        timestamp: Date,
         sender: string,
         recipient: string,
         attachment?: string
     ) {
         super();
         this._content = content;
-        this.status = status;
-        this._timestamp = timestamp;
+        this._timestamp = new Date();
         this._sender = sender;
         this._recipient = recipient;
         this._attachment = attachment;
-
+        this._status = "SENT";
         this.recordEvent(new NewMessage(
             this.getId().toString(), 
             content, 
