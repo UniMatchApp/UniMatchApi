@@ -1,9 +1,9 @@
+import { AggregateRoot } from "../../../shared/domain/AggregateRoot ";
 import { DomainError } from "../../../shared/domain/DomainError";
-import { Entity } from "../../../shared/domain/Entity";
 import { StatusEnum } from "../../../shared/domain/StatusEnum";
 import { NotificationTypeEnum } from "./NotificationTypeEnum";
 
-export class Notification extends Entity {
+export class Notification extends AggregateRoot {
     private _type: string;
     private _status: string;
     private _message: string;
