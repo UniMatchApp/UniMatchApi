@@ -12,14 +12,13 @@ export class Notification extends Entity {
 
     constructor(
         type: string,
-        status: string,
         message: string,
         date: Date,
         recipient: string
     ) {
         super();
         this._type = type;
-        this._status = status;
+        this._status = StatusEnum.SENT;
         this._message = message;
         this._date = date;
         this._recipient = recipient;

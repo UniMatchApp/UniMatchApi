@@ -10,7 +10,7 @@ export class DeleteAllNotificationsCommand implements ICommand<DeleteAllNotifica
     run(request: DeleteAllNotificationsDTO): Result<void> {
          
        try {
-            const recipientUserId = UUID.fromString(request.recipientUserId);
+            const recipientUserId = UUID.fromString(request.user);
         
             this.repository.deleteAllNotificationsByRecipient(recipientUserId);
 
