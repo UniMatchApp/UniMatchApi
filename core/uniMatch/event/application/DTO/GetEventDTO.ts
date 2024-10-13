@@ -1,5 +1,3 @@
-export class GetEventDTO {
-    constructor(
-        public readonly eventId: string
-    ) {}
+export interface GetEventDTO {
+    eventId: string
 }

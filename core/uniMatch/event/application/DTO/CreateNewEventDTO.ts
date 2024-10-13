@@ -1,12 +1,10 @@
-export class CreateNewEventDTO {
-    constructor(
-        public readonly title: string,
-        public readonly date: Date,
-        public readonly latitude: number,
-        public readonly longitude: number,
-        public readonly altitude: number,
-        public readonly ownerId: string,
-        public readonly thumbnail?: File,
-        public readonly price?: number,
-    ) {}
+export interface CreateNewEventDTO {
+    title: string,
+    date: Date,
+    latitude: number,
+    longitude: number,
+    altitude: number,
+    ownerId: string,
+    thumbnail?: File,
+    price?: number,
 }

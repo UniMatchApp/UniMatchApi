@@ -1,6 +1,4 @@
-export class ParticipateEventDTO {
-    constructor(
-        public readonly eventId: string,
-        public readonly userId: string
-    ) {}
+export interface ParticipateEventDTO {
+    eventId: string,
+    userId: string
 }

@@ -1,5 +1,3 @@
-export class DeleteEventDTO {
-    constructor(
-        public readonly eventId: string
-    ) {}
+export interface DeleteEventDTO {
+    eventId: string
 }
