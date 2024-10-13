@@ -25,7 +25,6 @@ export class Status {
     }
 
     public set id(identifier: UUID) {
-
         this._id = identifier;
     }
 

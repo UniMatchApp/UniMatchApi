@@ -4,6 +4,5 @@ export class UpdateMessageDTO {
         public readonly messageId: string,
         public readonly content: string,
         public readonly attachment?: string
-        
     ) {}
 }
