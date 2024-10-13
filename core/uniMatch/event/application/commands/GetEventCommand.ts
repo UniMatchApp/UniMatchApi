@@ -15,7 +15,7 @@ export class GetEventCommand implements ICommand<GetEventDTO, Event> {
     run(request: GetEventDTO): Result<Event> {
         try {
 
-            const event = this.repository.findById(UUID.fromString(request.eventId));
+            const event = this.repository.findById(request.eventId);
 
             if (!event) {
                 return Result.failure<Event>("Event not found");
