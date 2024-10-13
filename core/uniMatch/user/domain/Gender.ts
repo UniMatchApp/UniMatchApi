@@ -1,11 +1,11 @@
-import { DomainError } from "../../../shared/domain/DomainError";
+import { DomainError } from "@/core/shared/domain/DomainError";
 
 export class Gender {
     private _value: string;
     private static readonly allowedGenders = ["MALE", "FEMALE", "NON-BINARY", "OTHER"];
 
     constructor(value: string) {
-        this.setValue(value);
+        this._value = value;
     }
 
     public get value(): string {

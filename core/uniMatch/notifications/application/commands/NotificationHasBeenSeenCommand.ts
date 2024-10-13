@@ -1,8 +1,8 @@
-import { ICommand } from "../../../../shared/application/ICommand";
-import { Result } from "../../../../shared/domain/Result";
+import { ICommand } from "@/core/shared/application/ICommand";
+import { Result } from "@/core/shared/domain/Result";
 import { NotificationHasBeenSeenDTO } from "../DTO/NotificationHasBeenSeenDTO";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
-import { StatusEnum } from "../../../../shared/domain/StatusEnum";
+import { MessageStatusEnum } from "@/core/shared/domain/MessageStatusEnum";
 
 
 export class NotificationHasBeenSeenCommand implements ICommand<NotificationHasBeenSeenDTO, void> {
@@ -20,11 +20,11 @@ export class NotificationHasBeenSeenCommand implements ICommand<NotificationHasB
                 return Result.failure<void>("Notification not found");
             }
 
-            notification.status = StatusEnum.READ;
+            notification.status = MessageStatusEnum.READ;
             this.repository.save(notification);
 
             return Result.success<void>(undefined);
-        } catch (error) {
+        } catch (error : any) {
             return Result.failure<void>(error);
         }
     }

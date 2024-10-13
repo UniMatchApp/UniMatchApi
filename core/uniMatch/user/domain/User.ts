@@ -1,14 +1,14 @@
 
-import { AggregateRoot } from "../../../shared/domain/AggregateRoot ";
-import { DomainError } from "../../../shared/domain/DomainError";
+import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
+import { DomainError } from "@/core/shared/domain/DomainError";
 import { UserHasChangedEmail } from "./events/UserHasChangedEmail";
 import { UserHasChangedPassword } from "./events/UserHasChangedPassword";
 import { Profile } from "./Profile";
 import { UserHasDeletedTheAccount } from "./events/UserHasDeletedTheAccount";
 
 export class User extends AggregateRoot {
-    private _code: string;
-    private _registrationDate: Date;
+    private readonly _code: string;
+    private readonly _registrationDate: Date;
     private _email: string;
     private _password: string;
     private _blockedUsers: string[] = [];
@@ -24,8 +24,8 @@ export class User extends AggregateRoot {
         super();
         this._code = code;
         this._registrationDate = registrationDate;
-        this.email = email;
-        this.password = password;
+        this._email = email;
+        this._password = password;
         this._blockedUsers = blockedUsers;
     }
 

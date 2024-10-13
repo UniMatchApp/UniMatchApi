@@ -1,11 +1,9 @@
-import { ICommand } from "../../../../shared/application/ICommand";
-import { Result } from "../../../../shared/domain/Result";
-import { Message } from "../../domain/Message";
+import { ICommand } from "@/core/shared/application/ICommand";
+import { Result } from "@/core/shared/domain/Result";
 import { UpdateMessageDTO } from "../DTO/UpdateMessageDTO";
 import { IMessageRepository } from "../ports/IMessageRepository";
-import { IEventBus } from "../../../../shared/application/IEventBus";
-import { UUID } from "../../../../shared/domain/UUID";
-import { IFileHandler } from "../../../../shared/application/IFileHandler";
+import { IEventBus } from "@/core/shared/application/IEventBus";
+import { IFileHandler } from "@/core/shared/application/IFileHandler";
 
 export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, void> {
     private repository: IMessageRepository;
@@ -54,7 +52,7 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, void> {
             this.eventBus.publish(messageToUpdate.pullDomainEvents());
 
             return Result.success<void>(undefined);
-        } catch (error) {
+        } catch (error : any) {
             return Result.failure<void>(error);
         }
     }

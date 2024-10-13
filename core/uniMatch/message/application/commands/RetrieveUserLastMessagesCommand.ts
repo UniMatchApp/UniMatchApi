@@ -1,5 +1,5 @@
-import { ICommand } from "../../../../shared/application/ICommand";
-import { Result } from "../../../../shared/domain/Result";
+import { ICommand } from "@/core/shared/application/ICommand";
+import { Result } from "@/core/shared/domain/Result";
 import { Message } from "../../domain/Message";
 import { RetrieveUserLastMessagesDTO } from "../DTO/RetrieveUserLastMessagesDTO";
 import { IMessageRepository } from "../ports/IMessageRepository";
@@ -22,7 +22,7 @@ export class RetrieveUserLastMessagesCommand implements ICommand<RetrieveUserLas
             }
 
             return Result.success<Message[]>(lastMessages);
-        } catch (error) {
+        } catch (error : any) {
             return Result.failure<Message[]>(error);
         }
     }

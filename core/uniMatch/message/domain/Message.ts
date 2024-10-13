@@ -1,18 +1,18 @@
 
-import { AggregateRoot } from "../../../shared/domain/AggregateRoot ";
-import { DomainError } from "../../../shared/domain/DomainError";
+import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
+import { DomainError } from "@/core/shared/domain/DomainError";
 import { NewMessage } from "./events/NewMessage";
 import { DeletedMessage } from "./events/DeletedMessage";
 import { EditedMessage } from "./events/EditedMessage";
-import { StatusEnum } from "../../../shared/domain/StatusEnum";
+import { MessageStatusEnum } from "@/core/shared/domain/MessageStatusEnum";
 
 
 export class Message extends AggregateRoot {
     private _content: string;
     private _status: string;
     private _timestamp: Date;
-    private _sender: string;
-    private _recipient: string;
+    private readonly _sender: string;
+    private readonly _recipient: string;
     private _attachment?: string;
 
     constructor(
@@ -27,7 +27,7 @@ export class Message extends AggregateRoot {
         this._sender = sender;
         this._recipient = recipient;
         this._attachment = attachment;
-        this._status = StatusEnum.SENT;
+        this._status = MessageStatusEnum.SENT;
         this.recordEvent(new NewMessage(
             this.getId().toString(), 
             content, 
@@ -53,10 +53,7 @@ export class Message extends AggregateRoot {
         return this._status;
     }
 
-    public set status(value: string) {
-        if (StatusEnum[value.toUpperCase()] === undefined) {
-            throw new DomainError("Invalid message status.");
-        }
+    public set status(value: MessageStatusEnum) {
         this._status = value;
     }
 

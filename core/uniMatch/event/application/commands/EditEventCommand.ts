@@ -1,18 +1,21 @@
-import { ICommand } from "../../../../shared/application/ICommand";
-import { Result } from "../../../../shared/domain/Result";
+import { ICommand } from "@/core/shared/application/ICommand";
+import { Result } from "@/core/shared/domain/Result";
 import { EditEventDTO } from "../DTO/EditEventDTO";
 import { IEventRepository } from "../ports/IEventRepository";
-import { IEventBus } from "../../../../shared/application/IEventBus";
-import { IFileHandler } from "../../../../shared/application/IFileHandler";
-import { Location } from "../../../../shared/domain/Location";
+import { IEventBus } from "@/core/shared/application/IEventBus";
+import { IFileHandler } from "@/core/shared/application/IFileHandler";
+import { Location } from "@/core/shared/domain/Location";
 
 export class EditEventCommand implements ICommand<EditEventDTO, void> {
     private repository: IEventRepository;
     private eventBus: IEventBus;
     private fileHandler: IFileHandler;
 
-    constructor(repository: IEventRepository) {
+
+    constructor(repository: IEventRepository, eventBus: IEventBus, fileHandler: IFileHandler) {
         this.repository = repository;
+        this.eventBus = eventBus;
+        this.fileHandler = fileHandler;
     }
 
     run(request: EditEventDTO): Result<void> {
@@ -48,7 +51,7 @@ export class EditEventCommand implements ICommand<EditEventDTO, void> {
             this.eventBus.publish(event.pullDomainEvents());
 
             return Result.success<void>(undefined);
-        } catch (error) {
+        } catch (error : any) {
             return Result.failure<void>(error);
         }
     }

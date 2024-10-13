@@ -1,16 +1,23 @@
-import { ICommand } from "../../../../shared/application/ICommand";
-import { Result } from "../../../../shared/domain/Result";
+import { ICommand } from "@/core/shared/application/ICommand";
+import { Result } from "@/core/shared/domain/Result";
 import { Event } from "../../domain/Event";
 import { CreateNewEventDTO } from "../DTO/CreateNewEventDTO";
 import { IEventRepository } from "../ports/IEventRepository";
-import { IEventBus } from "../../../../shared/application/IEventBus";
-import { Location } from "../../../../shared/domain/Location";
-import { IFileHandler } from "../../../../shared/application/IFileHandler";
+import { IEventBus } from "@/core/shared/application/IEventBus";
+import { Location } from "@/core/shared/domain/Location";
+import { IFileHandler } from "@/core/shared/application/IFileHandler";
 
 export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, Event> {
     private repository: IEventRepository;
     private fileHandler: IFileHandler;
     private eventBus: IEventBus;
+
+
+    constructor(repository: IEventRepository, fileHandler: IFileHandler, eventBus: IEventBus) {
+        this.repository = repository;
+        this.fileHandler = fileHandler;
+        this.eventBus = eventBus;
+    }
 
     run(request: CreateNewEventDTO): Result<Event> {
          
@@ -52,7 +59,7 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, Event>
             this.eventBus.publish(event.pullDomainEvents());
 
             return Result.success<Event>(event);
-        } catch (error) {
+        } catch (error : any) {
             return Result.failure<Event>(error);
         }
     }

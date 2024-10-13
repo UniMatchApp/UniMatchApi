@@ -1,10 +1,10 @@
-import { ICommand } from "../../../../shared/application/ICommand";
-import { Result } from "../../../../shared/domain/Result";
+import { ICommand } from "@/core/shared/application/ICommand";
+import { Result } from "@/core/shared/domain/Result";
 import { Message } from "../../domain/Message";
 import { CreateNewMessageDTO } from "../DTO/CreateNewMessageDTO";
 import { IMessageRepository } from "../ports/IMessageRepository";
-import { IEventBus } from "../../../../shared/application/IEventBus";
-import { IFileHandler } from "../../../../shared/application/IFileHandler";
+import { IEventBus } from "@/core/shared/application/IEventBus";
+import { IFileHandler } from "@/core/shared/application/IFileHandler";
 
 export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Message> {
     private repository: IMessageRepository;
@@ -48,7 +48,7 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
             this.eventBus.publish(message.pullDomainEvents());
 
             return Result.success<Message>(message);
-        } catch (error) {
+        } catch (error : any) {
             return Result.failure<Message>(error);
         }
     }

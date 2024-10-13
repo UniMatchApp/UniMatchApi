@@ -1,4 +1,4 @@
-import { DomainEvent } from "../../../../shared/domain/DomainEvent";
+import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { Event } from "../Event"; // Asegúrate de que la ruta sea correcta
 
 export class EventIsDeleted extends DomainEvent {

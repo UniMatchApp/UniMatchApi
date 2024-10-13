@@ -1,5 +1,3 @@
-import { UUID } from "../domain/UUID";
-
 export interface IRepository<T> {
     save(entity: T): void;
     findById(id: string): T | null;

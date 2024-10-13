@@ -1,5 +1,5 @@
-import { ICommand } from "../../../../shared/application/ICommand";
-import { Result } from "../../../../shared/domain/Result";
+import { ICommand } from "@/core/shared/application/ICommand";
+import { Result } from "@/core/shared/domain/Result";
 import { DeleteNotificationDTO } from "../DTO/DeleteNotificationDTO";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
 
@@ -22,7 +22,7 @@ export class DeleteNotificationCommand implements ICommand<DeleteNotificationDTO
             this.repository.deleteById(request.notificationId);
 
             return Result.success<void>(undefined);
-        } catch (error) {
+        } catch (error : any) {
             return Result.failure<void>(error);
         }
     }

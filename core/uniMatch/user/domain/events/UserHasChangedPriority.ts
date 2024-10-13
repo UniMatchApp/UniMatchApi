@@ -1,4 +1,4 @@
-import { DomainEvent } from "../../../../shared/domain/DomainEvent";
+import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { Gender } from "../Gender";
 import { Profile } from "../Profile";
 
@@ -9,6 +9,6 @@ export class UserHasChangedPriority extends DomainEvent {
     }
 
     public static from(profile: Profile): UserHasChangedPriority {
-        return new UserHasChangedPriority(profile.userId, profile.genderPriority);
+        return new UserHasChangedPriority(profile.getId(), profile.genderPriority);
     }
 }
