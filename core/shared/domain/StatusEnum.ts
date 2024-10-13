@@ -1,5 +1,5 @@
 export enum StatusEnum {
-    SENDED = "SENDED",
+    SENT = "SENT",
     DELETED  = "DELETED",
     READ = "READ",
     EDITED = "EDITED"
