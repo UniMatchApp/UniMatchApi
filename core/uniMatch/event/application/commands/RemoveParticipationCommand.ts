@@ -5,9 +5,8 @@ import { Event } from "../../domain/Event";
 import { ParticipateEventDTO } from "../DTO/ParticipateEventDTO";
 import { UUID } from "../../../../shared/domain/UUID";
 
-export class ParticipateEventCommand implements ICommand<ParticipateEventDTO, Event> {
+export class RemovePartipationCommand implements ICommand<ParticipateEventDTO, Event> {
     private repository: IEventRepository;
-
     constructor(repository: IEventRepository) {
         this.repository = repository;
     }
@@ -21,7 +20,7 @@ export class ParticipateEventCommand implements ICommand<ParticipateEventDTO, Ev
                 return Result.failure<Event>("Event not found");
             }
 
-            event.addParticipant(request.userId);
+            event.removeParticipant(request.userId);
             this.repository.save(event);
 
             return Result.success<Event>(event);
@@ -29,4 +28,5 @@ export class ParticipateEventCommand implements ICommand<ParticipateEventDTO, Ev
             return Result.failure<Event>(error);
         }
     }
+
 }
