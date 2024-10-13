@@ -1,5 +1,6 @@
 export interface IFileHandler {
-    save(filePath: string, data: Buffer | string): Promise<void>;
-    read(filePath: string): Promise<Buffer>;
-    delete(filePath: string): Promise<void>;
+    save(filePath: string, data: File): string;
+    read(filePath: string): File;
+    delete(filePath: string): void;
+    isValid(filePath: File): boolean;
 }
