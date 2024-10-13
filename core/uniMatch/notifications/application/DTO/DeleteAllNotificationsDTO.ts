@@ -1,5 +1,3 @@
-export class DeleteAllNotificationsDTO {
-    constructor(
-        public readonly recipientUserId: string
-    ) {}
+export interface DeleteAllNotificationsDTO {
+    recipientUserId: string
 }
