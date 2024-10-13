@@ -1,6 +1,6 @@
-import { ICommand } from "../../../../../shared/application/ICommand";
-import { Result } from "../../../../../shared/domain/Result";
-import { UUID } from "../../../../../shared/domain/UUID";
+import { ICommand } from "../../../../shared/application/ICommand";
+import { Result } from "../../../../shared/domain/Result";
+import { UUID } from "../../../../shared/domain/UUID";
 import { DeleteAllNotificationsDTO } from "../DTO/DeleteAllNotificationsDTO";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
 
