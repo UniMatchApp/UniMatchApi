@@ -5,7 +5,6 @@ import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { EventStatusEnum } from "../../domain/enum/EventStatusEnum";
 import { IAppNotifications } from "../ports/IAppNotifications";
 
-
 export class EventIsGoingToExpireEventHandler implements IEventHandler {
     private readonly repository: INotificationsRepository;
     private readonly appNotifications: IAppNotifications;

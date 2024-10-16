@@ -3,6 +3,7 @@ import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { DomainError } from "@/core/shared/domain/DomainError";
 import { IAppNotifications } from "../ports/IAppNotifications";
+import { NotificationTypeEnum } from "../../domain/enum/NotificationTypeEnum";
 
 export class EditMessageEventHandler implements IEventHandler {
     private readonly repository: INotificationsRepository;
@@ -22,12 +23,11 @@ export class EditMessageEventHandler implements IEventHandler {
             throw new DomainError("Recipient, MessageID and new content are required to edit a message.");
         }
 
-        const notification = this.repository.findById(messageId);
+        const notification = this.repository.findByTypeAndTypeId(NotificationTypeEnum.MESSAGE, messageId);
         if (!notification) {
             throw new DomainError("Notification not found.");
         }
 
-        
         this.repository.save(notification);
         this.appNotifications.editNotification(notification);
 

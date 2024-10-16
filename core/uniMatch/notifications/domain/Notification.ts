@@ -15,8 +15,6 @@ abstract class NotificationPayload {
     public get getId(): string {
         return this.id;
     }
-
-    public abstract edit(payloadData: any): void;  // Método abstracto para editar el payload
 }
 
 
@@ -46,12 +44,6 @@ class Event extends NotificationPayload {
 
     public set setStatus(status: EventStatusEnum) {
         this.status = status
-    }
-
-    // Método específico para editar un evento
-    public edit(payloadData: { title: string, status: EventStatusEnum }): void {
-        this.setTitle = payloadData.title;
-        this.status = payloadData.status;
     }
 }
 
@@ -90,12 +82,6 @@ class Message extends NotificationPayload {
     public set setThumbnail(thumbnail: string | undefined) {
         this.thumbnail = thumbnail;
     }
-
-    // Método específico para editar un mensaje
-    public edit(payloadData: { content: string, thumbnail?: string }): void {
-        this.setContent = payloadData.content;
-        this.setThumbnail = payloadData.thumbnail;
-    }
 }
 
 class Match extends NotificationPayload {
@@ -123,11 +109,6 @@ class Match extends NotificationPayload {
     public set setIsLiked(isLiked: boolean) {
         this.isLiked = isLiked;
     }
-
-    // Método específico para editar un match
-    public edit(payloadData: { isLiked: boolean }): void {
-        this.setIsLiked = payloadData.isLiked;
-    }
 }
 
 class App extends NotificationPayload {
@@ -154,12 +135,6 @@ class App extends NotificationPayload {
 
     public set setDescription(description: string) {
         this.description = description;
-    }
-
-    // Método específico para editar una notificación de aplicación
-    public edit(payloadData: { title: string, description: string }): void {
-        this.setTitle = payloadData.title;
-        this.setDescription = payloadData.description;
     }
 }
 
@@ -260,9 +235,5 @@ export class Notification extends AggregateRoot {
 
     public set payload(value: NotificationPayload) {
         this._payload = value;
-    }
-
-    public editNotification(payloadData: any): void {
-        this._payload.edit(payloadData);
     }
 }

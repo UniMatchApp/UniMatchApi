@@ -2,9 +2,9 @@ import { IEventHandler } from "@/core/shared/application/IEventHandler";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { Notification } from "../../domain/Notification";
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
-import { NotificationTypeEnum } from "../../domain/enum/NotificationTypeEnum";
 import { DomainError } from "@/core/shared/domain/DomainError";
 import { IAppNotifications } from "../ports/IAppNotifications";
+import { EventStatusEnum } from "../../domain/enum/EventStatusEnum";
 
 export class EventIsDeletedEventHandler implements IEventHandler {
     private readonly repository: INotificationsRepository;
@@ -30,7 +30,7 @@ export class EventIsDeletedEventHandler implements IEventHandler {
                 new Date(),
                 recipient,
                 eventName,
-                "DELETED"
+                EventStatusEnum.CANCELLED
             );
             
             this.repository.save(notification);

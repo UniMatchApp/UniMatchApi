@@ -2,7 +2,6 @@ import { IEventHandler } from "@/core/shared/application/IEventHandler";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { Notification } from "../../domain/Notification";
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
-import { NotificationTypeEnum } from "../../domain/enum/NotificationTypeEnum";
 import { IAppNotifications } from "../ports/IAppNotifications";
 
 export class NewLikeEventHandler implements IEventHandler {

@@ -37,7 +37,17 @@ export class NewMessageEventHandler implements IEventHandler {
             thumbnail
         );
 
+        const reverseNotification = Notification.createMessageNotification(
+            id,
+            new Date(),
+            sender,
+            content,
+            recipient,
+            thumbnail
+        );
+
         this.repository.save(notification);
+        this.repository.save(reverseNotification);
         this.appNotifications.sendNotification(notification);
     }
 
