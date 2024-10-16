@@ -22,6 +22,8 @@ export class UserHasChangedEmailEventHandler implements IEventHandler {
             recipient
         );
 
+        //TODO: Send notification to recipient via EMAIL
+
         this.repository.save(notification);
     }
 

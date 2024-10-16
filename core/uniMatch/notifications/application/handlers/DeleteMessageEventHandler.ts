@@ -22,6 +22,7 @@ export class DeleteMessageEventHandler implements IEventHandler {
             recipient
         );
 
+
         this.repository.save(notification);
     }
 
