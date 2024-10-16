@@ -1,31 +1,18 @@
-import {UUID} from "@/core/shared/domain/UUID";
-import {ChatStatusEnum} from "./ChatStatusEnum";
-
+import { ChatStatusEnum } from './enum/ChatStatusEnum';
 
 export class Status {
-    private _id: UUID;
     private readonly _userId: string;
     private _status: string;
     private _targetUser?: string;
 
     constructor(
-        id: UUID,
         userId: string,
         status: string,
         targetUser?: string
     ) {
-        this._id = id;
         this._userId = userId;
         this._status = status;
         this._targetUser = targetUser;
-    }
-
-    public get id(): UUID {
-        return this._id;
-    }
-
-    public set id(identifier: UUID) {
-        this._id = identifier;
     }
 
     public get userId(): string {
@@ -50,7 +37,7 @@ export class Status {
     }
 
     public stopTyping() {
-        this.status = ChatStatusEnum.NONE;
+        this.status = ChatStatusEnum.ONLINE;
         this._targetUser = undefined;
     }
 
