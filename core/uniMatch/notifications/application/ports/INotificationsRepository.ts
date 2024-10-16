@@ -3,6 +3,6 @@ import { Notification } from "../../domain/Notification";
 import { UUID } from "@/core/shared/domain/UUID";
 
 export interface INotificationsRepository extends IRepository<Notification> {
-    deleteAllNotificationsByRecipient(recipient: UUID): void;
+    deleteAllNotificationsByRecipient(recipient: string): void;
     findByTypeAndTypeId(type: string, typeId: string): Notification;
 }
