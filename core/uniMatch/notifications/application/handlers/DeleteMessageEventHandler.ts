@@ -22,7 +22,7 @@ export class DeleteMessageEventHandler implements IEventHandler {
             throw new DomainError("Recipient and MessageID is required to delete a message.");
         }
 
-        const notification = this.repository.findByTypeAndTypeId(NotificationTypeEnum.MESSAGE, messageId)[0];
+        const notification = this.repository.findByTypeAndTypeId(NotificationTypeEnum.MESSAGE, messageId);
 
 
         await this.appNotifications.cancelNotification(notification);
