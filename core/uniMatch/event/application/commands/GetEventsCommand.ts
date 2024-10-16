@@ -1,5 +1,5 @@
-import { ICommand } from "../../../../shared/application/ICommand";
-import { Result } from "../../../../shared/domain/Result";
+import { ICommand } from "@/core/shared/application/ICommand";
+import { Result } from "@/core/shared/domain/Result";
 import { IEventRepository } from "../ports/IEventRepository";
 import { Event } from "../../domain/Event";
 
@@ -19,7 +19,7 @@ export class GetEventsCommand implements ICommand<undefined, Event[]> {
             }
 
             return Result.success<Event[]>(events);
-        } catch (error) {
+        } catch (error : any) {
             return Result.failure<Event[]>(error);
         }
     }

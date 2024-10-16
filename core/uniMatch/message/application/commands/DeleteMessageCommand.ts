@@ -1,9 +1,9 @@
-import { ICommand } from "../../../../shared/application/ICommand";
-import { Result } from "../../../../shared/domain/Result";
+import { ICommand } from "@/core/shared/application/ICommand";
+import { Result } from "@/core/shared/domain/Result";
 import { IMessageRepository } from "../ports/IMessageRepository";
-import { IEventBus } from "../../../../shared/application/IEventBus";
+import { IEventBus } from "@/core/shared/application/IEventBus";
 import { DeleteMessageDTO } from "../DTO/DeleteMessageDTO";
-import { IFileHandler } from "../../../../shared/application/IFileHandler";
+import { IFileHandler } from "@/core/shared/application/IFileHandler";
 
 export class DeleteMessageCommand implements ICommand<DeleteMessageDTO, void> {
     private repository: IMessageRepository;
@@ -36,7 +36,7 @@ export class DeleteMessageCommand implements ICommand<DeleteMessageDTO, void> {
 
             return Result.success<void>(undefined);
 
-        } catch (error) {
+        } catch (error : any) {
             return Result.failure<void>(error);
         }
     }

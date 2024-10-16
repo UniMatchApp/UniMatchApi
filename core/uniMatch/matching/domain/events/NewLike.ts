@@ -1,4 +1,4 @@
-import { DomainEvent } from "../../../../shared/domain/DomainEvent";
+import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { Profile } from "../Profile";
 
 export class NewLike extends DomainEvent {

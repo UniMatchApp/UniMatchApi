@@ -1,7 +1,7 @@
 
-import { AggregateRoot } from "../../../shared/domain/AggregateRoot ";
-import { DomainError } from "../../../shared/domain/DomainError";
-import { Location } from "../../../shared/domain/Location";
+import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
+import { DomainError } from "@/core/shared/domain/DomainError";
+import { Location } from "@/core/shared/domain/Location";
 import { EventIsDeleted } from "./events/EventIsDeletedEvent";
 import { EventIsModified } from "./events/EventIsModifiedEvent";
 

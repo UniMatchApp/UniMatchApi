@@ -1,4 +1,4 @@
-import { DomainEvent } from "../../../../shared/domain/DomainEvent";
+import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { Event } from "../Event";
 
 export class EventIsModified extends DomainEvent {

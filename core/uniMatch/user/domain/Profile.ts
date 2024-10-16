@@ -1,5 +1,5 @@
-import { AggregateRoot } from "../../../shared/domain/AggregateRoot ";
-import { DomainError } from "../../../shared/domain/DomainError";
+import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
+import { DomainError } from "@/core/shared/domain/DomainError";
 import { Gender } from "./Gender";
 import { Horoscope } from "./Horoscope";
 import { RelationshipType } from "./RelationshipType";
@@ -51,8 +51,8 @@ export class Profile extends AggregateRoot {
         wall: string[]
     ) {
         super();
-        this.name = name;
-        this.age = age;
+        this._name = name;
+        this._age = age;
         this._aboutMe = aboutMe;
         this._location = location;
         this._gender = gender;

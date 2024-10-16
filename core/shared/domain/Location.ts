@@ -6,10 +6,10 @@ export class Location {
     private _altitude?: number;
 
     constructor(latitude: number, longitude: number, altitude?: number) {
-        this.setLatitude(latitude);
-        this.setLongitude(longitude);
+        this._longitude = longitude;
+        this._latitude = latitude;
         if (altitude !== undefined) {
-            this.setAltitude(altitude);
+            this._altitude = altitude;
         }
     }
 

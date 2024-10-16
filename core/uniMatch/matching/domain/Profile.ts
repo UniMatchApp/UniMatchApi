@@ -1,4 +1,4 @@
-import { Entity } from "../../../shared/domain/Entity";
+import { Entity } from "@/core/shared/domain/Entity";
 
 export class Profile extends Entity {
     private _age: number;

@@ -1,8 +1,7 @@
-import { ICommand } from "../../../../shared/application/ICommand";
-import { Result } from "../../../../shared/domain/Result";
+import { ICommand } from "@/core/shared/application/ICommand";
+import { Result } from "@/core/shared/domain/Result";
 import { IEventRepository } from "../ports/IEventRepository";
 import { Event } from "../../domain/Event";
-import { UUID } from "../../../../shared/domain/UUID";
 import { GetEventDTO } from "../DTO/GetEventDTO";
 
 export class GetEventCommand implements ICommand<GetEventDTO, Event> {
@@ -22,7 +21,7 @@ export class GetEventCommand implements ICommand<GetEventDTO, Event> {
             }
 
             return Result.success<Event>(event);
-        } catch (error) {
+        } catch (error : any) {
             return Result.failure<Event>(error);
         }
     }

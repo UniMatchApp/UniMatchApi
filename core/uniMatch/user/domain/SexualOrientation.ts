@@ -1,4 +1,4 @@
-import { DomainError } from "../../../shared/domain/DomainError";
+import { DomainError } from "@/core/shared/domain/DomainError";
 
 
 export class SexualOrientation {
@@ -6,7 +6,7 @@ export class SexualOrientation {
     private static readonly allowedOrientations = ["HETEROSEXUAL", "HOMOSEXUAL", "BISEXUAL", "ASEXUAL", "OTHER"];
 
     constructor(value: string) {
-        this.setValue(value);
+        this._value = value;
     }
 
     public get value(): string {

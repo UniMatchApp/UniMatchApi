@@ -1,17 +1,18 @@
-import { ICommand } from "../../../../shared/application/ICommand";
-import { Result } from "../../../../shared/domain/Result";
-import { Message } from "../../domain/Message";
-import { RetriveMessagesWithUserDTO } from "../DTO/RetriveMessagesWithUserDTO";
-import { IMessageRepository } from "../ports/IMessageRepository";
+import {ICommand} from "@/core/shared/application/ICommand";
+import {Result} from "@/core/shared/domain/Result";
+import {Message} from "../../domain/Message";
 
-export class RetriveMessagesWithUserCommand implements ICommand<RetriveMessagesWithUserDTO, Message[]> {
+import {IMessageRepository} from "../ports/IMessageRepository";
+import {RetrieveMessagesWithUserDTO} from "@/core/uniMatch/message/application/DTO/RetriveMessagesWithUserDTO";
+
+export class RetrieveMessagesWithUserCommand implements ICommand<RetrieveMessagesWithUserDTO, Message[]> {
     private repository: IMessageRepository;
 
     constructor(repository: IMessageRepository) {
         this.repository = repository;
     }
 
-    run(request: RetriveMessagesWithUserDTO): Result<Message[]> {
+    run(request: RetrieveMessagesWithUserDTO): Result<Message[]> {
         try {
             const userId = request.user;
             const otherUserId = request.targetUser;
@@ -23,7 +24,7 @@ export class RetriveMessagesWithUserCommand implements ICommand<RetriveMessagesW
             }
 
             return Result.success<Message[]>(lastMessages);
-        } catch (error) {
+        } catch (error: any) {
             return Result.failure<Message[]>(error);
         }
     }

@@ -1,5 +1,5 @@
-import { DomainError } from "../../../shared/domain/DomainError";
-import { Entity } from "../../../shared/domain/Entity";
+import { DomainError } from "@/core/shared/domain/DomainError";
+import { Entity } from "@/core/shared/domain/Entity";
 
 class Event extends Entity {
     private _title: string;

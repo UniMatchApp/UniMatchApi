@@ -1,4 +1,4 @@
-import { DomainEvent } from "../../../../shared/domain/DomainEvent";
+import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { User } from "../User";
 
 export class UserHasDeletedTheAccount extends DomainEvent {

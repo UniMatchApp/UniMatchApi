@@ -1,4 +1,4 @@
-import { DomainEvent } from "../../../../shared/domain/DomainEvent";
+import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { Profile } from "../Profile";
 
 export class UserHasChangedAge extends DomainEvent {
@@ -8,6 +8,6 @@ export class UserHasChangedAge extends DomainEvent {
     }
 
     public static from(profile: Profile): UserHasChangedAge {
-        return new UserHasChangedAge(profile.userId, profile.age);
+        return new UserHasChangedAge(profile.getId(), profile.age);
     }
 }

@@ -1,7 +1,7 @@
-import { IEventHandler } from "../../../../shared/application/IEventHandler";
+import { IEventHandler } from "@/core/shared/application/IEventHandler";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { Notification } from "../../domain/Notification";
-import { DomainEvent } from "../../../../shared/domain/DomainEvent";
+import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { NotificationTypeEnum } from "../../domain/NotificationTypeEnum";
 
 export class NewMessageEventHandler implements IEventHandler {

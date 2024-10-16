@@ -1,21 +1,21 @@
-import { DomainError } from "../../../shared/domain/DomainError";
-import { Entity } from "../../../shared/domain/Entity";
+import { DomainError } from "@/core/shared/domain/DomainError";
+import { Entity } from "@/core/shared/domain/Entity";
 
 class Profile extends Entity {
     
     private _name: string;
     private _email: string;
-    private _preferedImageURL: string;
+    private _preferredImageURL: string;
 
     constructor(
         name: string,
         email: string,
-        preferedImageURL: string
+        preferredImageURL: string
     ) {
         super();
         this._name = name;
         this._email = email;
-        this._preferedImageURL = preferedImageURL;
+        this._preferredImageURL = preferredImageURL;
     }
 
     public get name(): string {
@@ -40,15 +40,15 @@ class Profile extends Entity {
         this._email = value;
     }
 
-    public get preferedImageURL(): string {
-        return this._preferedImageURL;
+    public get preferredImageURL(): string {
+        return this._preferredImageURL;
     }
 
-    public set preferedImageURL(value: string) {
+    public set preferredImageURL(value: string) {
         if (value.length === 0) {
             throw new DomainError("Preferred image URL cannot be empty.");
         }
-        this._preferedImageURL = value;
+        this._preferredImageURL = value;
     }
     
 }

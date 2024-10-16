@@ -1,10 +1,10 @@
-import { UUID } from "../../../shared/domain/UUID";
-import {StatusEnum} from "./StatusEnum";
+import {UUID} from "@/core/shared/domain/UUID";
+import {ChatStatusEnum} from "./ChatStatusEnum";
 
 
 export class Status {
     private _id: UUID;
-    private _userId: string;
+    private readonly _userId: string;
     private _status: string;
     private _targetUser?: string;
 
@@ -36,10 +36,7 @@ export class Status {
         return this._status;
     }
 
-    public set status(value: string) {
-        if (StatusEnum[value.toUpperCase()] === undefined) {
-            throw new Error("Invalid profile status. Allowed statuses: 'TYPING' or 'NONE'.");
-        }
+    public set status(value: ChatStatusEnum) {
         this._status = value;
     }
 
@@ -48,12 +45,12 @@ export class Status {
     }
 
     public startTyping(targetUser?: string) {
-        this.status = 'TYPING';
+        this.status = ChatStatusEnum.TYPING;
         this._targetUser = targetUser;
     }
 
     public stopTyping() {
-        this.status = 'NONE';
+        this.status = ChatStatusEnum.NONE;
         this._targetUser = undefined;
     }
 

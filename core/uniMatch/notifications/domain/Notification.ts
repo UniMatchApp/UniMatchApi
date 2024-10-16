@@ -1,6 +1,6 @@
-import { AggregateRoot } from "../../../shared/domain/AggregateRoot ";
-import { DomainError } from "../../../shared/domain/DomainError";
-import { StatusEnum } from "../../../shared/domain/StatusEnum";
+import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
+import { DomainError } from "@/core/shared/domain/DomainError";
+import { MessageStatusEnum } from "@/core/shared/domain/MessageStatusEnum";
 import { NotificationTypeEnum } from "./NotificationTypeEnum";
 
 export class Notification extends AggregateRoot {
@@ -18,7 +18,7 @@ export class Notification extends AggregateRoot {
     ) {
         super();
         this._type = type;
-        this._status = StatusEnum.SENT;
+        this._status = MessageStatusEnum.SENT;
         this._message = message;
         this._date = date;
         this._recipient = recipient;
@@ -28,10 +28,7 @@ export class Notification extends AggregateRoot {
         return this._type;
     }
 
-    public set type(value: string) {
-        if(NotificationTypeEnum[value.toUpperCase()] === undefined) {
-            throw new DomainError("Invalid notification type.");
-        }
+    public set type(value: NotificationTypeEnum) {
         this._type = value;
     }
 
@@ -39,10 +36,7 @@ export class Notification extends AggregateRoot {
         return this._status;
     }
 
-    public set status(value: string) {
-        if(StatusEnum[value.toUpperCase()] === undefined) {
-            throw new DomainError("Invalid status type.");
-        }
+    public set status(value: MessageStatusEnum) {
         this._status = value;
     }
 

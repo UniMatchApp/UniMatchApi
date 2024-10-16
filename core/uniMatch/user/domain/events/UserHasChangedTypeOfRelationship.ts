@@ -1,4 +1,4 @@
-import { DomainEvent } from "../../../../shared/domain/DomainEvent";
+import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { Profile } from "../Profile";
 import { RelationshipType } from "../RelationshipType";
 
@@ -9,6 +9,6 @@ export class UserHasChangedTypeOfRelationship extends DomainEvent {
     }
 
     public static from(profile: Profile): UserHasChangedTypeOfRelationship {
-        return new UserHasChangedTypeOfRelationship(profile.userId, profile.relationshipType);
+        return new UserHasChangedTypeOfRelationship(profile.getId(), profile.relationshipType);
     }
 }
