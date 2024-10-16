@@ -2,7 +2,7 @@ export enum NotificationTypeEnum {
     MESSAGE = "MESSAGE",
     MATCH = "MATCH",
     APP = "APP",
-    EVENTS = "EVENTS"
+    EVENT = "EVENT"
 }
 
 // Method to convert string to NotificationTypeEnum

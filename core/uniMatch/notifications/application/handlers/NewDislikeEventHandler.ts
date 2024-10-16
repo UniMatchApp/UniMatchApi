@@ -2,27 +2,38 @@ import { IEventHandler } from "@/core/shared/application/IEventHandler";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { Notification } from "../../domain/Notification";
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
-import { NotificationTypeEnum } from "../../domain/NotificationTypeEnum";
+import { NotificationTypeEnum } from "../../domain/enum/NotificationTypeEnum";
+import { IAppNotifications } from "../ports/IAppNotifications";
 
 export class NewDislikeEventHandler implements IEventHandler {
     private readonly repository: INotificationsRepository;
+    private readonly appNotifications: IAppNotifications;
 
-    constructor(repository: INotificationsRepository) {
+    constructor(repository: INotificationsRepository, appNotifications: IAppNotifications) {
         this.repository = repository;
+        this.appNotifications = appNotifications;
     }
 
     handle(event: DomainEvent): void {
-        const recipient = event.getAggregateId();
-        const dislikedProfileId = event.getPayload().get("dislikedProfileId");
+        const id = event.getAggregateId();
+        const user = event.getPayload().get("user");
+        const target = event.getPayload().get("target");
 
-        const notification = new Notification(
-            NotificationTypeEnum.APP,
-            `Your profile has received a new dislike.`,
+        if (!user || !target) {
+            throw new Error("User and Target are required to create a notification.");
+        }
+
+        const notification = Notification.createMatchNotification(
+            id,
             new Date(),
-            recipient
+            user,
+            target,
+            false
         );
 
         this.repository.save(notification);
+        this.appNotifications.sendNotification(notification);
+        
     }
 
     getEventId(): string {
