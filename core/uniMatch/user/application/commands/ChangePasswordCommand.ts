@@ -22,7 +22,7 @@ export class ChangePasswordCommand implements ICommand<ChangePasswordDTO, string
             }
             
             const password = user.password;
-            if (request.newPassword !== password) {
+            if (request.newPassword === password) {
                 throw new Error("New password cannot be the same as the old one");
             }
 
