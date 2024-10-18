@@ -1,5 +1,5 @@
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
-import { Profile } from "../Profile";
+import { Node } from "../Node";
 
 export class NewLike extends DomainEvent {
     constructor(aggregateId: string, user: string, target: string) {
@@ -8,7 +8,7 @@ export class NewLike extends DomainEvent {
         this.getPayload().set("target", target);
     }
 
-    public static from(aggregateId: string, user: Profile, target: Profile): NewLike {
+    public static from(aggregateId: string, user: Node, target: Node): NewLike {
         return new NewLike(
             aggregateId,
             user.getId().toString(),

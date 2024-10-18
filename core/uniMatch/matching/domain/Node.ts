@@ -1,11 +1,15 @@
-import { Entity } from "@/core/shared/domain/Entity";
+import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
+import { Like } from "./relations/Like";
+import { Dislike } from "./relations/Dislike";
 
-export class Profile extends Entity {
+export class Node extends AggregateRoot {
     private _age: number;
     private _location: string;
     private _maxDistance: number;
     private _sexPriority: string;
     private _relationshipType: string;
+    private _likes: Like[] = [];
+    private _dislikes: Dislike[] = [];
 
     constructor(
         age: number,
@@ -60,5 +64,30 @@ export class Profile extends Entity {
 
     public set relationshipType(value: string) {
         this._relationshipType = value;
+    }
+
+    public get likes(): Like[] {
+        return this._likes;
+    }
+
+    public get dislikes(): Dislike[] {
+        return this._dislikes;
+    }
+
+    public addLike(like: Like): void {
+        this._likes.push(like);
+    }
+
+    public addDislike(dislike: Dislike): void {
+        this._dislikes.push(dislike);
+    }
+
+
+    public removeLike(like: Like): void {
+        this._likes = this._likes.filter((l) => l !== like);
+    }
+
+    public removeDislike(dislike: Dislike): void {
+        this._dislikes = this._dislikes.filter((d) => d !== dislike);
     }
 }

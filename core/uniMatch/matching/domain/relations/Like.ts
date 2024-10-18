@@ -1,21 +1,21 @@
-import { Profile } from "../Profile";
+import { Node } from "../Node";
 
 export class Like {
-    private _fromProfile: Profile;
-    private _toProfile: Profile;
+    private _fromProfile: Node;
+    private _toProfile: Node;
     private _timestamp: Date;
 
-    constructor(fromProfile: Profile, toProfile: Profile, timestamp: Date) {
+    constructor(fromProfile: Node, toProfile: Node) {
         this._fromProfile = fromProfile;
         this._toProfile = toProfile;
-        this._timestamp = timestamp;
+        this._timestamp = new Date();
     }
 
-    public get fromProfile(): Profile {
+    public get fromProfile(): Node {
         return this._fromProfile;
     }
 
-    public get toProfile(): Profile {
+    public get toProfile(): Node {
         return this._toProfile;
     }
 
@@ -23,11 +23,11 @@ export class Like {
         return this._timestamp;
     }
 
-    public set fromProfile(value: Profile) {
+    public set fromProfile(value: Node) {
         this._fromProfile = value;
     }
 
-    public set toProfile(value: Profile) {
+    public set toProfile(value: Node) {
         this._toProfile = value;
     }
 
