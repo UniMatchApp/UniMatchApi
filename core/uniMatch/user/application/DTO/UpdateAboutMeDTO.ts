@@ -1,4 +1,4 @@
 export interface UpdateAboutMeDTO {
     userId: string;
-    content: string;
+    newContent: string;
 }
