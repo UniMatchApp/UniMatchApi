@@ -5,6 +5,7 @@ import { UserHasChangedEmail } from "./events/UserHasChangedEmail";
 import { UserHasChangedPassword } from "./events/UserHasChangedPassword";
 import { Profile } from "./Profile";
 import { UserHasDeletedTheAccount } from "./events/UserHasDeletedTheAccount";
+import { NewUser } from "./events/NewUser";
 
 export class User extends AggregateRoot {
     private readonly _code: string;
@@ -27,6 +28,8 @@ export class User extends AggregateRoot {
         this._email = email;
         this._password = password;
         this._blockedUsers = blockedUsers;
+
+        this.recordEvent(new NewUser(this.getId().toString(), email));
     }
 
     public get code(): string {

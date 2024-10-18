@@ -27,6 +27,10 @@ export class BlockUserCommand implements ICommand<BlockUserDTO, void> {
                 throw new Error(`User with id ${request.blockedUserId} not found`);
             }
 
+            if(user.isUserBlocked(request.blockedUserId)) {
+                throw new Error(`User with id ${request.blockedUserId} is already blocked`);
+            } 
+
             user.blockUser(request.blockedUserId);
 
             this.repository.save(user);
