@@ -5,9 +5,10 @@ import { Horoscope } from "./Horoscope";
 import { RelationshipType } from "./RelationshipType";
 import { SexualOrientation } from "./SexualOrientation";
 import { UserHasChangedAge} from "./events/UserHasChangedAge";
-import { UserHasChangedDistance } from "./events/UserHasChangedDistance";
+import { UserHasChangedMaxDistance } from "./events/UserHasChangedMaxDistance";
 import { UserHasChangedPriority } from "./events/UserHasChangedPriority";
 import { UserHasChangedTypeOfRelationship } from "./events/UserHasChangedTypeOfRelationship";
+import { Location } from "@/core/shared/domain/Location";
 
 export class Profile extends AggregateRoot {
     private _name: string;
@@ -140,7 +141,7 @@ export class Profile extends AggregateRoot {
         }
         this._maxDistance = value;
 
-        this.recordEvent(new UserHasChangedDistance(this.getId().toString(), value));
+        this.recordEvent(new UserHasChangedMaxDistance(this.getId().toString(), value));
     }
 
     public get ageRange(): [number, number] {

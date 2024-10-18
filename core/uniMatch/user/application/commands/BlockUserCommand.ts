@@ -34,8 +34,6 @@ export class BlockUserCommand implements ICommand<BlockUserDTO, void> {
             user.blockUser(request.blockedUserId);
 
             this.repository.save(user);
-
-            this.eventBus.publish(user.pullDomainEvents());
             return Result.success<void>(undefined);
         } catch (error: any) {
             return Result.failure<void>(error);
