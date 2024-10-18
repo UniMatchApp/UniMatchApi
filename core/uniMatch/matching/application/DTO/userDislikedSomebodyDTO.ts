@@ -1,4 +1,4 @@
-export interface userDislikedSomebodyDTO {
+export interface UserDislikedSomebodyDTO {
     userId: string;
     dislikedUserId: string;
 }

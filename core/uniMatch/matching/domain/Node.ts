@@ -1,11 +1,13 @@
 import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
 import { Like } from "./relations/Like";
 import { Dislike } from "./relations/Dislike";
+import { Gender } from "@/core/shared/domain/Gender";
 
 export class Node extends AggregateRoot {
     private _age: number;
     private _location: string;
     private _maxDistance: number;
+    private _gender: Gender;
     private _sexPriority: string;
     private _relationshipType: string;
     private _likes: Like[] = [];
@@ -15,6 +17,7 @@ export class Node extends AggregateRoot {
         age: number,
         location: string,
         maxDistance: number,
+        gender: Gender,
         sexPriority: string,
         relationshipType: string
     ) {
@@ -22,6 +25,7 @@ export class Node extends AggregateRoot {
         this._age = age;
         this._location = location;
         this._maxDistance = maxDistance;
+        this._gender = gender;
         this._sexPriority = sexPriority;
         this._relationshipType = relationshipType;
     }
@@ -46,6 +50,10 @@ export class Node extends AggregateRoot {
         return this._relationshipType;
     }
 
+    public get gender(): Gender {
+        return this._gender;
+    }
+
     public set age(value: number) {
         this._age = value;
     }
@@ -64,6 +72,10 @@ export class Node extends AggregateRoot {
 
     public set relationshipType(value: string) {
         this._relationshipType = value;
+    }
+
+    public set gender(value: Gender) {
+        this._gender = value;
     }
 
     public get likes(): Like[] {
