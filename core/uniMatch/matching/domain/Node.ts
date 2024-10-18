@@ -1,11 +1,14 @@
 import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
 import { Like } from "./relations/Like";
 import { Dislike } from "./relations/Dislike";
+import { Gender } from "@/core/shared/domain/Gender";
+import { Location } from "@/core/shared/domain/Location";
 
 export class Node extends AggregateRoot {
     private _age: number;
-    private _location: string;
+    private _location: Location;
     private _maxDistance: number;
+    private _gender: Gender;
     private _sexPriority: string;
     private _relationshipType: string;
     private _likes: Like[] = [];
@@ -13,8 +16,9 @@ export class Node extends AggregateRoot {
 
     constructor(
         age: number,
-        location: string,
+        location: Location,
         maxDistance: number,
+        gender: Gender,
         sexPriority: string,
         relationshipType: string
     ) {
@@ -22,6 +26,7 @@ export class Node extends AggregateRoot {
         this._age = age;
         this._location = location;
         this._maxDistance = maxDistance;
+        this._gender = gender;
         this._sexPriority = sexPriority;
         this._relationshipType = relationshipType;
     }
@@ -30,7 +35,7 @@ export class Node extends AggregateRoot {
         return this._age;
     }
 
-    public get location(): string {
+    public get location(): Location {
         return this._location;
     }
 
@@ -46,11 +51,15 @@ export class Node extends AggregateRoot {
         return this._relationshipType;
     }
 
+    public get gender(): Gender {
+        return this._gender;
+    }
+
     public set age(value: number) {
         this._age = value;
     }
 
-    public set location(value: string) {
+    public set location(value: Location) {
         this._location = value;
     }
 
@@ -64,6 +73,10 @@ export class Node extends AggregateRoot {
 
     public set relationshipType(value: string) {
         this._relationshipType = value;
+    }
+
+    public set gender(value: Gender) {
+        this._gender = value;
     }
 
     public get likes(): Like[] {

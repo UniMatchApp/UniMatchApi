@@ -1,20 +1,20 @@
 import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
-import { userDislikedSomebodyDTO } from "../DTO/userDislikedSomebodyDTO";
+import { UserDislikedSomebodyDTO } from "../DTO/UserDislikedSomebodyDTO";
 import { IMatchingRepository } from "../ports/IMatchingRepository";
 import { Dislike } from "../../domain/relations/Dislike";
 
-export class userDislikedSomebodyCommand implements ICommand<userDislikedSomebodyDTO, void> {
+export class UserDislikedSomebodyCommand implements ICommand<UserDislikedSomebodyDTO, void> {
     private readonly repository: IMatchingRepository;
 
     constructor(repository: IMatchingRepository) {
         this.repository = repository;
     }
 
-    run(request: userDislikedSomebodyDTO): Result<void> {
+    run(request: UserDislikedSomebodyDTO): Result<void> {
         try {
-            const user = this.repository.findById(request.userId);
-            const dislikedUser = this.repository.findById(request.dislikedUserId);
+            const user = this.repository.findByUserId(request.userId);
+            const dislikedUser = this.repository.findByUserId(request.dislikedUserId);
 
             if (!user) {
                 throw new Error("User not found");

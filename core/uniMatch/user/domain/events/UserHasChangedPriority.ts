@@ -1,5 +1,5 @@
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
-import { Gender } from "../Gender";
+import { Gender } from "@/core/shared/domain/Gender";
 import { Profile } from "../Profile";
 
 export class UserHasChangedPriority extends DomainEvent {

@@ -1,6 +1,6 @@
 import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
 import { DomainError } from "@/core/shared/domain/DomainError";
-import { Gender } from "./Gender";
+import { Gender } from "@/core/shared/domain/Gender";
 import { Horoscope } from "./Horoscope";
 import { RelationshipType } from "./RelationshipType";
 import { SexualOrientation } from "./SexualOrientation";
