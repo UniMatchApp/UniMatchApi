@@ -2,7 +2,7 @@ import { IEventHandler } from "@/core/shared/application/IEventHandler";
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { IMatchingRepository } from "../ports/IMatchingRepository";
 
-export class UserHasChangedAgeEventHandler implements IEventHandler {
+export class UserHasChangedSexPriorityEventHandler implements IEventHandler {
     private readonly repository: IMatchingRepository;
 
     constructor(repository: IMatchingRepository) {
@@ -11,10 +11,10 @@ export class UserHasChangedAgeEventHandler implements IEventHandler {
 
     handle(event: DomainEvent): void {
         const userId = event.getAggregateId();
-        const age = event.getPayload().get("age");
+        const sexPriority = event.getPayload().get("priority");
 
-        if (!userId || !age) {
-            throw new Error("User ID and Age is required to update a user's age.");
+        if (!userId || !sexPriority) {
+            throw new Error("User ID and sex priority are required to update a user's sex priority.");
         }
 
         const user = this.repository.findByUserId(userId);
@@ -22,11 +22,11 @@ export class UserHasChangedAgeEventHandler implements IEventHandler {
             throw new Error("User not found");
         }
 
-        user.age = Number(age);
+        user.sexPriority = sexPriority;
         this.repository.save(user);
     }
 
     getEventId(): string {
-        return "user-has-changed-age";
+        return "user-has-changed-priority";
     }
 }

@@ -1,10 +1,11 @@
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { Profile } from "../Profile";
-import { Gender } from "../Gender";
+import { Gender } from "@/core/shared/domain/Gender";
+
 
 export class ProfileHasChangedGender extends DomainEvent {
     constructor(aggregateId: string, gender: Gender) {
-        super(aggregateId, "profile-has-changed-gender");
+        super(aggregateId, "user-has-changed-gender");
         this.getPayload().set("gender", gender.toString());
     }
 

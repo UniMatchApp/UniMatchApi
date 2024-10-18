@@ -2,10 +2,11 @@ import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
 import { Like } from "./relations/Like";
 import { Dislike } from "./relations/Dislike";
 import { Gender } from "@/core/shared/domain/Gender";
+import { Location } from "@/core/shared/domain/Location";
 
 export class Node extends AggregateRoot {
     private _age: number;
-    private _location: string;
+    private _location: Location;
     private _maxDistance: number;
     private _gender: Gender;
     private _sexPriority: string;
@@ -15,7 +16,7 @@ export class Node extends AggregateRoot {
 
     constructor(
         age: number,
-        location: string,
+        location: Location,
         maxDistance: number,
         gender: Gender,
         sexPriority: string,
@@ -34,7 +35,7 @@ export class Node extends AggregateRoot {
         return this._age;
     }
 
-    public get location(): string {
+    public get location(): Location {
         return this._location;
     }
 
@@ -58,7 +59,7 @@ export class Node extends AggregateRoot {
         this._age = value;
     }
 
-    public set location(value: string) {
+    public set location(value: Location) {
         this._location = value;
     }
 

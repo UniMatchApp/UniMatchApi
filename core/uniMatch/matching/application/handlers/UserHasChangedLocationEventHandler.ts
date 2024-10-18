@@ -1,8 +1,9 @@
 import { IEventHandler } from "@/core/shared/application/IEventHandler";
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { IMatchingRepository } from "../ports/IMatchingRepository";
+import { Location } from "@/core/shared/domain/Location";
 
-export class UserHasChangedAgeEventHandler implements IEventHandler {
+export class UserHasChangedLocationEventHandler implements IEventHandler {
     private readonly repository: IMatchingRepository;
 
     constructor(repository: IMatchingRepository) {
@@ -11,10 +12,10 @@ export class UserHasChangedAgeEventHandler implements IEventHandler {
 
     handle(event: DomainEvent): void {
         const userId = event.getAggregateId();
-        const age = event.getPayload().get("age");
+        const stringLocation = event.getPayload().get("location");
 
-        if (!userId || !age) {
-            throw new Error("User ID and Age is required to update a user's age.");
+        if (!userId || !stringLocation) {
+            throw new Error("User ID and location are required to update a user's location.");
         }
 
         const user = this.repository.findByUserId(userId);
@@ -22,11 +23,12 @@ export class UserHasChangedAgeEventHandler implements IEventHandler {
             throw new Error("User not found");
         }
 
-        user.age = Number(age);
+        const location = Location.stringToLocation(stringLocation);
+        user.location = location;
         this.repository.save(user);
     }
 
     getEventId(): string {
-        return "user-has-changed-age";
+        return "user-has-changed-location";
     }
 }
