@@ -23,7 +23,7 @@ export class ChangePasswordCommand implements ICommand<ChangePasswordDTO, string
             
             const password = user.password;
             if (request.newPassword !== password) {
-                throw new Error("Old password is incorrect");
+                throw new Error("New password cannot be the same as the old one");
             }
 
             user.password = request.newPassword;
