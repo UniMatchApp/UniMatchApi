@@ -12,9 +12,9 @@ export class UpdateWeightCommand implements ICommand<ChangeWeightDTO, string> {
     
     async run(request: ChangeWeightDTO): Promise<Result<string>> {
         try {
-            const profile = await this.repository.findById(request.userId)
+            const profile = await this.repository.findById(request.id)
             if (!profile) {
-                throw new Error(`Profile with id ${request.userId} not found`);
+                throw new Error(`Profile with id ${request.id} not found`);
             }
 
             profile.weight = request.newWeight;

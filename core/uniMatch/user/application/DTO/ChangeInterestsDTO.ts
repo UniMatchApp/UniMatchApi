@@ -1,4 +1,4 @@
 export interface ChangeIntereststDTO {
-    userId: string;
+    id: string;
     newInterests: string[];
 }

@@ -1,4 +1,4 @@
 export interface UploadPhotoDTO {
-    userId: string;
+    id: string;
     photo: File;
 }

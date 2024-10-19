@@ -1,4 +1,4 @@
 export interface ChangeHeightDTO {
-    userId: string;
+    id: string;
     newHeight: number;
 }

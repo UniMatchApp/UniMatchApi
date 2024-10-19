@@ -12,7 +12,7 @@ export class ChangeJobCommand implements ICommand<ChangeMoreAboutMeDTO, string> 
 
     async run(request: ChangeMoreAboutMeDTO): Promise<Result<string>> {
         try {
-            const profile = await this.repository.findById(request.userId);
+            const profile = await this.repository.findById(request.id);
             if(!profile) {
                 throw new Error('Profile not found');
             }

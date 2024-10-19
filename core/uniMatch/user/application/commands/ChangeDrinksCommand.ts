@@ -13,7 +13,7 @@ export class ChangeDrinks implements ICommand<ChangeLifeStyleDTO, string> {
 
     async run(request: ChangeLifeStyleDTO): Promise<Result<string>> {
         try {
-            const profile = await this.repository.findById(request.userId);
+            const profile = await this.repository.findById(request.id);
             if(!profile) {
                 throw new Error('Profile not found');
             }

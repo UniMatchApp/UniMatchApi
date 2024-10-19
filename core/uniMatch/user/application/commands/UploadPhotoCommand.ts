@@ -38,9 +38,9 @@ export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, File> {
                 throw new Error("Photo url is undefined");
             }
 
-            const profile = await this.repository.findById(request.userId)
+            const profile = await this.repository.findById(request.id)
             if (!profile) {
-                throw new Error(`Profile with id ${request.userId} not found`);
+                throw new Error(`Profile with id ${request.id} not found`);
             }
             
             profile.addPost(photoUrl);

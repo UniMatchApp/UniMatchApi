@@ -13,7 +13,7 @@ export class ChangePersonalityCommand implements ICommand<ChangeAboutMeDTO, stri
 
     async run(request: ChangeAboutMeDTO): Promise<Result<string>> {
         try {
-            const profile = await this.repository.findById(request.userId);
+            const profile = await this.repository.findById(request.id);
             if(!profile) {
                 throw new Error('Profile not found');
             }

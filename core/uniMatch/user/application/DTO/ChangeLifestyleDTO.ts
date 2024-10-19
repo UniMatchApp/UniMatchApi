@@ -1,4 +1,4 @@
 export interface ChangeLifeStyleDTO {
-    userId: string;
+    id: string;
     newContent: string;
 }

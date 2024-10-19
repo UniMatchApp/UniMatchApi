@@ -12,9 +12,9 @@ export class ChangeAboutMeCommand implements ICommand<ChangeAboutMeDTO, string> 
     
     async run(request: ChangeAboutMeDTO): Promise<Result<string>> {
         try {
-            const profile = await this.repository.findById(request.userId)
+            const profile = await this.repository.findById(request.id)
             if (!profile) {
-                throw new Error(`Profile with id ${request.userId} not found`);
+                throw new Error(`Profile with id ${request.id} not found`);
             }
 
             profile.aboutMe = request.newContent;

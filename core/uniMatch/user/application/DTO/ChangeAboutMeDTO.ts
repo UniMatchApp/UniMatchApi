@@ -1,4 +1,4 @@
 export interface ChangeAboutMeDTO {
-    userId: string;
+    id: string;
     newContent: string;
 }

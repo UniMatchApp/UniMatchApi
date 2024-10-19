@@ -1,4 +1,4 @@
 export interface ChangeWeightDTO {
-    userId: string;
+    id: string;
     newWeight: number;
 }
