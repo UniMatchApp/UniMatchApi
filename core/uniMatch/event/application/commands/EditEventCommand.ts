@@ -5,8 +5,9 @@ import { IEventRepository } from "../ports/IEventRepository";
 import { IEventBus } from "@/core/shared/application/IEventBus";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
 import { Location } from "@/core/shared/domain/Location";
+import { Event } from "../../domain/Event";
 
-export class EditEventCommand implements ICommand<EditEventDTO, void> {
+export class EditEventCommand implements ICommand<EditEventDTO, Event> {
     private repository: IEventRepository;
     private eventBus: IEventBus;
     private fileHandler: IFileHandler;
@@ -18,12 +19,12 @@ export class EditEventCommand implements ICommand<EditEventDTO, void> {
         this.fileHandler = fileHandler;
     }
 
-    async run(request: EditEventDTO): Promise<Result<void>> {
+    async run(request: EditEventDTO): Promise<Result<Event>> {
         try {
             const event = await this.repository.findById(request.eventId);
 
             if (!event) {
-                return Result.failure<void>("Event not found");
+                return Result.failure<Event>("Event not found");
             }
             const location = new Location(
                 request.latitude,
@@ -32,12 +33,12 @@ export class EditEventCommand implements ICommand<EditEventDTO, void> {
             )
             const thumbnail = request.thumbnail;
             if (thumbnail && !this.fileHandler.isValid(thumbnail)) {
-                return Result.failure<void>("Invalid thumbnail file");
+                return Result.failure<Event>("Invalid thumbnail file");
             }
 
             const thumbnailName = thumbnail?.name;
             if(!thumbnailName) {
-                return Result.failure<void>("Thumbnail name is invalid");
+                return Result.failure<Event>("Thumbnail name is invalid");
             }
 
             let thumbnailPath: string | undefined = undefined;
@@ -50,9 +51,9 @@ export class EditEventCommand implements ICommand<EditEventDTO, void> {
             await this.repository.update(event, request.eventId);
             this.eventBus.publish(event.pullDomainEvents());
 
-            return Result.success<void>(undefined);
+            return Result.success<Event>(event);
         } catch (error : any) {
-            return Result.failure<void>(error);
+            return Result.failure<Event>(error);
         }
     }
 }
