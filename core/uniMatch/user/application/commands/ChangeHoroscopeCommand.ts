@@ -1,10 +1,11 @@
 import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
-import { ChangeMoreAboutMeDTO } from "../DTO/ChangeMoreAboutMeDTO";
 import { IProfileRepository } from "../ports/IProfileRepository";
+import { ChangeMoreAboutMeDTO } from "../DTO/ChangeMoreAboutMeDTO";
 import { Profile } from "../../domain/Profile";
+import { Horoscope } from "../../domain/Horoscope";
 
-export class ChangeJobCommand implements ICommand<ChangeMoreAboutMeDTO, string> {
+export class ChangeHoroscopeCommand implements ICommand<ChangeMoreAboutMeDTO, string> {
     private readonly repository: IProfileRepository;
 
     constructor(repository: IProfileRepository) {
@@ -17,11 +18,15 @@ export class ChangeJobCommand implements ICommand<ChangeMoreAboutMeDTO, string> 
             if(!profile) {
                 throw new Error('Profile not found');
             }
-            profile.job = request.newContent;
+
+            const horoscope = new Horoscope(request.newContent);
+
+            profile.horoscope = horoscope;
             this.repository.save(profile);
             return Result.success<string>(request.newContent);
         } catch (error: any) {
             return Result.failure<string>(error);
         }
     }
+
 }
