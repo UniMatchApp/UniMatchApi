@@ -17,7 +17,7 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
         this.fileHandler = fileHandler;
     }
 
-    run(request: CreateNewMessageDTO): Result<Message> {    
+    async run(request: CreateNewMessageDTO): Promise<Result<Message>> {    
         try {
             const file = request.attachment;
 
@@ -33,8 +33,9 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
             let attachmentUrl: string | undefined = undefined;
 
             if (file) {
-                attachmentUrl = this.fileHandler.save(fileName, file);
+                attachmentUrl = await this.fileHandler.save(fileName, file);
             }
+            
             const message = new Message(
                 request.content,
                 request.sender,
@@ -42,7 +43,7 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
                 attachmentUrl
             )
 
-            this.repository.save(message);
+            await this.repository.save(message);
             this.eventBus.publish(message.pullDomainEvents());
 
             return Result.success<Message>(message);

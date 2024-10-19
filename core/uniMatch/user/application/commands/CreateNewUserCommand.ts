@@ -14,11 +14,11 @@ export class CreateNewEventCommand implements ICommand<CreateNewUserDTO, User> {
         this.eventBus = eventBus;
     }
 
-    run(request: CreateNewUserDTO): Result<User> {
+    async run(request: CreateNewUserDTO): Promise<Result<User>> {
         try {
             const user = new User(request.code, request.dateOfCreation, request.email, request.password);
            
-            this.repository.save(user);
+            await this.repository.save(user);
             this.eventBus.publish(user.pullDomainEvents());
             return Result.success<User>(user);
         } catch (error : any) {

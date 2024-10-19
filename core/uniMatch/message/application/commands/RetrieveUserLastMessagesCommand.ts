@@ -11,11 +11,11 @@ export class RetrieveUserLastMessagesCommand implements ICommand<RetrieveUserLas
         this.repository = repository;
     }
 
-    run(request: RetrieveUserLastMessagesDTO): Result<Message[]> {
+    async run(request: RetrieveUserLastMessagesDTO): Promise<Result<Message[]>> {
         try {
             const userId = request.user;
 
-            const lastMessages = this.repository.findLastMessagesOfUser(userId);
+            const lastMessages = await this.repository.findLastMessagesOfUser(userId);
 
             if (!lastMessages || lastMessages.length === 0) {
                 return Result.failure<Message[]>("No messages found between the users.");

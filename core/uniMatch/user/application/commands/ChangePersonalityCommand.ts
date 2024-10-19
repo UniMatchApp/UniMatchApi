@@ -2,7 +2,6 @@ import { ICommand } from "@/core/shared/application/ICommand";
 import { ChangeAboutMeDTO } from "../DTO/ChangeAboutMeDTO";
 import { Result } from "@/core/shared/domain/Result";
 import { IProfileRepository } from "../ports/IProfileRepository";
-import { Profile } from "../../domain/Profile";
 
 export class ChangePersonalityCommand implements ICommand<ChangeAboutMeDTO, string> {
    
@@ -12,14 +11,14 @@ export class ChangePersonalityCommand implements ICommand<ChangeAboutMeDTO, stri
         this.repository = repository;
     }
 
-    run(request: ChangeAboutMeDTO): Result<string> {
+    async run(request: ChangeAboutMeDTO): Promise<Result<string>> {
         try {
-            const profile = this.repository.findById(request.userId);
+            const profile = await this.repository.findById(request.userId);
             if(!profile) {
                 throw new Error('Profile not found');
             }
             profile.personalityType = request.newContent;
-            this.repository.save(profile);
+            await this.repository.save(profile);
             return Result.success<string>(request.newContent);
         } catch (error: any) {
             return Result.failure<string>(error);

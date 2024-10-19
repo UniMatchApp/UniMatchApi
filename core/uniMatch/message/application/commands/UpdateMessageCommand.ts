@@ -16,10 +16,10 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, void> {
         this.fileHandler = fileHandler;
     }
     
-    run(request: UpdateMessageDTO): Result<void> {
+    async run(request: UpdateMessageDTO): Promise<Result<void>> {
          
         try {
-            const messageToUpdate = this.repository.findById(request.messageId);
+            const messageToUpdate = await this.repository.findById(request.messageId);
             let attachmentUrl: string | undefined = undefined;
 
             if (!messageToUpdate) {
@@ -27,9 +27,6 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, void> {
             }
 
             if (request.attachment) {
-                if (!this.fileHandler.isValid(request.attachment)) {
-                    return Result.failure<void>("Invalid file.");
-                }
 
                 const fileName = request.attachment.name;
                 if (!fileName) {
@@ -40,7 +37,7 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, void> {
                     this.fileHandler.delete(messageToUpdate.attachment);
                 }
 
-                attachmentUrl = this.fileHandler.save(fileName, request.attachment);
+                attachmentUrl = await this.fileHandler.save(fileName, request.attachment);
             }
 
             messageToUpdate.edit(

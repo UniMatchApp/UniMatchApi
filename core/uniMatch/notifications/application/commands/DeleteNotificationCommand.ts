@@ -10,16 +10,16 @@ export class DeleteNotificationCommand implements ICommand<DeleteNotificationDTO
         this.repository = repository;
     }
 
-    run(request: DeleteNotificationDTO): Result<void> {
+    async run(request: DeleteNotificationDTO): Promise<Result<void>> {
         try {
 
-            const notification = this.repository.findById(request.notificationId);
+            const notification = await this.repository.findById(request.notificationId);
 
             if (!notification) {
                 return Result.failure<void>("Notification not found");
             }
 
-            this.repository.deleteById(request.notificationId);
+            await this.repository.deleteById(request.notificationId);
 
             return Result.success<void>(undefined);
         } catch (error : any) {

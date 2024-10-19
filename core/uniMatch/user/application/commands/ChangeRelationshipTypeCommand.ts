@@ -14,10 +14,10 @@ export class ChangeRelationshipTypeCommand implements ICommand<ChangeRelationshi
         this.eventBus = eventBus;
     }
 
-    run(request: ChangeRelationshipTypeDTO): Result<string> {
+    async run(request: ChangeRelationshipTypeDTO): Promise<Result<string>> {
         try {
 
-            const profile = this.repository.findById(request.id);
+            const profile = await this.repository.findById(request.id);
 
             if (!profile) {
                 throw error(`Profile with id ${request.id} not found`);
@@ -25,7 +25,7 @@ export class ChangeRelationshipTypeCommand implements ICommand<ChangeRelationshi
 
             profile.relationshipType.setValue(request.relationshipType);
 
-            this.repository.save(profile);
+            await this.repository.save(profile);
             this.eventBus.publish(profile.pullDomainEvents());
             return Result.success<string>(request.relationshipType);
         } catch (error : any) {

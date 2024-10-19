@@ -12,16 +12,16 @@ export class NotificationHasBeenSeenCommand implements ICommand<NotificationHasB
         this.repository = repository;
     }
 
-    run(request: NotificationHasBeenSeenDTO): Result<void> {
+    async run(request: NotificationHasBeenSeenDTO): Promise<Result<void>> {
         try {
-            const notification = this.repository.findById(request.notificationId);
+            const notification = await this.repository.findById(request.notificationId);
 
             if (!notification) {
                 return Result.failure<void>("Notification not found");
             }
 
             notification.status = MessageStatusEnum.READ;
-            this.repository.save(notification);
+            await this.repository.save(notification);
 
             return Result.success<void>(undefined);
         } catch (error : any) {

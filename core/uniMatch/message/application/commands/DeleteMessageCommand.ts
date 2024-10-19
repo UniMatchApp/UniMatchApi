@@ -15,10 +15,10 @@ export class DeleteMessageCommand implements ICommand<DeleteMessageDTO, void> {
         this.eventBus = eventBus;
         this.fileHandler = fileHandler;
     }
-    run(request: DeleteMessageDTO): Result<void> {
+    async run(request: DeleteMessageDTO): Promise<Result<void>> {
          
         try {
-            const message = this.repository.findById(request.messageId);
+            const message = await this.repository.findById(request.messageId);
 
             if (!message) {
                 return Result.failure<void>("Message not found");
@@ -30,7 +30,7 @@ export class DeleteMessageCommand implements ICommand<DeleteMessageDTO, void> {
 
             message.delete();
 
-            this.repository.deleteById(request.messageId);
+            await this.repository.deleteById(request.messageId);
 
             this.eventBus.publish(message.pullDomainEvents());
 

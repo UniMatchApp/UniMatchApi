@@ -9,7 +9,7 @@ export class UserHasChangedAgeEventHandler implements IEventHandler {
         this.repository = repository;
     }
 
-    handle(event: DomainEvent): void {
+    async handle(event: DomainEvent): Promise<void> {
         const userId = event.getAggregateId();
         const age = event.getPayload().get("age");
 
@@ -17,7 +17,7 @@ export class UserHasChangedAgeEventHandler implements IEventHandler {
             throw new Error("User ID and Age is required to update a user's age.");
         }
 
-        const user = this.repository.findByUserId(userId);
+        const user = await this.repository.findByUserId(userId);
         if (!user) {
             throw new Error("User not found");
         }

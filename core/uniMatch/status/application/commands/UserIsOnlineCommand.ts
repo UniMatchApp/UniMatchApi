@@ -13,10 +13,10 @@ export class UserIsOnlineCommand implements ICommand<UserIsOnlineDTO, void> {
         this.repository = repository;
     }
 
-    run(request: UserIsOnlineDTO): Result<void> {
+    async run(request: UserIsOnlineDTO): Promise<Result<void>> {
         try {
             const status = new Status(request.userId, ChatStatusEnum.ONLINE);
-            this.repository.save(status);
+            await this.repository.save(status);
             return Result.success<void>(undefined);
         } catch (error : any) {
             return Result.failure<void>(error);

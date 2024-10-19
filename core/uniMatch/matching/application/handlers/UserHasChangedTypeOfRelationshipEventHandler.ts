@@ -9,7 +9,7 @@ export class UserHasChangedTypeOfRelationshipEventHandler implements IEventHandl
         this.repository = repository;
     }
 
-    handle(event: DomainEvent): void {
+    async handle(event: DomainEvent): Promise<void> {
         const userId = event.getAggregateId();
         const relationshipType = event.getPayload().get("relationshipType");
 
@@ -17,7 +17,7 @@ export class UserHasChangedTypeOfRelationshipEventHandler implements IEventHandl
             throw new Error("User ID and relationship type are required to update a user's relationship type.");
         }
 
-        const user = this.repository.findByUserId(userId);
+        const user = await this.repository.findByUserId(userId);
         if (!user) {
             throw new Error("User not found");
         }

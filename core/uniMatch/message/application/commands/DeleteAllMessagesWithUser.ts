@@ -16,12 +16,12 @@ export class DeleteAllMessagesWithUserCommand implements ICommand<DeleteAllUserM
         this.fileHandler = fileHandler;
     }
 
-    run(request: DeleteAllUserMessagesDTO): Result<void> {
+    async run(request: DeleteAllUserMessagesDTO): Promise<Result<void>> {
         try {
             const userId = request.user;
             const otherUserId = request.targetUser;
 
-            const userMessages = this.repository.findLastMessagesBetweenUsers(userId, otherUserId);
+            const userMessages = await this.repository.findLastMessagesBetweenUsers(userId, otherUserId);
 
             if (!userMessages || userMessages.length === 0) {
                 return Result.failure<void>("No messages found for this user.");
@@ -32,7 +32,7 @@ export class DeleteAllMessagesWithUserCommand implements ICommand<DeleteAllUserM
                     this.fileHandler.delete(message.attachment);
                 }
                 message.delete();
-                this.repository.deleteById(message.getId());
+                await this.repository.deleteById(message.getId());
                 this.eventBus.publish(message.pullDomainEvents());
             }
 

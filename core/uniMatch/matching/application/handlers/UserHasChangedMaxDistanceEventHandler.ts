@@ -9,7 +9,7 @@ export class UserHasChangedMaxDistanceEventHandler implements IEventHandler {
         this.repository = repository;
     }
 
-    handle(event: DomainEvent): void {
+    async handle(event: DomainEvent): Promise<void> {
         const userId = event.getAggregateId();
         const maxDistance = event.getPayload().get("distance");
 
@@ -17,7 +17,7 @@ export class UserHasChangedMaxDistanceEventHandler implements IEventHandler {
             throw new Error("User ID and max distance are required to update a user's max distance.");
         }
 
-        const user = this.repository.findByUserId(userId);
+        const user = await this.repository.findByUserId(userId);
         if (!user) {
             throw new Error("User not found");
         }

@@ -11,11 +11,11 @@ export class DeleteAllNotificationsCommand implements ICommand<DeleteAllNotifica
         this.repository = repository;
     }
 
-    run(request: DeleteAllNotificationsDTO): Result<void> {
+    async run(request: DeleteAllNotificationsDTO): Promise<Result<void>> {
          
        try {
         
-            this.repository.deleteAllNotificationsByRecipient(request.user);
+            await this.repository.deleteAllNotificationsByRecipient(request.user);
 
             return Result.success<void>(undefined);
             

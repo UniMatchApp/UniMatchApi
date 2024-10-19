@@ -1,6 +1,5 @@
 import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
-import { User } from "../../domain/User";
 import { DeleteUserDTO } from "../DTO/DeleteUserDTO";
 import { IUserRepository } from "../ports/IUserRepository";
 import { IEventBus } from "@/core/shared/application/IEventBus";
@@ -15,16 +14,16 @@ export class DeletUserCommand implements ICommand<DeleteUserDTO, void> {
         this.eventBus = eventBus;
     }
 
-    run(request: DeleteUserDTO): Result<void> {
+    async run(request: DeleteUserDTO): Promise<Result<void>> {
         try {
-            const user = this.repository.findById(request.id)
+            const user = await this.repository.findById(request.id)
             if(!user) {
                 throw new Error(`User with id ${request.id} not found`);
             }
 
             user.delete();
 
-            this.repository.deleteById(request.id);
+            await this.repository.deleteById(request.id);
             
             this.eventBus.publish(user.pullDomainEvents());
             return Result.success<void>(undefined);

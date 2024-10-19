@@ -9,7 +9,7 @@ export class UserHasChangedSexPriorityEventHandler implements IEventHandler {
         this.repository = repository;
     }
 
-    handle(event: DomainEvent): void {
+    async handle(event: DomainEvent): Promise<void> {
         const userId = event.getAggregateId();
         const sexPriority = event.getPayload().get("priority");
 
@@ -17,7 +17,7 @@ export class UserHasChangedSexPriorityEventHandler implements IEventHandler {
             throw new Error("User ID and sex priority are required to update a user's sex priority.");
         }
 
-        const user = this.repository.findByUserId(userId);
+        const user = await this.repository.findByUserId(userId);
         if (!user) {
             throw new Error("User not found");
         }

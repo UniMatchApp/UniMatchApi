@@ -10,7 +10,7 @@ export class UserHasChangedLocationEventHandler implements IEventHandler {
         this.repository = repository;
     }
 
-    handle(event: DomainEvent): void {
+    async handle(event: DomainEvent): Promise<void> {
         const userId = event.getAggregateId();
         const stringLocation = event.getPayload().get("location");
 
@@ -18,7 +18,7 @@ export class UserHasChangedLocationEventHandler implements IEventHandler {
             throw new Error("User ID and location are required to update a user's location.");
         }
 
-        const user = this.repository.findByUserId(userId);
+        const user = await this.repository.findByUserId(userId);
         if (!user) {
             throw new Error("User not found");
         }

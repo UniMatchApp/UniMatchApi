@@ -14,9 +14,9 @@ export class ChangeEmailCommand implements ICommand<ChangeEmailDTO, string> {
         this.eventBus = eventBus;
     }
 
-    run(request: ChangeEmailDTO): Result<string> {
+    async run(request: ChangeEmailDTO): Promise<Result<string>> {
         try {
-            const user = this.repository.findById(request.id)
+            const user = await this.repository.findById(request.id)
             if (!user) {
                 throw new Error(`User with id ${request.id} not found`);
             }
@@ -28,7 +28,7 @@ export class ChangeEmailCommand implements ICommand<ChangeEmailDTO, string> {
 
             user.email = request.newEmail;
 
-            this.repository.save(user);
+            await this.repository.save(user);
 
             this.eventBus.publish(user.pullDomainEvents());
             return Result.success<string>(request.newEmail);

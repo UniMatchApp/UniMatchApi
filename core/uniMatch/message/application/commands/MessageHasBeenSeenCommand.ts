@@ -11,9 +11,9 @@ export class MessageHasBeenSeenCommand implements ICommand<MessageHasBeenSeenDTO
         this.repository = repository;
     }
 
-    run(request: MessageHasBeenSeenDTO): Result<void> {
+    async run(request: MessageHasBeenSeenDTO): Promise<Result<void>> {
         try {
-            const message = this.repository.findById(request.messageId);
+            const message = await this.repository.findById(request.messageId);
             const userId = request.userId;
 
             if (!message) {
@@ -29,7 +29,7 @@ export class MessageHasBeenSeenCommand implements ICommand<MessageHasBeenSeenDTO
             }
 
             message.status = MessageStatusEnum.READ;
-            this.repository.save(message);
+            await this.repository.save(message);
             return Result.success<void>(undefined);
         } catch (error : any) {
             return Result.failure<void>(error);

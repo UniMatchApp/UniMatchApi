@@ -1,8 +1,8 @@
 import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
-import { UserLikedSomebodyDTO } from "../DTO/UserLikedSomebodyDTO";
 import { IMatchingRepository } from "../ports/IMatchingRepository";
 import { Like } from "../../domain/relations/Like";
+import { UserLikedSomebodyDTO } from "../DTO/userLikedSomebodyDTO";
 
 export class UserLikedSomebodyCommand implements ICommand<UserLikedSomebodyDTO, void> {
     private readonly repository: IMatchingRepository;
@@ -11,10 +11,10 @@ export class UserLikedSomebodyCommand implements ICommand<UserLikedSomebodyDTO, 
         this.repository = repository;
     }
 
-    run(request: UserLikedSomebodyDTO): Result<void> {
+    async run(request: UserLikedSomebodyDTO): Promise<Result<void>> {
         try {
-            const user = this.repository.findByUserId(request.userId);
-            const likedUser = this.repository.findByUserId(request.likedUserId);
+            const user = await this.repository.findByUserId(request.userId);
+            const likedUser = await this.repository.findByUserId(request.likedUserId);
 
             if (!user) {
                 throw new Error("User not found");
@@ -27,8 +27,8 @@ export class UserLikedSomebodyCommand implements ICommand<UserLikedSomebodyDTO, 
             const like = new Like(user, likedUser);
             user.addLike(like);
             likedUser.addLike(like);
-            this.repository.save(user);
-            this.repository.save(likedUser);
+            await this.repository.save(user);
+            await this.repository.save(likedUser);
 
             return Result.success<void>(undefined);
         } catch (error : any) {

@@ -10,14 +10,14 @@ export class ChangeDegreeCommand implements ICommand<ChangeDegreeDTO, string> {
         this.repository = repository;
     }
 
-    run(request: ChangeDegreeDTO): Result<string> {
+    async run(request: ChangeDegreeDTO): Promise<Result<string>> {
         try {
-            const profile = this.repository.findById(request.id);
+            const profile = await this.repository.findById(request.id);
             if(!profile) {
                 throw new Error('Profile not found');
             }
             profile.education = request.degree;
-            this.repository.save(profile);
+            await this.repository.save(profile);
             return Result.success<string>(request.degree);
         } catch (error: any) {
             return Result.failure<string>(error);

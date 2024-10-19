@@ -10,9 +10,9 @@ export class UserHasDisconnectedCommand implements ICommand<UserHasDisconnectedD
         this.repository = repository;
     }
 
-    run(request: UserHasDisconnectedDTO): Result<void> {
+    async run(request: UserHasDisconnectedDTO): Promise<Result<void>> {
         try {
-            this.repository.deleteById(request.userId);
+            await this.repository.deleteById(request.userId);
             return Result.success<void>(undefined);
         } catch (error : any) {
             return Result.failure<void>(error);
