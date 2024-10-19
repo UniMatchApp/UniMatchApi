@@ -1,24 +1,24 @@
 import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
-import { UpdateAboutMeDTO } from "../DTO/UpdateAboutMeDTO";
 import { IProfileRepository } from "../ports/IProfileRepository";
 import { Profile } from "../../domain/Profile";
+import { ChangeHeightDTO } from "../DTO/ChangeHeightDTO";
 
-export class UpdateAboutMeCommand implements ICommand<UpdateAboutMeDTO, void> {
+export class ChangeHeightCommand implements ICommand<ChangeHeightDTO, void> {
     private repository: IProfileRepository;
 
     constructor(repository: IProfileRepository) {
         this.repository = repository;
     }
     
-    run(request: UpdateAboutMeDTO): Result<void> {
+    run(request: ChangeHeightDTO): Result<void> {
         try {
             const profile = this.repository.findById(request.userId)
             if (!profile) {
                 throw new Error(`Profile with id ${request.userId} not found`);
             }
 
-            profile.aboutMe = request.newContent;
+            profile.height = request.newHeight;
 
             this.repository.save(profile);
 

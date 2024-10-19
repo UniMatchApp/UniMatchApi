@@ -1,17 +1,17 @@
 import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
-import { UpdateWeightDTO } from "../DTO/UpdateWeightDTO";
+import { ChangeWeightDTO } from "../DTO/ChangeWeightDTO";
 import { IProfileRepository } from "../ports/IProfileRepository";
 import { Profile } from "../../domain/Profile";
 
-export class UpdateWeightCommand implements ICommand<UpdateWeightDTO, void> {
+export class UpdateWeightCommand implements ICommand<ChangeWeightDTO, void> {
     private repository: IProfileRepository;
 
     constructor(repository: IProfileRepository) {
         this.repository = repository;
     }
     
-    run(request: UpdateWeightDTO): Result<void> {
+    run(request: ChangeWeightDTO): Result<void> {
         try {
             const profile = this.repository.findById(request.userId)
             if (!profile) {
