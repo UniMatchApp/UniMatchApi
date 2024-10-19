@@ -17,26 +17,24 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
         this.fileHandler = fileHandler;
     }
 
-    run(request: CreateNewMessageDTO): Result<Message> {
-        
-        const file = request.attachment;
-
-        if (file && !this.fileHandler.isValid(file)) {
-            return Result.failure<Message>("Invalid file.");
-        }
-
-        const fileName = request.attachment?.name;
-        if (!fileName) {
-            return Result.failure<Message>("Invalid file name.");
-        }
-
-        let attachmentUrl: string | undefined = undefined;
-
-        if (file) {
-            attachmentUrl = this.fileHandler.save(fileName, file);
-        }
-
+    run(request: CreateNewMessageDTO): Result<Message> {    
         try {
+            const file = request.attachment;
+
+            if (file && !this.fileHandler.isValid(file)) {
+                return Result.failure<Message>("Invalid file.");
+            }
+
+            const fileName = request.attachment?.name;
+            if (!fileName) {
+                return Result.failure<Message>("Invalid file name.");
+            }
+
+            let attachmentUrl: string | undefined = undefined;
+
+            if (file) {
+                attachmentUrl = this.fileHandler.save(fileName, file);
+            }
             const message = new Message(
                 request.content,
                 request.sender,

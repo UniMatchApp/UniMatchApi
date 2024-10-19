@@ -3,7 +3,7 @@ import { ChangeLifeStyleDTO } from "../DTO/ChangeLifeStyleDTO";
 import { Result } from "@/core/shared/domain/Result";
 import { IProfileRepository } from "../ports/IProfileRepository";
 
-export class ChangeDrinkAlcoholicBeverages implements ICommand<ChangeLifeStyleDTO, string> {
+export class ChangeDrinks implements ICommand<ChangeLifeStyleDTO, string> {
 
     private readonly repository: IProfileRepository;
 

@@ -164,6 +164,17 @@ export class Profile extends AggregateRoot {
         this._wall = value;
     }
 
+    public addPost(post: string) {
+        this._wall.push(post);
+    }
+
+    public deletePost(post: string) {
+        const index = this._wall.indexOf(post);
+        if (index > -1) {
+            this._wall.splice(index, 1);
+        }
+    }
+    
     public get preferredImage(): string {
         return this._preferredImage;
     }
