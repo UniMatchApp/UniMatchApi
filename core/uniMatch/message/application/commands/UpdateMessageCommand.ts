@@ -4,8 +4,9 @@ import { UpdateMessageDTO } from "../DTO/UpdateMessageDTO";
 import { IMessageRepository } from "../ports/IMessageRepository";
 import { IEventBus } from "@/core/shared/application/IEventBus";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
+import { Message } from "../../domain/Message";
 
-export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, void> {
+export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, Message> {
     private repository: IMessageRepository;
     private eventBus: IEventBus;
     private fileHandler: IFileHandler;
@@ -16,21 +17,21 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, void> {
         this.fileHandler = fileHandler;
     }
     
-    async run(request: UpdateMessageDTO): Promise<Result<void>> {
+    async run(request: UpdateMessageDTO): Promise<Result<Message>> {
          
         try {
             const messageToUpdate = await this.repository.findById(request.messageId);
             let attachmentUrl: string | undefined = undefined;
 
             if (!messageToUpdate) {
-                return Result.failure<void>("Message not found");
+                return Result.failure<Message>("Message not found");
             }
 
             if (request.attachment) {
 
                 const fileName = request.attachment.name;
                 if (!fileName) {
-                    return Result.failure<void>("Invalid file name.");
+                    return Result.failure<Message>("Invalid file name.");
                 }
 
                 if (messageToUpdate.attachment) {
@@ -48,9 +49,9 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, void> {
             this.repository.update(messageToUpdate, request.messageId);
             this.eventBus.publish(messageToUpdate.pullDomainEvents());
 
-            return Result.success<void>(undefined);
+            return Result.success<Message>(messageToUpdate);
         } catch (error : any) {
-            return Result.failure<void>(error);
+            return Result.failure<Message>(error);
         }
     }
 
