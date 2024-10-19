@@ -13,6 +13,7 @@ export class User extends AggregateRoot {
     private _email: string;
     private _password: string;
     private _blockedUsers: string[] = [];
+    private _reportedUsers: { userId: string, predefinedReason: string, comment?: string }[] = [];
     private _profile?: Profile
 
     constructor(
@@ -111,6 +112,18 @@ export class User extends AggregateRoot {
 
     public isUserBlocked(userId: string): boolean {
         return this._blockedUsers.includes(userId);
+    }
+
+    public reportUser(predefinedReason: string, comment?: string): void {
+        this._reportedUsers.push({ 
+            userId: this.getId().toString() , 
+            predefinedReason, 
+            comment 
+        });
+    }
+
+    public getReportedUsers(): { userId: string, predefinedReason: string, comment?: string }[] {
+        return this._reportedUsers;
     }
 
     public delete(): void {
