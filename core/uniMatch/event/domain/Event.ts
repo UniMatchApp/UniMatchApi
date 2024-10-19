@@ -145,7 +145,8 @@ export class Event extends AggregateRoot {
         this.makeInactive();
         this.recordEvent(new EventIsDeleted(
             this.getId().toString(),
-            this.title
+            this.title,
+            this.participants
         ));
     }
 
@@ -160,6 +161,7 @@ export class Event extends AggregateRoot {
             this.getId().toString(),
             this.title,
             this.location.toString(),
+            this.participants,
             this.thumbnail
         ));
     }

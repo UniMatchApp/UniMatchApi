@@ -11,16 +11,16 @@ export class DislikeEventCommand implements ICommand<LikeEventDTO, Event> {
         this.repository = repository;
     }
 
-    run(request: LikeEventDTO): Result<Event> {
+    async run(request: LikeEventDTO): Promise<Result<Event>> {
         try {
-            const event = this.repository.findById(request.eventId);
+            const event = await this.repository.findById(request.eventId);
             
             if (!event) {
                 return Result.failure<Event>("Event not found");
             }
 
             event.dislike(request.userId);
-            this.repository.save(event);
+            await this.repository.save(event);
             return Result.success<Event>(event);
         } catch (error : any) {
             return Result.failure<Event>(error);

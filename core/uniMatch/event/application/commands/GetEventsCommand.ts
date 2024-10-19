@@ -10,9 +10,9 @@ export class GetEventsCommand implements ICommand<undefined, Event[]> {
         this.repository = repository;
     }
 
-    run(request: undefined): Result<Event[]> {
+    async run(): Promise<Result<Event[]>> {
         try {
-            const events = this.repository.findAll();
+            const events = await this.repository.findAll();
 
             if (!events || events.length === 0) {
                 return Result.failure<Event[]>("No events found");

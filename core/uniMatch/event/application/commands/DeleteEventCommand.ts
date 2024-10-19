@@ -17,10 +17,10 @@ export class DeleteEventCommand implements ICommand<DeleteEventDTO, void> {
         this.fileHandler = fileHandler;
     }
 
-    run(request: DeleteEventDTO): Result<void> {
+    async run(request: DeleteEventDTO): Promise<Result<void>> {
          
        try {
-            const event = this.repository.findById(request.eventId);
+            const event = await this.repository.findById(request.eventId);
 
             if (!event) {
                 return Result.failure<void>("Event not found");
@@ -32,7 +32,7 @@ export class DeleteEventCommand implements ICommand<DeleteEventDTO, void> {
 
             event.delete();
 
-            this.repository.deleteById(request.eventId);
+            await this.repository.deleteById(request.eventId);
             
             this.eventBus.publish(event.pullDomainEvents());
 

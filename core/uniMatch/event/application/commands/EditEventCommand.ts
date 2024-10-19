@@ -18,9 +18,9 @@ export class EditEventCommand implements ICommand<EditEventDTO, void> {
         this.fileHandler = fileHandler;
     }
 
-    run(request: EditEventDTO): Result<void> {
+    async run(request: EditEventDTO): Promise<Result<void>> {
         try {
-            const event = this.repository.findById(request.eventId);
+            const event = await this.repository.findById(request.eventId);
 
             if (!event) {
                 return Result.failure<void>("Event not found");
@@ -42,12 +42,12 @@ export class EditEventCommand implements ICommand<EditEventDTO, void> {
 
             let thumbnailPath: string | undefined = undefined;
             if(thumbnail) {
-                thumbnailPath = this.fileHandler.save(thumbnailName, thumbnail);
+                thumbnailPath = await this.fileHandler.save(thumbnailName, thumbnail);
             }
             
             event.edit(request.title, location, request.date,request.price, thumbnailPath);
 
-            this.repository.update(event, request.eventId);
+            await this.repository.update(event, request.eventId);
             this.eventBus.publish(event.pullDomainEvents());
 
             return Result.success<void>(undefined);

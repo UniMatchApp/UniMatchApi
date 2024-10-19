@@ -11,10 +11,10 @@ export class GetEventCommand implements ICommand<GetEventDTO, Event> {
         this.repository = repository;
     }
 
-    run(request: GetEventDTO): Result<Event> {
+    async run(request: GetEventDTO): Promise<Result<Event>> {
         try {
 
-            const event = this.repository.findById(request.eventId);
+            const event = await this.repository.findById(request.eventId);
 
             if (!event) {
                 return Result.failure<Event>("Event not found");

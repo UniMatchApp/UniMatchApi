@@ -11,16 +11,16 @@ export class ParticipateEventCommand implements ICommand<ParticipateEventDTO, Ev
         this.repository = repository;
     }
 
-    run(request: ParticipateEventDTO): Result<Event> {
+    async run(request: ParticipateEventDTO): Promise<Result<Event>> {
         try {
-            const event = this.repository.findById(request.eventId);
+            const event = await this.repository.findById(request.eventId);
             
             if (!event) {
                 return Result.failure<Event>("Event not found");
             }
 
             event.addParticipant(request.userId);
-            this.repository.save(event);
+            await this.repository.save(event);
 
             return Result.success<Event>(event);
         } catch (error : any) {

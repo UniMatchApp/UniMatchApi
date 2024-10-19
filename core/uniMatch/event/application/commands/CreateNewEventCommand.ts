@@ -19,7 +19,7 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, Event>
         this.eventBus = eventBus;
     }
 
-    run(request: CreateNewEventDTO): Result<Event> {
+    async run(request: CreateNewEventDTO): Promise<Result<Event>> {
          
        try {
             const location = new Location(
@@ -40,7 +40,7 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, Event>
 
             let thumbnailPath: string | undefined = undefined;
             if(thumbnail) {
-                thumbnailPath = this.fileHandler.save(thumbnailName, thumbnail);
+                thumbnailPath = await this.fileHandler.save(thumbnailName, thumbnail);
             }
 
             const event = new Event(
@@ -54,7 +54,7 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, Event>
                 thumbnailPath
             )
 
-            this.repository.save(event);
+            await this.repository.save(event);
 
             this.eventBus.publish(event.pullDomainEvents());
 
