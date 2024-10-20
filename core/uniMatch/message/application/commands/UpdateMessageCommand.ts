@@ -7,6 +7,7 @@ import { IFileHandler } from "@/core/shared/application/IFileHandler";
 import { Message } from "../../domain/Message";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { FileError } from "@/core/shared/exceptions/FileError";
+import { ValidationError } from "@/core/shared/exceptions/ValidationError";
 
 export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, Message> {
     private repository: IMessageRepository;
@@ -27,6 +28,10 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, Message>
 
             if (!messageToUpdate) {
                 return Result.failure<Message>(new NotFoundError('Message not found'));
+            }
+
+            if (messageToUpdate.sender !== request.userId) {
+                return Result.failure<Message>(new ValidationError('User is not the sender of the message'));
             }
 
             if (request.attachment) {
