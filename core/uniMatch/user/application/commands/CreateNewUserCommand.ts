@@ -17,7 +17,7 @@ export class CreateNewEventCommand implements ICommand<CreateNewUserDTO, User> {
     async run(request: CreateNewUserDTO): Promise<Result<User>> {
         try {
             const user = new User(request.code, request.dateOfCreation, request.email, request.password);
-           
+            
             await this.repository.save(user);
             this.eventBus.publish(user.pullDomainEvents());
             return Result.success<User>(user);

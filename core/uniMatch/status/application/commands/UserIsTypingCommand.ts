@@ -2,6 +2,7 @@ import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
 import { UserIsTypingDTO } from "../DTO/UserIsTypingDTO";
 import { IStatusRepository } from "../ports/IStatusRepository";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
 export class UserIsTypingCommand implements ICommand<UserIsTypingDTO, void> {
     private readonly repository: IStatusRepository;
@@ -14,7 +15,7 @@ export class UserIsTypingCommand implements ICommand<UserIsTypingDTO, void> {
         try {
             const status = await this.repository.findById(request.userId);
             if (!status) {
-                throw new Error('User not found');
+                return Result.failure<void>(new NotFoundError('User not found'));
             }
             status.startTyping(request.targetUserId);
             await this.repository.save(status);

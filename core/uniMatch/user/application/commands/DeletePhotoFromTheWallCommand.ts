@@ -3,6 +3,7 @@ import { Result } from "@/core/shared/domain/Result";
 import { DeletePhotoFromTheWallDTO } from "../DTO/DeletePhotoFromTheWallDTO";
 import { IProfileRepository } from "../ports/IProfileRepository";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
 export class DeletePhotoFromTheWallCommand implements ICommand<DeletePhotoFromTheWallDTO, void> {
     private repository: IProfileRepository;
@@ -18,11 +19,11 @@ export class DeletePhotoFromTheWallCommand implements ICommand<DeletePhotoFromTh
         try {
             const profile = await this.repository.findById(request.id)
             if (!profile) {
-                throw new Error(`Profile with id ${request.id} not found`);
+                return Result.failure<void>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
 
             if (!profile.wall.includes(request.photoURL)) {
-                throw new Error(`Photo with url ${request.photoURL} not found`);
+                return Result.failure<void>(new NotFoundError(`Phtoto with URL ${request.photoURL} not found`));
             }
 
             await this.fileHandler.delete(request.photoURL);

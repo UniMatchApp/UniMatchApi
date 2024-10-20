@@ -3,6 +3,8 @@ import { ChangeEmailDTO } from "../DTO/ChangeEmailDTO";
 import { Result } from "@/core/shared/domain/Result";
 import { IUserRepository } from "../ports/IUserRepository";
 import { IEventBus } from "@/core/shared/application/IEventBus";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import { DuplicateError } from "@/core/shared/exceptions/DuplicateError";
 
 export class ChangeEmailCommand implements ICommand<ChangeEmailDTO, string> {
     
@@ -18,12 +20,12 @@ export class ChangeEmailCommand implements ICommand<ChangeEmailDTO, string> {
         try {
             const user = await this.repository.findById(request.id)
             if (!user) {
-                throw new Error(`User with id ${request.id} not found`);
+                return Result.failure<string>(new NotFoundError(`User with id ${request.id} not found`));
             }
             
             const email = user.email;
             if (request.newEmail === email) {
-                throw new Error("New email is the same as the old one");
+                return Result.failure<string>(new DuplicateError(`New email is the same as the current email`));
             }
 
             user.email = request.newEmail;

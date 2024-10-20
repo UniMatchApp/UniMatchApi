@@ -2,6 +2,7 @@ import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
 import { IProfileRepository } from "../ports/IProfileRepository";
 import { ChangeLifeStyleDTO } from "../DTO/ChangeLifestyleDTO";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
 export class ChangeDrinks implements ICommand<ChangeLifeStyleDTO, string> {
 
@@ -15,7 +16,7 @@ export class ChangeDrinks implements ICommand<ChangeLifeStyleDTO, string> {
         try {
             const profile = await this.repository.findById(request.id);
             if(!profile) {
-                throw new Error('Profile not found');
+                return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
             profile.drinks = request.newContent;
             await this.repository.save(profile);
