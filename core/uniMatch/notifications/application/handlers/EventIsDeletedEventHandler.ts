@@ -2,7 +2,7 @@ import { IEventHandler } from "@/core/shared/application/IEventHandler";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { Notification } from "../../domain/Notification";
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
-import { DomainError } from "@/core/shared/domain/DomainError";
+import { DomainError } from "@/core/shared/exceptions/DomainError";
 import { IAppNotifications } from "../ports/IAppNotifications";
 import { EventStatusEnum } from "../../domain/enum/EventStatusEnum";
 

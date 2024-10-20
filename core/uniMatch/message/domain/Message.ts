@@ -1,6 +1,6 @@
 
 import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
-import { DomainError } from "@/core/shared/domain/DomainError";
+import { DomainError } from "@/core/shared/exceptions/DomainError";
 import { NewMessage } from "./events/NewMessage";
 import { DeletedMessage } from "./events/DeletedMessage";
 import { EditedMessage } from "./events/EditedMessage";

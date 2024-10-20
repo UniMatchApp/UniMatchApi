@@ -1,4 +1,4 @@
-import { DomainError } from "@/core/shared/domain/DomainError";
+import { DomainError } from "@/core/shared/exceptions/DomainError";
 
 export class Gender {
     private _value: string;

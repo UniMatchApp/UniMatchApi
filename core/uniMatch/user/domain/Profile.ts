@@ -1,5 +1,5 @@
 import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
-import { DomainError } from "@/core/shared/domain/DomainError";
+import { DomainError } from "@/core/shared/exceptions/DomainError";
 import { Gender } from "@/core/shared/domain/Gender";
 import { Horoscope } from "./Horoscope";
 import { RelationshipType } from "../../../shared/domain/RelationshipType";

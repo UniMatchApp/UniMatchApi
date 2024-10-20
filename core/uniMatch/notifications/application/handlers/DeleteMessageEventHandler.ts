@@ -2,7 +2,7 @@ import { IEventHandler } from "@/core/shared/application/IEventHandler";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { IAppNotifications } from "../ports/IAppNotifications";
-import { DomainError } from "@/core/shared/domain/DomainError";
+import { DomainError } from "@/core/shared/exceptions/DomainError";
 import { NotificationTypeEnum } from "../../domain/enum/NotificationTypeEnum";
 
 export class DeleteMessageEventHandler implements IEventHandler {

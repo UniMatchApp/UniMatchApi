@@ -1,6 +1,6 @@
 import { Event } from '@/core/uniMatch/event/domain/Event';
 import { Location } from '@/core/shared/domain/Location';
-import { DomainError } from '@/core/shared/domain/DomainError';
+import { DomainError } from '@/core/shared/exceptions/DomainError';
 
 describe('Event', () => {
     let event: Event;

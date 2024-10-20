@@ -1,4 +1,4 @@
-import { DomainError } from "@/core/shared/domain/DomainError";
+import { DomainError } from "@/core/shared/exceptions/DomainError";
 import { Entity } from "@/core/shared/domain/Entity";
 
 class Event extends Entity {

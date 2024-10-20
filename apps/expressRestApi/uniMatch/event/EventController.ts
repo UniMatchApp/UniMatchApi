@@ -8,6 +8,7 @@ import { GetEventDTO } from '@/core/uniMatch/event/application/DTO/GetEventDTO';
 import { CreateNewEventCommand } from '@/core/uniMatch/event/application/commands/CreateNewEventCommand';
 import { Result } from '@/core/shared/domain/Result';
 import { FileHandler } from '@/core/uniMatch/event/infrastructure/FileHandler';
+import { EditEventCommand } from '@/core/uniMatch/event/application/commands/EditEventCommand';
 
 export class EventController {
     private readonly eventRepository: IEventRepository;
@@ -54,4 +55,15 @@ export class EventController {
         });
     }
 
+    async update(req: Request, res: Response): Promise<void> {
+        var command = new EditEventCommand(this.eventRepository, this.eventBus, this.fileHandler);
+        return command.run(req.body).then((result: Result<Event | Error>) => {
+            if (result.isSuccess()) {
+                res.json(result.getValue());
+            } else {
+                const error = result.getError();
+
+            }
+        });
+    }
 }

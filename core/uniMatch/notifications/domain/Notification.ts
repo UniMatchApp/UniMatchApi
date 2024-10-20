@@ -1,5 +1,5 @@
 
-import { DomainError } from "@/core/shared/domain/DomainError";
+import { DomainError } from "@/core/shared/exceptions/DomainError";
 import { MessageStatusEnum } from "@/core/shared/domain/MessageStatusEnum";
 import { NotificationTypeEnum } from "./enum/NotificationTypeEnum";
 import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";

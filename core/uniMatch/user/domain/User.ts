@@ -1,6 +1,6 @@
 
 import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
-import { DomainError } from "@/core/shared/domain/DomainError";
+import { DomainError } from "@/core/shared/exceptions/DomainError";
 import { UserHasChangedEmail } from "./events/UserHasChangedEmail";
 import { UserHasChangedPassword } from "./events/UserHasChangedPassword";
 import { Profile } from "./Profile";

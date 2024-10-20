@@ -31,19 +31,15 @@ export class EditEventCommand implements ICommand<EditEventDTO, Event> {
                 request.longitude,
                 request.altitude
             )
-            const thumbnail = request.thumbnail;
-            if (thumbnail && !this.fileHandler.isValid(thumbnail)) {
-                return Result.failure<Event>("Invalid thumbnail file");
-            }
 
-            const thumbnailName = thumbnail?.name;
-            if(!thumbnailName) {
+            const thumbnail = request.thumbnail;
+            if(thumbnail && !thumbnail.name) {
                 return Result.failure<Event>("Thumbnail name is invalid");
             }
 
             let thumbnailPath: string | undefined = undefined;
             if(thumbnail) {
-                thumbnailPath = await this.fileHandler.save(thumbnailName, thumbnail);
+                thumbnailPath = await this.fileHandler.save(thumbnail.name, thumbnail);
             }
             
             event.edit(request.title, location, request.date,request.price, thumbnailPath);

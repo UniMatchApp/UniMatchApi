@@ -1,4 +1,4 @@
-import { DomainError } from "./DomainError";
+import { DomainError } from "../exceptions/DomainError";
 
 export class Location {
     private _latitude: number;
