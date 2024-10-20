@@ -1,6 +1,7 @@
 import { IEventHandler } from "@/core/shared/application/IEventHandler";
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { IMatchingRepository } from "../ports/IMatchingRepository";
+import {RelationshipType} from "@/core/shared/domain/RelationshipType";
 
 export class UserHasChangedTypeOfRelationshipEventHandler implements IEventHandler {
     private readonly repository: IMatchingRepository;
@@ -22,8 +23,8 @@ export class UserHasChangedTypeOfRelationshipEventHandler implements IEventHandl
             throw new Error("User not found");
         }
 
-        user.relationshipType = relationshipType;
-        this.repository.save(user);
+        user.relationshipType = RelationshipType.fromString(relationshipType);
+        await this.repository.save(user);
     }
 
     getEventId(): string {

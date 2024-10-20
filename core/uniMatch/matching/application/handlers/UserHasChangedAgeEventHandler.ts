@@ -23,7 +23,7 @@ export class UserHasChangedAgeEventHandler implements IEventHandler {
         }
 
         user.age = Number(age);
-        this.repository.save(user);
+        await this.repository.save(user);
     }
 
     getEventId(): string {

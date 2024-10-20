@@ -1,7 +1,7 @@
-import { IEventHandler } from "@/core/shared/application/IEventHandler";
-import { DomainEvent } from "@/core/shared/domain/DomainEvent";
-import { IMatchingRepository } from "../ports/IMatchingRepository";
-import { Location } from "@/core/shared/domain/Location";
+import {IEventHandler} from "@/core/shared/application/IEventHandler";
+import {DomainEvent} from "@/core/shared/domain/DomainEvent";
+import {IMatchingRepository} from "../ports/IMatchingRepository";
+import {Location} from "@/core/shared/domain/Location";
 
 export class UserHasChangedLocationEventHandler implements IEventHandler {
     private readonly repository: IMatchingRepository;
@@ -23,9 +23,8 @@ export class UserHasChangedLocationEventHandler implements IEventHandler {
             throw new Error("User not found");
         }
 
-        const location = Location.stringToLocation(stringLocation);
-        user.location = location;
-        this.repository.save(user);
+        user.location = Location.stringToLocation(stringLocation);
+        await this.repository.save(user);
     }
 
     getEventId(): string {

@@ -63,7 +63,7 @@ export class NewProfileEventHandler implements IEventHandler {
             genderPriority
         );
 
-        this.repository.save(node);
+        await this.repository.save(node);
     }
 
     getEventId(): string {
