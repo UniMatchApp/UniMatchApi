@@ -2,7 +2,7 @@ import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
 import { DomainError } from "@/core/shared/domain/DomainError";
 import { Gender } from "@/core/shared/domain/Gender";
 import { Horoscope } from "./Horoscope";
-import { RelationshipType } from "./RelationshipType";
+import { RelationshipType } from "../../../shared/domain/RelationshipType";
 import { SexualOrientation } from "./SexualOrientation";
 import { UserHasChangedAge} from "./events/UserHasChangedAge";
 import { UserHasChangedMaxDistance } from "./events/UserHasChangedMaxDistance";
