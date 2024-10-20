@@ -1,6 +1,8 @@
 import { IEventHandler } from "@/core/shared/application/IEventHandler";
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { IMatchingRepository } from "../ports/IMatchingRepository";
+import { EventError } from "@/core/shared/exceptions/EventError";
+import { Gender } from "@/core/shared/domain/Gender";
 
 export class UserHasChangedSexPriorityEventHandler implements IEventHandler {
     private readonly repository: IMatchingRepository;
@@ -10,20 +12,24 @@ export class UserHasChangedSexPriorityEventHandler implements IEventHandler {
     }
 
     async handle(event: DomainEvent): Promise<void> {
-        const userId = event.getAggregateId();
-        const sexPriority = event.getPayload().get("priority");
-
-        if (!userId || !sexPriority) {
-            throw new Error("User ID and sex priority are required to update a user's sex priority.");
+        try {
+            const userId = event.getAggregateId();
+            const genderPriority = event.getPayload().get("priority");
+    
+            if (!userId || !genderPriority) {
+                throw new EventError("User ID and gender priority are required to update a user's sex priority.");
+            }
+    
+            const user = await this.repository.findByUserId(userId);
+            if (!user) {
+                throw new EventError("User not found");
+            }
+    
+            user.genderPriority = Gender.fromString(genderPriority);
+            this.repository.save(user);
+        } catch (error : any) {
+            throw error;
         }
-
-        const user = await this.repository.findByUserId(userId);
-        if (!user) {
-            throw new Error("User not found");
-        }
-
-        user.sexPriority = sexPriority;
-        this.repository.save(user);
     }
 
     getEventId(): string {

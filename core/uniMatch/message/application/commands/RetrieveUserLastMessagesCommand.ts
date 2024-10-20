@@ -3,6 +3,7 @@ import { Result } from "@/core/shared/domain/Result";
 import { Message } from "../../domain/Message";
 import { RetrieveUserLastMessagesDTO } from "../DTO/RetrieveUserLastMessagesDTO";
 import { IMessageRepository } from "../ports/IMessageRepository";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
 export class RetrieveUserLastMessagesCommand implements ICommand<RetrieveUserLastMessagesDTO, Message[]> {
     private repository: IMessageRepository;
@@ -18,9 +19,8 @@ export class RetrieveUserLastMessagesCommand implements ICommand<RetrieveUserLas
             const lastMessages = await this.repository.findLastMessagesOfUser(userId);
 
             if (!lastMessages || lastMessages.length === 0) {
-                return Result.failure<Message[]>("No messages found between the users.");
+                return Result.failure<Message[]>(new NotFoundError('No messages found'));
             }
-
             return Result.success<Message[]>(lastMessages);
         } catch (error : any) {
             return Result.failure<Message[]>(error);

@@ -107,7 +107,6 @@ export class Node extends AggregateRoot {
         this._dislikes.push(dislike);
     }
 
-
     public removeLike(like: Like): void {
         this._likes = this._likes.filter((l) => l !== like);
     }

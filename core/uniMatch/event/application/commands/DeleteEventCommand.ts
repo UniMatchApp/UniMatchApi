@@ -4,6 +4,7 @@ import { DeleteEventDTO } from "../DTO/DeleteEventDTO";
 import { IEventRepository } from "../ports/IEventRepository";
 import { IEventBus } from "@/core/shared/application/IEventBus";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
 export class DeleteEventCommand implements ICommand<DeleteEventDTO, void> {
     private readonly repository: IEventRepository;
@@ -23,7 +24,7 @@ export class DeleteEventCommand implements ICommand<DeleteEventDTO, void> {
             const event = await this.repository.findById(request.eventId);
 
             if (!event) {
-                return Result.failure<void>("Event not found");
+                return Result.failure<void>(new NotFoundError("Event not found"));
             }
             
             if (event?.thumbnail) {

@@ -1,9 +1,9 @@
 import {ICommand} from "@/core/shared/application/ICommand";
 import {Result} from "@/core/shared/domain/Result";
 import {Message} from "../../domain/Message";
-
 import {IMessageRepository} from "../ports/IMessageRepository";
 import {RetrieveMessagesWithUserDTO} from "@/core/uniMatch/message/application/DTO/RetriveMessagesWithUserDTO";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
 export class RetrieveMessagesWithUserCommand implements ICommand<RetrieveMessagesWithUserDTO, Message[]> {
     private repository: IMessageRepository;
@@ -20,7 +20,7 @@ export class RetrieveMessagesWithUserCommand implements ICommand<RetrieveMessage
             const lastMessages = await this.repository.findLastMessagesBetweenUsers(userId, otherUserId);
 
             if (!lastMessages || lastMessages.length === 0) {
-                return Result.failure<Message[]>("No messages found between the users.");
+                return Result.failure<Message[]>(new NotFoundError('No messages found'));
             }
 
             return Result.success<Message[]>(lastMessages);
