@@ -9,5 +9,7 @@ const eventController = new EventController(eventRepository, eventBus);
 
 // Define las rutas
 router.get('/', eventController.getAll);
+router.get('/:id', eventController.getOne);
+router.post('/', eventController.create);
 
 export { router };
