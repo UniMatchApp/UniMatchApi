@@ -4,6 +4,7 @@ import { NotificationHasBeenSeenDTO } from "../DTO/NotificationHasBeenSeenDTO";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { MessageStatusEnum } from "@/core/shared/domain/MessageStatusEnum";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import { ValidationError } from "@/core/shared/exceptions/ValidationError";
 
 
 export class NotificationHasBeenSeenCommand implements ICommand<NotificationHasBeenSeenDTO, void> {
@@ -19,6 +20,10 @@ export class NotificationHasBeenSeenCommand implements ICommand<NotificationHasB
 
             if (!notification) {
                 return Result.failure<void>(new NotFoundError('Notification not found'));
+            }
+
+            if (notification.recipient !== request.userId) {
+                return Result.failure<void>(new ValidationError('User is not the recipient of the notification'));
             }
 
             notification.status = MessageStatusEnum.READ;

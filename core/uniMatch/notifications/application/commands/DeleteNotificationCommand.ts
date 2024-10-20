@@ -3,6 +3,7 @@ import { Result } from "@/core/shared/domain/Result";
 import { DeleteNotificationDTO } from "../DTO/DeleteNotificationDTO";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import { ValidationError } from "@/core/shared/exceptions/ValidationError";
 
 export class DeleteNotificationCommand implements ICommand<DeleteNotificationDTO, void> {
     private readonly repository: INotificationsRepository;
@@ -18,6 +19,10 @@ export class DeleteNotificationCommand implements ICommand<DeleteNotificationDTO
 
             if (!notification) {
                 return Result.failure<void>(new NotFoundError('Notification not found'));
+            }
+
+            if (notification.recipient !== request.userId) {
+                return Result.failure<void>(new ValidationError('User is not the recipient of the notification'));
             }
 
             await this.repository.deleteById(request.notificationId);
