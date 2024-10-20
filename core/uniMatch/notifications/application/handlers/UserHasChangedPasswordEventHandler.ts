@@ -29,7 +29,7 @@ export class UserHasChangedPasswordEventHandler implements IEventHandler {
                 "Your password has been changed"
             );
     
-            this.repository.save(notification);
+            this.repository.create(notification);
             this.emailNotifications.sendEmailToOne(recipient, "Your password has been changed", "Your password has been changed");
         } catch (error: any) {
             throw error;

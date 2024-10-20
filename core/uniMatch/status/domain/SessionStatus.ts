@@ -1,6 +1,6 @@
 import { ChatStatusEnum } from './enum/ChatStatusEnum';
 
-export class Status {
+export class SessionStatus {
     private readonly _userId: string;
     private _status: string;
     private _targetUser?: string;

@@ -6,7 +6,7 @@ import { IEventBus } from "@/core/shared/application/IEventBus";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
 
-export class DeletUserCommand implements ICommand<DeleteUserDTO, void> {
+export class DeleteUserCommand implements ICommand<DeleteUserDTO, void> {
     private readonly repository: IUserRepository;
     private readonly eventBus: IEventBus;
     
@@ -24,7 +24,7 @@ export class DeletUserCommand implements ICommand<DeleteUserDTO, void> {
 
             user.delete();
 
-            await this.repository.deleteById(request.id);
+            await this.repository.deleteById(request.id); // Optional: could just do soft delete
             
             this.eventBus.publish(user.pullDomainEvents());
             return Result.success<void>(undefined);

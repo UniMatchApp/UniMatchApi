@@ -2,18 +2,20 @@
 import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
 import { DomainError } from "@/core/shared/exceptions/DomainError";
 import { NewMessage } from "./events/NewMessage";
-import { DeletedMessage } from "./events/DeletedMessage";
+import { DeletedMessageEvent } from "./events/DeletedMessageEvent";
 import { EditedMessage } from "./events/EditedMessage";
-import { MessageStatusEnum } from "@/core/shared/domain/MessageStatusEnum";
+import {MessageStatusType, MessageStatusEnum, DeletedMessageStatusType} from "@/core/uniMatch/message/domain/MessageStatusEnum";
 
 
 export class Message extends AggregateRoot {
     private _content: string;
-    private _status: string;
+    private _status: MessageStatusType;
+    private _deletedStatus: DeletedMessageStatusType;
     private _timestamp: Date;
     private readonly _sender: string;
     private readonly _recipient: string;
     private _attachment?: string;
+
 
     constructor(
         content: string,
@@ -28,6 +30,7 @@ export class Message extends AggregateRoot {
         this._recipient = recipient;
         this._attachment = attachment;
         this._status = MessageStatusEnum.SENT;
+        this._deletedStatus = MessageStatusEnum.NOT_DELETED;
         this.recordEvent(new NewMessage(
             this.getId().toString(), 
             content, 
@@ -53,7 +56,7 @@ export class Message extends AggregateRoot {
         return this._status;
     }
 
-    public set status(value: MessageStatusEnum) {
+    public set status(value: MessageStatusType) {
         this._status = value;
     }
 
@@ -81,9 +84,26 @@ export class Message extends AggregateRoot {
         this._attachment = value;
     }
 
-    public delete(): void {
+    get deletedStatus(): DeletedMessageStatusType {
+        return this._deletedStatus;
+    }
+
+    public deleteForBoth(): void {
+        this._deletedStatus = MessageStatusEnum.DELETED_FOR_BOTH;
         this.setIsActive(false);
-        this.recordEvent(new DeletedMessage(this.getId().toString()));
+        this.recordEvent(DeletedMessageEvent.from(this));
+    }
+
+    public deleteBySender(): void {
+        this._deletedStatus = MessageStatusEnum.DELETED_BY_SENDER;
+        this.setIsActive(false);
+        this.recordEvent(DeletedMessageEvent.from(this));
+    }
+
+    public deleteByRecipient(): void {
+        this._deletedStatus = MessageStatusEnum.DELETED_BY_RECIPIENT;
+        this.setIsActive(false);
+        this.recordEvent(DeletedMessageEvent.from(this));
     }
 
     public edit(content: string, attachment?: string): void {

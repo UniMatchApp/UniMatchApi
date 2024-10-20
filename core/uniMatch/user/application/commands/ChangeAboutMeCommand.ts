@@ -20,7 +20,7 @@ export class ChangeAboutMeCommand implements ICommand<ChangeAboutMeDTO, string> 
 
             profile.aboutMe = request.newContent;
 
-            await this.repository.save(profile);
+            await this.repository.update(profile, profile.getId());
 
             return Result.success<string>(request.newContent);
         

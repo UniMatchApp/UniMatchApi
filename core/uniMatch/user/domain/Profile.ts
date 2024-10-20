@@ -2,15 +2,17 @@ import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
 import { DomainError } from "@/core/shared/exceptions/DomainError";
 import { Gender } from "@/core/shared/domain/Gender";
 import { Horoscope } from "./Horoscope";
-import { RelationshipType } from "../../../shared/domain/RelationshipType";
+import { RelationshipType } from "@/core/shared/domain/RelationshipType";
 import { SexualOrientation } from "./SexualOrientation";
 import { UserHasChangedAge} from "./events/UserHasChangedAge";
 import { UserHasChangedMaxDistance } from "./events/UserHasChangedMaxDistance";
 import { UserHasChangedPriority } from "./events/UserHasChangedPriority";
 import { UserHasChangedTypeOfRelationship } from "./events/UserHasChangedTypeOfRelationship";
 import { Location } from "@/core/shared/domain/Location";
+import {NewProfile} from "@/core/uniMatch/user/domain/events/NewProfile";
 
 export class Profile extends AggregateRoot {
+    private _userId: string;
     private _name: string;
     private _age: number;
     private _aboutMe: string;
@@ -52,6 +54,7 @@ export class Profile extends AggregateRoot {
         wall: string[]
     ) {
         super();
+        this._userId = userId;
         this._name = name;
         this._age = age;
         this._aboutMe = aboutMe;
@@ -63,6 +66,8 @@ export class Profile extends AggregateRoot {
         this._birthday = birthday;
         this._interests = interests;
         this._wall = wall;
+
+        this.recordEvent(NewProfile.from(this));
     }
 
     public get name(): string {

@@ -1,12 +1,12 @@
 import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
 import { UserHasDisconnectedDTO } from "../DTO/UserHasDisconnectedDTO";
-import { IStatusRepository } from "../ports/IStatusRepository";
+import { ISessionStatusRepository } from "../ports/ISessionStatusRepository";
 
 export class UserHasDisconnectedCommand implements ICommand<UserHasDisconnectedDTO, void> {
-    private readonly repository: IStatusRepository;
+    private readonly repository: ISessionStatusRepository;
 
-    constructor(repository: IStatusRepository) {
+    constructor(repository: ISessionStatusRepository) {
         this.repository = repository;
     }
 

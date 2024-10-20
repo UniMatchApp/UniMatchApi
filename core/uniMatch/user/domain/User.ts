@@ -1,11 +1,10 @@
-
-import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
-import { DomainError } from "@/core/shared/exceptions/DomainError";
-import { UserHasChangedEmail } from "./events/UserHasChangedEmail";
-import { UserHasChangedPassword } from "./events/UserHasChangedPassword";
-import { Profile } from "./Profile";
-import { UserHasDeletedTheAccount } from "./events/UserHasDeletedTheAccount";
-import { NewUser } from "./events/NewUser";
+import {AggregateRoot} from "@/core/shared/domain/AggregateRoot ";
+import {DomainError} from "@/core/shared/exceptions/DomainError";
+import {UserHasChangedEmail} from "./events/UserHasChangedEmail";
+import {UserHasChangedPassword} from "./events/UserHasChangedPassword";
+import {Profile} from "./Profile";
+import {UserHasDeletedTheAccount} from "./events/UserHasDeletedTheAccount";
+import {NewUser} from "./events/NewUser";
 
 export class User extends AggregateRoot {
     private readonly _code: string;
@@ -14,17 +13,15 @@ export class User extends AggregateRoot {
     private _password: string;
     private _blockedUsers: string[] = [];
     private _reportedUsers: { userId: string, predefinedReason: string, comment?: string }[] = [];
-    private _profile?: Profile
 
     constructor(
-        code: string,
         registrationDate: Date,
         email: string,
         password: string,
         blockedUsers: string[] = []
     ) {
         super();
-        this._code = code;
+        this._code = Math.floor(100000 + Math.random() * 900000).toString();
         this._registrationDate = registrationDate;
         this._email = email;
         this._password = password;
@@ -90,14 +87,6 @@ export class User extends AggregateRoot {
         this._blockedUsers = value;
     }
 
-    public get profile(): Profile | undefined {
-        return this._profile;
-    }
-
-    public set profile(value: Profile | undefined) {
-        this._profile = value;
-    }
-
     public blockUser(userId: string): void {
         if (!this._blockedUsers.includes(userId)) {
             this._blockedUsers.push(userId);
@@ -115,11 +104,12 @@ export class User extends AggregateRoot {
     }
 
     public reportUser(predefinedReason: string, comment?: string): void {
-        this._reportedUsers.push({ 
-            userId: this.getId().toString() , 
-            predefinedReason, 
-            comment 
+        this._reportedUsers.push({
+            userId: this.getId().toString(),
+            predefinedReason,
+            comment
         });
+
     }
 
     public getReportedUsers(): { userId: string, predefinedReason: string, comment?: string }[] {

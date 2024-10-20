@@ -4,7 +4,7 @@ import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { IAppNotifications } from "../ports/IAppNotifications";
 import { NotificationTypeEnum } from "../../domain/enum/NotificationTypeEnum";
 
-export class DeleteMessageEventHandler implements IEventHandler {
+export class DeletedMessageEventHandler implements IEventHandler {
     private readonly repository: INotificationsRepository;
     private readonly appNotifications: IAppNotifications;
 
@@ -26,7 +26,7 @@ export class DeleteMessageEventHandler implements IEventHandler {
     
     
             await this.appNotifications.cancelNotification(notification[0]);
-            this.repository.deleteById(notification[0].getId());
+            await this.repository.deleteById(notification[0].getId());
         } catch (error: any) {
             throw error;
         }

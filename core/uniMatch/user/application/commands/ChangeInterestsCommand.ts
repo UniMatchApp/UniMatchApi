@@ -20,7 +20,7 @@ export class UpdateWeightCommand implements ICommand<ChangeIntereststDTO, string
 
             profile.interests = request.newInterests;
 
-            await this.repository.save(profile);
+            await this.repository.update(profile, profile.getId());
 
             return Result.success<string[]>(profile.interests);
         

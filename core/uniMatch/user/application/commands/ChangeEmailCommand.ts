@@ -30,7 +30,7 @@ export class ChangeEmailCommand implements ICommand<ChangeEmailDTO, string> {
 
             user.email = request.newEmail;
 
-            await this.repository.save(user);
+            await this.repository.update(user, user.getId());
 
             this.eventBus.publish(user.pullDomainEvents());
             return Result.success<string>(request.newEmail);

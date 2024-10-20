@@ -1,9 +1,11 @@
-
-import { DomainError } from "@/core/shared/exceptions/DomainError";
-import { MessageStatusEnum } from "@/core/shared/domain/MessageStatusEnum";
-import { NotificationTypeEnum } from "./enum/NotificationTypeEnum";
-import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
-import { EventStatusEnum } from "./enum/EventStatusEnum";
+import {DomainError} from "@/core/shared/exceptions/DomainError";
+import {NotificationTypeEnum} from "./enum/NotificationTypeEnum";
+import {AggregateRoot} from "@/core/shared/domain/AggregateRoot ";
+import {EventStatusEnum, EventStatusType} from "./enum/EventStatusEnum";
+import {
+    NotificationStatusEnum,
+    NotificationStatusType
+} from "@/core/uniMatch/notifications/domain/NotificationStatusEnum";
 
 abstract class NotificationPayload {
     private id: string;
@@ -18,13 +20,11 @@ abstract class NotificationPayload {
 }
 
 
-
-
 class Event extends NotificationPayload {
     private title: string;
-    private status: EventStatusEnum;
+    private status: EventStatusType;
 
-    constructor(id: string, title: string, status: EventStatusEnum) {
+    constructor(id: string, title: string, status: EventStatusType) {
         super(id);
         this.title = title;
         this.status = status;
@@ -38,11 +38,11 @@ class Event extends NotificationPayload {
         this.title = title;
     }
 
-    public get getStatus(): EventStatusEnum {
+    public get getStatus(): EventStatusType {
         return this.status;
     }
 
-    public set setStatus(status: EventStatusEnum) {
+    public set setStatus(status: EventStatusType) {
         this.status = status
     }
 }
@@ -140,12 +140,12 @@ class App extends NotificationPayload {
 
 export class Notification extends AggregateRoot {
     private _type: NotificationTypeEnum;
-    private _status: string;
+    private _status: NotificationStatusType;
     private _contentId: string;
     private _payload: NotificationPayload;
     private _date: Date;
     private _recipient: string;
-    
+
     constructor(
         contentId: string,
         type: NotificationTypeEnum,
@@ -156,18 +156,14 @@ export class Notification extends AggregateRoot {
         super();
         this._contentId = contentId;
         this._type = type;
-        this._status = MessageStatusEnum.SENT;
+        this._status = NotificationStatusEnum.SENT;
         this._date = date;
         this._recipient = recipient;
         this._payload = payload;
     }
 
-    public static createEventNotification(contentId: string, date: Date, recipient: string, title: string, status: string): Notification {
-        const statusEnum = EventStatusEnum[status.toUpperCase() as keyof typeof EventStatusEnum];
-        if (!statusEnum) {
-            throw new DomainError("Invalid event status.");
-        }
-        const payload = new Event(contentId, title, statusEnum);
+    public static createEventNotification(contentId: string, date: Date, recipient: string, title: string, status: EventStatusType): Notification {
+        const payload = new Event(contentId, title, status);
         return new Notification(contentId, NotificationTypeEnum.EVENT, date, recipient, payload);
     }
 
@@ -198,7 +194,7 @@ export class Notification extends AggregateRoot {
         return this._status;
     }
 
-    public set status(value: MessageStatusEnum) {
+    public set status(value: NotificationStatusType) {
         this._status = value;
     }
 

@@ -21,7 +21,7 @@ export class ParticipateEventCommand implements ICommand<ParticipateEventDTO, Ev
             }
 
             event.addParticipant(request.userId);
-            await this.repository.save(event);
+            await this.repository.update(event, event.getId());
 
             return Result.success<Event>(event);
         } catch (error : any) {

@@ -2,7 +2,7 @@ import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
 import { NotificationHasBeenSeenDTO } from "../DTO/NotificationHasBeenSeenDTO";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
-import { MessageStatusEnum } from "@/core/shared/domain/MessageStatusEnum";
+import { MessageStatusEnum } from "@/core/uniMatch/message/domain/MessageStatusEnum";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { ValidationError } from "@/core/shared/exceptions/ValidationError";
 
@@ -27,7 +27,7 @@ export class NotificationHasBeenSeenCommand implements ICommand<NotificationHasB
             }
 
             notification.status = MessageStatusEnum.READ;
-            await this.repository.save(notification);
+            await this.repository.create(notification);
 
             return Result.success<void>(undefined);
         } catch (error : any) {

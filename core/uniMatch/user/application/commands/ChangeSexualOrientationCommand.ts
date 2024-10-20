@@ -24,7 +24,7 @@ export class ChangeSexualOrientationCommand implements ICommand<ChangeSexualOrie
             
             profile.sexualOrientation.setValue(request.newSexualOrientation);
 
-            await this.repository.save(profile);
+            await this.repository.update(profile, profile.getId());
 
             this.eventBus.publish(profile.pullDomainEvents());
             return Result.success<string>(request.newSexualOrientation);

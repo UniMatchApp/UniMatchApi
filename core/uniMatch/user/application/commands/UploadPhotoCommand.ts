@@ -1,11 +1,11 @@
-import { ICommand } from "@/core/shared/application/ICommand";
-import { Result } from "@/core/shared/domain/Result";
-import { UploadPhotoDTO } from "../DTO/UploadPhotoDTO";
-import { IProfileRepository } from "../ports/IProfileRepository";
-import { IFileHandler } from "@/core/shared/application/IFileHandler";
-import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
-import { FileError } from "@/core/shared/exceptions/FileError";
-import { NullPointerError } from "@/core/shared/exceptions/NullPointerError";
+import {ICommand} from "@/core/shared/application/ICommand";
+import {Result} from "@/core/shared/domain/Result";
+import {UploadPhotoDTO} from "../DTO/UploadPhotoDTO";
+import {IProfileRepository} from "../ports/IProfileRepository";
+import {IFileHandler} from "@/core/shared/application/IFileHandler";
+import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
+import {FileError} from "@/core/shared/exceptions/FileError";
+import {NullPointerError} from "@/core/shared/exceptions/NullPointerError";
 
 
 export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, File> {
@@ -19,25 +19,16 @@ export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, File> {
 
     async run(request: UploadPhotoDTO): Promise<Result<File>> {
         try {
-
             const photo = request.photo;
-
-            if (photo) {
-                return Result.failure<File>(new FileError(`Invalid file`));
-            }
-
             const fileName = request.photo?.name;
+
             if (!fileName) {
                 return Result.failure<File>(new FileError(`Invalid file name`));
             }
 
-            let photoUrl: string | undefined = undefined;
+            const photoUrl= await this.fileHandler.save(fileName, photo);
 
-            if (photo) {
-                photoUrl = await this.fileHandler.save(fileName, photo);
-            }
-            
-            if(!photoUrl) {
+            if (!photoUrl) {
                 return Result.failure<File>(new NullPointerError(`Photo url is null`));
             }
 
@@ -45,12 +36,12 @@ export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, File> {
             if (!profile) {
                 return Result.failure<File>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
-            
+
             profile.addPost(photoUrl);
-            await this.repository.save(profile);
+            await this.repository.update(profile, profile.getId());
 
             return Result.success<File>(photo);
-        } catch (error : any) {
+        } catch (error: any) {
             return Result.failure<File>(error);
         }
     }

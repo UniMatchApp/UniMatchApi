@@ -1,8 +1,8 @@
-import { ICommand } from "@/core/shared/application/ICommand";
-import { Result } from "@/core/shared/domain/Result";
-import { ChangeWeightDTO } from "../DTO/ChangeWeightDTO";
-import { IProfileRepository } from "../ports/IProfileRepository";
-import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import {ICommand} from "@/core/shared/application/ICommand";
+import {Result} from "@/core/shared/domain/Result";
+import {ChangeWeightDTO} from "../DTO/ChangeWeightDTO";
+import {IProfileRepository} from "../ports/IProfileRepository";
+import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
 
 export class UpdateWeightCommand implements ICommand<ChangeWeightDTO, string> {
     private repository: IProfileRepository;
@@ -10,7 +10,7 @@ export class UpdateWeightCommand implements ICommand<ChangeWeightDTO, string> {
     constructor(repository: IProfileRepository) {
         this.repository = repository;
     }
-    
+
     async run(request: ChangeWeightDTO): Promise<Result<string>> {
         try {
             const profile = await this.repository.findById(request.id)
@@ -20,11 +20,11 @@ export class UpdateWeightCommand implements ICommand<ChangeWeightDTO, string> {
 
             profile.weight = request.newWeight;
 
-            await this.repository.save(profile);
+            await this.repository.update(profile, profile.getId());
 
             return Result.success<string>(request.newWeight.toString());
-        
-        } catch (error : any) {
+
+        } catch (error: any) {
             return Result.failure<string>(error);
         }
     }

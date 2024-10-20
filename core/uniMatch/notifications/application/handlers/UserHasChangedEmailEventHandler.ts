@@ -30,7 +30,7 @@ export class UserHasChangedEmailEventHandler implements IEventHandler {
                 "Your email has been changed to " + email
             );
     
-            this.repository.save(notification);
+            this.repository.create(notification);
             this.emailNotifications.sendEmailToOne(email, "Your email has been changed", "Your email has been changed to " + email);
         } catch (error: any) {
             throw error;

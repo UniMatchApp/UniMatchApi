@@ -23,14 +23,12 @@ export class DeletePhotoFromTheWallCommand implements ICommand<DeletePhotoFromTh
             }
 
             if (!profile.wall.includes(request.photoURL)) {
-                return Result.failure<void>(new NotFoundError(`Phtoto with URL ${request.photoURL} not found`));
+                return Result.failure<void>(new NotFoundError(`Photo with URL ${request.photoURL} not found`));
             }
 
             await this.fileHandler.delete(request.photoURL);
-
-
             profile.deletePost(request.photoURL);
-            await this.repository.save(profile);
+            await this.repository.update(profile, profile.getId());
 
             return Result.success<void>(undefined);
         } catch (error : any) {

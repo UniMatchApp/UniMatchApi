@@ -4,8 +4,9 @@ import { IUserRepository } from "../ports/IUserRepository";
 import { Result } from "@/core/shared/domain/Result";
 import { IEventBus } from "@/core/shared/application/IEventBus";
 import { User } from "../../domain/User";
+import {ValidationError} from "@/core/shared/exceptions/ValidationError";
 
-export class CreateNewEventCommand implements ICommand<CreateNewUserDTO, User> {
+export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, User> {
     private readonly repository: IUserRepository;
     private readonly eventBus: IEventBus;
     
@@ -16,9 +17,20 @@ export class CreateNewEventCommand implements ICommand<CreateNewUserDTO, User> {
 
     async run(request: CreateNewUserDTO): Promise<Result<User>> {
         try {
-            const user = new User(request.code, request.dateOfCreation, request.email, request.password);
+            // Check if the user already exists (email)
+            const userExists = await this.repository.findByEmail(request.email);
+
+            if (userExists) {
+                return Result.failure<User>(new ValidationError(`User with email ${request.email} already exists`));
+            }
+
+            const user = new User(
+                request.dateOfCreation,
+                request.email,
+                request.password
+            );
             
-            await this.repository.save(user);
+            await this.repository.create(user);
             this.eventBus.publish(user.pullDomainEvents());
             return Result.success<User>(user);
         } catch (error : any) {

@@ -5,6 +5,7 @@ import { IProfileRepository } from "../ports/IProfileRepository";
 import { IEventBus } from "@/core/shared/application/IEventBus";
 import { error } from "console";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import {RelationshipType} from "@/core/shared/domain/RelationshipType";
 
 export class ChangeRelationshipTypeCommand implements ICommand<ChangeRelationshipTypeDTO, string> {
     private readonly repository: IProfileRepository;
@@ -24,9 +25,9 @@ export class ChangeRelationshipTypeCommand implements ICommand<ChangeRelationshi
                 return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
 
-            profile.relationshipType.setValue(request.relationshipType);
+            profile.relationshipType = RelationshipType.fromString(request.relationshipType);
 
-            await this.repository.save(profile);
+            await this.repository.update(profile, profile.getId());
             this.eventBus.publish(profile.pullDomainEvents());
             return Result.success<string>(request.relationshipType);
         } catch (error : any) {

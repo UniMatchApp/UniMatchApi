@@ -1,10 +1,10 @@
-import { IEventHandler } from "@/core/shared/application/IEventHandler";
-import { INotificationsRepository } from "../ports/INotificationsRepository";
-import { Notification } from "../../domain/Notification";
-import { DomainEvent } from "@/core/shared/domain/DomainEvent";
-import { DomainError } from "@/core/shared/exceptions/DomainError";
-import { IAppNotifications } from "../ports/IAppNotifications";
-import { EventStatusEnum } from "../../domain/enum/EventStatusEnum";
+import {IEventHandler} from "@/core/shared/application/IEventHandler";
+import {INotificationsRepository} from "../ports/INotificationsRepository";
+import {Notification} from "../../domain/Notification";
+import {DomainEvent} from "@/core/shared/domain/DomainEvent";
+import {IAppNotifications} from "../ports/IAppNotifications";
+import {EventStatusEnum} from "../../domain/enum/EventStatusEnum";
+import {EventError} from "@/core/shared/exceptions/EventError";
 
 export class EventIsDeletedEventHandler implements IEventHandler {
     private readonly repository: INotificationsRepository;
@@ -20,11 +20,11 @@ export class EventIsDeletedEventHandler implements IEventHandler {
             const eventId = event.getAggregateId();
             const eventName = event.getPayload().get("title");
             const recipients = event.getPayload().get("recipients");
-    
+
             if (!eventId || !eventName || !recipients) {
-                throw new DomainError("Event ID, name and recipients are required to delete an event.");
+                throw new EventError("Event ID, name and recipients are required to delete an event.");
             }
-    
+
             for (const recipient of recipients.split(",")) {
                 const notification = Notification.createEventNotification(
                     eventId,
@@ -33,8 +33,8 @@ export class EventIsDeletedEventHandler implements IEventHandler {
                     eventName,
                     EventStatusEnum.CANCELLED
                 );
-                
-                this.repository.save(notification);
+
+                this.repository.create(notification);
                 this.appNotifications.sendNotification(notification);
             }
         } catch (error: any) {

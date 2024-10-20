@@ -35,12 +35,12 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
             
             const message = new Message(
                 request.content,
-                request.sender,
-                request.recipient,
+                request.senderId,
+                request.recipientId,
                 attachmentUrl
             )
 
-            await this.repository.save(message);
+            await this.repository.create(message);
             this.eventBus.publish(message.pullDomainEvents());
 
             return Result.success<Message>(message);

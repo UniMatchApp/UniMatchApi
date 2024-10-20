@@ -30,7 +30,7 @@ export class ChangePasswordCommand implements ICommand<ChangePasswordDTO, string
 
             user.password = request.newPassword;
 
-            await this.repository.save(user);
+            await this.repository.update(user, user.getId());
 
             this.eventBus.publish(user.pullDomainEvents());
             return Result.success<string>(request.newPassword);

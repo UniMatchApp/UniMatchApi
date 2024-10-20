@@ -1,3 +1,3 @@
 export interface RetrieveUserLastMessagesDTO {
-    user: string;
+    userId: string;
 }

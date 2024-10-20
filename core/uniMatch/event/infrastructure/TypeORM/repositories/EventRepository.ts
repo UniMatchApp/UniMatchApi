@@ -7,7 +7,7 @@ import { Event } from '../../../domain/Event';
 export class EventRepository implements IEventRepository {
     private readonly eventRepository = AppDataSource.getRepository(EventEntity);
 
-    async save(entity: Event): Promise<void> {
+    async create(entity: Event): Promise<void> {
         const eventEntity = EventMapper.toEntity(entity);
         await this.eventRepository.save(eventEntity);
     }

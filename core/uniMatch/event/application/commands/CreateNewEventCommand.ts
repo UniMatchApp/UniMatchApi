@@ -50,7 +50,7 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, Event>
                 thumbnailPath
             )
 
-            await this.repository.save(event);
+            await this.repository.create(event);
 
             this.eventBus.publish(event.pullDomainEvents());
 

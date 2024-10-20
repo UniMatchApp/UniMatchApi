@@ -1,8 +1,8 @@
-import { IEventHandler } from "@/core/shared/application/IEventHandler";
-import { INotificationsRepository } from "../ports/INotificationsRepository";
-import { Notification } from "../../domain/Notification";
-import { DomainEvent } from "@/core/shared/domain/DomainEvent";
-import { IAppNotifications } from "../ports/IAppNotifications";
+import {IEventHandler} from "@/core/shared/application/IEventHandler";
+import {INotificationsRepository} from "../ports/INotificationsRepository";
+import {Notification} from "../../domain/Notification";
+import {DomainEvent} from "@/core/shared/domain/DomainEvent";
+import {IAppNotifications} from "../ports/IAppNotifications";
 
 export class NewMessageEventHandler implements IEventHandler {
     private readonly repository: INotificationsRepository;
@@ -20,15 +20,15 @@ export class NewMessageEventHandler implements IEventHandler {
             const content = event.getPayload().get("content");
             const recipient = event.getPayload().get("recipient");
             const id = event.getAggregateId();
-    
+
             if (!sender || !recipient) {
                 throw new ErrorEvent("Recipient and Sender are required to create a notification.");
             }
-    
+
             if (!content) {
                 throw new ErrorEvent("Content is required to create a notification.");
             }
-    
+
             const notification = Notification.createMessageNotification(
                 id,
                 new Date(),
@@ -37,18 +37,8 @@ export class NewMessageEventHandler implements IEventHandler {
                 sender,
                 thumbnail
             );
-    
-            const reverseNotification = Notification.createMessageNotification(
-                id,
-                new Date(),
-                sender,
-                content,
-                recipient,
-                thumbnail
-            );
-    
-            this.repository.save(notification);
-            this.repository.save(reverseNotification);
+
+            this.repository.create(notification);
             this.appNotifications.sendNotification(notification);
         } catch (error: any) {
             throw error;

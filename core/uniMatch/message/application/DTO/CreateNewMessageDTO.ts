@@ -1,6 +1,6 @@
 export interface CreateNewMessageDTO {
     content: string;
-    sender: string;
-    recipient: string;
+    senderId: string;
+    recipientId: string;
     attachment?: File;
 }

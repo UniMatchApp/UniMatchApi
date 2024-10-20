@@ -20,18 +20,19 @@ export class ReportUserCommand implements ICommand<ReportUserDTO, void> {
                 return Result.failure<void>(new NotFoundError(`User with id ${request.id} not found`));
             }
             
-            const blockUser = await this.repository.findById(request.reportedUserId)
-            if (!blockUser) {
+            const userToReport = await this.repository.findById(request.reportedUserId)
+            if (!userToReport) {
                 return Result.failure<void>(new NotFoundError(`User with id ${request.reportedUserId} not found`));
             }
 
-            if(user.isUserBlocked(request.reportedUserId)) {
+            if(userToReport.isUserBlocked(request.reportedUserId)) {
                 return Result.failure<void>(new DuplicateError(`User with id ${request.reportedUserId} is already blocked`));
             } 
 
-            user.reportUser(request.reportedUserId);
+            userToReport.reportUser(request.reportedUserId);
+            user.blockUser(userToReport.getId());
 
-            await this.repository.save(user);
+            await this.repository.update(user, user.getId());
             return Result.success<void>(undefined);
         } catch (error: any) {
             return Result.failure<void>(error);

@@ -2,11 +2,11 @@ import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
 import { IMessageRepository } from "../ports/IMessageRepository";
 import { MessageHasBeenSeenDTO } from "../DTO/MessageHasBeenSeenDTO";
-import { MessageStatusEnum } from "@/core/shared/domain/MessageStatusEnum";
+import { MessageStatusEnum } from "@/core/uniMatch/message/domain/MessageStatusEnum";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { ValidationError } from "@/core/shared/exceptions/ValidationError";
 
-export class MessageHasBeenSeenCommand implements ICommand<MessageHasBeenSeenDTO, void> {
+export class MessageHasBeenReadCommand implements ICommand<MessageHasBeenSeenDTO, void> {
     private repository: IMessageRepository;
 
     constructor(repository: IMessageRepository) {
@@ -31,7 +31,7 @@ export class MessageHasBeenSeenCommand implements ICommand<MessageHasBeenSeenDTO
             }
 
             message.status = MessageStatusEnum.READ;
-            await this.repository.save(message);
+            await this.repository.update(message, message.getId());
             return Result.success<void>(undefined);
         } catch (error : any) {
             return Result.failure<void>(error);

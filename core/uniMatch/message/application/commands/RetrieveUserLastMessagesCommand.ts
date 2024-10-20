@@ -14,7 +14,7 @@ export class RetrieveUserLastMessagesCommand implements ICommand<RetrieveUserLas
 
     async run(request: RetrieveUserLastMessagesDTO): Promise<Result<Message[]>> {
         try {
-            const userId = request.user;
+            const userId = request.userId;
 
             const lastMessages = await this.repository.findLastMessagesOfUser(userId);
 

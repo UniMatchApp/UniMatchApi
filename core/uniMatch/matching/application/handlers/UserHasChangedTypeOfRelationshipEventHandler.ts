@@ -26,7 +26,7 @@ export class UserHasChangedTypeOfRelationshipEventHandler implements IEventHandl
             }
     
             user.relationshipType = RelationshipType.fromString(relationshipType);
-            this.repository.save(user);
+            this.repository.update(user, user.getId());
         } catch (error : any) {
             throw error;
         }

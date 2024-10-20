@@ -19,8 +19,8 @@ export class DeleteAllMessagesWithUserCommand implements ICommand<DeleteAllUserM
 
     async run(request: DeleteAllUserMessagesDTO): Promise<Result<void>> {
         try {
-            const userId = request.user;
-            const otherUserId = request.targetUser;
+            const userId = request.userId;
+            const otherUserId = request.targetUserId;
 
             const userMessages = await this.repository.findLastMessagesBetweenUsers(userId, otherUserId);
 
@@ -29,11 +29,13 @@ export class DeleteAllMessagesWithUserCommand implements ICommand<DeleteAllUserM
             }
 
             for (const message of userMessages) {
-                if (message.attachment) {
-                    this.fileHandler.delete(message.attachment);
+                if (message.sender === userId) {
+                    message.deleteBySender()
+                } else if (message.recipient === userId) {
+                    message.deleteByRecipient();
                 }
-                message.delete();
-                await this.repository.deleteById(message.getId());
+
+                await this.repository.create(message);
                 this.eventBus.publish(message.pullDomainEvents());
             }
 

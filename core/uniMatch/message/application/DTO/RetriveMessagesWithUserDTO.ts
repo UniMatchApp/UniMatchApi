@@ -1,5 +1,6 @@
 export interface RetrieveMessagesWithUserDTO {
-    user: string;
-    targetUser: string;
+    userId: string;
+    targetUserId: string;
 }
+
 
