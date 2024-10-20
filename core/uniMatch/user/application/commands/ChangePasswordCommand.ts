@@ -3,6 +3,8 @@ import { Result } from "@/core/shared/domain/Result";
 import { ChangePasswordDTO } from "../DTO/ChangePasswordDTO";
 import { IUserRepository } from "../ports/IUserRepository";
 import { IEventBus } from "@/core/shared/application/IEventBus";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import { DuplicateError } from "@/core/shared/exceptions/DuplicateError";
 
 export class ChangePasswordCommand implements ICommand<ChangePasswordDTO, string> {
 
@@ -18,12 +20,12 @@ export class ChangePasswordCommand implements ICommand<ChangePasswordDTO, string
         try {
             const user = await this.repository.findById(request.id)
             if (!user) {
-                throw new Error(`User with id ${request.id} not found`);
+                return Result.failure<string>(new NotFoundError(`User with id ${request.id} not found`));
             }
             
             const password = user.password;
             if (request.newPassword === password) {
-                throw new Error("New password cannot be the same as the old one");
+                return Result.failure<string>(new DuplicateError(`New password is the same as the current password`));
             }
 
             user.password = request.newPassword;

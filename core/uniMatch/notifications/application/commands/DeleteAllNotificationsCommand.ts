@@ -15,7 +15,7 @@ export class DeleteAllNotificationsCommand implements ICommand<DeleteAllNotifica
          
        try {
         
-            await this.repository.deleteAllNotificationsByRecipient(request.user);
+            await this.repository.deleteAllNotificationsByRecipient(request.userId);
 
             return Result.success<void>(undefined);
             
