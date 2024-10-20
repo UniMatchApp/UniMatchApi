@@ -30,8 +30,6 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, Event>
             )
           
             const thumbnail = request.thumbnail;
-
-            const thumbnailName = thumbnail?.name;
             if (thumbnail && !thumbnail.name) {
                 return Result.failure<Event>(new FileError("Thumbnail name is invalid"));
             }

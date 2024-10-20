@@ -1,3 +1,3 @@
 export interface DeleteAllNotificationsDTO {
-    user: string
+    userId: string
 }

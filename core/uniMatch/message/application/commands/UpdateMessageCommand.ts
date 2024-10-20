@@ -5,6 +5,8 @@ import { IMessageRepository } from "../ports/IMessageRepository";
 import { IEventBus } from "@/core/shared/application/IEventBus";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
 import { Message } from "../../domain/Message";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import { FileError } from "@/core/shared/exceptions/FileError";
 
 export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, Message> {
     private repository: IMessageRepository;
@@ -24,14 +26,14 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, Message>
             let attachmentUrl: string | undefined = undefined;
 
             if (!messageToUpdate) {
-                return Result.failure<Message>("Message not found");
+                return Result.failure<Message>(new NotFoundError('Message not found'));
             }
 
             if (request.attachment) {
 
                 const fileName = request.attachment.name;
                 if (!fileName) {
-                    return Result.failure<Message>("Invalid file name.");
+                    return Result.failure<Message>(new FileError('File name is required'));
                 }
 
                 if (messageToUpdate.attachment) {
@@ -46,7 +48,7 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, Message>
                 attachmentUrl
             );
 
-            this.repository.update(messageToUpdate, request.messageId);
+            await this.repository.update(messageToUpdate, request.messageId);
             this.eventBus.publish(messageToUpdate.pullDomainEvents());
 
             return Result.success<Message>(messageToUpdate);

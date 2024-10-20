@@ -15,26 +15,30 @@ export class EventIsDeletedEventHandler implements IEventHandler {
         this.appNotifications = appNotifications;
     }
 
-    handle(event: DomainEvent): void {
-        const eventId = event.getAggregateId();
-        const eventName = event.getPayload().get("title");
-        const recipients = event.getPayload().get("recipients");
-
-        if (!eventId || !eventName || !recipients) {
-            throw new DomainError("Event ID, name and recipients are required to delete an event.");
-        }
-
-        for (const recipient of recipients.split(",")) {
-            const notification = Notification.createEventNotification(
-                eventId,
-                new Date(),
-                recipient,
-                eventName,
-                EventStatusEnum.CANCELLED
-            );
-            
-            this.repository.save(notification);
-            this.appNotifications.sendNotification(notification);
+    async handle(event: DomainEvent): Promise<void> {
+        try {
+            const eventId = event.getAggregateId();
+            const eventName = event.getPayload().get("title");
+            const recipients = event.getPayload().get("recipients");
+    
+            if (!eventId || !eventName || !recipients) {
+                throw new DomainError("Event ID, name and recipients are required to delete an event.");
+            }
+    
+            for (const recipient of recipients.split(",")) {
+                const notification = Notification.createEventNotification(
+                    eventId,
+                    new Date(),
+                    recipient,
+                    eventName,
+                    EventStatusEnum.CANCELLED
+                );
+                
+                this.repository.save(notification);
+                this.appNotifications.sendNotification(notification);
+            }
+        } catch (error: any) {
+            throw error;
         }
     }
 

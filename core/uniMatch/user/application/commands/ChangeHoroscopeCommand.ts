@@ -3,6 +3,7 @@ import { Result } from "@/core/shared/domain/Result";
 import { IProfileRepository } from "../ports/IProfileRepository";
 import { ChangeMoreAboutMeDTO } from "../DTO/ChangeMoreAboutMeDTO";
 import { Horoscope } from "../../domain/Horoscope";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
 export class ChangeHoroscopeCommand implements ICommand<ChangeMoreAboutMeDTO, string> {
     private readonly repository: IProfileRepository;
@@ -15,7 +16,7 @@ export class ChangeHoroscopeCommand implements ICommand<ChangeMoreAboutMeDTO, st
         try {
             const profile = await this.repository.findById(request.id);
             if(!profile) {
-                throw new Error('Profile not found');
+                return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
 
             const horoscope = new Horoscope(request.newContent);

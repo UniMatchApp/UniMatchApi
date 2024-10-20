@@ -13,23 +13,27 @@ export class UserHasChangedPasswordEventHandler implements IEventHandler {
         this.emailNotifications = emailNotifications;
     }
 
-    handle(event: DomainEvent): void {
-        const recipient = event.getAggregateId();
+    async handle(event: DomainEvent): Promise<void> {
+        try {
+            const recipient = event.getAggregateId();
 
-        if (!recipient) {
-            throw new Error("Recipient is required to create a notification.");
+            if (!recipient) {
+                throw new ErrorEvent("Recipient is required to create a notification.");
+            }
+    
+            const notification = Notification.createAppNotification(
+                event.getAggregateId(),
+                new Date(),
+                recipient,
+                "Your password has been changed",
+                "Your password has been changed"
+            );
+    
+            this.repository.save(notification);
+            this.emailNotifications.sendEmailToOne(recipient, "Your password has been changed", "Your password has been changed");
+        } catch (error: any) {
+            throw error;
         }
-
-        const notification = Notification.createAppNotification(
-            event.getAggregateId(),
-            new Date(),
-            recipient,
-            "Your password has been changed",
-            "Your password has been changed"
-        );
-
-        this.repository.save(notification);
-        this.emailNotifications.sendEmailToOne(recipient, "Your password has been changed", "Your password has been changed");
     }
 
     getEventId(): string {

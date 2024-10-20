@@ -3,6 +3,7 @@ import { ChangeSexualOrientationDTO } from "../DTO/ChangeSexualOrientationDTO";
 import { IEventBus } from "@/core/shared/application/IEventBus";
 import { Result } from "@/core/shared/domain/Result";
 import { IProfileRepository } from "../ports/IProfileRepository";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
 export class ChangeSexualOrientationCommand implements ICommand<ChangeSexualOrientationDTO, string> {
 
@@ -18,7 +19,7 @@ export class ChangeSexualOrientationCommand implements ICommand<ChangeSexualOrie
         try {
             const profile = await this.repository.findById(request.id)
             if (!profile) {
-                throw new Error(`Profile with id ${request.id} not found`);
+                return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
             
             profile.sexualOrientation.setValue(request.newSexualOrientation);

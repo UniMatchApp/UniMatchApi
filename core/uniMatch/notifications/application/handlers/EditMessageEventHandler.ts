@@ -15,21 +15,25 @@ export class EditMessageEventHandler implements IEventHandler {
     }
 
     async handle(event: DomainEvent): Promise<void> {
-        const messageId = event.getPayload().get("messageId");
-        const newContent = event.getPayload().get("newContent");
-        const recipient = event.getAggregateId();
-
-        if (!messageId || !newContent || !recipient) {
-            throw new DomainError("Recipient, MessageID and new content are required to edit a message.");
+        try {
+            const messageId = event.getPayload().get("messageId");
+            const newContent = event.getPayload().get("newContent");
+            const recipient = event.getAggregateId();
+    
+            if (!messageId || !newContent || !recipient) {
+                throw new ErrorEvent("Recipient, MessageID and new content are required to edit a message.");
+            }
+    
+            const notification = await this.repository.findByTypeAndTypeId(NotificationTypeEnum.MESSAGE, messageId);
+            if (!notification) {
+                throw new DomainError("Notification not found.");
+            }
+    
+            this.repository.save(notification[0]);
+            this.appNotifications.editNotification(notification[0]);
+        } catch (error: any) {
+            throw error;
         }
-
-        const notification = await this.repository.findByTypeAndTypeId(NotificationTypeEnum.MESSAGE, messageId);
-        if (!notification) {
-            throw new DomainError("Notification not found.");
-        }
-
-        this.repository.save(notification[0]);
-        this.appNotifications.editNotification(notification[0]);
 
     }
 

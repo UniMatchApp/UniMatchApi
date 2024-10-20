@@ -3,6 +3,7 @@ import { Result } from "@/core/shared/domain/Result";
 import { IEventRepository } from "../ports/IEventRepository";
 import { Event } from "../../domain/Event";
 import { ParticipateEventDTO } from "../DTO/ParticipateEventDTO";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
 export class ParticipateEventCommand implements ICommand<ParticipateEventDTO, Event> {
     private repository: IEventRepository;
@@ -16,7 +17,7 @@ export class ParticipateEventCommand implements ICommand<ParticipateEventDTO, Ev
             const event = await this.repository.findById(request.eventId);
             
             if (!event) {
-                return Result.failure<Event>("Event not found");
+                return Result.failure<Event>(new NotFoundError("Event not found"));
             }
 
             event.addParticipant(request.userId);

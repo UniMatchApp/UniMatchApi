@@ -15,25 +15,29 @@ export class EventIsGoingToExpireEventHandler implements IEventHandler {
         this.appNotifications = appNotifications;
     }
 
-    handle(event: DomainEvent): void {
-        const eventName = event.getPayload().get("eventName");
-        const recipient = event.getAggregateId();
-
-        if (!eventName || !recipient) {
-            throw new Error("Recipient and Event Name are required to create a notification.");
+    async handle(event: DomainEvent): Promise<void> {
+        try {
+            const eventName = event.getPayload().get("eventName");
+            const recipient = event.getAggregateId();
+    
+            if (!eventName || !recipient) {
+                throw new ErrorEvent("Recipient and Event Name are required to create a notification.");
+            }
+    
+            const notification = Notification.createEventNotification(
+                event.getAggregateId(),
+                new Date(),
+                recipient,
+                eventName,
+                EventStatusEnum.APPROACHING
+            );
+            
+    
+            this.repository.save(notification);
+            this.appNotifications.sendNotification(notification);
+        } catch (error: any) {
+            throw error;
         }
-
-        const notification = Notification.createEventNotification(
-            event.getAggregateId(),
-            new Date(),
-            recipient,
-            eventName,
-            EventStatusEnum.APPROACHING
-        );
-        
-
-        this.repository.save(notification);
-        this.appNotifications.sendNotification(notification);
     }
 
     getEventId(): string {

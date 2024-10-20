@@ -3,6 +3,7 @@ import { Result } from "@/core/shared/domain/Result";
 import { DeleteUserDTO } from "../DTO/DeleteUserDTO";
 import { IUserRepository } from "../ports/IUserRepository";
 import { IEventBus } from "@/core/shared/application/IEventBus";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
 
 export class DeletUserCommand implements ICommand<DeleteUserDTO, void> {
@@ -18,7 +19,7 @@ export class DeletUserCommand implements ICommand<DeleteUserDTO, void> {
         try {
             const user = await this.repository.findById(request.id)
             if(!user) {
-                throw new Error(`User with id ${request.id} not found`);
+                return Result.failure<void>(new NotFoundError(`User with id ${request.id} not found`));
             }
 
             user.delete();

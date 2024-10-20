@@ -5,6 +5,7 @@ import { CreateNewMessageDTO } from "../DTO/CreateNewMessageDTO";
 import { IMessageRepository } from "../ports/IMessageRepository";
 import { IEventBus } from "@/core/shared/application/IEventBus";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
+import { FileError } from "@/core/shared/exceptions/FileError";
 
 export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Message> {
     private repository: IMessageRepository;
@@ -21,18 +22,14 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
         try {
             const file = request.attachment;
 
-            if (file && !this.fileHandler.isValid(file)) {
-                return Result.failure<Message>("Invalid file.");
-            }
-
             const fileName = request.attachment?.name;
-            if (!fileName) {
-                return Result.failure<Message>("Invalid file name.");
+            if (file && !fileName) {
+                return Result.failure<Message>(new FileError('File name is required'));
             }
 
             let attachmentUrl: string | undefined = undefined;
 
-            if (file) {
+            if (file && fileName) {
                 attachmentUrl = await this.fileHandler.save(fileName, file);
             }
             

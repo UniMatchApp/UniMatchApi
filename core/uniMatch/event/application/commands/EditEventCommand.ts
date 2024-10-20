@@ -6,6 +6,9 @@ import { IEventBus } from "@/core/shared/application/IEventBus";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
 import { Location } from "@/core/shared/domain/Location";
 import { Event } from "../../domain/Event";
+import { Not } from "typeorm";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import { FileError } from "@/core/shared/exceptions/FileError";
 
 export class EditEventCommand implements ICommand<EditEventDTO, Event> {
     private repository: IEventRepository;
@@ -24,7 +27,7 @@ export class EditEventCommand implements ICommand<EditEventDTO, Event> {
             const event = await this.repository.findById(request.eventId);
 
             if (!event) {
-                return Result.failure<Event>("Event not found");
+                return Result.failure<Event>(new NotFoundError("Event not found"));
             }
             const location = new Location(
                 request.latitude,
@@ -34,7 +37,7 @@ export class EditEventCommand implements ICommand<EditEventDTO, Event> {
 
             const thumbnail = request.thumbnail;
             if(thumbnail && !thumbnail.name) {
-                return Result.failure<Event>("Thumbnail name is invalid");
+                return Result.failure<Event>(new FileError("Thumbnail name is invalid"));
             }
 
             let thumbnailPath: string | undefined = undefined;

@@ -3,6 +3,9 @@ import { Result } from "@/core/shared/domain/Result";
 import { UploadPhotoDTO } from "../DTO/UploadPhotoDTO";
 import { IProfileRepository } from "../ports/IProfileRepository";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import { FileError } from "@/core/shared/exceptions/FileError";
+import { NullPointerError } from "@/core/shared/exceptions/NullPointerError";
 
 
 export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, File> {
@@ -20,12 +23,12 @@ export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, File> {
             const photo = request.photo;
 
             if (photo) {
-                return Result.failure<File>("Invalid file.");
+                return Result.failure<File>(new FileError(`Invalid file`));
             }
 
             const fileName = request.photo?.name;
             if (!fileName) {
-                return Result.failure<File>("Invalid file name.");
+                return Result.failure<File>(new FileError(`Invalid file name`));
             }
 
             let photoUrl: string | undefined = undefined;
@@ -35,12 +38,12 @@ export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, File> {
             }
             
             if(!photoUrl) {
-                throw new Error("Photo url is undefined");
+                return Result.failure<File>(new NullPointerError(`Photo url is null`));
             }
 
             const profile = await this.repository.findById(request.id)
             if (!profile) {
-                throw new Error(`Profile with id ${request.id} not found`);
+                return Result.failure<File>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
             
             profile.addPost(photoUrl);

@@ -3,6 +3,7 @@ import { Result } from "@/core/shared/domain/Result";
 import { IMatchingRepository } from "../ports/IMatchingRepository";
 import { Dislike } from "../../domain/relations/Dislike";
 import { UserDislikedSomebodyDTO } from "../DTO/userDislikedSomebodyDTO";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
 export class UserDislikedSomebodyCommand implements ICommand<UserDislikedSomebodyDTO, void> {
     private readonly repository: IMatchingRepository;
@@ -17,11 +18,11 @@ export class UserDislikedSomebodyCommand implements ICommand<UserDislikedSomebod
             const dislikedUser = await this.repository.findByUserId(request.dislikedUserId);
 
             if (!user) {
-                throw new Error("User not found");
+                return Result.failure<void>(new NotFoundError("User not found"));
             }
 
             if (!dislikedUser) {
-                throw new Error("Liked user not found");
+                return Result.failure<void>(new NotFoundError("Disliked user not found"));
             }
 
             const dislike = new Dislike(user, dislikedUser);

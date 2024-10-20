@@ -4,6 +4,7 @@ import { IMessageRepository } from "../ports/IMessageRepository";
 import { IEventBus } from "@/core/shared/application/IEventBus";
 import { DeleteMessageDTO } from "../DTO/DeleteMessageDTO";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
 export class DeleteMessageCommand implements ICommand<DeleteMessageDTO, void> {
     private repository: IMessageRepository;
@@ -21,7 +22,7 @@ export class DeleteMessageCommand implements ICommand<DeleteMessageDTO, void> {
             const message = await this.repository.findById(request.messageId);
 
             if (!message) {
-                return Result.failure<void>("Message not found");
+                return Result.failure<void>(new NotFoundError('Message not found'));
             }
 
             if (message.attachment) {

@@ -4,6 +4,7 @@ import { IMessageRepository } from "../ports/IMessageRepository";
 import { IEventBus } from "@/core/shared/application/IEventBus";
 import { DeleteAllUserMessagesDTO } from "../DTO/DeleteAllMessagesWithUserDTO";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
+import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
 export class DeleteAllMessagesWithUserCommand implements ICommand<DeleteAllUserMessagesDTO, void> {
     private repository: IMessageRepository;
@@ -24,7 +25,7 @@ export class DeleteAllMessagesWithUserCommand implements ICommand<DeleteAllUserM
             const userMessages = await this.repository.findLastMessagesBetweenUsers(userId, otherUserId);
 
             if (!userMessages || userMessages.length === 0) {
-                return Result.failure<void>("No messages found for this user.");
+                return Result.failure<void>(new NotFoundError('No messages found'));
             }
 
             for (const message of userMessages) {
