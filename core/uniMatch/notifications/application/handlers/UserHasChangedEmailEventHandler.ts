@@ -13,24 +13,28 @@ export class UserHasChangedEmailEventHandler implements IEventHandler {
         this.emailNotifications = emailNotifications;
     }
 
-    handle(event: DomainEvent): void {
-        const email = event.getPayload().get("email");
-        const recipient = event.getAggregateId();
-
-        if (!email || !recipient) {
-            throw new Error("Recipient and Email are required to create a notification.");
+    async handle(event: DomainEvent): Promise<void> {
+        try {
+            const email = event.getPayload().get("email");
+            const recipient = event.getAggregateId();
+    
+            if (!email || !recipient) {
+                throw new ErrorEvent("Recipient and Email are required to create a notification.");
+            }
+    
+            const notification = Notification.createAppNotification(
+                event.getAggregateId(),
+                new Date(),
+                recipient,
+                "Your email has been changed",
+                "Your email has been changed to " + email
+            );
+    
+            this.repository.save(notification);
+            this.emailNotifications.sendEmailToOne(email, "Your email has been changed", "Your email has been changed to " + email);
+        } catch (error: any) {
+            throw error;
         }
-
-        const notification = Notification.createAppNotification(
-            event.getAggregateId(),
-            new Date(),
-            recipient,
-            "Your email has been changed",
-            "Your email has been changed to " + email
-        );
-
-        this.repository.save(notification);
-        this.emailNotifications.sendEmailToOne(email, "Your email has been changed", "Your email has been changed to " + email);
     }
 
     getEventId(): string {

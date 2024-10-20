@@ -2,7 +2,6 @@ import { IEventHandler } from "@/core/shared/application/IEventHandler";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { IAppNotifications } from "../ports/IAppNotifications";
-import { DomainError } from "@/core/shared/exceptions/DomainError";
 import { NotificationTypeEnum } from "../../domain/enum/NotificationTypeEnum";
 
 export class DeleteMessageEventHandler implements IEventHandler {
@@ -15,18 +14,22 @@ export class DeleteMessageEventHandler implements IEventHandler {
     }
 
     async handle(event: DomainEvent): Promise<void> {
-        const messageId = event.getPayload().get("messageId");
-        const recipient = event.getAggregateId();
-
-        if (!messageId || !recipient) {
-            throw new DomainError("Recipient and MessageID is required to delete a message.");
+        try {
+            const messageId = event.getPayload().get("messageId");
+            const recipient = event.getAggregateId();
+    
+            if (!messageId || !recipient) {
+                throw new ErrorEvent("Recipient and MessageID is required to delete a message.");
+            }
+    
+            const notification = await this.repository.findByTypeAndTypeId(NotificationTypeEnum.MESSAGE, messageId);
+    
+    
+            await this.appNotifications.cancelNotification(notification[0]);
+            this.repository.deleteById(notification[0].getId());
+        } catch (error: any) {
+            throw error;
         }
-
-        const notification = await this.repository.findByTypeAndTypeId(NotificationTypeEnum.MESSAGE, messageId);
-
-
-        await this.appNotifications.cancelNotification(notification[0]);
-        this.repository.deleteById(notification[0].getId());
     }
 
     getEventId(): string {

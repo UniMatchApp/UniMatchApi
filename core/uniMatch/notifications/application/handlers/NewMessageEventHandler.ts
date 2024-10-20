@@ -13,42 +13,46 @@ export class NewMessageEventHandler implements IEventHandler {
         this.appNotifications = appNotifications;
     }
 
-    handle(event: DomainEvent): void {
-        const sender = event.getPayload().get("sender");
-        const thumbnail = event.getPayload().get("attachment");
-        const content = event.getPayload().get("content");
-        const recipient = event.getPayload().get("recipient");
-        const id = event.getAggregateId();
-
-        if (!sender || !recipient) {
-            throw new Error("Recipient and Sender are required to create a notification.");
+    async handle(event: DomainEvent): Promise<void> {
+        try {
+            const sender = event.getPayload().get("sender");
+            const thumbnail = event.getPayload().get("attachment");
+            const content = event.getPayload().get("content");
+            const recipient = event.getPayload().get("recipient");
+            const id = event.getAggregateId();
+    
+            if (!sender || !recipient) {
+                throw new ErrorEvent("Recipient and Sender are required to create a notification.");
+            }
+    
+            if (!content) {
+                throw new ErrorEvent("Content is required to create a notification.");
+            }
+    
+            const notification = Notification.createMessageNotification(
+                id,
+                new Date(),
+                recipient,
+                content,
+                sender,
+                thumbnail
+            );
+    
+            const reverseNotification = Notification.createMessageNotification(
+                id,
+                new Date(),
+                sender,
+                content,
+                recipient,
+                thumbnail
+            );
+    
+            this.repository.save(notification);
+            this.repository.save(reverseNotification);
+            this.appNotifications.sendNotification(notification);
+        } catch (error: any) {
+            throw error;
         }
-
-        if (!content) {
-            throw new Error("Content is required to create a notification.");
-        }
-
-        const notification = Notification.createMessageNotification(
-            id,
-            new Date(),
-            recipient,
-            content,
-            sender,
-            thumbnail
-        );
-
-        const reverseNotification = Notification.createMessageNotification(
-            id,
-            new Date(),
-            sender,
-            content,
-            recipient,
-            thumbnail
-        );
-
-        this.repository.save(notification);
-        this.repository.save(reverseNotification);
-        this.appNotifications.sendNotification(notification);
     }
 
     getEventId(): string {

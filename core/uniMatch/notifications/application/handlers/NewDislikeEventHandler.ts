@@ -13,26 +13,29 @@ export class NewDislikeEventHandler implements IEventHandler {
         this.appNotifications = appNotifications;
     }
 
-    handle(event: DomainEvent): void {
-        const id = event.getAggregateId();
-        const user = event.getPayload().get("user");
-        const target = event.getPayload().get("target");
-
-        if (!user || !target) {
-            throw new Error("User and Target are required to create a notification.");
+    async handle(event: DomainEvent): Promise<void> {
+        try {
+            const id = event.getAggregateId();
+            const user = event.getPayload().get("user");
+            const target = event.getPayload().get("target");
+    
+            if (!user || !target) {
+                throw new ErrorEvent("User and Target are required to create a notification.");
+            }
+    
+            const notification = Notification.createMatchNotification(
+                id,
+                new Date(),
+                user,
+                target,
+                false
+            );
+    
+            this.repository.save(notification);
+            this.appNotifications.sendNotification(notification);
+        } catch (error: any) {
+            throw error;
         }
-
-        const notification = Notification.createMatchNotification(
-            id,
-            new Date(),
-            user,
-            target,
-            false
-        );
-
-        this.repository.save(notification);
-        this.appNotifications.sendNotification(notification);
-        
     }
 
     getEventId(): string {
