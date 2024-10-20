@@ -6,6 +6,7 @@ import path from 'path';
 
 import { router as indexRouter } from './routes/index';
 import { router as docsRouter } from './routes/docs';
+import { router as eventRouter } from './routes/event';
 
 const app = express();
 
@@ -18,8 +19,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Rutas
+const apiRoute = "/api/v1";
 app.use('/', indexRouter);
 app.use('/docs', docsRouter);
+app.use(`${apiRoute}/events`, eventRouter);
 
 // catch 404 and forward to error handler
 app.use((req: Request, res: Response, next: NextFunction) => {
