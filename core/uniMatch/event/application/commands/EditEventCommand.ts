@@ -6,9 +6,9 @@ import { IEventBus } from "@/core/shared/application/IEventBus";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
 import { Location } from "@/core/shared/domain/Location";
 import { Event } from "../../domain/Event";
-import { Not } from "typeorm";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { FileError } from "@/core/shared/exceptions/FileError";
+import { ValidationError } from "@/core/shared/exceptions/ValidationError";
 
 export class EditEventCommand implements ICommand<EditEventDTO, Event> {
     private repository: IEventRepository;
@@ -29,6 +29,11 @@ export class EditEventCommand implements ICommand<EditEventDTO, Event> {
             if (!event) {
                 return Result.failure<Event>(new NotFoundError("Event not found"));
             }
+
+            if (event.ownerId !== request.ownerId) {
+                return Result.failure<Event>(new ValidationError("User is not the owner of the event"));
+            }
+
             const location = new Location(
                 request.latitude,
                 request.longitude,
