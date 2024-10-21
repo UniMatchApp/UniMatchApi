@@ -9,6 +9,16 @@ import { CreateNewEventCommand } from '@/core/uniMatch/event/application/command
 import { Result } from '@/core/shared/domain/Result';
 import { FileHandler } from '@/core/uniMatch/event/infrastructure/FileHandler';
 import { EditEventCommand } from '@/core/uniMatch/event/application/commands/EditEventCommand';
+import { ErrorHandler } from '../../ErrorHandler';
+import { DeleteEventCommand } from '@/core/uniMatch/event/application/commands/DeleteEventCommand';
+import { LikeEventCommand } from '@/core/uniMatch/event/application/commands/LikeEventCommand';
+import { DislikeEventCommand } from '@/core/uniMatch/event/application/commands/DislikeEventCommand';
+import { ParticipateEventCommand } from '@/core/uniMatch/event/application/commands/ParticipateEventCommand';
+import { RemoveParticipationCommand } from '@/core/uniMatch/event/application/commands/RemoveParticipationCommand';
+import { EditEventDTO } from '@/core/uniMatch/event/application/DTO/EditEventDTO';
+import { DeleteEventDTO } from '@/core/uniMatch/event/application/DTO/DeleteEventDTO';
+import { LikeEventDTO } from '@/core/uniMatch/event/application/DTO/LikeEventDTO';
+import { ParticipateEventDTO } from '@/core/uniMatch/event/application/DTO/ParticipateEventDTO';
 
 export class EventController {
     private readonly eventRepository: IEventRepository;
@@ -27,7 +37,8 @@ export class EventController {
             if (result.isSuccess()) {
                 res.json(result.getValue());
             } else {
-                res.status(400).json({ error: result.getErrorMessage() });
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
             }
         });
     }
@@ -39,7 +50,8 @@ export class EventController {
             if (result.isSuccess()) {
                 res.json(result.getValue());
             } else {
-                res.status(400).json({ error: result.getErrorMessage() });
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
             }
          });
     }
@@ -50,19 +62,96 @@ export class EventController {
             if (result.isSuccess()) {
                 res.json(result.getValue());
             } else {
-                res.status(400).json({ error: result.getErrorMessage() });
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
             }
         });
     }
 
     async update(req: Request, res: Response): Promise<void> {
+        var id = req.params.id;
         var command = new EditEventCommand(this.eventRepository, this.eventBus, this.fileHandler);
-        return command.run(req.body).then((result: Result<Event | Error>) => {
+        var dto = { eventId: id, ...req.body } as EditEventDTO;
+        return command.run(dto).then((result: Result<Event>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());
             } else {
                 const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
 
+    async delete(req: Request, res: Response): Promise<void> {
+        var id = req.params.id;
+        var command = new DeleteEventCommand(this.eventRepository, this.eventBus, this.fileHandler);
+        var dto = { eventId: id } as DeleteEventDTO;
+        return command.run(dto).then((result: Result<void>) => {
+            if (result.isSuccess()) {
+                res.json(result.getValue());
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async likeEvent(req: Request, res: Response): Promise<void> {
+        var id = req.params.id;
+        var userId = req.body.userId;
+        var command = new LikeEventCommand(this.eventRepository);
+        var dto = { eventId: id, userId: userId } as LikeEventDTO;
+        return command.run(dto).then((result: Result<Event>) => {
+            if (result.isSuccess()) {
+                res.json(result.getValue());
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async dislikeEvent(req: Request, res: Response): Promise<void> {
+        var id = req.params.id;
+        var userId = req.body.userId;
+        var command = new DislikeEventCommand(this.eventRepository);
+        var dto = { eventId: id, userId: userId } as LikeEventDTO;
+        return command.run(dto).then((result: Result<Event>) => {
+            if (result.isSuccess()) {
+                res.json(result.getValue());
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async participateEvent(req: Request, res: Response): Promise<void> {
+        var id = req.params.id;
+        var userId = req.body.userId;
+        var command = new ParticipateEventCommand(this.eventRepository);
+        var dto = { eventId: id, userId: userId } as ParticipateEventDTO;
+        return command.run(dto).then((result: Result<Event>) => {
+            if (result.isSuccess()) {
+                res.json(result.getValue());
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async removeParticipation(req: Request, res: Response): Promise<void> {
+        var id = req.params.id;
+        var userId = req.body.userId;
+        var command = new RemoveParticipationCommand(this.eventRepository);
+        var dto = { eventId: id, userId: userId } as ParticipateEventDTO;
+        return command.run(dto).then((result: Result<Event>) => {
+            if (result.isSuccess()) {
+                res.json(result.getValue());
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
             }
         });
     }

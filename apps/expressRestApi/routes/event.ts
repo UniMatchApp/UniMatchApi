@@ -11,5 +11,12 @@ const eventController = new EventController(eventRepository, eventBus);
 router.get('/', eventController.getAll);
 router.get('/:id', eventController.getOne);
 router.post('/', eventController.create);
+router.put('/:id', eventController.update);
+router.delete('/:id', eventController.delete);
+router.post('/participate/:id/:userId', eventController.participateEvent);
+router.post('/unparticipate/:id/:userId', eventController.removeParticipation);
+router.post('like/:id/:userId', eventController.likeEvent);
+router.post('dislike/:id/:userId', eventController.dislikeEvent);
+
 
 export { router };
