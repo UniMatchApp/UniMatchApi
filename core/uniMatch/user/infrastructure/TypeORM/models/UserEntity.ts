@@ -1,4 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { ReportedUsersEntity } from "./ReportedUsersEntity";
+import { json } from "stream/consumers";
 
 @Entity('users')
 export class UserEntity {
@@ -20,6 +22,6 @@ export class UserEntity {
     @Column('text', { array: true, default: [] })
     blockedUsers!: string[];
 
-    @Column('text', { array: true, default: [] })
-    reportedUsers!: { userId: string, predefinedReason: string, comment?: string }[];
+    @Column('json', { array: true, default: [] })
+    reportedUsers!: ReportedUsersEntity[];
 }

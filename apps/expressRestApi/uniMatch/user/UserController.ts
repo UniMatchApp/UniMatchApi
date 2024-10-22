@@ -40,8 +40,6 @@ import { ChangeSportsCommand } from '@/core/uniMatch/user/application/commands/C
 import { ChangeValuesAndBeliefsCommand } from '@/core/uniMatch/user/application/commands/ChangeValuesAndBeliefsCommand';
 import { ChangeWeightDTO } from '@/core/uniMatch/user/application/DTO/ChangeWeightDTO';
 import { ChangeWeightCommand } from '@/core/uniMatch/user/application/commands/ChangeWeightCommand';
-import { CreateNewProfileCommand } from '@/core/uniMatch/user/application/commands/CreateNewProfileCommand';
-import { CreateNewProfileDTO } from '@/core/uniMatch/user/application/DTO/CreateNewProfileDTO';
 import { UploadPhotoCommand } from '@/core/uniMatch/user/application/commands/UploadPhotoCommand';
 import { UploadPhotoDTO } from '@/core/uniMatch/user/application/DTO/UploadPhotoDTO';
 import { DeletePhotoFromTheWallCommand } from '@/core/uniMatch/user/application/commands/DeletePhotoFromTheWallCommand';

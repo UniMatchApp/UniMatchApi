@@ -4,6 +4,7 @@ import { Result } from "@/core/shared/domain/Result";
 import { IUserRepository } from "../ports/IUserRepository";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { DuplicateError } from "@/core/shared/exceptions/DuplicateError";
+import { ReportedUser } from "../../domain/ReportedUser";
 
 export class ReportUserCommand implements ICommand<ReportUserDTO, void> {
     
@@ -28,8 +29,8 @@ export class ReportUserCommand implements ICommand<ReportUserDTO, void> {
             if(userToReport.isUserBlocked(request.reportedUserId)) {
                 return Result.failure<void>(new DuplicateError(`User with id ${request.reportedUserId} is already blocked`));
             } 
-
-            userToReport.reportUser(request.reportedUserId);
+            const reportedUser = new ReportedUser(request.reportedUserId, request.predefinedReason, request.comment);
+            userToReport.reportUser(reportedUser);
             user.blockUser(userToReport.getId());
 
             await this.repository.update(user, user.getId());

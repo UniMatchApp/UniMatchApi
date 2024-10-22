@@ -70,7 +70,6 @@ export class Profile extends AggregateRoot {
         this.recordEvent(NewProfile.from(this));
     }
 
-    // No hay setters para userId puesto que es un valor inmutable dado en el constructor
     public get userId(): string {
         return this._userId;
     }

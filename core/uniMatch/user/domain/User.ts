@@ -5,6 +5,7 @@ import {UserHasChangedPassword} from "./events/UserHasChangedPassword";
 import {Profile} from "./Profile";
 import {UserHasDeletedTheAccount} from "./events/UserHasDeletedTheAccount";
 import {NewUser} from "./events/NewUser";
+import { ReportedUser } from "./ReportedUser";
 
 export class User extends AggregateRoot {
     private readonly _code: string;
@@ -12,7 +13,7 @@ export class User extends AggregateRoot {
     private _email: string;
     private _password: string;
     private _blockedUsers: string[] = [];
-    private _reportedUsers: { userId: string, predefinedReason: string, comment?: string }[] = [];
+    private _reportedUsers: ReportedUser[] = [];
 
     constructor(
         registrationDate: Date,
@@ -103,16 +104,12 @@ export class User extends AggregateRoot {
         return this._blockedUsers.includes(userId);
     }
 
-    public set reportedUsers(value: { userId: string, predefinedReason: string, comment?: string }[]) {
+    public set reportedUsers(value: ReportedUser[]) {
         this._reportedUsers = value;
     }
     
-    public reportUser(predefinedReason: string, comment?: string): void {
-        this._reportedUsers.push({
-            userId: this.getId().toString(),
-            predefinedReason,
-            comment
-        });
+    public reportUser(reportedUser: ReportedUser): void {
+        this._reportedUsers.push(reportedUser);
 
     }
 
