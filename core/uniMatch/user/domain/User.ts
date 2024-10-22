@@ -103,6 +103,10 @@ export class User extends AggregateRoot {
         return this._blockedUsers.includes(userId);
     }
 
+    public set reportedUsers(value: { userId: string, predefinedReason: string, comment?: string }[]) {
+        this._reportedUsers = value;
+    }
+    
     public reportUser(predefinedReason: string, comment?: string): void {
         this._reportedUsers.push({
             userId: this.getId().toString(),
@@ -115,6 +119,7 @@ export class User extends AggregateRoot {
     public getReportedUsers(): { userId: string, predefinedReason: string, comment?: string }[] {
         return this._reportedUsers;
     }
+    
 
     public delete(): void {
         this.makeInactive();
