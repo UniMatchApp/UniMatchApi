@@ -5,7 +5,7 @@ import { Event } from "../../../domain/Event";
 export class EventMapper {
   static toDomain(entity: EventEntity): Event {
     const location = new Location(entity.latitude, entity.longitude, entity.altitude);
-    return new Event(
+    const event = new Event(
       entity.title,
       location,
       entity.date,
@@ -15,6 +15,8 @@ export class EventMapper {
       entity.price,
       entity.thumbnail
     );
+    event.setId(entity.id);
+    return event;
   }
 
   static toEntity(event: Event): EventEntity {
