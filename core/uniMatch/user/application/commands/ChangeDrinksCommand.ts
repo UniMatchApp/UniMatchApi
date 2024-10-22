@@ -4,7 +4,7 @@ import { IProfileRepository } from "../ports/IProfileRepository";
 import { ChangeLifeStyleDTO } from "../DTO/ChangeLifestyleDTO";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
-export class ChangeDrinks implements ICommand<ChangeLifeStyleDTO, string> {
+export class ChangeDrinksCommand implements ICommand<ChangeLifeStyleDTO, string> {
 
     private readonly repository: IProfileRepository;
 

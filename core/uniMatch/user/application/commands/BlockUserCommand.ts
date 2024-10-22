@@ -15,18 +15,18 @@ export class BlockUserCommand implements ICommand<BlockUserDTO, void> {
 
     async run(request: BlockUserDTO): Promise<Result<void>> {
         try {
-            const user = await this.repository.findById(request.id)
+            const user = await this.repository.findById(request.userId)
             if (!user) {
-                return Result.failure<void>(new NotFoundError(`User with id ${request.id} not found`));
+                return Result.failure<void>(new NotFoundError(`User with id ${request.userId} not found`));
             }
             
             const userToBlock = await this.repository.findById(request.blockUserId)
             if (!userToBlock) {
-                return Result.failure<void>(new NotFoundError(`User with id ${request.id} not found`));
+                return Result.failure<void>(new NotFoundError(`User with id ${request.blockUserId} not found`));
             }
 
             if(user.isUserBlocked(request.blockUserId)) {
-                return Result.failure<void>(new DuplicateError(`User with id ${request.id} has been already blocked`));
+                return Result.failure<void>(new DuplicateError(`User with id ${request.blockUserId} has been already blocked`));
             } 
 
             user.blockUser(request.blockUserId);

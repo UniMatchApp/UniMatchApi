@@ -17,14 +17,14 @@ export class DeleteUserCommand implements ICommand<DeleteUserDTO, void> {
 
     async run(request: DeleteUserDTO): Promise<Result<void>> {
         try {
-            const user = await this.repository.findById(request.id)
+            const user = await this.repository.findById(request.userId)
             if(!user) {
-                return Result.failure<void>(new NotFoundError(`User with id ${request.id} not found`));
+                return Result.failure<void>(new NotFoundError(`User with id ${request.userId} not found`));
             }
 
             user.delete();
 
-            await this.repository.deleteById(request.id); // Optional: could just do soft delete
+            await this.repository.deleteById(request.userId); // Optional: could just do soft delete
             
             this.eventBus.publish(user.pullDomainEvents());
             return Result.success<void>(undefined);

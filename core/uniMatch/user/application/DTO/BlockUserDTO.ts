@@ -1,4 +1,4 @@
 export interface BlockUserDTO {
-    id: string;
+    userId: string;
     blockUserId: string;
 }

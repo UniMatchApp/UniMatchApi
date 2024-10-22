@@ -4,7 +4,7 @@ import {ChangeWeightDTO} from "../DTO/ChangeWeightDTO";
 import {IProfileRepository} from "../ports/IProfileRepository";
 import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
 
-export class UpdateWeightCommand implements ICommand<ChangeWeightDTO, string> {
+export class ChangeWeightCommand implements ICommand<ChangeWeightDTO, string> {
     private repository: IProfileRepository;
 
     constructor(repository: IProfileRepository) {

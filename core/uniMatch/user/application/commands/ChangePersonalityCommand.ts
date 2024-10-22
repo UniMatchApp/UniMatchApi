@@ -1,10 +1,10 @@
 import { ICommand } from "@/core/shared/application/ICommand";
-import { ChangeAboutMeDTO } from "../DTO/ChangeAboutMeDTO";
 import { Result } from "@/core/shared/domain/Result";
 import { IProfileRepository } from "../ports/IProfileRepository";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import { ChangeMoreAboutMeDTO } from "../DTO/ChangeMoreAboutMeDTO";
 
-export class ChangePersonalityCommand implements ICommand<ChangeAboutMeDTO, string> {
+export class ChangePersonalityCommand implements ICommand<ChangeMoreAboutMeDTO, string> {
    
     private readonly repository: IProfileRepository;
 
@@ -12,7 +12,7 @@ export class ChangePersonalityCommand implements ICommand<ChangeAboutMeDTO, stri
         this.repository = repository;
     }
 
-    async run(request: ChangeAboutMeDTO): Promise<Result<string>> {
+    async run(request: ChangeMoreAboutMeDTO): Promise<Result<string>> {
         try {
             const profile = await this.repository.findById(request.id);
             if(!profile) {
