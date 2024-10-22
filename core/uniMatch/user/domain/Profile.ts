@@ -66,8 +66,6 @@ export class Profile extends AggregateRoot {
         this._birthday = birthday;
         this._interests = interests;
         this._wall = wall;
-
-        this.recordEvent(NewProfile.from(this));
     }
 
     public get userId(): string {
@@ -343,5 +341,9 @@ export class Profile extends AggregateRoot {
 
     public set personalityType(value: string | undefined) {
         this._personalityType = value;
+    }
+
+    public create(profile: Profile): void {
+        this.recordEvent(NewProfile.from(profile));
     }
 }

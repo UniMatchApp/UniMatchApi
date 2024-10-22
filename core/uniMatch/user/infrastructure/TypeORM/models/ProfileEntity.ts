@@ -1,11 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 @Entity('Profile')
 export class ProfileEntity {
-    @PrimaryGeneratedColumn()
+    @Column(Unique)
     id!: string;
 
-    @Column()
+    @Column(Unique)
     userId!: string;
 
     @Column()
@@ -87,7 +87,7 @@ export class ProfileEntity {
     maxDistance!: number;
 
     @Column('int', { array: true, default: [18, 100] })
-    ageRange!: number[];
+    ageRange!: [number, number];
 
     @Column({ nullable: true })
     genderPriority?: string;

@@ -1,6 +1,7 @@
 import { User } from "../../../domain/User";
 import { UserEntity } from "../models/UserEntity";
 import { ReportedUsersEntity } from "../models/ReportedUsersEntity";
+import { ReportedUser } from "../../../domain/ReportedUser";
 
 export class UserMapper {
     static toDomain(entity: UserEntity): User {
@@ -11,11 +12,15 @@ export class UserMapper {
             entity.blockedUsers
         );
         user.setId(entity.id);
-        user.reportedUsers = entity.reportedUsers.map(reported => ({
-            userId: reported.userId,
-            predefinedReason: reported.predefinedReason,
-            comment: reported.comment
-        }));
+        user.reportedUsers = entity.reportedUsers.map(reported => {
+            const reportedUser = new ReportedUser(
+                reported.userId,
+                reported.predefinedReason,
+                reported.comment
+            );
+            reportedUser.setId(reported.id);
+            return reportedUser;
+        });
         return user;
     }
 
@@ -29,7 +34,7 @@ export class UserMapper {
         entity.blockedUsers = user.blockedUsers;
         entity.reportedUsers = user.reportedUsers.map(reported => {
             const reportedEntity = new ReportedUsersEntity();
-            reportedEntity.id = reported.id;
+            reportedEntity.id = reported.getId().toString();
             reportedEntity.userId = reported.userId;
             reportedEntity.predefinedReason = reported.predefinedReason;
             reportedEntity.comment = reported.comment || "";

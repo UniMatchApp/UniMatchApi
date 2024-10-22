@@ -1,7 +1,6 @@
-import { ValueObject } from "@/core/shared/domain/ValueObject";
+import { Entity } from "@/core/shared/domain/Entity";
 
-export class ReportedUser extends ValueObject {
-    private _id: string;
+export class ReportedUser extends Entity {
     private _userId: string;
     private _predefinedReason: string;
     private _comment?: string;

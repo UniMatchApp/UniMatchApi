@@ -27,8 +27,6 @@ export class User extends AggregateRoot {
         this._email = email;
         this._password = password;
         this._blockedUsers = blockedUsers;
-
-        this.recordEvent(new NewUser(this.getId().toString(), email));
     }
 
     public get code(): string {
@@ -117,9 +115,12 @@ export class User extends AggregateRoot {
         return this._reportedUsers;
     }
     
-
     public delete(): void {
         this.makeInactive();
         this.recordEvent(new UserHasDeletedTheAccount(this.getId().toString()));
+    }
+
+    public create(user: User): void {
+        this.recordEvent(NewUser.from(user));
     }
 }

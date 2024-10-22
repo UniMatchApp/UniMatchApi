@@ -1,10 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, Unique } from "typeorm";
 import { ReportedUsersEntity } from "./ReportedUsersEntity";
-import { json } from "stream/consumers";
 
 @Entity('users')
 export class UserEntity {
-    @PrimaryGeneratedColumn()
+    @Column(Unique)
     id!: string;
 
     @Column()
@@ -13,7 +12,7 @@ export class UserEntity {
     @Column()
     registrationDate!: Date;
 
-    @Column()
+    @Column(Unique)
     email!: string;
 
     @Column()
