@@ -1,9 +1,4 @@
-export class LoginUserDTO {
-    public readonly email: string;
-    public readonly password: string;
-
-    constructor(email: string, password: string) {
-        this.email = email;
-        this.password = password;
-    }
+export interface LoginUserDTO {
+    email: string;
+    password: string;
 }
