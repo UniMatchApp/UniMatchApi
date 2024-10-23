@@ -1,8 +1,9 @@
 import { Entity, Column, Unique } from 'typeorm';
 
 @Entity('events')
+@Unique(['id'])
 export class EventEntity {
-  @Column(Unique)
+  @Column()
   id!: string;
 
   @Column()
