@@ -9,7 +9,7 @@ const userRepository = new UserRepository();
 const profileRepository = new ProfileRepository();
 const userController = new UserController(userRepository, profileRepository, eventBus);
 
-// User endpoints
+
 router.post('/users', userController.createUser.bind(userController));
 router.delete('/users/:id', userController.deleteUser.bind(userController));
 router.post('/users/:id/block', userController.blockUser.bind(userController));

@@ -46,6 +46,8 @@ import { DeletePhotoFromTheWallCommand } from '@/core/uniMatch/user/application/
 import { DeletePhotoFromTheWallDTO } from '@/core/uniMatch/user/application/DTO/DeletePhotoFromTheWallDTO';
 import { ReportUserCommand } from '@/core/uniMatch/user/application/commands/ReportUserCommand';
 import { ReportUserDTO } from '@/core/uniMatch/user/application/DTO/ReportUserDTO';
+import { LoginUserCommand } from '@/core/uniMatch/user/application/commands/LoginUserCommand';
+import { LoginUserDTO } from '@/core/uniMatch/user/application/DTO/LoginUserDTO';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -402,6 +404,18 @@ export class UserController {
         });
     }
 
-    
+    // Echar un vistazo a este método
+    async login(req: Request, res: Response): Promise<void> {
+        var command = new LoginUserCommand(this.userRepository);
+        var dto = { ...req.body } as LoginUserDTO;
+        return command.run(dto).then((result: Result<User>) => {
+            if (result.isSuccess()) {
+                res.json(result.getValue());
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }   
 
 }
