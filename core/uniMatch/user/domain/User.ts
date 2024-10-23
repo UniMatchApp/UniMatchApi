@@ -51,18 +51,14 @@ export class User extends AggregateRoot {
         this.recordEvent(new UserHasChangedEmail(this.getId().toString(), value));
     }
 
-    public get password(): string {
-        return this._password;
-    }
-
-    public set password(value: string) {
-        const hasUpperCase = /[A-Z]/.test(value);
-        const hasLowerCase = /[a-z]/.test(value);
-        const hasNumber = /\d/.test(value);
-        const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+    public validatePassword(password: string): boolean {
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasLowerCase = /[a-z]/.test(password);
+        const hasNumber = /\d/.test(password);
+        const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
         const minLength = 8;
 
-        if (value.length < minLength) {
+        if (password.length < minLength) {
             throw new DomainError(`Password must be at least ${minLength} characters long.`);
         }
 
@@ -71,6 +67,16 @@ export class User extends AggregateRoot {
                 "Password must include uppercase, lowercase, a number, and a special character."
             );
         }
+
+        return true;
+    }
+
+    public get password(): string {
+        return this._password;
+    }
+
+    public set password(value: string) {
+        this.validatePassword(value);
 
         this._password = value;
 
