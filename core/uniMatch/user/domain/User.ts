@@ -2,7 +2,6 @@ import {AggregateRoot} from "@/core/shared/domain/AggregateRoot ";
 import {DomainError} from "@/core/shared/exceptions/DomainError";
 import {UserHasChangedEmail} from "./events/UserHasChangedEmail";
 import {UserHasChangedPassword} from "./events/UserHasChangedPassword";
-import {Profile} from "./Profile";
 import {UserHasDeletedTheAccount} from "./events/UserHasDeletedTheAccount";
 import {NewUser} from "./events/NewUser";
 import { ReportedUser } from "./ReportedUser";
@@ -120,7 +119,7 @@ export class User extends AggregateRoot {
         this.recordEvent(new UserHasDeletedTheAccount(this.getId().toString()));
     }
 
-    public create(user: User): void {
-        this.recordEvent(NewUser.from(user));
+    public create(): void {
+        this.recordEvent(NewUser.from(this));
     }
 }

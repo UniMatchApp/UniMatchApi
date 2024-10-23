@@ -40,6 +40,8 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
                 attachmentUrl
             )
 
+            message.send();
+
             await this.repository.create(message);
             this.eventBus.publish(message.pullDomainEvents());
 

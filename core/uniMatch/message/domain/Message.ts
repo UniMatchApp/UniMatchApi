@@ -31,14 +31,6 @@ export class Message extends AggregateRoot {
         this._attachment = attachment;
         this._status = MessageStatusEnum.SENT;
         this._deletedStatus = MessageStatusEnum.NOT_DELETED;
-        this.recordEvent(new NewMessage(
-            this.getId().toString(), 
-            content, 
-            sender, 
-            recipient,
-            attachment
-        ));
-
     }
 
     public get content(): string {
@@ -115,5 +107,9 @@ export class Message extends AggregateRoot {
             this._content,
             this._attachment
         ));
+    }
+
+    public send(): void {
+        this.recordEvent(NewMessage.from(this));
     }
 }

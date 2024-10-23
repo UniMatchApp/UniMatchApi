@@ -39,7 +39,6 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
 
             const profileUrl = await this.fileHandler.save(UUID.generate().toString(), request.image);
 
-            // Create the profile
             const profile = new Profile(
                 request.userId,
                 request.name,
@@ -54,6 +53,8 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
                 [profileUrl]
             )
             profile.preferredImage = profileUrl;
+
+            profile.create();
 
             await this.profileRepository.create(profile);
             this.eventBus.publish(user.pullDomainEvents());

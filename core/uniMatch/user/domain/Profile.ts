@@ -343,7 +343,7 @@ export class Profile extends AggregateRoot {
         this._personalityType = value;
     }
 
-    public create(profile: Profile): void {
-        this.recordEvent(NewProfile.from(profile));
+    public create(): void {
+        this.recordEvent(NewProfile.from(this));
     }
 }

@@ -29,6 +29,8 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, User> {
                 request.email,
                 request.password
             );
+
+            user.create();
             
             await this.repository.create(user);
             this.eventBus.publish(user.pullDomainEvents());
