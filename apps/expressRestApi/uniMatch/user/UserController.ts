@@ -4,7 +4,6 @@ import { IUserRepository } from '@/core/uniMatch/user/application/ports/IUserRep
 import { IEventBus } from '@/core/shared/application/IEventBus';
 import { FileHandler } from '@/core/uniMatch/event/infrastructure/FileHandler';
 import { CreateNewUserCommand } from '@/core/uniMatch/user/application/commands/CreateNewUserCommand';
-import { CreateNewUserDTO } from '@/core/uniMatch/user/application/DTO/CreateNewUserDTO';
 import { ErrorHandler } from '../../ErrorHandler';
 import { User } from '@/core/uniMatch/user/domain/User';
 import { Result } from '@/core/shared/domain/Result';
@@ -47,10 +46,11 @@ import { DeletePhotoFromTheWallDTO } from '@/core/uniMatch/user/application/DTO/
 import { ReportUserCommand } from '@/core/uniMatch/user/application/commands/ReportUserCommand';
 import { ReportUserDTO } from '@/core/uniMatch/user/application/DTO/ReportUserDTO';
 import { LoginUserCommand } from '@/core/uniMatch/user/application/commands/LoginUserCommand';
-import { LoginUserDTO } from '@/core/uniMatch/user/application/DTO/LoginUserDTO';
 import { CreateNewProfileCommand } from '@/core/uniMatch/user/application/commands/CreateNewProfileCommand';
 import { Profile } from '@/core/uniMatch/user/domain/Profile';
 import { CreateNewProfileDTO } from '@/core/uniMatch/user/application/DTO/CreateNewProfileDTO';
+import { GetProfileCommand } from '@/core/uniMatch/user/application/commands/GetProfileCommand';
+import { GetProfileDTO } from '@/core/uniMatch/user/application/DTO/GetProfileDTO';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -68,8 +68,7 @@ export class UserController {
     // Create y delete user crearán y eliminarán el perfil asociado al usuario??? 
     async createUser(req: Request, res: Response): Promise<void> {
         var command = new CreateNewUserCommand(this.userRepository, this.eventBus);
-        var dto = req.body as CreateNewUserDTO;
-        return command.run(dto).then((result: Result<User>) => {
+        return command.run(req.body).then((result: Result<User>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());
             } else {
@@ -107,9 +106,23 @@ export class UserController {
         });
     }
 
+    async getProfile(req: Request, res: Response): Promise<void> {
+        var id = req.params.id;
+        var query = new GetProfileCommand(this.profileRepository);
+        var dto = { id: id } as GetProfileDTO;
+        return query.run(dto).then((result: Result<Profile>) => {
+            if (result.isSuccess()) {
+                res.json(result.getValue());
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
     async blockUser(req: Request, res: Response): Promise<void> {
         var id = req.params.id;
-        var blockUserId = req.body.blockUserId;
+        var blockUserId = req.params.targetId;
         var command = new BlockUserCommand(this.userRepository);
         var dto = { userId: id, blockUserId: blockUserId} as BlockUserDTO;
         return command.run(dto).then((result: Result<void>) => {
@@ -394,7 +407,7 @@ export class UserController {
     
     async deletePhoto(req: Request, res: Response): Promise<void> {
         var id = req.params.id;
-        var photoURL = req.body.photoURL;
+        var photoURL = req.params.photoUrl;
         var command = new DeletePhotoFromTheWallCommand(this.profileRepository, this.fileHandler);
         var dto = { id: id, photoURL: photoURL } as DeletePhotoFromTheWallDTO;
         return command.run(dto).then((result: Result<void>) => {
@@ -424,8 +437,7 @@ export class UserController {
     // Echar un vistazo a este método
     async login(req: Request, res: Response): Promise<void> {
         var command = new LoginUserCommand(this.userRepository);
-        var dto = { ...req.body } as LoginUserDTO;
-        return command.run(dto).then((result: Result<User>) => {
+        return command.run(req.body).then((result: Result<User>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());
             } else {
