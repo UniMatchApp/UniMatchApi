@@ -48,6 +48,9 @@ import { ReportUserCommand } from '@/core/uniMatch/user/application/commands/Rep
 import { ReportUserDTO } from '@/core/uniMatch/user/application/DTO/ReportUserDTO';
 import { LoginUserCommand } from '@/core/uniMatch/user/application/commands/LoginUserCommand';
 import { LoginUserDTO } from '@/core/uniMatch/user/application/DTO/LoginUserDTO';
+import { CreateNewProfileCommand } from '@/core/uniMatch/user/application/commands/CreateNewProfileCommand';
+import { Profile } from '@/core/uniMatch/user/domain/Profile';
+import { CreateNewProfileDTO } from '@/core/uniMatch/user/application/DTO/CreateNewProfileDTO';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -78,9 +81,23 @@ export class UserController {
 
     async deleteUser(req: Request, res: Response): Promise<void> {
         var id = req.params.id;
-        var command = new DeleteUserCommand(this.userRepository, this.eventBus);
+        var command = new DeleteUserCommand(this.userRepository, this.profileRepository, this.eventBus);
         var dto = { userId: id } as DeleteUserDTO;
         return command.run(dto).then((result: Result<void>) => {
+            if (result.isSuccess()) {
+                res.json(result.getValue());
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async createProfile(req: Request, res: Response): Promise<void> {
+        var command = new CreateNewProfileCommand(this.userRepository, this.profileRepository, this.fileHandler, this.eventBus);
+        var userId = req.params.id;
+        var dto = {userId: userId, ...req.body} as CreateNewProfileDTO;
+        return command.run(dto).then((result: Result<Profile>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());
             } else {
