@@ -1,15 +1,13 @@
 import { IEventHandler } from "@/core/shared/application/IEventHandler";
-import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { IAppNotifications } from "../ports/IAppNotifications";
-import { NotificationTypeEnum } from "../../domain/enum/NotificationTypeEnum";
+import { Notification } from "../../domain/Notification";
+import { MessageStatusEnum } from "@/core/shared/domain/MessageStatusEnum";
 
 export class DeletedMessageEventHandler implements IEventHandler {
-    private readonly repository: INotificationsRepository;
     private readonly appNotifications: IAppNotifications;
 
-    constructor(repository: INotificationsRepository, appNotifications: IAppNotifications) {
-        this.repository = repository;
+    constructor(appNotifications: IAppNotifications) {
         this.appNotifications = appNotifications;
     }
 
@@ -17,22 +15,34 @@ export class DeletedMessageEventHandler implements IEventHandler {
         try {
             const messageId = event.getPayload().get("messageId");
             const recipient = event.getAggregateId();
+            const sender = event.getPayload().get("sender");
     
             if (!messageId || !recipient) {
                 throw new ErrorEvent("Recipient and MessageID is required to delete a message.");
             }
-    
-            const notification = await this.repository.findByTypeAndTypeId(NotificationTypeEnum.MESSAGE, messageId);
-    
-    
-            await this.appNotifications.cancelNotification(notification[0]);
-            await this.repository.deleteById(notification[0].getId());
+
+            if (!sender) {
+                throw new ErrorEvent("Sender is required to delete a message.");
+            }
+     
+            const notification = Notification.createMessageNotification(
+                messageId,
+                new Date(),
+                recipient,
+                "Message deleted",
+                sender,
+                undefined,
+                undefined,
+                MessageStatusEnum.DELETED_FOR_BOTH
+            );
+
+            this.appNotifications.sendNotification(notification);
         } catch (error: any) {
             throw error;
         }
     }
 
     getEventId(): string {
-        return "delete-message";
+        return "deleted-message";
     }
 }

@@ -1,38 +1,29 @@
-import { DomainError } from "@/core/shared/exceptions/DomainError";
-import { Entity } from "@/core/shared/domain/Entity";
+import { EventStatusType } from "../enum/EventStatusEnum";
+import { NotificationPayload } from "../NotificationPayload";
 
-class Event extends Entity {
-    private _title: string;
-    private _participants: string[];
+export class Event extends NotificationPayload {
+    private title: string;
+    private status: EventStatusType;
 
-    constructor(
-        title: string,
-        participants: string[]
-    ) {
-        super();
-        this._title = title;
-        this._participants = participants;
+    constructor(id: string, title: string, status: EventStatusType) {
+        super(id);
+        this.title = title;
+        this.status = status;
     }
 
-    public get title(): string {
-        return this._title;
+    public get getTitle(): string {
+        return this.title;
     }
 
-    public set title(value: string) {
-        if (value.length === 0) {
-            throw new DomainError("Title cannot be empty.");
-        }
-        this._title = value;
+    public set setTitle(title: string) {
+        this.title = title;
     }
 
-    public get participants(): string[] {
-        return this._participants;
+    public get getStatus(): EventStatusType {
+        return this.status;
     }
 
-    public set participants(value: string[]) {
-        if (value.length === 0) {
-            throw new DomainError("Participants cannot be empty.");
-        }
-        this._participants = value;
+    public set setStatus(status: EventStatusType) {
+        this.status = status;
     }
 }

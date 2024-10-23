@@ -35,6 +35,7 @@ export class NewMessageEventHandler implements IEventHandler {
                 recipient,
                 content,
                 sender,
+                undefined,
                 thumbnail
             );
 

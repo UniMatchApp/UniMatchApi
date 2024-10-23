@@ -1,142 +1,14 @@
-import {DomainError} from "@/core/shared/exceptions/DomainError";
-import {NotificationTypeEnum} from "./enum/NotificationTypeEnum";
-import {AggregateRoot} from "@/core/shared/domain/AggregateRoot ";
-import {EventStatusEnum, EventStatusType} from "./enum/EventStatusEnum";
-import {
-    NotificationStatusEnum,
-    NotificationStatusType
-} from "@/core/uniMatch/notifications/domain/NotificationStatusEnum";
-
-abstract class NotificationPayload {
-    private id: string;
-
-    constructor(id: string) {
-        this.id = id;
-    }
-
-    public get getId(): string {
-        return this.id;
-    }
-}
-
-
-class Event extends NotificationPayload {
-    private title: string;
-    private status: EventStatusType;
-
-    constructor(id: string, title: string, status: EventStatusType) {
-        super(id);
-        this.title = title;
-        this.status = status;
-    }
-
-    public get getTitle(): string {
-        return this.title;
-    }
-
-    public set setTitle(title: string) {
-        this.title = title;
-    }
-
-    public get getStatus(): EventStatusType {
-        return this.status;
-    }
-
-    public set setStatus(status: EventStatusType) {
-        this.status = status
-    }
-}
-
-class Message extends NotificationPayload {
-    private content: string;
-    private sender: string;
-    private thumbnail?: string;
-
-    constructor(id: string, content: string, sender: string, thumbnail?: string) {
-        super(id);
-        this.content = content;
-        this.sender = sender;
-        this.thumbnail = thumbnail;
-    }
-
-    public get getContent(): string {
-        return this.content;
-    }
-
-    public set setContent(content: string) {
-        this.content = content;
-    }
-
-    public get getSender(): string {
-        return this.sender;
-    }
-
-    public set setSender(sender: string) {
-        this.sender = sender;
-    }
-
-    public get getThumbnail(): (string | undefined) {
-        return this.thumbnail;
-    }
-
-    public set setThumbnail(thumbnail: string | undefined) {
-        this.thumbnail = thumbnail;
-    }
-}
-
-class Match extends NotificationPayload {
-    private userMatched: string;
-    private isLiked: boolean;
-
-    constructor(id: string, userMatched: string, isLiked: boolean) {
-        super(id);
-        this.userMatched = userMatched;
-        this.isLiked = isLiked;
-    }
-
-    public get getUserMatched(): string {
-        return this.userMatched;
-    }
-
-    public set setUserMatched(userMatched: string) {
-        this.userMatched = userMatched;
-    }
-
-    public get getIsLiked(): boolean {
-        return this.isLiked;
-    }
-
-    public set setIsLiked(isLiked: boolean) {
-        this.isLiked = isLiked;
-    }
-}
-
-class App extends NotificationPayload {
-    private title: string;
-    private description: string;
-
-    constructor(id: string, title: string, description: string) {
-        super(id);
-        this.title = title;
-        this.description = description;
-    }
-
-    public get getTitle(): string {
-        return this.title;
-    }
-
-    public set setTitle(title: string) {
-        this.title = title;
-    }
-
-    public get getDescription(): string {
-        return this.description;
-    }
-
-    public set setDescription(description: string) {
-        this.description = description;
-    }
-}
+import { NotificationPayload } from "./NotificationPayload";
+import { NotificationTypeEnum } from "./enum/NotificationTypeEnum";
+import { EventStatusType } from "./enum/EventStatusEnum";
+import { NotificationStatusEnum, NotificationStatusType } from "./enum/NotificationStatusEnum";
+import { DomainError } from "@/core/shared/exceptions/DomainError";
+import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
+import { Message } from "./entities/Message";
+import { Match } from "./entities/Match";
+import { App } from "./entities/App";
+import { Event } from "./entities/Event";
+import { DeletedMessageStatusType, MessageStatusType } from "@/core/shared/domain/MessageStatusEnum";
 
 export class Notification extends AggregateRoot {
     private _type: NotificationTypeEnum;
@@ -162,22 +34,49 @@ export class Notification extends AggregateRoot {
         this._payload = payload;
     }
 
-    public static createEventNotification(contentId: string, date: Date, recipient: string, title: string, status: EventStatusType): Notification {
+    public static createEventNotification(
+        contentId: string, 
+        date: Date, 
+        recipient: string, 
+        title: string, 
+        status: EventStatusType
+    ): Notification {
         const payload = new Event(contentId, title, status);
         return new Notification(contentId, NotificationTypeEnum.EVENT, date, recipient, payload);
     }
 
-    public static createMessageNotification(contentId: string, date: Date, recipient: string, content: string, sender: string, thumbnail?: string): Notification {
-        const payload = new Message(contentId, content, sender, thumbnail);
+    public static createMessageNotification(
+        contentId: string, 
+        date: Date, 
+        recipient: string, 
+        content: string, 
+        sender: string, 
+        status?: MessageStatusType, 
+        thumbnail?: string,
+        deletedStatus?: DeletedMessageStatusType
+    ): Notification {
+        const payload = new Message(contentId, content, sender, status, thumbnail, deletedStatus);
         return new Notification(contentId, NotificationTypeEnum.MESSAGE, date, recipient, payload);
     }
 
-    public static createMatchNotification(contentId: string, date: Date, recipient: string, userMatched: string, isLiked: boolean): Notification {
+    public static createMatchNotification(
+        contentId: string, 
+        date: Date, 
+        recipient: string, 
+        userMatched: string, 
+        isLiked: boolean
+    ): Notification {
         const payload = new Match(contentId, userMatched, isLiked);
         return new Notification(contentId, NotificationTypeEnum.MATCH, date, recipient, payload);
     }
 
-    public static createAppNotification(contentId: string, date: Date, recipient: string, title: string, description: string): Notification {
+    public static createAppNotification(
+        contentId: string, 
+        date: Date, 
+        recipient: string, 
+        title: string, 
+        description: string
+    ): Notification {
         const payload = new App(contentId, title, description);
         return new Notification(contentId, NotificationTypeEnum.APP, date, recipient, payload);
     }

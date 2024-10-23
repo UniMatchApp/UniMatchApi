@@ -1,53 +1,59 @@
-import { DomainError } from "@/core/shared/exceptions/DomainError";
-import { Entity } from "@/core/shared/domain/Entity";
+import { NotificationPayload } from "../NotificationPayload";
+import { MessageStatusType, DeletedMessageStatusType } from "@/core/shared/domain/MessageStatusEnum";
 
-class Message extends Entity {
-    private _recipient: string;
-    private _message: string;
-    private _sender: string;
+export class Message extends NotificationPayload {
+    private content: string;
+    private sender: string;
+    private thumbnail?: string;
+    private status?: MessageStatusType;
+    private deletedStatus?: DeletedMessageStatusType;
 
-    constructor(
-        recipient: string,
-        message: string,
-        sender: string
-    ) {
-        super();
-        this._recipient = recipient;
-        this._message = message;
-        this._sender = sender;
+    constructor(id: string, content: string, sender: string, status?: MessageStatusType, thumbnail?: string, deletedStatus?: DeletedMessageStatusType) {
+        super(id);
+        this.content = content;
+        this.sender = sender;
+        this.status = status;
+        this.thumbnail = thumbnail;
+        this.deletedStatus = deletedStatus;
     }
 
-    public get recipient(): string {
-        return this._recipient;
+    public get getContent(): string {
+        return this.content;
     }
 
-    public set recipient(value: string) {
-        if (value.length === 0) {
-            throw new DomainError("Recipient cannot be empty.");
-        }
-        this._recipient = value;
+    public set setContent(content: string) {
+        this.content = content;
     }
 
-    public get message(): string {
-        return this._message;
+    public get getSender(): string {
+        return this.sender;
     }
 
-    public set message(value: string) {
-        if (value.length === 0) {
-            throw new DomainError("Message content cannot be empty.");
-        }
-        this._message = value;
+    public set setSender(sender: string) {
+        this.sender = sender;
     }
 
-    public get sender(): string {
-        return this._sender;
+    public get getThumbnail(): (string | undefined) {
+        return this.thumbnail;
     }
 
-    public set sender(value: string) {
-        if (value.length === 0) {
-            throw new DomainError("Sender cannot be empty.");
-        }
-        this._sender = value;
+    public set setThumbnail(thumbnail: string | undefined) {
+        this.thumbnail = thumbnail;
     }
 
+    public get getStatus(): MessageStatusType | undefined {
+        return this.status;
+    }
+
+    public set setStatus(status: MessageStatusType) {
+        this.status = status;
+    }
+
+    public get getDeletedStatus(): (DeletedMessageStatusType | undefined) {
+        return this.deletedStatus;
+    }
+
+    public set setDeletedStatus(deletedStatus: DeletedMessageStatusType | undefined) {
+        this.deletedStatus = deletedStatus;
+    }
 }
