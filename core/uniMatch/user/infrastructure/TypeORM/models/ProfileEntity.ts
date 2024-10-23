@@ -1,11 +1,12 @@
 import { Entity, Column, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 @Entity('Profile')
+@Unique(['id', 'userId'])
 export class ProfileEntity {
-    @Column(Unique)
+    @Column()
     id!: string;
 
-    @Column(Unique)
+    @Column()
     userId!: string;
 
     @Column()

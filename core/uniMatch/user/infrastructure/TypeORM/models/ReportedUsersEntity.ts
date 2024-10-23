@@ -1,8 +1,9 @@
 import { Entity, Column, Unique } from "typeorm";
 
 @Entity('reported_users')
+@Unique(['id'])
 export class ReportedUsersEntity {
-    @Column(Unique)
+    @Column()
     id!: string;
 
     @Column()

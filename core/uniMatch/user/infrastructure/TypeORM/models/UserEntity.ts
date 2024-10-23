@@ -2,8 +2,9 @@ import { Entity, Column, Unique } from "typeorm";
 import { ReportedUsersEntity } from "./ReportedUsersEntity";
 
 @Entity('users')
+@Unique(['id', 'email'])
 export class UserEntity {
-    @Column(Unique)
+    @Column()
     id!: string;
 
     @Column()
@@ -12,7 +13,7 @@ export class UserEntity {
     @Column()
     registrationDate!: Date;
 
-    @Column(Unique)
+    @Column()
     email!: string;
 
     @Column()
