@@ -1,10 +1,10 @@
 
 import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
 import { DomainError } from "@/core/shared/exceptions/DomainError";
-import { NewMessage } from "./events/NewMessage";
 import { DeletedMessageEvent } from "./events/DeletedMessageEvent";
-import { EditedMessage } from "./events/EditedMessage";
-import {MessageStatusType, MessageStatusEnum, DeletedMessageStatusType} from "@/core/uniMatch/message/domain/MessageStatusEnum";
+import {MessageStatusType, MessageStatusEnum, DeletedMessageStatusType} from "@/core/shared/domain/MessageStatusEnum";
+import { EditedMessageEvent } from "./events/EditedMessageEvent";
+import { NewMessageEvent } from "./events/NewMessageEvent";
 
 
 export class Message extends AggregateRoot {
@@ -89,27 +89,23 @@ export class Message extends AggregateRoot {
     public deleteBySender(): void {
         this._deletedStatus = MessageStatusEnum.DELETED_BY_SENDER;
         this.setIsActive(false);
-        this.recordEvent(DeletedMessageEvent.from(this));
+        // this.recordEvent(DeletedMessageEvent.from(this));
     }
 
     public deleteByRecipient(): void {
         this._deletedStatus = MessageStatusEnum.DELETED_BY_RECIPIENT;
         this.setIsActive(false);
-        this.recordEvent(DeletedMessageEvent.from(this));
+        // this.recordEvent(DeletedMessageEvent.from(this));
     }
 
     public edit(content: string, attachment?: string): void {
         this.content = content;
         this.attachment = attachment;
         this.timestamp = new Date();
-        this.recordEvent(new EditedMessage(
-            this.getId().toString(),
-            this._content,
-            this._attachment
-        ));
+        this.recordEvent(EditedMessageEvent.from(this));
     }
 
     public send(): void {
-        this.recordEvent(NewMessage.from(this));
+        this.recordEvent(NewMessageEvent.from(this));
     }
 }
