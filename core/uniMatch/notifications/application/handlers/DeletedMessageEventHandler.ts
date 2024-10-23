@@ -3,12 +3,16 @@ import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { IAppNotifications } from "../ports/IAppNotifications";
 import { Notification } from "../../domain/Notification";
 import { MessageStatusEnum } from "@/core/shared/domain/MessageStatusEnum";
+import { INotificationsRepository } from "../ports/INotificationsRepository";
+import { NotificationTypeEnum } from "../../domain/enum/NotificationTypeEnum";
 
 export class DeletedMessageEventHandler implements IEventHandler {
     private readonly appNotifications: IAppNotifications;
+    private readonly repository: INotificationsRepository;
 
-    constructor(appNotifications: IAppNotifications) {
+    constructor(appNotifications: IAppNotifications, repository: INotificationsRepository) {
         this.appNotifications = appNotifications;
+        this.repository = repository;
     }
 
     async handle(event: DomainEvent): Promise<void> {
@@ -23,6 +27,12 @@ export class DeletedMessageEventHandler implements IEventHandler {
 
             if (!sender) {
                 throw new ErrorEvent("Sender is required to delete a message.");
+            }
+
+            const oldNotification = await this.repository.findByTypeAndTypeId(NotificationTypeEnum.MESSAGE, messageId);
+
+            if (oldNotification) {
+                await this.repository.deleteById(oldNotification.getId());
             }
      
             const notification = Notification.createMessageNotification(

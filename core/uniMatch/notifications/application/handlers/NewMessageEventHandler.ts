@@ -16,7 +16,6 @@ export class NewMessageEventHandler implements IEventHandler {
     async handle(event: DomainEvent): Promise<void> {
         try {
             const sender = event.getPayload().get("sender");
-            const thumbnail = event.getPayload().get("attachment");
             const content = event.getPayload().get("content");
             const recipient = event.getPayload().get("recipient");
             const id = event.getAggregateId();
@@ -36,7 +35,7 @@ export class NewMessageEventHandler implements IEventHandler {
                 content,
                 sender,
                 undefined,
-                thumbnail
+                undefined
             );
 
             this.repository.create(notification);

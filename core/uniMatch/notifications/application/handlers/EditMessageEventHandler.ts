@@ -3,13 +3,17 @@ import {DomainEvent} from "@/core/shared/domain/DomainEvent";
 import {IAppNotifications} from "../ports/IAppNotifications";
 import { MessageStatusEnum } from "@/core/shared/domain/MessageStatusEnum";
 import { Notification } from "../../domain/Notification";
+import { INotificationsRepository } from "../ports/INotificationsRepository";
+import { NotificationTypeEnum } from "../../domain/enum/NotificationTypeEnum";
 
 
 export class EditMessageEventHandler implements IEventHandler {
     private readonly appNotifications: IAppNotifications;
+    private readonly repository: INotificationsRepository;
 
-    constructor(appNotifications: IAppNotifications) {
+    constructor(appNotifications: IAppNotifications, repository: INotificationsRepository) {
         this.appNotifications = appNotifications;
+        this.repository = repository;
     }
 
     async handle(event: DomainEvent): Promise<void> {
@@ -28,17 +32,24 @@ export class EditMessageEventHandler implements IEventHandler {
                 throw new ErrorEvent("Sender is required to edit a message.");
             }
 
+            const oldNotification = await this.repository.findByTypeAndTypeId(NotificationTypeEnum.MESSAGE, messageId);
+
+            if (oldNotification) {
+                await this.repository.deleteById(oldNotification.getId());
+            }
+
             const notification = Notification.createMessageNotification(
                 messageId,
                 new Date(),
                 recipient,
-                "Message edited",
+                newContent,
                 sender,
                 MessageStatusEnum.EDITED,
                 thumbnail,
                 undefined
             );
-
+            
+            this.repository.create(notification);
             this.appNotifications.sendNotification(notification);
         } catch (error: any) {
             throw error;
