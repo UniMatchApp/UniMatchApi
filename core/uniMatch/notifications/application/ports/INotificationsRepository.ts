@@ -3,5 +3,6 @@ import { Notification } from "../../domain/Notification";
 
 export interface INotificationsRepository extends IRepository<Notification> {
     deleteAllNotificationsByRecipient(recipient: string): Promise<void>;
-    findByTypeAndTypeId(type: string, typeId: string): Promise<Notification>;
+    findByTypeAndTypeId(type: string, typeId: string): Promise<Notification[]>;
+    findLastNotificationByTypeAndTypeId(type: string, typeId: string): Promise<Notification | null>;
 }

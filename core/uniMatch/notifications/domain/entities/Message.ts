@@ -2,58 +2,58 @@ import { NotificationPayload } from "../NotificationPayload";
 import { MessageStatusType, DeletedMessageStatusType } from "@/core/shared/domain/MessageStatusEnum";
 
 export class Message extends NotificationPayload {
-    private content: string;
-    private sender: string;
-    private thumbnail?: string;
-    private status?: MessageStatusType;
-    private deletedStatus?: DeletedMessageStatusType;
+    private _content: string;
+    private _sender: string;
+    private _thumbnail?: string;
+    private _status?: MessageStatusType;
+    private _deletedStatus?: DeletedMessageStatusType;
 
     constructor(id: string, content: string, sender: string, status?: MessageStatusType, thumbnail?: string, deletedStatus?: DeletedMessageStatusType) {
         super(id);
-        this.content = content;
-        this.sender = sender;
-        this.status = status;
-        this.thumbnail = thumbnail;
-        this.deletedStatus = deletedStatus;
+        this._content = content;
+        this._sender = sender;
+        this._thumbnail = thumbnail;
+        this._status = status;
+        this._deletedStatus = deletedStatus;
     }
 
-    public get getContent(): string {
-        return this.content;
+    public get content(): string {
+        return this._content;
     }
 
-    public set setContent(content: string) {
-        this.content = content;
+    public set content(content: string) {
+        this._content = content;
     }
 
-    public get getSender(): string {
-        return this.sender;
+    public get sender(): string {
+        return this._sender;
     }
 
-    public set setSender(sender: string) {
-        this.sender = sender;
+    public set sender(sender: string) {
+        this._sender = sender;
     }
 
-    public get getThumbnail(): (string | undefined) {
-        return this.thumbnail;
+    public get thumbnail(): string | undefined {
+        return this._thumbnail;
     }
 
-    public set setThumbnail(thumbnail: string | undefined) {
-        this.thumbnail = thumbnail;
+    public set thumbnail(thumbnail: string | undefined) {
+        this._thumbnail = thumbnail;
     }
 
-    public get getStatus(): MessageStatusType | undefined {
-        return this.status;
+    public get status(): MessageStatusType | undefined {
+        return this._status;
     }
 
-    public set setStatus(status: MessageStatusType) {
-        this.status = status;
+    public set status(status: MessageStatusType | undefined) {
+        this._status = status;
     }
 
-    public get getDeletedStatus(): (DeletedMessageStatusType | undefined) {
-        return this.deletedStatus;
+    public get deletedStatus(): DeletedMessageStatusType | undefined {
+        return this._deletedStatus;
     }
 
-    public set setDeletedStatus(deletedStatus: DeletedMessageStatusType | undefined) {
-        this.deletedStatus = deletedStatus;
+    public set deletedStatus(deletedStatus: DeletedMessageStatusType | undefined) {
+        this._deletedStatus = deletedStatus;
     }
 }

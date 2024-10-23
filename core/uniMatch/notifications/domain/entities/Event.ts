@@ -2,28 +2,29 @@ import { EventStatusType } from "../enum/EventStatusEnum";
 import { NotificationPayload } from "../NotificationPayload";
 
 export class Event extends NotificationPayload {
-    private title: string;
-    private status: EventStatusType;
+    private _title: string;
+    private _status: EventStatusType;
 
     constructor(id: string, title: string, status: EventStatusType) {
         super(id);
-        this.title = title;
-        this.status = status;
+        this._title = title;
+        this._status = status;
     }
 
-    public get getTitle(): string {
-        return this.title;
+    public get title(): string {
+        return this._title;
     }
 
-    public set setTitle(title: string) {
-        this.title = title;
+    public set title(title: string) {
+        this._title = title;
     }
 
-    public get getStatus(): EventStatusType {
-        return this.status;
+    public get status(): EventStatusType {
+        return this._status;
     }
 
-    public set setStatus(status: EventStatusType) {
-        this.status = status;
+    public set status(status: EventStatusType) {
+        this._status = status;
     }
+
 }

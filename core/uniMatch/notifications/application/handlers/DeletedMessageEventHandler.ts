@@ -29,7 +29,7 @@ export class DeletedMessageEventHandler implements IEventHandler {
                 throw new ErrorEvent("Sender is required to delete a message.");
             }
 
-            const oldNotification = await this.repository.findByTypeAndTypeId(NotificationTypeEnum.MESSAGE, messageId);
+            const oldNotification = await this.repository.findLastNotificationByTypeAndTypeId(NotificationTypeEnum.MESSAGE, messageId)
 
             if (oldNotification) {
                 await this.repository.deleteById(oldNotification.getId());

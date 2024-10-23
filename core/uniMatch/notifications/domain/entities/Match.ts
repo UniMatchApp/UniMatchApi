@@ -1,28 +1,28 @@
 import { NotificationPayload } from "../NotificationPayload";
 
 export class Match extends NotificationPayload {
-    private userMatched: string;
-    private isLiked: boolean;
+    private _userMatched: string;
+    private _isLiked: boolean;
 
     constructor(id: string, userMatched: string, isLiked: boolean) {
         super(id);
-        this.userMatched = userMatched;
-        this.isLiked = isLiked;
+        this._userMatched = userMatched;
+        this._isLiked = isLiked;
     }
 
-    public get getUserMatched(): string {
-        return this.userMatched;
+    public get userMatched(): string {
+        return this._userMatched;
     }
 
-    public set setUserMatched(userMatched: string) {
-        this.userMatched = userMatched;
+    public set userMatched(userMatched: string) {
+        this._userMatched = userMatched;
     }
 
-    public get getIsLiked(): boolean {
-        return this.isLiked;
+    public get isLiked(): boolean {
+        return this._isLiked;
     }
 
-    public set setIsLiked(isLiked: boolean) {
-        this.isLiked = isLiked;
+    public set isLiked(isLiked: boolean) {
+        this._isLiked = isLiked;
     }
 }
