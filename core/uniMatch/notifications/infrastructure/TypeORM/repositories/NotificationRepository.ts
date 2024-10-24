@@ -1,4 +1,4 @@
-import AppDataSource from '../server';
+import AppDataSource from '../Config';
 import { Notification } from '../../../domain/Notification';
 import { INotificationsRepository } from '../../../application/ports/INotificationsRepository';
 import { NotificationMapper } from '../mappers/NotificationMapper';

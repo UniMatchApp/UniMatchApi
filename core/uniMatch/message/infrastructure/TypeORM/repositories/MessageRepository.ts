@@ -2,7 +2,7 @@ import { IMessageRepository } from '../../../application/ports/IMessageRepositor
 import { Message } from '../../../domain/Message';
 import { MessageMapper } from '../mappers/MessageMapper';
 import { MessageEntity } from '../models/MessageEntity';
-import AppDataSource from '../server';
+import AppDataSource from '../Config';
 
 export class MessageRepository implements IMessageRepository {
     private readonly messageRepository = AppDataSource.getRepository(MessageEntity);

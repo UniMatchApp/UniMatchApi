@@ -1,7 +1,7 @@
 import { IEventRepository } from '../../../application/ports/IEventRepository';
 import { EventEntity } from '../models/EventEntity';
 import { EventMapper } from '../mappers/EventMapper';
-import AppDataSource from '../server';
+import AppDataSource from '../Config';
 import { Event } from '../../../domain/Event';
 
 export class EventRepository implements IEventRepository {

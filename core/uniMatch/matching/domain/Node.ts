@@ -13,8 +13,6 @@ export class Node extends AggregateRoot {
     private _gender: Gender;
     private _genderPriority?: Gender;
     private _relationshipType: RelationshipType;
-    private _likes: Like[] = [];
-    private _dislikes: Dislike[] = [];
 
     constructor(
         userId: string,
@@ -91,27 +89,4 @@ export class Node extends AggregateRoot {
         this._gender = value;
     }
 
-    public get likes(): Like[] {
-        return this._likes;
-    }
-
-    public get dislikes(): Dislike[] {
-        return this._dislikes;
-    }
-
-    public addLike(like: Like): void {
-        this._likes.push(like);
-    }
-
-    public addDislike(dislike: Dislike): void {
-        this._dislikes.push(dislike);
-    }
-
-    public removeLike(like: Like): void {
-        this._likes = this._likes.filter((l) => l !== like);
-    }
-
-    public removeDislike(dislike: Dislike): void {
-        this._dislikes = this._dislikes.filter((d) => d !== dislike);
-    }
 }
