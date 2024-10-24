@@ -62,6 +62,11 @@ export class NotificationRepository implements INotificationsRepository {
         return count > 0;
     }
 
+    async getAllNotifications(userId: string): Promise<Notification[]> {
+        const entities = await this.notificationRepository.find({ where: { recipient: userId } });
+        return entities.map(NotificationMapper.toDomain);
+    }
+
     async update(entity: Notification, id: string): Promise<Notification> {
         const existingEntity = await this.findById(id);
         if (!existingEntity) {
