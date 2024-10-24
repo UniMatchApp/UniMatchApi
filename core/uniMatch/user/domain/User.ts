@@ -13,12 +13,14 @@ export class User extends AggregateRoot {
     private _password: string;
     private _blockedUsers: string[] = [];
     private _reportedUsers: ReportedUser[] = [];
+    private _registered: boolean;
 
     constructor(
         registrationDate: Date,
         email: string,
         password: string,
-        blockedUsers: string[] = []
+        blockedUsers: string[] = [],
+        registered: boolean = false
     ) {
         super();
         this._code = Math.floor(100000 + Math.random() * 900000).toString();
@@ -26,6 +28,7 @@ export class User extends AggregateRoot {
         this._email = email;
         this._password = password;
         this._blockedUsers = blockedUsers;
+        this._registered = registered;
     }
 
     public get code(): string {
@@ -38,6 +41,14 @@ export class User extends AggregateRoot {
 
     public get email(): string {
         return this._email;
+    }
+
+    public get registered(): boolean {
+        return this._registered;
+    }
+
+    public completeRegistration() : void {
+        this._registered = true;
     }
 
     public set email(value: string) {

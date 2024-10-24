@@ -4,11 +4,13 @@ import { IUserRepository } from "../ports/IUserRepository";
 import { Result } from "@/core/shared/domain/Result";
 import { IEventBus } from "@/core/shared/application/IEventBus";
 import { User } from "../../domain/User";
-import {ValidationError} from "@/core/shared/exceptions/ValidationError";
+import { ValidationError } from "@/core/shared/exceptions/ValidationError";
 import { IEmailNotifications } from '../../../../shared/application/IEmailNotifications';
+import { IProfileRepository } from "../ports/IProfileRepository";
 
 export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, User> {
     private readonly repository: IUserRepository;
+    private readonly profileRepository: IProfileRepository;
     private readonly eventBus: IEventBus;
     private readonly emailNotifications: IEmailNotifications;
     
@@ -22,6 +24,21 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, User> {
         try {
             // Check if the user already exists (email)
             const userExists = await this.repository.findByEmail(request.email);
+
+            if (userExists) {
+                const profileExists = await this.profileRepository.findByUserId(userExists.getId().toString());
+                
+                if (!profileExists && !userExists.registered) {
+                    await this.emailNotifications.sendEmailToOne(
+                        userExists.email,
+                        "Reenvío de código de verificación - UniMatch",
+                        `Tu código de verificación es: ${userExists.code}`
+                    );
+                    return Result.success<User>(userExists);
+                }
+
+                return Result.failure<User>(new ValidationError(`User with email ${request.email} already exists`));
+            }
 
             if (userExists) {
                 return Result.failure<User>(new ValidationError(`User with email ${request.email} already exists`));
@@ -39,8 +56,8 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, User> {
 
             await this.emailNotifications.sendEmailToOne(
                 user.email,
-                "Welcome to UniMatch!",
-                `Welcome to UniMatch! Your registration code is: ${user.code}`
+                "¡Hola, bienvenido a UniMatch!",
+                `Habla ya con tus matches. Tu código de registre es: ${user.code}`
             );
 
             this.eventBus.publish(user.pullDomainEvents());
