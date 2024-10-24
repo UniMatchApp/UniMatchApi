@@ -5,14 +5,17 @@ import { Result } from "@/core/shared/domain/Result";
 import { IEventBus } from "@/core/shared/application/IEventBus";
 import { User } from "../../domain/User";
 import {ValidationError} from "@/core/shared/exceptions/ValidationError";
+import { IEmailNotifications } from '../../../../shared/application/IEmailNotifications';
 
 export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, User> {
     private readonly repository: IUserRepository;
     private readonly eventBus: IEventBus;
+    private readonly emailNotifications: IEmailNotifications;
     
-    constructor(repository: IUserRepository, eventBus: IEventBus) {
+    constructor(repository: IUserRepository, eventBus: IEventBus, emailNotifications: IEmailNotifications) {
         this.repository = repository;
         this.eventBus = eventBus;
+        this.emailNotifications = emailNotifications;
     }
 
     async run(request: CreateNewUserDTO): Promise<Result<User>> {
@@ -33,6 +36,13 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, User> {
             user.create();
             
             await this.repository.create(user);
+
+            await this.emailNotifications.sendEmailToOne(
+                user.email,
+                "Welcome to UniMatch!",
+                `Welcome to UniMatch! Your registration code is: ${user.code}`
+            );
+
             this.eventBus.publish(user.pullDomainEvents());
             return Result.success<User>(user);
         } catch (error : any) {
