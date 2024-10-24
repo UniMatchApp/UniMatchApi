@@ -26,10 +26,7 @@ export class UserLikedSomebodyCommand implements ICommand<UserLikedSomebodyDTO, 
             }
 
             const like = new Like(user, likedUser);
-            user.addLike(like);
-            likedUser.addLike(like);
-            await this.repository.update(user, user.getId());
-            await this.repository.update(likedUser, likedUser.getId());
+            await this.repository.likeUser(like);
 
             return Result.success<void>(undefined);
         } catch (error : any) {

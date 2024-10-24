@@ -26,11 +26,7 @@ export class UserDislikedSomebodyCommand implements ICommand<UserDislikedSomebod
             }
 
             const dislike = new Dislike(user, dislikedUser);
-            user.addDislike(dislike);
-            dislikedUser.addDislike(dislike);
-            await this.repository.update(user, user.getId());
-            await this.repository.update(dislikedUser, dislikedUser.getId());
-
+            await this.repository.dislikeUser(dislike);
             return Result.success<void>(undefined);
         } catch (error : any) {
             return Result.failure<void>(error);
