@@ -5,7 +5,6 @@ import { MessageRepository } from '@/core/uniMatch/message/infrastructure/TypeOR
 
 const router = Router();
 
-// Instanciamos las dependencias necesarias para el controlador
 const messageRepository = new MessageRepository();
 const messageController = new MessageController(messageRepository, eventBus);
 

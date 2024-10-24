@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { eventBus } from '../Main'; // Asegúrate de que `eventBus` esté correctamente exportado desde Main
-import { NotificationsController } from '../uniMatch/notifications/NotificationsController';
+import { eventBus } from '../Main'; 
+import { NotificationsController } from '@/apps/RestApi/uniMatch/notifications/NotificationsController';
 import { NotificationRepository } from '@/core/uniMatch/notifications/infrastructure/TypeORM/repositories/NotificationRepository';
 
 const router = Router();

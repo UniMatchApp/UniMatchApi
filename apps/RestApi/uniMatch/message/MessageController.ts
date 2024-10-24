@@ -6,7 +6,6 @@ import { Message } from "@/core/uniMatch/message/domain/Message";
 import { FileHandler } from "@/core/uniMatch/message/infrastructure/FileHandler";
 import { MessageRepository } from "@/core/uniMatch/message/infrastructure/TypeORM/repositories/MessageRepository";
 import { ErrorHandler } from "../../ErrorHandler";
-import { CreateNewMessageDTO } from "@/core/uniMatch/message/application/DTO/CreateNewMessageDTO";
 import { DeleteAllMessagesWithUserCommand } from "@/core/uniMatch/message/application/commands/DeleteAllMessagesWithUser";
 import { DeleteAllUserMessagesDTO } from '@/core/uniMatch/message/application/DTO/DeleteAllMessagesWithUserDTO';
 import { DeleteMessageCommand } from '@/core/uniMatch/message/application/commands/DeleteMessageCommand';
