@@ -80,6 +80,10 @@ export class Message extends AggregateRoot {
         return this._deletedStatus;
     }
 
+    set deletedStatus(value: DeletedMessageStatusType) {
+        this._deletedStatus = value;
+    }
+
     public deleteForBoth(): void {
         this._deletedStatus = MessageStatusEnum.DELETED_FOR_BOTH;
         this.setIsActive(false);
