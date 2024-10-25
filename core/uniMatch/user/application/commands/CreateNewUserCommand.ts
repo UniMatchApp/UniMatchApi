@@ -14,34 +14,31 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, User> {
     private readonly eventBus: IEventBus;
     private readonly emailNotifications: IEmailNotifications;
     
-    constructor(repository: IUserRepository, eventBus: IEventBus, emailNotifications: IEmailNotifications) {
+    constructor(repository: IUserRepository, eventBus: IEventBus, emailNotifications: IEmailNotifications, profileRepository: IProfileRepository) {
         this.repository = repository;
         this.eventBus = eventBus;
         this.emailNotifications = emailNotifications;
+        this.profileRepository = profileRepository;
     }
 
     async run(request: CreateNewUserDTO): Promise<Result<User>> {
         try {
-            // Check if the user already exists (email)
             const userExists = await this.repository.findByEmail(request.email);
 
             if (userExists) {
                 const profileExists = await this.profileRepository.findByUserId(userExists.getId().toString());
                 
                 if (!profileExists && !userExists.registered) {
+                    //TODO: Change user code
                     await this.emailNotifications.sendEmailToOne(
                         userExists.email,
                         "Reenvío de código de verificación - UniMatch",
                         `Tu código de verificación es: ${userExists.code}`
                     );
                     return Result.success<User>(userExists);
+                } else {
+                    return Result.failure<User>(new ValidationError(`User with email ${request.email} already exists`));
                 }
-
-                return Result.failure<User>(new ValidationError(`User with email ${request.email} already exists`));
-            }
-
-            if (userExists) {
-                return Result.failure<User>(new ValidationError(`User with email ${request.email} already exists`));
             }
 
             const user = new User(

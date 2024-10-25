@@ -12,16 +12,26 @@ import { NotificationHasBeenSeenDTO } from '@/core/uniMatch/notifications/applic
 import { GetAllNotificationsCommand } from '@/core/uniMatch/notifications/application/commands/GetAllNotificationsCommand';
 import { GetAllNotificationsDTO } from '@/core/uniMatch/notifications/application/DTO/GetAllNotificationsDTO';
 import { Notification } from '@/core/uniMatch/notifications/domain/Notification';
+import { DeletedMessageEventHandler } from '@/core/uniMatch/notifications/application/handlers/DeletedMessageEventHandler';
+import { IAppNotifications } from '@/core/uniMatch/notifications/application/ports/IAppNotifications';
 
 export class NotificationsController {
 
     private readonly notificationsRepository: INotificationsRepository;
     private readonly eventBus: IEventBus;
+    private readonly appNotifications: IAppNotifications;
 
-    constructor(notificationsRepository: INotificationsRepository, eventBus: IEventBus) {
+    constructor(
+        notificationsRepository: INotificationsRepository, 
+        eventBus: IEventBus, 
+        appNotifications: IAppNotifications
+    ) {
         this.notificationsRepository = notificationsRepository;
         this.eventBus = eventBus;
+        this.appNotifications = appNotifications;
+        this.eventBus.subscribe(new DeletedMessageEventHandler(this.appNotifications, this.notificationsRepository));
     }
+
 
     async deletedAllNotifications(req: Request, res: Response): Promise<void> {
         var userId = req.params.userId;

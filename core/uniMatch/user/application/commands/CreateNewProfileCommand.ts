@@ -20,8 +20,7 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
     private readonly fileHandler: IFileHandler;
     private readonly eventBus: IEventBus;
 
-    constructor(repository: IUserRepository, profileRepository: IProfileRepository,
-                fileHandler: FileHandler, eventBus: IEventBus) {
+    constructor(repository: IUserRepository, profileRepository: IProfileRepository,fileHandler: FileHandler, eventBus: IEventBus) {
         this.userRepository = repository;
         this.profileRepository = profileRepository;
         this.fileHandler = fileHandler;
