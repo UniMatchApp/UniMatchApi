@@ -29,7 +29,9 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, User> {
                 const profileExists = await this.profileRepository.findByUserId(userExists.getId().toString());
                 
                 if (!profileExists && !userExists.registered) {
-                    //TODO: Change user code
+                    
+                    userExists.updateVerificationCode();
+
                     await this.emailNotifications.sendEmailToOne(
                         userExists.email,
                         "Reenvío de código de verificación - UniMatch",
