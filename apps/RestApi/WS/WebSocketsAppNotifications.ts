@@ -1,6 +1,6 @@
 import { Notification } from "@/core/uniMatch/notifications/domain/Notification";
 import WebSocket, { WebSocketServer } from 'ws';
-import { IAppNotifications } from "../../../core/uniMatch/notifications/application/ports/IAppNotifications";
+import { IAppNotifications } from "@/core/uniMatch/notifications/application/ports/IAppNotifications";
 
 interface Client {
     id: string;
