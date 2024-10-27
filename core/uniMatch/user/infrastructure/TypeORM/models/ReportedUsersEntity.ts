@@ -3,15 +3,15 @@ import { Entity, Column, Unique } from "typeorm";
 @Entity('reported_users')
 @Unique(['id'])
 export class ReportedUsersEntity {
-    @Column()
+    @Column({ type: 'uuid', primary: true })
     id!: string;
 
-    @Column()
+    @Column({ type: 'uuid' })
     userId!: string;
 
-    @Column()
+    @Column({ type: 'text' })
     predefinedReason!: string;
 
-    @Column({ nullable: true })
-    comment!: string;
+    @Column({ type: 'text', nullable: true })
+    comment?: string | null;
 }

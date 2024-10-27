@@ -4,7 +4,7 @@ import { MessageStatusEnum, DeletedMessageStatusType, MessageStatusType } from '
 @Entity('messages')
 @Unique(['id'])
 export class MessageEntity {
-    @Column()
+    @Column({ type: 'uuid', primary: true })
     id!: string;
 
     @Column({ type: 'text' })
@@ -26,5 +26,5 @@ export class MessageEntity {
     recipient!: string;
 
     @Column({ type: 'text', nullable: true })
-    attachment?: string;
+    attachment?: string | null;
 }

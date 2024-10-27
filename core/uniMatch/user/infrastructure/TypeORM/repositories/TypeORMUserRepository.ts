@@ -4,7 +4,7 @@ import { UserMapper } from "../mappers/UserMapper";
 import { UserEntity } from "../models/UserEntity";
 import { User } from "../../../domain/User";
 
-export class UserRepository implements IUserRepository {
+export class TypeORMUserRepository implements IUserRepository {
 
     private readonly userRepository = AppDataSource.getRepository(UserEntity);
 

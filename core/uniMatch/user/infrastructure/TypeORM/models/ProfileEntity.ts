@@ -3,85 +3,85 @@ import { Entity, Column, PrimaryGeneratedColumn, Unique } from "typeorm";
 @Entity('Profile')
 @Unique(['id', 'userId'])
 export class ProfileEntity {
-    @Column()
+    @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
+    @Column({ type: 'uuid' })
     userId!: string;
 
-    @Column()
-    name!: string;
+    @Column({ nullable: true, type: 'text' })
+    name!: string | null;
 
-    @Column()
+    @Column({ type: 'int' })
     age!: number;
 
-    @Column()
+    @Column({ type: 'text' })
     aboutMe!: string;
 
-    @Column('float')
+    @Column({ type: 'float' })
     latitude!: number;
 
-    @Column('float')
+    @Column({ type: 'float' })
     longitude!: number;
 
     @Column({ type: 'float', nullable: true })
-    altitude?: number;
+    altitude?: number | null;
 
-    @Column({ nullable: true })
-    fact?: string;
+    @Column({ nullable: true, type: 'text' })
+    fact?: string | null;
 
     @Column('text', { array: true, default: [] })
     interests!: string[];
 
-    @Column()
+    @Column({ type: 'text' })
     gender!: string;
 
-    @Column({ nullable: true })
-    height?: number;
+    @Column({ type: 'int', nullable: true })
+    height?: number | null;
 
-    @Column({ nullable: true })
-    weight?: number;
+    @Column({ type: 'int', nullable: true })
+    weight?: number | null;
 
-    @Column()
+    @Column({ type: 'text' })
     sexualOrientation!: string;
 
-    @Column({ nullable: true })
-    job?: string;
+    @Column({ type: 'text', nullable: true })
+    job?: string | null;
 
-    @Column()
+    @Column({ type: 'text' })
     relationshipType!: string;
 
-    @Column({ nullable: true })
-    horoscope?: string;
+    @Column({ type: 'text', nullable: true })
+    horoscope?: string | null;
 
-    @Column({ nullable: true })
-    education?: string;
+    @Column({ type: 'text', nullable: true })
+    education?: string | null;
 
-    @Column({ nullable: true })
-    personalityType?: string;
+    @Column({ type: 'text', nullable: true })
+    personalityType?: string | null;
 
-    @Column({ nullable: true })
-    pets?: string;
+    @Column({ type: 'text', nullable: true })
+    pets?: string | null;
 
-    @Column({ nullable: true })
-    drinks?: string;
+    @Column({ type: 'text', nullable: true })
+    drinks?: string | null;
 
-    @Column({ nullable: true })
-    smokes?: string;
+    @Column({ type: 'text', nullable: true })
+    smokes?: string | null;
 
-    @Column({ nullable: true })
-    doesSports?: string;
+    @Column({ type: 'text', nullable: true })
+    doesSports?: string | null;
 
-    @Column({ nullable: true })
-    valuesAndBeliefs?: string;
+    @Column({ type: 'text', nullable: true })
+    valuesAndBeliefs?: string | null;
 
     @Column('text', { array: true, default: [] })
     wall!: string[];
 
-    @Column()
+    @Column({ type: 'text' })
     preferredImage!: string;
 
-    @Column()
+    @Column({ type: 'date' })
     birthday!: Date;
 
     @Column('int', { default: 50 })
@@ -90,7 +90,6 @@ export class ProfileEntity {
     @Column('int', { array: true, default: [18, 100] })
     ageRange!: [number, number];
 
-    @Column({ nullable: true })
-    genderPriority?: string;
-
+    @Column({ type: 'text', nullable: true })
+    genderPriority?: string | null;
 }

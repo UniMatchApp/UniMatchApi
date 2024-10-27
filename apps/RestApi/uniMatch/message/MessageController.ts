@@ -4,7 +4,7 @@ import { Result } from "@/core/shared/domain/Result";
 import { CreateNewMessageCommand } from "@/core/uniMatch/message/application/commands/CreateNewMessageCommand";
 import { Message } from "@/core/uniMatch/message/domain/Message";
 import { FileHandler } from "@/core/uniMatch/message/infrastructure/FileHandler";
-import { MessageRepository } from "@/core/uniMatch/message/infrastructure/TypeORM/repositories/MessageRepository";
+import { TypeORMMessageRepository } from "@/core/uniMatch/message/infrastructure/TypeORM/repositories/TypeORMMessageRepository";
 import { ErrorHandler } from "../../ErrorHandler";
 import { DeleteAllMessagesWithUserCommand } from "@/core/uniMatch/message/application/commands/DeleteAllMessagesWithUser";
 import { DeleteAllUserMessagesDTO } from '@/core/uniMatch/message/application/DTO/DeleteAllMessagesWithUserDTO';
@@ -20,15 +20,16 @@ import { RetrieveUserLastMessagesCommand } from '@/core/uniMatch/message/applica
 import { RetrieveUserLastMessagesDTO } from '@/core/uniMatch/message/application/DTO/RetrieveUserLastMessagesDTO';
 import { UpdateMessageCommand } from '@/core/uniMatch/message/application/commands/UpdateMessageCommand';
 import { UpdateMessageDTO } from '@/core/uniMatch/message/application/DTO/UpdateMessageDTO';
+import {IMessageRepository} from "@/core/uniMatch/message/application/ports/IMessageRepository";
 
 
 export class MessageController {
 
-    private readonly messageRepository: MessageRepository;
+    private readonly messageRepository: IMessageRepository;
     private readonly eventBus: IEventBus;
     private readonly fileHandler: FileHandler; 
     
-    constructor(messageRepository: MessageRepository, eventBus: IEventBus) {
+    constructor(messageRepository: IMessageRepository, eventBus: IEventBus) {
         this.messageRepository = messageRepository;
         this.eventBus = eventBus;
         this.fileHandler = new FileHandler();

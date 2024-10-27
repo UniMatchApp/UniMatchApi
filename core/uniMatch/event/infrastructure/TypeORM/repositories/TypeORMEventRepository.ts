@@ -4,7 +4,7 @@ import { EventMapper } from '../mappers/EventMapper';
 import AppDataSource from '../Config';
 import { Event } from '../../../domain/Event';
 
-export class EventRepository implements IEventRepository {
+export class TypeORMEventRepository implements IEventRepository {
     private readonly eventRepository = AppDataSource.getRepository(EventEntity);
 
     async create(entity: Event): Promise<void> {

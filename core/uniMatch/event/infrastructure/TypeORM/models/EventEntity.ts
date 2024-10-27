@@ -3,28 +3,28 @@ import { Entity, Column, Unique } from 'typeorm';
 @Entity('events')
 @Unique(['id'])
 export class EventEntity {
-  @Column()
+  @Column({ type: 'uuid', primary: true })
   id!: string;
 
-  @Column()
+  @Column({ type: 'text' })
   title!: string;
 
   @Column({ type: 'float', nullable: true })
-  price?: number;
+  price?: number | null;
 
-  @Column('float')
+  @Column({ type: 'float' })
   latitude!: number;
 
-  @Column('float')
+  @Column({ type: 'float' })
   longitude!: number;
 
   @Column({ type: 'float', nullable: true })
-  altitude?: number;
+  altitude?: number | null;
 
-  @Column()
+  @Column({ type: 'date' })
   date!: Date;
 
-  @Column()
+  @Column({ type: 'uuid' })
   ownerId!: string;
 
   @Column('text', { array: true, default: [] })
@@ -33,6 +33,6 @@ export class EventEntity {
   @Column('text', { array: true, default: [] })
   likes!: string[];
 
-  @Column({ nullable: true })
-  thumbnail?: string;
+  @Column({ type: 'text', nullable: true })
+  thumbnail?: string | null;
 }

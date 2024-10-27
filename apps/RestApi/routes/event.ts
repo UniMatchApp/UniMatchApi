@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import { EventController } from '../uniMatch/event/EventController';
-import { EventRepository } from '@/core/uniMatch/event/infrastructure/TypeORM/repositories/EventRepository';
+import { TypeORMEventRepository } from '@/core/uniMatch/event/infrastructure/TypeORM/repositories/TypeORMEventRepository';
 import { eventBus } from '../Main';
+import {InMemoryEventRepository} from "@/core/uniMatch/event/infrastructure/InMemory/InMemoryEventRepository";
+import {IEventRepository} from "@/core/uniMatch/event/application/ports/IEventRepository";
 
 const router = Router();
-const eventRepository = new EventRepository();
+const eventRepository: IEventRepository = new InMemoryEventRepository();
 const eventController = new EventController(eventRepository, eventBus);
 
 // Define las rutas

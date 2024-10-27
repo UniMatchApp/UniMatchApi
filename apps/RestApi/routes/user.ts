@@ -1,13 +1,18 @@
-import { Router } from 'express';
-import { UserController } from '../uniMatch/user/UserController';
-import { eventBus } from '../Main';
-import { UserRepository } from '@/core/uniMatch/user/infrastructure/TypeORM/repositories/UserRepository';
-import { ProfileRepository } from '@/core/uniMatch/user/infrastructure/TypeORM/repositories/ProfileRepository';
+import {Router} from 'express';
+import {UserController} from '../uniMatch/user/UserController';
+import {eventBus} from '../Main';
+import {InMemoryUserRepository} from "@/core/uniMatch/user/infrastructure/InMemory/InMemoryUserRepository";
+import {IUserRepository} from "@/core/uniMatch/user/application/ports/IUserRepository";
+import {InMemoryProfileRepository} from "@/core/uniMatch/user/infrastructure/InMemory/InMemoryProfileRepository";
+import {IProfileRepository} from "@/core/uniMatch/user/application/ports/IProfileRepository";
+import {IEmailNotifications} from "@/core/shared/application/IEmailNotifications";
+import {EmailNotifications} from "@/core/shared/infrastructure/EmailNotifications";
 
 const router = Router();
-const userRepository = new UserRepository();
-const profileRepository = new ProfileRepository();
-const userController = new UserController(userRepository, profileRepository, eventBus);
+const userRepository: IUserRepository = new InMemoryUserRepository();
+const profileRepository: IProfileRepository = new InMemoryProfileRepository();
+const emailNotifications: IEmailNotifications = new EmailNotifications();
+const userController = new UserController(userRepository, profileRepository, emailNotifications, eventBus);
 
 router.post('/:id/block/:targetId', userController.blockUser.bind(userController));
 router.put('/:id/about', userController.changeAboutMe.bind(userController));
@@ -37,4 +42,4 @@ router.post('/:id/report', userController.reportUser.bind(userController));
 router.post('/:id/photo', userController.uploadPhoto.bind(userController));
 
 
-export { router };
+export {router};
