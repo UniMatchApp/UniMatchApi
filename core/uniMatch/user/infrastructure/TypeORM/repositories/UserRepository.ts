@@ -1,5 +1,5 @@
 import { IUserRepository } from "../../../application/ports/IUserRepository";
-import AppDataSource from '../Server';
+import AppDataSource from '../Config';
 import { UserMapper } from "../mappers/UserMapper";
 import { UserEntity } from "../models/UserEntity";
 import { User } from "../../../domain/User";

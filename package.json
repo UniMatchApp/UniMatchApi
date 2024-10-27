@@ -21,7 +21,7 @@
     "test": "jest",
     "build-old": "tsc",
     "build": "node esbuild.js",
-    "start": "npm run build && node dist/apps/expressRestApi/Main.js"
+    "start": "npm run build && node dist/apps/RestApi/Main.js"
   },
   "dependencies": {
     "cookie-parser": "^1.4.7",

@@ -3,10 +3,10 @@ import { Entity, Column, Unique } from 'typeorm';
 @Entity('events')
 @Unique(['id'])
 export class EventEntity {
-  @Column()
+  @Column({type: 'uuid', primary: true})
   id!: string;
 
-  @Column()
+  @Column( { type: 'text', nullable: true })
   title!: string;
 
   @Column({ type: 'float', nullable: true })
@@ -21,10 +21,10 @@ export class EventEntity {
   @Column({ type: 'float', nullable: true })
   altitude?: number;
 
-  @Column()
+  @Column({ type: 'timestamp', nullable: true })
   date!: Date;
 
-  @Column()
+  @Column({ type: 'uuid', nullable: true })
   ownerId!: string;
 
   @Column('text', { array: true, default: [] })
@@ -33,6 +33,6 @@ export class EventEntity {
   @Column('text', { array: true, default: [] })
   likes!: string[];
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'text' })
   thumbnail?: string;
 }

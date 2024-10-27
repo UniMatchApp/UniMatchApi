@@ -2,7 +2,7 @@ import { IProfileRepository } from "../../../application/ports/IProfileRepositor
 import { Profile } from "../../../domain/Profile";
 import { ProfileMapper } from "../mappers/ProfileMapper";
 import { ProfileEntity } from "../models/ProfileEntity";
-import AppDataSource from '../Server';
+import AppDataSource from '../Config';
 
 export class ProfileRepository implements IProfileRepository {
 

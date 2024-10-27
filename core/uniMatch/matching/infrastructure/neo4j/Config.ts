@@ -1,10 +1,15 @@
 import { Driver, auth } from 'neo4j-driver';
-import createDriver from 'neo4j-driver';
+import * as createDriver from 'neo4j-driver';
+import dotenv from 'dotenv';
 
-// Configura la conexión a Neo4j
+dotenv.config({ path: 'matching.env' });
+
 const driver: Driver = createDriver.driver(
-    'bolt://localhost:7687',
-    auth.basic('neo4j', 'password')
+    process.env.NEO4J_URL || 'neo4j+s://localhost:7687',
+    auth.basic(
+        process.env.NEO4J_USER || 'neo4j',
+        process.env.NEO4J_PASSWORD || 'password'
+    )
 );
 
 export default driver;

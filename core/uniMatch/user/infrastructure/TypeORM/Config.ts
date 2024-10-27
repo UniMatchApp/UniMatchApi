@@ -1,16 +1,16 @@
 import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
 
-dotenv.config({ path: 'message.env' });
+// Cargar variables de entorno desde user.env
+dotenv.config({ path: 'user.env' });
 
 const AppDataSource = new DataSource({
-    type: 'mongodb',
+    type: 'mysql',
     host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '27017', 10),
-    database: process.env.DB_NAME || 'mydatabase',
-    synchronize: process.env.DB_SYNCHRONIZE === 'true',
-    logging: process.env.DB_LOGGING === 'true',
-    useUnifiedTopology: process.env.DB_USE_UNIFIED_TOPOLOGY === 'true',
+    port: parseInt(process.env.DB_PORT || '3306', 10),
+    username: process.env.DB_USERNAME || 'test',
+    password: process.env.DB_PASSWORD || 'test',
+    database: process.env.DB_NAME || 'test',
 });
 
 AppDataSource.initialize()
