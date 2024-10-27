@@ -1,8 +1,10 @@
 import { Driver, auth } from 'neo4j-driver';
 import * as createDriver from 'neo4j-driver';
 import dotenv from 'dotenv';
+import path from 'path';
 
-dotenv.config({ path: 'matching.env' });
+const envFilePath = path.resolve(__dirname, 'matching.env');
+dotenv.config({ path: envFilePath });
 
 const driver: Driver = createDriver.driver(
     process.env.NEO4J_URL || 'neo4j+s://localhost:7687',
@@ -11,5 +13,13 @@ const driver: Driver = createDriver.driver(
         process.env.NEO4J_PASSWORD || 'password'
     )
 );
+
+driver.verifyConnectivity()
+    .then(() => {
+        console.log('Data Source has been initialized for Neo4j!');
+    })
+    .catch((err) => {
+        console.error('Error during Data Source initialization for Neo4j', err);
+    });
 
 export default driver;

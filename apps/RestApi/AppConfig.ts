@@ -8,6 +8,9 @@ import { router as indexRouter } from './routes/index';
 import { router as docsRouter } from './routes/docs';
 import { router as eventRouter } from './routes/event';
 import { router as userRouter } from './routes/user';
+import { router as matchingRouter } from './routes/matching';
+import { router as notificationRouter } from './routes/notifications';
+import { router as messageRouter } from './routes/messages';
 
 const app = express();
 
@@ -25,6 +28,10 @@ app.use('/', indexRouter);
 app.use('/docs', docsRouter);
 app.use(`${apiRoute}/events`, eventRouter);
 app.use(`${apiRoute}/users`, userRouter);
+app.use(`${apiRoute}/matching`, matchingRouter);
+app.use(`${apiRoute}/notifications`, notificationRouter);
+app.use(`${apiRoute}/messages`, messageRouter);
+
 
 // catch 404 and forward to error handler
 app.use((req: Request, res: Response, next: NextFunction) => {

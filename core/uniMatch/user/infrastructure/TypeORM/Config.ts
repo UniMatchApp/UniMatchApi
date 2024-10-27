@@ -1,24 +1,25 @@
 import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
+import path from 'path';
 
-// Cargar variables de entorno desde user.env
-dotenv.config({ path: 'user.env' });
+const envFilePath = path.resolve(__dirname, 'user.env');
+dotenv.config({ path: envFilePath });
 
 const AppDataSource = new DataSource({
     type: 'mysql',
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '3306', 10),
-    username: process.env.DB_USERNAME || 'test',
-    password: process.env.DB_PASSWORD || 'test',
-    database: process.env.DB_NAME || 'test',
+    host: process.env.USER_DB_HOST || 'localhost',
+    port: parseInt(process.env.USER_DB_PORT || '3306', 10),
+    username: process.env.USER_DB_USERNAME || 'test',
+    password: process.env.USER_DB_PASSWORD || 'test',
+    database: process.env.USER_DB_NAME || 'test',
 });
 
 AppDataSource.initialize()
     .then(() => {
-        console.log('Data Source has been initialized!');
+        console.log('Data Source has been initialized for User');
     })
     .catch((err) => {
-        console.error('Error during Data Source initialization', err);
+        console.error('Error during Data Source initialization for User', err);
     });
 
 export default AppDataSource;

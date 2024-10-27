@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { eventBus } from '../Main';
+import { eventBus } from '../Dependencies';
 import { MessageController } from '../uniMatch/message/MessageController';
 import { TypeORMMessageRepository } from '@/core/uniMatch/message/infrastructure/TypeORM/repositories/TypeORMMessageRepository';
 import {InMemoryMessageRepository} from "@/core/uniMatch/message/infrastructure/InMemory/InMemoryMessageRepository";
@@ -7,7 +7,7 @@ import {IMessageRepository} from "@/core/uniMatch/message/application/ports/IMes
 
 const router = Router();
 
-const messageRepository:IMessageRepository = new InMemoryMessageRepository();
+const messageRepository:IMessageRepository = new TypeORMMessageRepository();
 const messageController = new MessageController(messageRepository, eventBus);
 
 router.post('/messages', messageController.createMessage.bind(messageController));

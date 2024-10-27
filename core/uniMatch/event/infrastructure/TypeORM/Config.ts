@@ -1,23 +1,25 @@
 import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
+import path from 'path';
 
-dotenv.config({ path: 'event.env' });
+const envFilePath = path.resolve(__dirname, 'event.env');
+dotenv.config({ path: envFilePath });
 
 const AppDataSource = new DataSource({
     type: 'mysql',
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '3306', 10),
-    username: process.env.DB_USERNAME || 'test',
-    password: process.env.DB_PASSWORD || 'test',
-    database: process.env.DB_NAME || 'test',
+    host: process.env.EVENT_DB_HOST || 'localhost',
+    port: parseInt(process.env.EVENT_DB_PORT || '3306', 10),
+    username: process.env.EVENT_DB_USERNAME || 'test',
+    password: process.env.EVENT_DB_PASSWORD || 'test',
+    database: process.env.EVENT_DB_NAME || 'test',
 });
 
 AppDataSource.initialize()
     .then(() => {
-        console.log('Data Source has been initialized!');
+        console.log('Data Source has been initialized for Events');
     })
     .catch((err) => {
-        console.error('Error during Data Source initialization', err);
+        console.error('Error during Data Source initialization for Events', err);
     });
 
 export default AppDataSource;

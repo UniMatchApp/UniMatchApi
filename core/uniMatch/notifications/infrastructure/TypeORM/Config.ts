@@ -1,24 +1,26 @@
 import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
+import path from 'path';
 
-dotenv.config({ path: 'notifications.env' });
+const envFilePath = path.resolve(__dirname, 'notifications.env');
+dotenv.config({ path: envFilePath });
 
 const AppDataSource = new DataSource({
     type: 'mongodb',
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '27017', 10),
-    database: process.env.DB_NAME || 'mydatabase',
-    synchronize: process.env.DB_SYNCHRONIZE === 'true',
-    logging: process.env.DB_LOGGING === 'true',
-    useUnifiedTopology: process.env.DB_USE_UNIFIED_TOPOLOGY === 'true',
+    url: process.env.NOTIFICATION_DB_HOST || 'localhost',
+    port: parseInt(process.env.NOTIFICATION_DB_PORT || '27017', 10),
+    database: process.env.NOTIFICATION_DB_NAME || 'mydatabase',
+    synchronize: process.env.NOTIFICATION_DB_SYNCHRONIZE === 'true',
+    logging: process.env.NOTIFICATION_DB_LOGGING === 'true',
+    useUnifiedTopology: process.env.NOTIFICATION_DB_USE_UNIFIED_TOPOLOGY === 'true'
 });
 
 AppDataSource.initialize()
     .then(() => {
-        console.log('Data Source has been initialized!');
+        console.log('Data Source has been initialized for Notifications');
     })
     .catch((err) => {
-        console.error('Error during Data Source initialization', err);
+        console.error('Error during Data Source initialization for Notifications', err);
     });
 
 export default AppDataSource;

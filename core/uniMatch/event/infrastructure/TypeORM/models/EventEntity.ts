@@ -6,7 +6,7 @@ export class EventEntity {
   @Column({ type: 'uuid', primary: true })
   id!: string;
 
-  @Column()
+  @Column({ type: 'text' })
   title!: string;
 
   @Column({ type: 'float', nullable: true })
@@ -21,10 +21,10 @@ export class EventEntity {
   @Column({ type: 'float', nullable: true })
   altitude?: number | null;
 
-  @Column()
+  @Column({ type: 'date' })
   date!: Date;
 
-  @Column()
+  @Column({ type: 'uuid' })
   ownerId!: string;
 
   @Column('text', { array: true, default: [] })
@@ -33,6 +33,6 @@ export class EventEntity {
   @Column('text', { array: true, default: [] })
   likes!: string[];
 
-  @Column({ nullable: true })
-  thumbnail?: string;
+  @Column({ type: 'text', nullable: true })
+  thumbnail?: string | null;
 }

@@ -1,15 +1,16 @@
 import {Router} from 'express';
 import {UserController} from '../uniMatch/user/UserController';
-import {eventBus} from '../Main';
+import { eventBus } from '../Dependencies';
 import {InMemoryUserRepository} from "@/core/uniMatch/user/infrastructure/InMemory/InMemoryUserRepository";
 import {IUserRepository} from "@/core/uniMatch/user/application/ports/IUserRepository";
 import {InMemoryProfileRepository} from "@/core/uniMatch/user/infrastructure/InMemory/InMemoryProfileRepository";
 import {IProfileRepository} from "@/core/uniMatch/user/application/ports/IProfileRepository";
 import {IEmailNotifications} from "@/core/shared/application/IEmailNotifications";
 import {EmailNotifications} from "@/core/shared/infrastructure/EmailNotifications";
+import { TypeORMUserRepository } from '@/core/uniMatch/user/infrastructure/TypeORM/repositories/TypeORMUserRepository';
 
 const router = Router();
-const userRepository: IUserRepository = new InMemoryUserRepository();
+const userRepository: IUserRepository = new TypeORMUserRepository();
 const profileRepository: IProfileRepository = new InMemoryProfileRepository();
 const emailNotifications: IEmailNotifications = new EmailNotifications();
 const userController = new UserController(userRepository, profileRepository, emailNotifications, eventBus);

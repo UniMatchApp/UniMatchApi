@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {eventBus} from '../Main';
+import { eventBus } from '../Dependencies';
 import {NotificationsController} from '@/apps/RestApi/uniMatch/notifications/NotificationsController';
 import {
     InMemoryNotificationRepository
@@ -7,10 +7,11 @@ import {
 import {WebSocketAppNotifications} from "@/apps/RestApi/WS/WebSocketsAppNotifications";
 import {INotificationsRepository} from "@/core/uniMatch/notifications/application/ports/INotificationsRepository";
 import {IAppNotifications} from "@/core/uniMatch/notifications/application/ports/IAppNotifications";
+import { TypeORMNotificationRepository } from '@/core/uniMatch/notifications/infrastructure/TypeORM/repositories/TypeORMNotificationRepository';
 
 const router = Router();
 
-const notificationsRepository: INotificationsRepository = new InMemoryNotificationRepository();
+const notificationsRepository: INotificationsRepository = new TypeORMNotificationRepository();
 const appNotifications: IAppNotifications = new WebSocketAppNotifications();
 const notificationsController = new NotificationsController(notificationsRepository, eventBus, appNotifications);
 
