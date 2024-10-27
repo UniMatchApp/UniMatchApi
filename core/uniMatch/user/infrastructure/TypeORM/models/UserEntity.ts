@@ -4,19 +4,19 @@ import { ReportedUsersEntity } from "./ReportedUsersEntity";
 @Entity('users')
 @Unique(['id', 'email'])
 export class UserEntity {
-    @Column()
+    @Column({ type: 'uuid', primary: true })
     id!: string;
 
-    @Column()
+    @Column({ type: 'text' })
     code!: string;
 
-    @Column()
+    @Column({ type: 'timestamp' })
     registrationDate!: Date;
 
-    @Column()
+    @Column({ type: 'text' })
     email!: string;
 
-    @Column()
+    @Column({ type: 'text' })
     password!: string;
 
     @Column('text', { array: true, default: [] })

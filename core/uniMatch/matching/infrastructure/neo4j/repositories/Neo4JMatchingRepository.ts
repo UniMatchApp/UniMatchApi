@@ -6,7 +6,7 @@ import { Like } from '../../../domain/relations/Like';
 import { Dislike } from '../../../domain/relations/Dislike';
 import driver from '../Config';
 
-export class MatchingRepository implements IMatchingRepository {
+export class Neo4JMatchingRepository implements IMatchingRepository {
     private driver: Driver;
 
     constructor() {

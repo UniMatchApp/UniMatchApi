@@ -4,7 +4,7 @@ import { MessageMapper } from '../mappers/MessageMapper';
 import { MessageEntity } from '../models/MessageEntity';
 import AppDataSource from '../Config';
 
-export class MessageRepository implements IMessageRepository {
+export class TypeORMMessageRepository implements IMessageRepository {
     private readonly messageRepository = AppDataSource.getRepository(MessageEntity);
 
     async deleteAll(): Promise<void> {

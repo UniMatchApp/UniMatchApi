@@ -6,15 +6,15 @@ import {
 } from 'typeorm';
 import { NotificationTypeEnum } from '../../../domain/enum/NotificationTypeEnum';
 import { NotificationStatusEnum } from '../../../domain/enum/NotificationStatusEnum';
-import { Message } from '../../../domain/entities/Message'
-import { Event } from '../../../domain/entities/Event'
-import { Match } from '../../../domain/entities/Match'
-import { App } from '../../../domain/entities/App'
+import { Message } from '../../../domain/entities/Message';
+import { Event } from '../../../domain/entities/Event';
+import { Match } from '../../../domain/entities/Match';
+import { App } from '../../../domain/entities/App';
 
 @Entity('notifications')
 @Unique(['id'])
 export class NotificationEntity {
-    @Column()
+    @Column({ type: 'uuid', primary: true })
     id!: string;
 
     @Column({
@@ -30,15 +30,15 @@ export class NotificationEntity {
     })
     status!: NotificationStatusEnum;
 
-    @Column()
+    @Column({ type: 'uuid' })
     contentId!: string;
 
     @Column('jsonb')
     payload!: Message | Event | Match | App;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ type: 'timestamp' })
     date!: Date;
 
-    @Column()
+    @Column({ type: 'uuid' })
     recipient!: string;
 }

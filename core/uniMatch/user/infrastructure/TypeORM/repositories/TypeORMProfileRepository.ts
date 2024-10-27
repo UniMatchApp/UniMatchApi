@@ -4,7 +4,7 @@ import { ProfileMapper } from "../mappers/ProfileMapper";
 import { ProfileEntity } from "../models/ProfileEntity";
 import AppDataSource from '../Config';
 
-export class ProfileRepository implements IProfileRepository {
+export class TypeORMProfileRepository implements IProfileRepository {
 
     private readonly profileRepository = AppDataSource.getRepository(ProfileEntity);
 

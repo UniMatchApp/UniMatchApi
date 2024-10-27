@@ -5,7 +5,7 @@ import { NotificationMapper } from '../mappers/NotificationMapper';
 import { NotificationEntity } from '../models/NotificationEntity';
 import { NotificationTypeEnum } from '../../../domain/enum/NotificationTypeEnum';
 
-export class NotificationRepository implements INotificationsRepository {
+export class TypeORMNotificationRepository implements INotificationsRepository {
     private readonly notificationRepository = AppDataSource.getRepository(NotificationEntity);
 
     async findLastNotificationByTypeAndTypeId(type: NotificationTypeEnum, typeId: string): Promise<Notification | null> {
