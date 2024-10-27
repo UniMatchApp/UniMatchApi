@@ -165,5 +165,4 @@ export class Event extends AggregateRoot {
             this.thumbnail
         ));
     }
-    
 }

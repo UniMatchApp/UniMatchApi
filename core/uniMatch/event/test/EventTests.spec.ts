@@ -17,6 +17,24 @@ describe('Event', () => {
         expect(event.ownerId).toBe('owner123');
     });
 
+    it('should allow disliking an event', () => {
+        event.like('user123');
+        event.dislike('user123');
+        expect(event.likes).not.toContain('user123');
+    });
+
+    it('should allow modify an event', () => {
+        event.edit('Test Event 2', location, new Date(), 20.0, 'photo.png');
+        expect(event.title).toBe('Test Event 2');
+        expect(event.price).toBe(20.0);
+        expect(event.thumbnail).toBe('photo.png');
+    });
+
+    it('should allow liking an event', () => {
+        event.like('user123');
+        expect(event.likes).toContain('user123');
+    });
+    
     it('should allow adding participants', () => {
         event.addParticipant('participant1');
         expect(event.participants).toContain('participant1');
@@ -26,17 +44,6 @@ describe('Event', () => {
         expect(() => {
             event.removeParticipant('owner123');
         }).toThrow(DomainError);
-    });
-
-    it('should allow liking an event', () => {
-        event.like('user123');
-        expect(event.likes).toContain('user123');
-    });
-
-    it('should allow disliking an event', () => {
-        event.like('user123');
-        event.dislike('user123');
-        expect(event.likes).not.toContain('user123');
     });
     //
     // it('should validate a thumbnail file correctly', () => {
