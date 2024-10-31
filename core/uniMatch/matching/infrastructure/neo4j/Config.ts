@@ -22,4 +22,6 @@ driver.verifyConnectivity()
         console.error('Error during Data Source initialization for Neo4j', err);
     });
 
+console.log("Neo4j driver created")
+
 export default driver;

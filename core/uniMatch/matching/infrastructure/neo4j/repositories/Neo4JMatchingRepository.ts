@@ -11,6 +11,7 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
 
     constructor() {
         this.driver = driver;
+        console.log("Neo4JMatchingRepository::constructor() -> Neo4j driver created")
     }
 
     async create(entity: Node): Promise<void> {

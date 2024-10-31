@@ -9,7 +9,7 @@ import { ISessionStatusRepository } from '@/core/uniMatch/status/application/por
 import { WebSocketServer, WebSocket } from 'ws';
 import { UserHasStoppedTypingCommand } from '@/core/uniMatch/status/application/commands/UserHasStoppedTypingCommand';
 
-export class WebSocketUserController {
+export class WebSocketSessionController {
     private clients: Map<string, WebSocket> = new Map();
     private readonly userHasDisconnectedCommand: UserHasDisconnectedCommand;
     private readonly userIsOnlineCommand: UserIsOnlineCommand;

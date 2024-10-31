@@ -1,6 +1,5 @@
 // SessionStatusRepository.ts
-import { IRepository } from '@/core/shared/application/IRepository';
-import { SessionStatus } from '../../../domain/SessionStatus';
+import {SessionStatus} from '../../../domain/SessionStatus';
 import client from '../Config';
 import {ISessionStatusRepository} from "@/core/uniMatch/status/application/ports/ISessionStatusRepository";
 
