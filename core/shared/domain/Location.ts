@@ -11,6 +11,9 @@ export class Location {
         if (altitude !== undefined) {
             this._altitude = altitude;
         }
+        if (isNaN(this._latitude) || isNaN(this._longitude)) {
+            throw new DomainError('Invalid location coordinates');
+        }
     }
 
     public get latitude(): number {

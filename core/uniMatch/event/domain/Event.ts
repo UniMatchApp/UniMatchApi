@@ -43,6 +43,9 @@ export class Event extends AggregateRoot {
     }
 
     public set title(value: string) {
+        if (!value) {
+            throw new DomainError('Title cannot be empty');
+        }
         this._title = value;
     }
 
@@ -51,6 +54,9 @@ export class Event extends AggregateRoot {
     }
 
     public set price(value: number | undefined) {
+        if (value !== undefined && value < 0) {
+            throw new DomainError('The price cannot be negative.');
+        }
         this._price = value;
     }
 
@@ -67,6 +73,9 @@ export class Event extends AggregateRoot {
     }
 
     public set date(value: Date) {
+        if (isNaN(value.getTime())) {
+            throw new DomainError('Invalid date');
+        }
         this._date = value;
     }
 
