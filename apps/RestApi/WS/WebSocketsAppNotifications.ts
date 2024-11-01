@@ -1,57 +1,38 @@
-import { Notification } from "@/core/uniMatch/notifications/domain/Notification";
 import WebSocket, { WebSocketServer } from 'ws';
-import { IAppNotifications } from "@/core/uniMatch/notifications/application/ports/IAppNotifications";
 
 interface Client {
     id: string;
     socket: WebSocket;
 }
 
-export class WebSocketAppNotifications implements IAppNotifications {
+export class WebSocketsAppNotifications {
     private clients: Map<string, Client> = new Map();
+    private wss: WebSocketServer;
 
-    constructor() {
-        const wss = new WebSocketServer({ port: 8080 });
+    constructor(port: number) {
+        this.wss = new WebSocketServer({ port });
 
-        wss.on('connection', (ws: WebSocket, req) => {
+        this.wss.on('connection', (ws: WebSocket, req) => {
             const userId = req.url?.split('/').pop();
             if (userId) {
-                this.clients.set(userId, { id: userId, socket: ws });
-
-                ws.on('message', (message: string) => {
-                    console.log(`Mensaje recibido de ${userId}: ${message}`);
-                });
+                this.addClient(userId, ws);
 
                 ws.on('close', () => {
-                    this.clients.delete(userId);
+                    this.removeClient(userId);
                 });
             }
         });
     }
 
-    async sendNotification(notification: Notification): Promise<void> {
-        const client = this.clients.get(notification.recipient);
-        if (client && client.socket.readyState === WebSocket.OPEN) {
-            client.socket.send(JSON.stringify({
-                id: notification.contentId,
-                type: notification.type,
-                status: notification.status,
-                date: notification.date,
-                payload: notification.payload,
-            }));
-        } else {
-            console.log(`Usuario ${notification.recipient} no conectado.`);
-        }
+    addClient(userId: string, socket: WebSocket) {
+        this.clients.set(userId, { id: userId, socket });
     }
 
-    async sendNotificationToMany(notifications: Notification[]): Promise<void> {
-        notifications.forEach(async (notification) => {
-            await this.sendNotification(notification);
-        });
+    removeClient(userId: string) {
+        this.clients.delete(userId);
     }
 
-    async checkNotificationStatus(notification: Notification): Promise<boolean> {
-        const client = this.clients.get(notification.recipient);
-        return !!client;
+    getClient(userId: string): Client | undefined {
+        return this.clients.get(userId);
     }
 }

@@ -14,22 +14,45 @@ import { GetAllNotificationsDTO } from '@/core/uniMatch/notifications/applicatio
 import { Notification } from '@/core/uniMatch/notifications/domain/Notification';
 import { DeletedMessageEventHandler } from '@/core/uniMatch/notifications/application/handlers/DeletedMessageEventHandler';
 import { IAppNotifications } from '@/core/uniMatch/notifications/application/ports/IAppNotifications';
+import { EditMessageEventHandler } from '@/core/uniMatch/notifications/application/handlers/EditMessageEventHandler';
+import { EventIsDeletedEventHandler } from '@/core/uniMatch/notifications/application/handlers/EventIsDeletedEventHandler';
+import { EventIsGoingToExpireEventHandler } from '@/core/uniMatch/notifications/application/handlers/EventIsGoingToExpireEventHandler';
+import { EventIsModifiedEventHandler } from '@/core/uniMatch/notifications/application/handlers/EventIsModifiedEventHandler';
+import { NewDislikeEventHandler } from '@/core/uniMatch/notifications/application/handlers/NewDislikeEventHandler';
+import { NewLikeEventHandler } from '@/core/uniMatch/notifications/application/handlers/NewLikeEventHandler';
+import { NewMessageEventHandler } from '@/core/uniMatch/notifications/application/handlers/NewMessageEventHandler';
+import { UserHasChangedAgeEventHandler } from '@/core/uniMatch/matching/application/handlers/UserHasChangedAgeEventHandler';
+import { UserHasChangedEmailEventHandler } from '@/core/uniMatch/notifications/application/handlers/UserHasChangedEmailEventHandler';
+import { IEmailNotifications } from '@/core/shared/application/IEmailNotifications';
+import { UserHasChangedPasswordEventHandler } from '@/core/uniMatch/notifications/application/handlers/UserHasChangedPasswordEventHandler';
 
 export class NotificationsController {
 
     private readonly notificationsRepository: INotificationsRepository;
     private readonly eventBus: IEventBus;
     private readonly appNotifications: IAppNotifications;
+    private readonly emailNotifications: IEmailNotifications;
 
     constructor(
         notificationsRepository: INotificationsRepository, 
         eventBus: IEventBus, 
-        appNotifications: IAppNotifications
+        appNotifications: IAppNotifications,
+        emailNotifications: IEmailNotifications
     ) {
         this.notificationsRepository = notificationsRepository;
         this.eventBus = eventBus;
         this.appNotifications = appNotifications;
+        this.emailNotifications = emailNotifications;
         this.eventBus.subscribe(new DeletedMessageEventHandler(this.appNotifications, this.notificationsRepository));
+        this.eventBus.subscribe(new EditMessageEventHandler(this.appNotifications, this.notificationsRepository));
+        this.eventBus.subscribe(new EventIsDeletedEventHandler(this.notificationsRepository, this.appNotifications));
+        this.eventBus.subscribe(new EventIsGoingToExpireEventHandler(this.notificationsRepository, this.appNotifications));
+        this.eventBus.subscribe(new EventIsModifiedEventHandler(this.notificationsRepository, this.appNotifications));
+        this.eventBus.subscribe(new NewDislikeEventHandler(this.notificationsRepository, this.appNotifications));
+        this.eventBus.subscribe(new NewLikeEventHandler(this.notificationsRepository, this.appNotifications));
+        this.eventBus.subscribe(new NewMessageEventHandler(this.notificationsRepository, this.appNotifications));
+        this.eventBus.subscribe(new UserHasChangedEmailEventHandler(this.notificationsRepository, this.emailNotifications));
+        this.eventBus.subscribe(new UserHasChangedPasswordEventHandler(this.notificationsRepository, this.emailNotifications));
     }
 
 

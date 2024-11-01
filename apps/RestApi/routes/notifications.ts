@@ -4,16 +4,21 @@ import {NotificationsController} from '@/apps/RestApi/uniMatch/notifications/Not
 import {
     InMemoryNotificationRepository
 } from "@/core/uniMatch/notifications/infrastructure/InMemory/InMemoryNotificationRepository";
-import {WebSocketAppNotifications} from "@/apps/RestApi/WS/WebSocketsAppNotifications";
+import { AppNotifications } from '@/core/uniMatch/notifications/infrastructure/AppNotifications';
 import {INotificationsRepository} from "@/core/uniMatch/notifications/application/ports/INotificationsRepository";
 import {IAppNotifications} from "@/core/uniMatch/notifications/application/ports/IAppNotifications";
 import { TypeORMNotificationRepository } from '@/core/uniMatch/notifications/infrastructure/TypeORM/repositories/TypeORMNotificationRepository';
+import { EmailNotifications } from '@/core/shared/infrastructure/EmailNotifications';
+import { IEmailNotifications } from '@/core/shared/application/IEmailNotifications';
+import { WebSocketsAppNotifications } from '../WS/WebSocketsAppNotifications';
 
 const router = Router();
 
 const notificationsRepository: INotificationsRepository = new TypeORMNotificationRepository();
-const appNotifications: IAppNotifications = new WebSocketAppNotifications();
-const notificationsController = new NotificationsController(notificationsRepository, eventBus, appNotifications);
+const webSocketController = new WebSocketsAppNotifications(8080);
+const appNotifications: IAppNotifications = new AppNotifications(webSocketController);
+const emailNotifications: IEmailNotifications = new EmailNotifications();
+const notificationsController = new NotificationsController(notificationsRepository, eventBus, appNotifications, emailNotifications);
 
 router.delete('/notifications/:userId', notificationsController.deletedAllNotifications.bind(notificationsController));
 router.delete('/notification/:userId', notificationsController.deleteNotification.bind(notificationsController));
