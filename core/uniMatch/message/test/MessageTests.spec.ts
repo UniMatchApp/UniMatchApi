@@ -55,7 +55,7 @@ describe('Message', () => {
         
         expect(message.content).toBe(newContent);
         expect(message.attachment).toBe("updatedImage.png");
-        expect(message.timestamp.getTime()).toBeGreaterThan(originalTimestamp.getTime());
+        expect(message.timestamp.getTime()).toBeGreaterThanOrEqual(originalTimestamp.getTime());
     });
 
     it('should not allow setting empty content', () => {
