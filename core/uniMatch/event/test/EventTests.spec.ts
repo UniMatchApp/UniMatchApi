@@ -797,5 +797,4 @@ describe("EditEventCommand", () => {
         expect(eventBusMock.publish).not.toHaveBeenCalled();
     });
 
-
 });
