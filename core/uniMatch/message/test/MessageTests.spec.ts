@@ -64,7 +64,6 @@ describe('Message', () => {
         }).toThrow(DomainError);
     });
 
-    // Add the following tests
     it('should send a new message and record event', () => {
         const eventSpy = jest.spyOn(message, 'recordEvent');
         message.send();

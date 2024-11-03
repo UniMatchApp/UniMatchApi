@@ -17,11 +17,11 @@ export class ParticipateEventCommand implements ICommand<ParticipateEventDTO, Ev
             const event = await this.repository.findById(request.eventId);
             
             if (!event) {
-                return Result.failure<Event>(new NotFoundError("Event not found"));
+                return Result.failure<Event>(new NotFoundError("Event"));
             }
 
             event.addParticipant(request.userId);
-            await this.repository.update(event, event.getId());
+            await this.repository.update(event, request.eventId);
 
             return Result.success<Event>(event);
         } catch (error : any) {

@@ -8,7 +8,7 @@ import { Location } from "@/core/shared/domain/Location";
 import { Event } from "../../domain/Event";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { FileError } from "@/core/shared/exceptions/FileError";
-import { ValidationError } from "@/core/shared/exceptions/ValidationError";
+import { AuthorizationError } from "@/core/shared/exceptions/AuthorizationError";
 
 export class EditEventCommand implements ICommand<EditEventDTO, Event> {
     private repository: IEventRepository;
@@ -27,11 +27,11 @@ export class EditEventCommand implements ICommand<EditEventDTO, Event> {
             const event = await this.repository.findById(request.eventId);
 
             if (!event) {
-                return Result.failure<Event>(new NotFoundError("Event not found"));
+                return Result.failure<Event>(new NotFoundError("Event"));
             }
 
             if (event.ownerId !== request.ownerId) {
-                return Result.failure<Event>(new ValidationError("User is not the owner of the event"));
+                return Result.failure<Event>(new AuthorizationError("You are not authorized to edit this event"));
             }
 
             const location = new Location(
@@ -42,7 +42,7 @@ export class EditEventCommand implements ICommand<EditEventDTO, Event> {
 
             const thumbnail = request.thumbnail;
             if(thumbnail && !thumbnail.name) {
-                return Result.failure<Event>(new FileError("Thumbnail name is invalid"));
+                return Result.failure<Event>(new FileError("Thumbnail"));
             }
 
             let thumbnailPath: string | undefined = undefined;

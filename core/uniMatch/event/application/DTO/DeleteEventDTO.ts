@@ -1,3 +1,5 @@
 export interface DeleteEventDTO {
-    eventId: string
+    eventId: string,
+    userId: string
 }
+
