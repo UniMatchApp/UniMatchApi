@@ -10,12 +10,9 @@ import { RemoveParticipationCommand } from "../application/commands/RemovePartic
 import { IEventRepository } from "../application/ports/IEventRepository";
 import { IEventBus } from "@/core/shared/application/IEventBus";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
-import { Result } from "@/core/shared/domain/Result";
 import { CreateNewEventDTO } from "../application/DTO/CreateNewEventDTO";
 import { FileError } from "@/core/shared/exceptions/FileError";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
-import { FileHandler } from "../infrastructure/FileHandler";
-import { Event } from "../domain/Event";
 import { EditEventDTO } from "../application/DTO/EditEventDTO";
 
 describe("CreateNewEventCommand", () => {
