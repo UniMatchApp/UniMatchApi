@@ -4,6 +4,7 @@ import { Profile } from '@/core/uniMatch/user/domain/Profile';
 import { DomainError } from '@/core/shared/exceptions/DomainError';
 import { NotFoundError } from '@/core/shared/exceptions/NotFoundError';
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
+import { IEventBus } from "@/core/shared/application/IEventBus";
 import { IUserRepository } from '../application/ports/IUserRepository';
 import { IProfileRepository } from '../application/ports/IProfileRepository';
 import { Gender } from '@/core/shared/domain/Gender';
@@ -125,7 +126,7 @@ describe("ChangeAboutMeCommand", () => {
         const command = new ChangeAboutMeCommand(repositoryMock);
         
         const profile = new Profile(
-            "user123",
+            "profile123",
             "John Doe",
             30,
             "This is the about me section.",
@@ -172,7 +173,7 @@ describe("ChangeAboutMeCommand", () => {
         const command = new ChangeAboutMeCommand(repositoryMock);
         
         const profile = new Profile(
-            "user123",
+            "profile123",
             "John Doe",
             30,
             "This is the about me section.",
@@ -221,7 +222,7 @@ describe("ChangeDegreeCommand", () => {
         const command = new ChangeDegreeCommand(repositoryMock);
         
         const profile = new Profile(
-            "user123",
+            "profile123",
             "John Doe",
             30,
             "This is the about me section.",
@@ -268,7 +269,7 @@ describe("ChangeDegreeCommand", () => {
         const command = new ChangeDegreeCommand(repositoryMock);
 
         const profile = new Profile(
-            "user123",
+            "profile123",
             "John Doe",
             30,
             "This is the about me section.",
@@ -317,7 +318,7 @@ describe("ChangeDrinksCommand", () => {
         const command = new ChangeDrinksCommand(repositoryMock);
         
         const profile = new Profile(
-            "user123",
+            "profile123",
             "John Doe",
             30,
             "This is the about me section.",
@@ -364,7 +365,7 @@ describe("ChangeDrinksCommand", () => {
         const command = new ChangeDrinksCommand(repositoryMock);
 
         const profile = new Profile(
-            "user123",
+            "profile123",
             "John Doe",
             30,
             "This is the about me section.",
@@ -386,6 +387,554 @@ describe("ChangeDrinksCommand", () => {
         };
 
         const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(Error);
+        expect(result.getErrorMessage()).toBe("Update failed");
+    });
+});
+
+describe("ChangeEmailCommand", () => {
+    let repositoryMock: IUserRepository;
+    let eventBusMock: IEventBus;
+
+    beforeEach(() => {
+        repositoryMock = {
+            findByEmail: jest.fn(),
+            update: jest.fn(),
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            deleteById: jest.fn(),
+            existsById: jest.fn(),
+            deleteAll: jest.fn(),
+        };
+        eventBusMock = {
+            publish: jest.fn(),
+            subscribe: jest.fn()
+        };
+    });
+
+    test("should change email successfully", async () => {
+        const command = new ChangeEmailCommand(repositoryMock, eventBusMock);
+        
+        const user = new User(
+            new Date("2023-01-01"),
+            "email@example.com",
+            "password",
+            [],
+            true
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(user);
+
+        const request = {
+            id: "user123",
+            newEmail: "newemail@example.com"
+        };
+
+        const result = await command.run({ id: "user123", newEmail: "newemail@example.com" });
+
+        expect(result.isSuccess()).toBe(true);
+        // expect(user.email).toBe("newemail@example.com");
+        expect(user.email).toBe(request.newEmail);
+    });
+
+    test("should return error if user is not found", async () => {
+        const command = new ChangeEmailCommand(repositoryMock, eventBusMock);
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(null);
+
+        const result = await command.run({ id: "user123", newEmail: "newemail@example.com" });
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NotFoundError);
+    });
+
+    test("should return error if repository update fails", async () => {
+        const command = new ChangeEmailCommand(repositoryMock, eventBusMock);
+        
+        const user = new User(
+            new Date("2023-01-01"),
+            "email@example.com",
+            "password",
+            [],
+            true
+        );
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(user);
+        (repositoryMock.update as jest.Mock).mockRejectedValue(new Error("Update failed"));
+
+        const result = await command.run({ id: "user123", newEmail: "newemail@example.com" });
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(Error);
+        expect(result.getErrorMessage()).toBe("Update failed");
+    });
+});
+
+describe("ChangeHeightCommand", () => {
+    let repositoryMock: IProfileRepository;
+
+    beforeEach(() => {
+        repositoryMock = {
+            findByUserId: jest.fn(),
+            update: jest.fn(),
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            deleteById: jest.fn(),
+            existsById: jest.fn(),
+            deleteAll: jest.fn(),
+        };
+    });
+
+    test("should change height successfully", async () => {
+        const command = new ChangeHeightCommand(repositoryMock);
+        
+        const profile = new Profile(
+            "profile123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+
+        const request = {
+            id: "profile123",
+            newHeight: 230
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(true);
+        expect(result.getValue()).toBe(request.newHeight.toString());
+        expect(profile.height).toBe(request.newHeight);
+        expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
+    });
+
+    test("should return error if profile is not found", async () => {
+        const command = new ChangeHeightCommand(repositoryMock);
+
+        const request = {
+            id: "profile123",
+            newHeight: 230
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NotFoundError);
+        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+    });
+
+    test("should return error if repository update fails", async () => {
+        const command = new ChangeHeightCommand(repositoryMock);
+
+        const profile = new Profile(
+            "profile123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+        (repositoryMock.update as jest.Mock).mockRejectedValue(new Error("Update failed"));
+
+        const request = {
+            id: "profile123",
+            newHeight: 230
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(Error);
+        expect(result.getErrorMessage()).toBe("Update failed");
+    });
+});
+
+describe("ChangeHoroscopeCommand", () => {
+    let repositoryMock: IProfileRepository;
+
+    beforeEach(() => {
+        repositoryMock = {
+            findByUserId: jest.fn(),
+            update: jest.fn(),
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            deleteById: jest.fn(),
+            existsById: jest.fn(),
+            deleteAll: jest.fn(),
+        };
+    });
+
+    test("should change horoscope successfully", async () => {
+        const command = new ChangeHoroscopeCommand(repositoryMock);
+        
+        const profile = new Profile(
+            "profile123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+
+        const request = {
+            id: "profile123",
+            newContent: "TAURUS"
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(true);
+        expect(result.getValue()).toBe(request.newContent);
+        expect(profile.horoscope?.value).toBe(request.newContent);
+        expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
+    });
+    
+    /*
+    test("should return error if profile is not found", async () => {
+        const command = new ChangeHeightCommand(repositoryMock);
+
+        const request = {
+            id: "profile123",
+            newContent: "Tauro"
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NotFoundError);
+        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+    });
+
+    test("should return error if repository update fails", async () => {
+        const command = new ChangeHeightCommand(repositoryMock);
+
+        const profile = new Profile(
+            "profile123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+        (repositoryMock.update as jest.Mock).mockRejectedValue(new Error("Update failed"));
+
+        const request = {
+            id: "profile123",
+            newContent: "Tauro"
+        };
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(Error);
+        expect(result.getErrorMessage()).toBe("Update failed");
+    });
+    */
+});
+
+describe("ChangeInterestsCommand", () => {
+    let repositoryMock: IProfileRepository;
+
+    beforeEach(() => {
+        repositoryMock = {
+            findByUserId: jest.fn(),
+            update: jest.fn(),
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            deleteById: jest.fn(),
+            existsById: jest.fn(),
+            deleteAll: jest.fn(),
+        };
+    });
+
+    test("should change interests successfully", async () => {
+        const command = new ChangeInterestsCommand(repositoryMock);
+        
+        const profile = new Profile(
+            "profile123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+
+        const request = {
+            id: "profile123",
+            newInterests: ["Football", "Basketball"]
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(true);
+        expect(result.getValue()).toBe(request.newInterests);
+        expect(profile.interests).toEqual(request.newInterests);
+        expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
+    });
+
+    test("should return error if profile is not found", async () => {
+        const command = new ChangeInterestsCommand(repositoryMock);
+
+        const request = {
+            id: "profile123",
+            newInterests: ["Football", "Basketball"]
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NotFoundError);
+        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+    });
+
+    test("should return error if repository update fails", async () => {
+        const command = new ChangeInterestsCommand(repositoryMock);
+
+        const profile = new Profile(
+            "profile123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+        (repositoryMock.update as jest.Mock).mockRejectedValue(new Error("Update failed"));
+
+        const request = {
+            id: "profile123",
+            newInterests: ["Football", "Basketball"]
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(Error);
+        expect(result.getErrorMessage()).toBe("Update failed");
+    });
+});
+
+describe("ChangeJobCommand", () => {
+    let repositoryMock: IProfileRepository;
+
+    beforeEach(() => {
+        repositoryMock = {
+            findByUserId: jest.fn(),
+            update: jest.fn(),
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            deleteById: jest.fn(),
+            existsById: jest.fn(),
+            deleteAll: jest.fn(),
+        };
+    });
+
+    test("should change job successfully", async () => {
+        const command = new ChangeJobCommand(repositoryMock);
+        
+        const profile = new Profile(
+            "profile123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+
+        const request = {
+            id: "profile123",
+            newContent: "Football Player"
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(true);
+        expect(result.getValue()).toBe(request.newContent);
+        expect(profile.job).toEqual(request.newContent);
+        expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
+    });
+
+    test("should return error if profile is not found", async () => {
+        const command = new ChangeJobCommand(repositoryMock);
+
+        const request = {
+            id: "profile123",
+            newContent: "Football Player"
+        };
+
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NotFoundError);
+        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+    });
+
+    test("should return error if repository update fails", async () => {
+        const command = new ChangeJobCommand(repositoryMock);
+
+        const profile = new Profile(
+            "profile123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+        (repositoryMock.update as jest.Mock).mockRejectedValue(new Error("Update failed"));
+
+        const request = {
+            id: "profile123",
+            newContent: "Football Player"
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(Error);
+        expect(result.getErrorMessage()).toBe("Update failed");
+    });
+});
+
+describe("ChangePasswordCommand", () => {
+    let repositoryMock: IUserRepository;
+    let eventBusMock: IEventBus;
+
+    beforeEach(() => {
+        repositoryMock = {
+            findByEmail: jest.fn(),
+            update: jest.fn(),
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            deleteById: jest.fn(),
+            existsById: jest.fn(),
+            deleteAll: jest.fn(),
+        };
+        eventBusMock = {
+            publish: jest.fn(),
+            subscribe: jest.fn()
+        };
+    });
+
+    test("should change password successfully", async () => {
+        const command = new ChangePasswordCommand(repositoryMock, eventBusMock);
+        
+        const user = new User(
+            new Date("2023-01-01"),
+            "email@example.com",
+            "password",
+            [],
+            true
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(user);
+
+        const request = {
+            id: "user123",
+            newPassword: "newpassword"
+        };
+
+        const result = await command.run(request);
+        expect(result.isSuccess()).toBe(true);
+
+        // Verificamos que el password del usuario fue cambiado
+        expect(user.password).toBe(request.newPassword);
+
+        // Verificamos que el repositorio actualizó el usuario
+        expect(repositoryMock.update).toHaveBeenCalledWith(user, user.getId());
+
+        // Verificamos que el evento fue publicado
+        expect(eventBusMock.publish).toHaveBeenCalledWith(user.pullDomainEvents());
+    });
+
+    test("should return error if user is not found", async () => {
+        const command = new ChangePasswordCommand(repositoryMock, eventBusMock);
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(null);
+
+        const result = await command.run({ id: "user123", newPassword: "newpassword" });
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NotFoundError);
+    });
+
+    test("should return error if repository update fails", async () => {
+        const command = new ChangePasswordCommand(repositoryMock, eventBusMock);
+        
+        const user = new User(
+            new Date("2023-01-01"),
+            "email@example.com",
+            "password",
+            [],
+            true
+        );
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(user);
+        (repositoryMock.update as jest.Mock).mockRejectedValue(new Error("Update failed"));
+
+        const result = await command.run({ id: "user123", newPassword: "newpassword" });
 
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(Error);
