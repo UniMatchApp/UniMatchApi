@@ -39,25 +39,24 @@ import { ReportUserCommand } from '../application/commands/ReportUserCommand';
 import { UploadPhotoCommand } from '../application/commands/UploadPhotoCommand';
 
 describe("BlockUserCommand", () => {
-    let repositoryMock: jest.Mocked<IUserRepository>;
-    let command: BlockUserCommand;
+    let repositoryMock: IUserRepository;
 
     beforeEach(() => {
         repositoryMock = {
-            findById: jest.fn(),
-            update: jest.fn(),
             findByEmail: jest.fn(),
+            update: jest.fn(),
             create: jest.fn(),
             findAll: jest.fn(),
+            findById: jest.fn(),
             deleteById: jest.fn(),
             existsById: jest.fn(),
             deleteAll: jest.fn(),
         };
-
-        command = new BlockUserCommand(repositoryMock);
     });
 
-    it("should block a user successfully", async () => {
+    test("should block a user successfully", async () => {
+        const command = new BlockUserCommand(repositoryMock);
+        
         const user = new User(
             new Date("2023-01-01"),
             "email@example.com",
@@ -65,7 +64,8 @@ describe("BlockUserCommand", () => {
             [],
             true
         );
-        repositoryMock.findById.mockResolvedValue(user);
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(user);
 
         const result = await command.run({ userId: "user123", blockUserId: "userToBlock123" });
 
@@ -73,8 +73,10 @@ describe("BlockUserCommand", () => {
         expect(user.blockedUsers).toContain("userToBlock123");
     });
 
-    it("should return error if user is not found", async () => {
-        repositoryMock.findById.mockResolvedValue(null);
+    test("should return error if user is not found", async () => {
+        const command = new BlockUserCommand(repositoryMock);
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(null);
 
         const result = await command.run({ userId: "user123", blockUserId: "userToBlock123" });
 
@@ -82,7 +84,9 @@ describe("BlockUserCommand", () => {
         expect(result.getError()).toBeInstanceOf(NotFoundError);
     });
 
-    it("should return error if repository update fails", async () => {
+    test("should return error if repository update fails", async () => {
+        const command = new BlockUserCommand(repositoryMock);
+        
         const user = new User(
             new Date("2023-01-01"),
             "email@example.com",
@@ -90,8 +94,8 @@ describe("BlockUserCommand", () => {
             [],
             true
         );
-        repositoryMock.findById.mockResolvedValue(user);
-        repositoryMock.update.mockRejectedValue(new Error("Update failed"));
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(user);
+        (repositoryMock.update as jest.Mock).mockRejectedValue(new Error("Update failed"));
 
         const result = await command.run({ userId: "user123", blockUserId: "userToBlock123" });
 
@@ -102,25 +106,24 @@ describe("BlockUserCommand", () => {
 });
 
 describe("ChangeAboutMeCommand", () => {
-    let repositoryMock: jest.Mocked<IProfileRepository>;
-    let command: ChangeAboutMeCommand;
+    let repositoryMock: IProfileRepository;
 
     beforeEach(() => {
         repositoryMock = {
-            findById: jest.fn(),
-            update: jest.fn(),
             findByUserId: jest.fn(),
+            update: jest.fn(),
             create: jest.fn(),
             findAll: jest.fn(),
+            findById: jest.fn(),
             deleteById: jest.fn(),
-            deleteAll: jest.fn(),
             existsById: jest.fn(),
+            deleteAll: jest.fn(),
         };
-
-        command = new ChangeAboutMeCommand(repositoryMock);
     });
 
-    it("should change about me content successfully", async () => {
+    test("should change about me content successfully", async () => {
+        const command = new ChangeAboutMeCommand(repositoryMock);
+        
         const profile = new Profile(
             "user123",
             "John Doe",
@@ -135,7 +138,7 @@ describe("ChangeAboutMeCommand", () => {
             ["photo1.jpg", "photo2.jpg"]
         );
 
-        repositoryMock.findById.mockResolvedValue(profile);
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
 
         const request = {
             id: "profile123",
@@ -150,8 +153,8 @@ describe("ChangeAboutMeCommand", () => {
         expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
     });
 
-    it("should return error if profile is not found", async () => {
-        repositoryMock.findById.mockResolvedValue(null);
+    test("should return error if profile is not found", async () => {
+        const command = new ChangeAboutMeCommand(repositoryMock);
 
         const request = {
             id: "profile123",
@@ -162,10 +165,12 @@ describe("ChangeAboutMeCommand", () => {
 
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(NotFoundError);
-        // expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
     });
 
-    it("should return error if repository update fails", async () => {
+    test("should return error if repository update fails", async () => {
+        const command = new ChangeAboutMeCommand(repositoryMock);
+        
         const profile = new Profile(
             "user123",
             "John Doe",
@@ -179,12 +184,205 @@ describe("ChangeAboutMeCommand", () => {
             ["Reading", "Traveling"],
             ["photo1.jpg", "photo2.jpg"]
         );
-        repositoryMock.findById.mockResolvedValue(profile);
-        repositoryMock.update.mockRejectedValue(new Error("Update failed"));
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+        (repositoryMock.update as jest.Mock).mockRejectedValue(new Error("Update failed"));
 
         const request = {
             id: "profile123",
             newContent: "This is the new about me content"
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(Error);
+        expect(result.getErrorMessage()).toBe("Update failed");
+    });
+});
+
+describe("ChangeDegreeCommand", () => {
+    let repositoryMock: IProfileRepository;
+
+    beforeEach(() => {
+        repositoryMock = {
+            findByUserId: jest.fn(),
+            update: jest.fn(),
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            deleteById: jest.fn(),
+            existsById: jest.fn(),
+            deleteAll: jest.fn(),
+        };
+    });
+
+    test("should change degree successfully", async () => {
+        const command = new ChangeDegreeCommand(repositoryMock);
+        
+        const profile = new Profile(
+            "user123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+
+        const request = {
+            id: "profile123",
+            degree: "New Degree"
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(true);
+        expect(result.getValue()).toBe(request.degree);
+        expect(profile.education).toBe(request.degree);
+        expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
+    });
+
+    test("should return error if profile is not found", async () => {
+        const command = new ChangeDegreeCommand(repositoryMock);
+
+        const request = {
+            id: "profile123",
+            degree: "New Degree"
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NotFoundError);
+        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+    });
+
+    test("should return error if repository update fails", async () => {
+        const command = new ChangeDegreeCommand(repositoryMock);
+
+        const profile = new Profile(
+            "user123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+        (repositoryMock.update as jest.Mock).mockRejectedValue(new Error("Update failed"));
+
+        const request = {
+            id: "profile123",
+            degree: "New Degree"
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(Error);
+        expect(result.getErrorMessage()).toBe("Update failed");
+    });
+});
+
+describe("ChangeDrinksCommand", () => {
+    let repositoryMock: IProfileRepository;
+
+    beforeEach(() => {
+        repositoryMock = {
+            findByUserId: jest.fn(),
+            update: jest.fn(),
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            deleteById: jest.fn(),
+            existsById: jest.fn(),
+            deleteAll: jest.fn(),
+        };
+    });
+
+    test("should change drinks successfully", async () => {
+        const command = new ChangeDrinksCommand(repositoryMock);
+        
+        const profile = new Profile(
+            "user123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+
+        const request = {
+            id: "profile123",
+            newContent: "Occasionally"
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(true);
+        expect(result.getValue()).toBe(request.newContent);
+        expect(profile.drinks?.toLowerCase()).toBe(request.newContent.toLowerCase());
+        expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
+    });
+
+    test("should return error if profile is not found", async () => {
+        const command = new ChangeDrinksCommand(repositoryMock);
+
+        const request = {
+            id: "profile123",
+            newContent: "Occasionally"
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NotFoundError);
+        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+    });
+
+    test("should return error if repository update fails", async () => {
+        const command = new ChangeDrinksCommand(repositoryMock);
+
+        const profile = new Profile(
+            "user123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+        (repositoryMock.update as jest.Mock).mockRejectedValue(new Error("Update failed"));
+
+        const request = {
+            id: "profile123",
+            newContent: "Occasionally"
         };
 
         const result = await command.run(request);
