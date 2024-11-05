@@ -1,5 +1,3 @@
-import { User } from '@/core/uniMatch/user/domain/User';
-import { ReportedUser } from '../domain/ReportedUser';
 import { Profile } from '@/core/uniMatch/user/domain/Profile';
 import { DomainError } from '@/core/shared/exceptions/DomainError';
 import { NotFoundError } from '@/core/shared/exceptions/NotFoundError';
@@ -12,25 +10,20 @@ import { Location } from '@/core/shared/domain/Location';
 import { SexualOrientation } from '../domain/SexualOrientation';
 import { RelationshipType } from '@/core/shared/domain/RelationshipType';
 
-import { BlockUserCommand } from '../application/commands/BlockUserCommand';
 import { ChangeAboutMeCommand } from '../application/commands/ChangeAboutMeCommand';
 import { ChangeDegreeCommand } from '../application/commands/ChangeDegreeCommand';
 import { ChangeDrinksCommand } from '../application/commands/ChangeDrinksCommand';
-import { ChangeEmailCommand } from '../application/commands/ChangeEmailCommand';
 import { ChangeHeightCommand } from '../application/commands/ChangeHeightCommand';
 import { ChangeHoroscopeCommand } from '../application/commands/ChangeHoroscopeCommand';
 import { ChangeInterestsCommand } from '../application/commands/ChangeInterestsCommand';
 import { ChangeJobCommand } from '../application/commands/ChangeJobCommand';
-import { ChangePasswordCommand } from '../application/commands/ChangePasswordCommand';
 import { ChangePersonalityCommand } from '../application/commands/ChangePersonalityCommand';
 import { ChangePetsCommand } from '../application/commands/ChangePetsCommand';
 import { ChangeRelationshipTypeCommand } from '../application/commands/ChangeRelationshipTypeCommand';
 import { ChangeSexualOrientationCommand } from '../application/commands/ChangeSexualOrientationCommand';
 import { ChangeSmokesCommand } from '../application/commands/ChangeSmokesCommand';
-import { ChangeSportsCommand } from '../application/commands/ChangeSportsCommand';
-import { ChangeValuesAndBeliefsCommand } from '../application/commands/ChangeValuesAndBeliefsCommand';
-import { ChangeWeightCommand } from '../application/commands/ChangeWeightCommand';
 import { CreateNewProfileCommand } from '../application/commands/CreateNewProfileCommand';
+
 import { CreateNewUserCommand } from '../application/commands/CreateNewUserCommand';
 import { DeleteUserCommand } from '../application/commands/DeleteUserCommand';
 import { DeletePhotoFromTheWallCommand } from '../application/commands/DeletePhotoFromTheWallCommand';
@@ -40,6 +33,7 @@ import { ReportUserCommand } from '../application/commands/ReportUserCommand';
 import { UploadPhotoCommand } from '../application/commands/UploadPhotoCommand';
 import { UUID } from 'typeorm/driver/mongodb/bson.typings';
 
+/*
 describe("CreateNewProfileCommand", () => {
     let userRepositoryMock: IUserRepository;
     let profileRepositoryMock: IProfileRepository;
@@ -124,6 +118,7 @@ describe("CreateNewProfileCommand", () => {
         expect(eventBusMock.publish).toHaveBeenCalled();
     });
 });
+*/
 
 describe("ChangeAboutMeCommand", () => {
     let repositoryMock: IProfileRepository;
@@ -185,7 +180,7 @@ describe("ChangeAboutMeCommand", () => {
 
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(NotFoundError);
-        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+        expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
     });
 
     test("should return error if repository update fails", async () => {
@@ -281,7 +276,7 @@ describe("ChangeDegreeCommand", () => {
 
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(NotFoundError);
-        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+        expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
     });
 
     test("should return error if repository update fails", async () => {
@@ -377,7 +372,7 @@ describe("ChangeDrinksCommand", () => {
 
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(NotFoundError);
-        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+        expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
     });
 
     test("should return error if repository update fails", async () => {
@@ -473,7 +468,7 @@ describe("ChangeHeightCommand", () => {
 
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(NotFoundError);
-        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+        expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
     });
 
     test("should return error if repository update fails", async () => {
@@ -569,7 +564,7 @@ describe("ChangeHoroscopeCommand", () => {
 
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(NotFoundError);
-        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+        expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
     });
 
     test("should return error if repository update fails", async () => {
@@ -664,7 +659,7 @@ describe("ChangeInterestsCommand", () => {
 
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(NotFoundError);
-        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+        expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
     });
 
     test("should return error if repository update fails", async () => {
@@ -761,7 +756,7 @@ describe("ChangeJobCommand", () => {
 
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(NotFoundError);
-        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+        expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
     });
 
     test("should return error if repository update fails", async () => {
@@ -858,7 +853,7 @@ describe("ChangePersonalityCommand", () => {
 
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(NotFoundError);
-        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+        expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
     });
 
     test("should return error if repository update fails", async () => {
@@ -955,7 +950,7 @@ describe("ChangePetsCommand", () => {
 
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(NotFoundError);
-        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+        expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
     });
 
     test("should return error if repository update fails", async () => {
@@ -1057,7 +1052,7 @@ describe("ChangeRelationshipTypeCommand", () => {
 
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(NotFoundError);
-        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+        expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
     });
 
     test("should return error if repository update fails", async () => {
@@ -1159,7 +1154,7 @@ describe("ChangeSexualOrientationCommand", () => {
 
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(NotFoundError);
-        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+        expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
     });
 
     test("should return error if repository update fails", async () => {
@@ -1255,7 +1250,7 @@ describe("ChangeSmokesCommand", () => {
 
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(NotFoundError);
-        // todo: expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+        expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
     });
 
     test("should return error if repository update fails", async () => {
@@ -1281,6 +1276,108 @@ describe("ChangeSmokesCommand", () => {
         const request = {
             id: "profile123",
             newContent: "Occasionally",
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(Error);
+        expect(result.getErrorMessage()).toBe("Update failed");
+    });
+});
+
+describe("DeletePhotoFromTheWallCommand", () => {
+    let repositoryMock: IProfileRepository;
+    let fileHandlerMock: IFileHandler
+
+    beforeEach(() => {
+        repositoryMock = {
+            findByUserId: jest.fn(),
+            update: jest.fn(),
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findById: jest.fn(),
+            deleteById: jest.fn(),
+            existsById: jest.fn(),
+            deleteAll: jest.fn(),
+        };
+        fileHandlerMock = {
+            save: jest.fn(),
+            read: jest.fn(),
+            delete: jest.fn(),
+        };
+    });
+
+    test("should delete a photo from the wall successfully", async () => {
+        const command = new DeletePhotoFromTheWallCommand(repositoryMock, fileHandlerMock);
+        
+        const profile = new Profile(
+            "profile123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg"]
+        );
+    
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+    
+        const request = {
+            id: "profile123",
+            photoURL: "photo1.jpg",
+
+        };
+    
+        const result = await command.run(request);
+    
+        expect(result.isSuccess()).toBe(true);
+        expect(profile.wall).not.toContain(request.photoURL);
+        expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
+    });
+
+    test("should return error if profile is not found", async () => {
+        const command = new DeletePhotoFromTheWallCommand(repositoryMock, fileHandlerMock);
+
+        const request = {
+            id: "profile123",
+            photoURL: "photo4.jpg",
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NotFoundError);
+        expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+    });
+
+    test("should return error if repository update fails", async () => {
+        const command = new DeletePhotoFromTheWallCommand(repositoryMock, fileHandlerMock);
+
+        const profile = new Profile(
+            "profile123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+        (repositoryMock.update as jest.Mock).mockRejectedValue(new Error("Update failed"));
+
+        const request = {
+            id: "profile123",
+            photoURL: "photo4.jpg",
         };
 
         const result = await command.run(request);

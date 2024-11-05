@@ -17,7 +17,7 @@ export class ParticipateEventCommand implements ICommand<ParticipateEventDTO, Ev
             const event = await this.repository.findById(request.eventId);
             
             if (!event) {
-                return Result.failure<Event>(new NotFoundError("Event"));
+                return Result.failure<Event>(new NotFoundError("Event not found"));
             }
 
             event.addParticipant(request.userId);

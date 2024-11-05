@@ -18,11 +18,11 @@ export class UserLikedSomebodyCommand implements ICommand<UserLikedSomebodyDTO, 
             const likedUser = await this.repository.findByUserId(request.likedUserId);
 
             if (!user) {
-                return Result.failure<void>(new NotFoundError("User"));
+                return Result.failure<void>(new NotFoundError("User not found"));
             }
 
             if (!likedUser) {
-                return Result.failure<void>(new NotFoundError("Liked user"));
+                return Result.failure<void>(new NotFoundError("Liked user not found"));
             }
 
             const like = new Like(user, likedUser);

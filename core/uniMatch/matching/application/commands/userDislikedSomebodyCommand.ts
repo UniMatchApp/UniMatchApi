@@ -18,11 +18,11 @@ export class UserDislikedSomebodyCommand implements ICommand<UserDislikedSomebod
             const dislikedUser = await this.repository.findByUserId(request.dislikedUserId);
 
             if (!user) {
-                return Result.failure<void>(new NotFoundError("User"));
+                return Result.failure<void>(new NotFoundError("User not found"));
             }
 
             if (!dislikedUser) {
-                return Result.failure<void>(new NotFoundError("Disliked user"));
+                return Result.failure<void>(new NotFoundError("Disliked user not found"));
             }
 
             const dislike = new Dislike(user, dislikedUser);

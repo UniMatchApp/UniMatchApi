@@ -17,7 +17,7 @@ export class LikeEventCommand implements ICommand<LikeEventDTO, Event> {
             const event = await this.repository.findById(request.eventId);
             
             if (!event) {
-                return Result.failure<Event>(new NotFoundError("Event"));
+                return Result.failure<Event>(new NotFoundError("Event not found"));
             }
 
             event.like(request.userId);

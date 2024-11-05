@@ -2,7 +2,7 @@ export class NotFoundError extends Error {
     constructor(resource: string);
     constructor(resource: string, cause: Error);
     constructor(resource: string, cause?: Error) {
-        super(`${resource} not found`);
+        super(`${resource}`);
         this.name = "NotFoundError";
         
         if (cause) {

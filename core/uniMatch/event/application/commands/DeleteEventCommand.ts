@@ -26,7 +26,7 @@ export class DeleteEventCommand implements ICommand<DeleteEventDTO, void> {
             const event = await this.repository.findById(request.eventId);
 
             if (!event) {
-                return Result.failure<void>(new NotFoundError("Event"));
+                return Result.failure<void>(new NotFoundError("Event not found"));
             }
             if( event.ownerId !== request.userId) {
                 return Result.failure<void>(new AuthorizationError("You are not authorized to delete this event"));

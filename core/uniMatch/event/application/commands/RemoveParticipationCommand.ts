@@ -16,7 +16,7 @@ export class RemoveParticipationCommand implements ICommand<ParticipateEventDTO,
             const event = await this.repository.findById(request.eventId);
             
             if (!event) {
-                return Result.failure<Event>(new NotFoundError("Event"));
+                return Result.failure<Event>(new NotFoundError("Event not found"));
             }
 
             event.removeParticipant(request.userId);
