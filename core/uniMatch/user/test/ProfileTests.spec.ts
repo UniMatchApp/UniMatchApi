@@ -168,6 +168,111 @@ describe("CreateNewProfileCommand", () => {
         expect(result.getError()).toBeInstanceOf(Error);
         expect(result.getErrorMessage()).toBe("Update failed");
     });
+
+    test("should return error if name is empty", async () => {
+        const command = new CreateNewProfileCommand(userRepositoryMock, profileRepositoryMock, fileHandlerMock, eventBusMock);
+        
+        const user = new User(
+            new Date("2023-01-01"),
+            "email@example.com",
+            "password",
+            [],
+            true
+        );
+
+        const request : CreateNewProfileDTO = {
+            userId: "profle123",
+            name: "",
+            age: 30,
+            aboutMe: "This is the about me section.",
+            gender: "MALE",
+            location: { latitude: 40.7128, longitude: -74.0060 },
+            sexualOrientation: "HETEROSEXUAL",
+            relationshipType: "FRIENDSHIP",
+            birthday: new Date("1993-01-01"),
+            interests: ["Reading", "Traveling"],
+            wall: ["profile.jpg", "profile1.jpg", "profile2.jpg"],
+            image: new File([""], "profile.jpg", { type: "image/jpeg" })
+        };
+
+        (userRepositoryMock.findByEmail as jest.Mock).mockResolvedValue(user);
+
+        const result = await command.run(request);
+        
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(Error);
+        expect(result.getErrorMessage()).toBe("Name cannot be empty.");
+    });
+
+    test("should return error if age is under 18", async () => {
+        const command = new CreateNewProfileCommand(userRepositoryMock, profileRepositoryMock, fileHandlerMock, eventBusMock);
+        
+        const user = new User(
+            new Date("2023-01-01"),
+            "email@example.com",
+            "password",
+            [],
+            true
+        );
+
+        const request : CreateNewProfileDTO = {
+            userId: "profle123",
+            name: "John Doe",
+            age: 17,
+            aboutMe: "This is the about me section.",
+            gender: "MALE",
+            location: { latitude: 40.7128, longitude: -74.0060 },
+            sexualOrientation: "HETEROSEXUAL",
+            relationshipType: "FRIENDSHIP",
+            birthday: new Date("1993-01-01"),
+            interests: ["Reading", "Traveling"],
+            wall: ["profile.jpg", "profile1.jpg", "profile2.jpg"],
+            image: new File([""], "profile.jpg", { type: "image/jpeg" })
+        };
+
+        (userRepositoryMock.findByEmail as jest.Mock).mockResolvedValue(user);
+
+        const result = await command.run(request);
+        
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(Error);
+        expect(result.getErrorMessage()).toBe("Age must be between 18 and 100.");
+    });
+
+    test("should return error if age is over 100", async () => {
+        const command = new CreateNewProfileCommand(userRepositoryMock, profileRepositoryMock, fileHandlerMock, eventBusMock);
+        
+        const user = new User(
+            new Date("2023-01-01"),
+            "email@example.com",
+            "password",
+            [],
+            true
+        );
+
+        const request : CreateNewProfileDTO = {
+            userId: "profle123",
+            name: "John Doe",
+            age: 101,
+            aboutMe: "This is the about me section.",
+            gender: "MALE",
+            location: { latitude: 40.7128, longitude: -74.0060 },
+            sexualOrientation: "HETEROSEXUAL",
+            relationshipType: "FRIENDSHIP",
+            birthday: new Date("1993-01-01"),
+            interests: ["Reading", "Traveling"],
+            wall: ["profile.jpg", "profile1.jpg", "profile2.jpg"],
+            image: new File([""], "profile.jpg", { type: "image/jpeg" })
+        };
+
+        (userRepositoryMock.findByEmail as jest.Mock).mockResolvedValue(user);
+
+        const result = await command.run(request);
+        
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(Error);
+        expect(result.getErrorMessage()).toBe("Age must be between 18 and 100.");
+    });
 });
 
 describe("ChangeAboutMeCommand", () => {

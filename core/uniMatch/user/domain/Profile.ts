@@ -13,8 +13,8 @@ import {NewProfile} from "@/core/uniMatch/user/domain/events/NewProfile";
 
 export class Profile extends AggregateRoot {
     private _userId: string;
-    private _name: string;
-    private _age: number;
+    private _name: string = "";
+    private _age: number = 0;
     private _aboutMe: string;
     private _location: Location;
     private _fact?: string;
@@ -55,8 +55,8 @@ export class Profile extends AggregateRoot {
     ) {
         super();
         this._userId = userId;
-        this._name = name;
-        this._age = age;
+        this.name = name;
+        this.age = age;
         this._aboutMe = aboutMe;
         this._location = location;
         this._gender = gender;
@@ -77,8 +77,8 @@ export class Profile extends AggregateRoot {
     }
 
     public set name(value: string) {
-        if (value.trim().length === 0) {
-            throw new DomainError("Name cannot be empty.");
+        if (!value) {
+            throw new DomainError('Name cannot be empty.');
         }
         this._name = value;
     }
