@@ -1,15 +1,18 @@
 import { Profile } from '@/core/uniMatch/user/domain/Profile';
+import { User } from '@/core/uniMatch/user/domain/User';
 import { DomainError } from '@/core/shared/exceptions/DomainError';
 import { NotFoundError } from '@/core/shared/exceptions/NotFoundError';
-import { IFileHandler } from "@/core/shared/application/IFileHandler";
-import { IEventBus } from "@/core/shared/application/IEventBus";
+import { FileError } from '@/core/shared/exceptions/FileError';
+import { NullPointerError } from "@/core/shared/exceptions/NullPointerError";
 import { IUserRepository } from '../application/ports/IUserRepository';
 import { IProfileRepository } from '../application/ports/IProfileRepository';
+import { IFileHandler } from "@/core/shared/application/IFileHandler";
+import { IEventBus } from "@/core/shared/application/IEventBus";
 import { Gender } from '@/core/shared/domain/Gender';
 import { Location } from '@/core/shared/domain/Location';
 import { SexualOrientation } from '../domain/SexualOrientation';
 import { RelationshipType } from '@/core/shared/domain/RelationshipType';
-
+import { CreateNewProfileCommand } from '../application/commands/CreateNewProfileCommand';
 import { ChangeAboutMeCommand } from '../application/commands/ChangeAboutMeCommand';
 import { ChangeDegreeCommand } from '../application/commands/ChangeDegreeCommand';
 import { ChangeDrinksCommand } from '../application/commands/ChangeDrinksCommand';
@@ -22,18 +25,12 @@ import { ChangePetsCommand } from '../application/commands/ChangePetsCommand';
 import { ChangeRelationshipTypeCommand } from '../application/commands/ChangeRelationshipTypeCommand';
 import { ChangeSexualOrientationCommand } from '../application/commands/ChangeSexualOrientationCommand';
 import { ChangeSmokesCommand } from '../application/commands/ChangeSmokesCommand';
-import { CreateNewProfileCommand } from '../application/commands/CreateNewProfileCommand';
-
-import { CreateNewUserCommand } from '../application/commands/CreateNewUserCommand';
-import { DeleteUserCommand } from '../application/commands/DeleteUserCommand';
 import { DeletePhotoFromTheWallCommand } from '../application/commands/DeletePhotoFromTheWallCommand';
 import { GetProfileCommand } from '../application/commands/GetProfileCommand';
-import { LoginUserCommand } from '../application/commands/LoginUserCommand';
-import { ReportUserCommand } from '../application/commands/ReportUserCommand';
 import { UploadPhotoCommand } from '../application/commands/UploadPhotoCommand';
 import { UUID } from 'typeorm/driver/mongodb/bson.typings';
+import { CreateNewProfileDTO } from "../application/DTO/CreateNewProfileDTO";
 
-/*
 describe("CreateNewProfileCommand", () => {
     let userRepositoryMock: IUserRepository;
     let profileRepositoryMock: IProfileRepository;
@@ -78,8 +75,16 @@ describe("CreateNewProfileCommand", () => {
     test("should create a new profile successfully", async () => {
         const command = new CreateNewProfileCommand(userRepositoryMock, profileRepositoryMock, fileHandlerMock, eventBusMock);
         
-        const request = {
-            userId: "user123",
+        const user = new User(
+            new Date("2023-01-01"),
+            "email@example.com",
+            "password",
+            [],
+            true
+        );
+
+        const request : CreateNewProfileDTO = {
+            userId: "profle123",
             name: "John Doe",
             age: 30,
             aboutMe: "This is the about me section.",
@@ -89,26 +94,11 @@ describe("CreateNewProfileCommand", () => {
             relationshipType: "FRIENDSHIP",
             birthday: new Date("1993-01-01"),
             interests: ["Reading", "Traveling"],
-            wall: [],
+            wall: ["profile.jpg", "profile1.jpg", "profile2.jpg"],
             image: new File([""], "profile.jpg", { type: "image/jpeg" })
         };
 
-        const profileUrl = await fileHandlerMock.save(UUID.generate().toString(), request.image);
-
-        const profile = new Profile(
-            request.userId,
-            request.name,
-            request.age,
-            request.aboutMe,
-            Gender.fromString(request.gender),
-            new Location(request.location.latitude, request.location.longitude),
-            new SexualOrientation(request.sexualOrientation),
-            RelationshipType.fromString(request.relationshipType),
-            request.birthday,
-            request.interests,
-            [profileUrl]
-        );
-        profile.preferredImage = profileUrl;
+        (userRepositoryMock.findByEmail as jest.Mock).mockResolvedValue(user);
 
         const result = await command.run(request);
 
@@ -117,8 +107,68 @@ describe("CreateNewProfileCommand", () => {
         expect(profileRepositoryMock.create).toHaveBeenCalledWith(expect.any(Profile));
         expect(eventBusMock.publish).toHaveBeenCalled();
     });
+
+    test("should return error if user is not found", async () => {
+        const command = new CreateNewProfileCommand(userRepositoryMock, profileRepositoryMock, fileHandlerMock, eventBusMock);
+
+        const request : CreateNewProfileDTO = {
+            userId: "profle123",
+            name: "John Doe",
+            age: 30,
+            aboutMe: "This is the about me section.",
+            gender: "MALE",
+            location: { latitude: 40.7128, longitude: -74.0060 },
+            sexualOrientation: "HETEROSEXUAL",
+            relationshipType: "FRIENDSHIP",
+            birthday: new Date("1993-01-01"),
+            interests: ["Reading", "Traveling"],
+            wall: ["profile.jpg", "profile1.jpg", "profile2.jpg"],
+            image: new File([""], "profile.jpg", { type: "image/jpeg" })
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NotFoundError);
+        expect(result.getErrorMessage()).toBe(`User with id ${request.userId} does not exist`);
+    });
+
+    test("should return error if profile repository update fails", async () => {
+        const command = new CreateNewProfileCommand(userRepositoryMock, profileRepositoryMock, fileHandlerMock, eventBusMock);
+
+        const user = new User(
+            new Date("2023-01-01"),
+            "email@example.com",
+            "password",
+            [],
+            true
+        );
+
+        const request : CreateNewProfileDTO = {
+            userId: "profle123",
+            name: "John Doe",
+            age: 30,
+            aboutMe: "This is the about me section.",
+            gender: "MALE",
+            location: { latitude: 40.7128, longitude: -74.0060 },
+            sexualOrientation: "HETEROSEXUAL",
+            relationshipType: "FRIENDSHIP",
+            birthday: new Date("1993-01-01"),
+            interests: ["Reading", "Traveling"],
+            wall: ["profile.jpg", "profile1.jpg", "profile2.jpg"],
+            image: new File([""], "profile.jpg", { type: "image/jpeg" })
+        };
+
+        (userRepositoryMock.findByEmail as jest.Mock).mockResolvedValue(user);
+        (profileRepositoryMock.create as jest.Mock).mockRejectedValue(new Error("Update failed"));
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(Error);
+        expect(result.getErrorMessage()).toBe("Update failed");
+    });
 });
-*/
 
 describe("ChangeAboutMeCommand", () => {
     let repositoryMock: IProfileRepository;
@@ -138,7 +188,7 @@ describe("ChangeAboutMeCommand", () => {
 
     test("should change about me content successfully", async () => {
         const command = new ChangeAboutMeCommand(repositoryMock);
-        
+
         const profile = new Profile(
             "profile123",
             "John Doe",
@@ -185,7 +235,7 @@ describe("ChangeAboutMeCommand", () => {
 
     test("should return error if repository update fails", async () => {
         const command = new ChangeAboutMeCommand(repositoryMock);
-        
+
         const profile = new Profile(
             "profile123",
             "John Doe",
@@ -234,7 +284,7 @@ describe("ChangeDegreeCommand", () => {
 
     test("should change degree successfully", async () => {
         const command = new ChangeDegreeCommand(repositoryMock);
-        
+
         const profile = new Profile(
             "profile123",
             "John Doe",
@@ -330,7 +380,7 @@ describe("ChangeDrinksCommand", () => {
 
     test("should change drinks successfully", async () => {
         const command = new ChangeDrinksCommand(repositoryMock);
-        
+
         const profile = new Profile(
             "profile123",
             "John Doe",
@@ -426,7 +476,7 @@ describe("ChangeHeightCommand", () => {
 
     test("should change height successfully", async () => {
         const command = new ChangeHeightCommand(repositoryMock);
-        
+
         const profile = new Profile(
             "profile123",
             "John Doe",
@@ -522,7 +572,7 @@ describe("ChangeHoroscopeCommand", () => {
 
     test("should change horoscope successfully", async () => {
         const command = new ChangeHoroscopeCommand(repositoryMock);
-        
+
         const profile = new Profile(
             "profile123",
             "John Doe",
@@ -551,7 +601,7 @@ describe("ChangeHoroscopeCommand", () => {
         expect(profile.horoscope?.value).toBe(request.newContent);
         expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
     });
-    
+
     test("should return error if profile is not found", async () => {
         const command = new ChangeHoroscopeCommand(repositoryMock);
 
@@ -617,7 +667,7 @@ describe("ChangeInterestsCommand", () => {
 
     test("should change interests successfully", async () => {
         const command = new ChangeInterestsCommand(repositoryMock);
-        
+
         const profile = new Profile(
             "profile123",
             "John Doe",
@@ -713,7 +763,7 @@ describe("ChangeJobCommand", () => {
 
     test("should change job successfully", async () => {
         const command = new ChangeJobCommand(repositoryMock);
-        
+
         const profile = new Profile(
             "profile123",
             "John Doe",
@@ -810,7 +860,7 @@ describe("ChangePersonalityCommand", () => {
 
     test("should change personality successfully", async () => {
         const command = new ChangePersonalityCommand(repositoryMock);
-        
+
         const profile = new Profile(
             "profile123",
             "John Doe",
@@ -907,7 +957,7 @@ describe("ChangePetsCommand", () => {
 
     test("should change pets status successfully", async () => {
         const command = new ChangePetsCommand(repositoryMock);
-        
+
         const profile = new Profile(
             "profile123",
             "John Doe",
@@ -988,7 +1038,7 @@ describe("ChangePetsCommand", () => {
 
 describe("ChangeRelationshipTypeCommand", () => {
     let repositoryMock: IProfileRepository;
-    let eventBusMock: IEventBus;   
+    let eventBusMock: IEventBus;
 
     beforeEach(() => {
         repositoryMock = {
@@ -1009,7 +1059,7 @@ describe("ChangeRelationshipTypeCommand", () => {
 
     test("should change relationship type successfully", async () => {
         const command = new ChangeRelationshipTypeCommand(repositoryMock, eventBusMock);
-        
+
         const profile = new Profile(
             "profile123",
             "John Doe",
@@ -1111,7 +1161,7 @@ describe("ChangeSexualOrientationCommand", () => {
 
     test("should change sexual orientation successfully", async () => {
         const command = new ChangeSexualOrientationCommand(repositoryMock, eventBusMock);
-        
+
         const profile = new Profile(
             "profile123",
             "Antonio Aparicio",
@@ -1208,7 +1258,7 @@ describe("ChangeSmokesCommand", () => {
 
     test("should change smokes status successfully", async () => {
         const command = new ChangeSmokesCommand(repositoryMock);
-        
+
         const profile = new Profile(
             "profile123",
             "John Doe",
@@ -1222,16 +1272,16 @@ describe("ChangeSmokesCommand", () => {
             ["Reading", "Traveling"],
             ["photo1.jpg", "photo2.jpg"]
         );
-    
+
         (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
-    
+
         const request = {
             id: "profile123",
             newContent: "Occasionally",
         };
-    
+
         const result = await command.run(request);
-    
+
         expect(result.isSuccess()).toBe(true);
         expect(result.getValue()).toBe(request.newContent);
         expect(profile.smokes).toEqual(request.newContent.toUpperCase());
@@ -1310,7 +1360,7 @@ describe("DeletePhotoFromTheWallCommand", () => {
 
     test("should delete a photo from the wall successfully", async () => {
         const command = new DeletePhotoFromTheWallCommand(repositoryMock, fileHandlerMock);
-        
+
         const profile = new Profile(
             "profile123",
             "John Doe",
@@ -1324,20 +1374,54 @@ describe("DeletePhotoFromTheWallCommand", () => {
             ["Reading", "Traveling"],
             ["photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg"]
         );
-    
+
         (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
-    
+
         const request = {
             id: "profile123",
             photoURL: "photo1.jpg",
 
         };
-    
+
         const result = await command.run(request);
-    
+
         expect(result.isSuccess()).toBe(true);
         expect(profile.wall).not.toContain(request.photoURL);
         expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
+    });
+
+    test("should not delete a photo from the wall if not exists", async () => {
+        const command = new DeletePhotoFromTheWallCommand(repositoryMock, fileHandlerMock);
+
+        const profile = new Profile(
+            "profile123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+
+        const request = {
+            id: "profile123",
+            photoURL: "photo5.jpg",
+
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NotFoundError);
+        expect(result.getErrorMessage()).toBe(`Photo with URL ${request.photoURL} not found`);
+        expect(profile.wall).not.toContain(request.photoURL);
+        expect(repositoryMock.update).not.toHaveBeenCalled();
     });
 
     test("should return error if profile is not found", async () => {
@@ -1385,5 +1469,219 @@ describe("DeletePhotoFromTheWallCommand", () => {
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(Error);
         expect(result.getErrorMessage()).toBe("Update failed");
+    });
+});
+
+describe("GetProfileCommand", () => {
+    let repositoryMock: IProfileRepository;
+
+    beforeEach(() => {
+        repositoryMock = {
+            findById: jest.fn(),
+            update: jest.fn(),
+            findByUserId: jest.fn(),
+            create: jest.fn(),
+            findAll: jest.fn(),
+            deleteById: jest.fn(),
+            existsById: jest.fn(),
+            deleteAll: jest.fn(),
+        };
+    });
+
+    test("should get profile successfully", async () => {
+        const command = new GetProfileCommand(repositoryMock);
+
+        const profile = new Profile(
+            "profile123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+
+        const request = {
+            id: "profile123"
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(true);
+        expect(result.getValue()).toBe(profile);
+    });
+
+    test("should return error if profile is not found", async () => {
+        const command = new GetProfileCommand(repositoryMock);
+
+        const request = {
+            id: "profile123"
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NotFoundError);
+        expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+    });
+});
+
+describe("UploadPhotoCommand", () => {
+    let repositoryMock: IProfileRepository;
+    let fileHandlerMock: IFileHandler;
+
+    beforeEach(() => {
+        repositoryMock = {
+            findById: jest.fn(),
+            update: jest.fn(),
+            findByUserId: jest.fn(),
+            create: jest.fn(),
+            findAll: jest.fn(),
+            deleteById: jest.fn(),
+            existsById: jest.fn(),
+            deleteAll: jest.fn(),
+        };
+
+        fileHandlerMock = {
+            save: jest.fn(),
+            read: jest.fn(),
+            delete: jest.fn(),
+        };
+    });
+
+    test("should upload photo successfully", async () => {
+        const command = new UploadPhotoCommand(repositoryMock, fileHandlerMock);
+
+        const profile = new Profile(
+            "profile123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+        (fileHandlerMock.save as jest.Mock).mockResolvedValue("path/to/photo5.jpg");
+
+        const request = {
+            id: "profile123",
+            photo: new File([""], "photo5.jpg", { type: "image/jpeg" })
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(true);
+        expect(result.getValue()).toBe(request.photo);
+        expect(profile.wall).toContain("path/to/photo5.jpg");
+        expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
+    });
+
+    test("should return error if file name is invalid", async () => {
+        const command = new UploadPhotoCommand(repositoryMock, fileHandlerMock);
+
+        const request = {
+            id: "profile123",
+            photo: new File([""], "", { type: "image/jpeg" })
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(FileError);
+        expect(result.getErrorMessage()).toBe("Invalid file name");
+    });
+
+    test("should return error if photo URL is null", async () => {
+        const command = new UploadPhotoCommand(repositoryMock, fileHandlerMock);
+
+        const profile = new Profile(
+            "profile123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+        (fileHandlerMock.save as jest.Mock).mockResolvedValue(null);
+
+        const request = {
+            id: "profile123",
+            photo: new File([""], "photo.jpg", { type: "image/jpeg" })
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NullPointerError);
+        expect(result.getErrorMessage()).toBe("Photo url is null");
+    });
+
+    test("should return error if profile is not found", async () => {
+        const command = new UploadPhotoCommand(repositoryMock, fileHandlerMock);
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(null);
+        (fileHandlerMock.save as jest.Mock).mockResolvedValue("path/to/photo5.jpg");
+
+        const request = {
+            id: "profile123",
+            photo: new File([""], "photo5.jpg", { type: "image/jpeg" })
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NotFoundError);
+        expect(result.getErrorMessage()).toBe(`Profile with id ${request.id} not found`);
+    });
+
+    test("should return error if file name is invalid", async () => {
+        const command = new UploadPhotoCommand(repositoryMock, fileHandlerMock);
+
+        const profile = new Profile(
+            "profile123",
+            "John Doe",
+            30,
+            "This is the about me section.",
+            new Gender("MALE"),
+            new Location(40.7128, -74.0060, 10),
+            new SexualOrientation("HETEROSEXUAL"),
+            new RelationshipType("FRIENDSHIP"),
+            new Date("1993-01-01"),
+            ["Reading", "Traveling"],
+            ["photo1.jpg", "photo2.jpg"]
+        );
+
+        (repositoryMock.findById as jest.Mock).mockResolvedValue(profile);
+        (fileHandlerMock.save as jest.Mock).mockResolvedValue("path/to/photo5.jpg");
+
+        const request = {
+            id: "profile123",
+            photo: new File([""], "", { type: "image/jpeg" })
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(FileError);
+        expect(result.getErrorMessage()).toBe("Invalid file name");
     });
 });

@@ -42,7 +42,7 @@ export class EditEventCommand implements ICommand<EditEventDTO, Event> {
 
             const thumbnail = request.thumbnail;
             if(thumbnail && !thumbnail.name) {
-                return Result.failure<Event>(new FileError("Thumbnail"));
+                return Result.failure<Event>(new FileError("Thumbnail is not a valid file"));
             }
 
             let thumbnailPath: string | undefined = undefined;
