@@ -31,7 +31,7 @@ export class ReportUserCommand implements ICommand<ReportUserDTO, void> {
             } 
             const reportedUser = new ReportedUser(request.reportedUserId, request.predefinedReason, request.comment);
             userToReport.reportUser(reportedUser);
-            user.blockUser(userToReport.getId());
+            user.blockUser(request.reportedUserId);
 
             await this.repository.update(user, user.getId());
             return Result.success<void>(undefined);

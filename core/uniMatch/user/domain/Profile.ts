@@ -20,8 +20,8 @@ export class Profile extends AggregateRoot {
     private _fact?: string;
     private _interests: string[] = [];
     private _gender: Gender;
-    private _height?: number;
-    private _weight?: number;
+    private _height?: number = 0;
+    private _weight?: number = 0;
     private _sexualOrientation: SexualOrientation;
     private _job?: string;
     private _relationshipType: RelationshipType;
@@ -29,8 +29,8 @@ export class Profile extends AggregateRoot {
     private _education?: string;
     private _personalityType?: string;
     private _pets?: string;
-    private _drinks?: string;
-    private _smokes?: string;
+    private _drinks?: string = "";
+    private _smokes?: string = "";
     private _doesSports?: string;
     private _valuesAndBeliefs?: string;
     private _wall: string[] = [];
