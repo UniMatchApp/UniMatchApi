@@ -516,7 +516,7 @@ describe("ChangeDrinksCommand", () => {
         expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
     });
 
-    test("should change drinks successfully if it is empty", async () => {
+    test("should not change drinks successfully if it is empty", async () => {
         const command = new ChangeDrinksCommand(repositoryMock);
 
         const profile = new Profile(
@@ -542,10 +542,9 @@ describe("ChangeDrinksCommand", () => {
 
         const result = await command.run(request);
 
-        expect(result.isSuccess()).toBe(true);
-        expect(result.getValue()).toBe(request.newContent);
-        expect(profile.drinks?.toLowerCase()).toBe(undefined);
-        expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NullPointerError);
+        expect(result.getErrorMessage()).toBe("Invalid drinks value.");
     });
 
     test("should return error if drinks status not valid", async () => {
@@ -1741,7 +1740,7 @@ describe("ChangeSmokesCommand", () => {
         expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
     });
 
-    test("should change smokes successfully if it is empty", async () => {
+    test("should not change smokes successfully if it is empty", async () => {
         const command = new ChangeSmokesCommand(repositoryMock);
 
         const profile = new Profile(
@@ -1767,10 +1766,8 @@ describe("ChangeSmokesCommand", () => {
 
         const result = await command.run(request);
 
-        expect(result.isSuccess()).toBe(true);
-        expect(result.getValue()).toBe(request.newContent);
-        expect(profile.smokes?.toLowerCase()).toBe(undefined);
-        expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NullPointerError);
     });
 
     test("should return error if smokes status not valid", async () => {
@@ -1900,7 +1897,7 @@ describe("ChangeSportsCommand", () => {
         expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
     });
 
-    test("should change sports successfully if it is empty", async () => {
+    test("should not change sports successfully if it is empty", async () => {
         const command = new ChangeSportsCommand(repositoryMock);
 
         const profile = new Profile(
@@ -1926,10 +1923,8 @@ describe("ChangeSportsCommand", () => {
 
         const result = await command.run(request);
 
-        expect(result.isSuccess()).toBe(true);
-        expect(result.getValue()).toBe(request.newContent);
-        expect(profile.doesSports?.toLowerCase()).toBe(undefined);
-        expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NullPointerError);
     });
 
     test("should return error if sports status not valid", async () => {
@@ -2059,7 +2054,7 @@ describe("ChangeValuesAndBeliefsCommand", () => {
         expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
     });
 
-    test("should change values and beliefs successfully if it is empty", async () => {
+    test("should not change values and beliefs successfully if it is empty", async () => {
         const command = new ChangeValuesAndBeliefsCommand(repositoryMock);
 
         const profile = new Profile(
@@ -2085,10 +2080,8 @@ describe("ChangeValuesAndBeliefsCommand", () => {
 
         const result = await command.run(request);
 
-        expect(result.isSuccess()).toBe(true);
-        expect(result.getValue()).toBe(request.newContent);
-        expect(profile.valuesAndBeliefs?.toLowerCase()).toBe(undefined);
-        expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(NullPointerError);
     });
 
     test("should return error if values and beliefs status not valid", async () => {
