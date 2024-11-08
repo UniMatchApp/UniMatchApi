@@ -3,8 +3,9 @@ import { Result } from "@/core/shared/domain/Result";
 import { IProfileRepository } from "../ports/IProfileRepository";
 import { ChangeLifeStyleDTO } from "../DTO/ChangeLifestyleDTO";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
-import { HabitsEnum } from "../../domain/enum/HabitsEnum";
+import { HabitsEnum, habitsFromString } from "../../domain/enum/HabitsEnum";
 import { DomainError } from "@/core/shared/exceptions/DomainError";
+import { NullPointerError } from "@/core/shared/exceptions/NullPointerError";
 
 export class ChangeSportsCommand implements ICommand<ChangeLifeStyleDTO, string> {
 
@@ -21,13 +22,15 @@ export class ChangeSportsCommand implements ICommand<ChangeLifeStyleDTO, string>
                 return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
 
-            if(request.newContent) {
-                const doesSports = HabitsEnum[request.newContent.toUpperCase() as keyof typeof HabitsEnum];
-                if(doesSports === undefined) {
-                    return Result.failure<string>(new DomainError(`Invalid doesSports value.`));
-                }
-                profile.doesSports = doesSports;
+            if(!request.newContent) {
+                return Result.failure<string>(new NullPointerError(`Invalid doesSports value.`));
             }
+
+            const doesSports = habitsFromString(request.newContent);
+            if(doesSports === undefined) {
+                return Result.failure<string>(new DomainError(`Invalid doesSports value.`));
+            }
+            profile.doesSports = doesSports;
 
             await this.repository.update(profile, profile.getId());
             return Result.success<string>(request.newContent);

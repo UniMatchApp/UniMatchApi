@@ -10,3 +10,7 @@ export enum ValuesAndBeliefsEnum {
     PROTESTANT = "PROTESTANT",
     OTHER = "OTHER"
 }
+
+export function ValuesAndBeliefsFromString(value: string): ValuesAndBeliefsEnum {
+    return ValuesAndBeliefsEnum[value.toUpperCase() as keyof typeof ValuesAndBeliefsEnum];
+}
