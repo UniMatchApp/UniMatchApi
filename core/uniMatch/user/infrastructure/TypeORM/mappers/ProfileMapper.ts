@@ -6,15 +6,22 @@ import { Gender } from "@/core/shared/domain/Gender";
 import { RelationshipType } from "@/core/shared/domain/RelationshipType";
 import { AllowedRelationshipType } from "@/core/shared/domain/RelationshipType";
 import { Horoscope } from "../../../domain/Horoscope";
+import { HabitsEnum } from "../../../domain/enum/HabitsEnum";
+import { ValuesAndBeliefsEnum } from "../../../domain/enum/ValuesAndBeliefsEnum";
 
 export class ProfileMapper {
     static toDomain(entity: ProfileEntity): Profile {
         const location = new Location(entity.latitude, entity.longitude, entity.altitude);
+        const drinks = entity.drinks ? HabitsEnum[entity.drinks as keyof typeof HabitsEnum] : undefined;
+        const smokes = entity.smokes ? HabitsEnum[entity.smokes as keyof typeof HabitsEnum] : undefined;
+        const doesSports = entity.doesSports ? HabitsEnum[entity.doesSports as keyof typeof HabitsEnum] : undefined;
+        const valuesAndBeliefs = entity.valuesAndBeliefs ? ValuesAndBeliefsEnum[entity.valuesAndBeliefs as keyof typeof ValuesAndBeliefsEnum] : undefined;
         const sexualOrientation = new SexualOrientation(entity.sexualOrientation);
         const gender = new Gender(entity.gender);
         const genderPriority = entity.genderPriority ? new Gender(entity.genderPriority) : undefined;
         const relationshipType = new RelationshipType(entity.relationshipType as AllowedRelationshipType);
         const horoscope = entity.horoscope ? new Horoscope(entity.horoscope) : undefined;
+
         
         const profile = new Profile(
             entity.userId,
@@ -38,10 +45,10 @@ export class ProfileMapper {
         profile.education = entity.education;
         profile.personalityType = entity.personalityType;
         profile.pets = entity.pets;
-        profile.drinks = entity.drinks;
-        profile.smokes = entity.smokes;
-        profile.doesSports = entity.doesSports;
-        profile.valuesAndBeliefs = entity.valuesAndBeliefs;
+        profile.drinks = drinks;
+        profile.smokes = smokes;
+        profile.doesSports = doesSports;
+        profile.valuesAndBeliefs = valuesAndBeliefs;
         profile.wall = entity.wall;
         profile.maxDistance = entity.maxDistance;
         profile.ageRange = entity.ageRange;

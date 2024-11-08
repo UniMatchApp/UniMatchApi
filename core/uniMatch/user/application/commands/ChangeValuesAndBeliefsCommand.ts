@@ -3,6 +3,8 @@ import { Result } from "@/core/shared/domain/Result";
 import { IProfileRepository } from "../ports/IProfileRepository";
 import { ChangeLifeStyleDTO } from "../DTO/ChangeLifestyleDTO";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import { ValuesAndBeliefsEnum } from "../../domain/enum/ValuesAndBeliefsEnum";
+import { DomainError } from "@/core/shared/exceptions/DomainError";
 
 export class ChangeValuesAndBeliefsCommand implements ICommand<ChangeLifeStyleDTO, string> {
 
@@ -18,7 +20,18 @@ export class ChangeValuesAndBeliefsCommand implements ICommand<ChangeLifeStyleDT
             if(!profile) {
                 return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
-            profile.valuesAndBeliefs = request.newContent;
+
+            if(request.newContent) {
+                const valuesAndBeliefs = ValuesAndBeliefsEnum[request.newContent.toUpperCase() as keyof typeof ValuesAndBeliefsEnum];
+            
+                if(valuesAndBeliefs === undefined) {
+                    return Result.failure<string>(new DomainError(`Invalid values and beliefs value.`));
+                }
+    
+                profile.valuesAndBeliefs = valuesAndBeliefs;
+            }
+            
+
             await this.repository.update(profile, profile.getId());
             return Result.success<string>(request.newContent);
         } catch (error: any) {

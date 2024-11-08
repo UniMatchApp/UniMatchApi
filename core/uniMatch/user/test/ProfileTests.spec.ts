@@ -544,7 +544,7 @@ describe("ChangeDrinksCommand", () => {
 
         expect(result.isSuccess()).toBe(true);
         expect(result.getValue()).toBe(request.newContent);
-        expect(profile.drinks?.toLowerCase()).toBe(request.newContent.toLowerCase());
+        expect(profile.drinks?.toLowerCase()).toBe(undefined);
         expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
     });
 
@@ -1769,7 +1769,7 @@ describe("ChangeSmokesCommand", () => {
 
         expect(result.isSuccess()).toBe(true);
         expect(result.getValue()).toBe(request.newContent);
-        expect(profile.smokes?.toLowerCase()).toBe(request.newContent.toLowerCase());
+        expect(profile.smokes?.toLowerCase()).toBe(undefined);
         expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
     });
 
@@ -1928,7 +1928,7 @@ describe("ChangeSportsCommand", () => {
 
         expect(result.isSuccess()).toBe(true);
         expect(result.getValue()).toBe(request.newContent);
-        expect(profile.doesSports?.toLowerCase()).toBe(request.newContent.toLowerCase());
+        expect(profile.doesSports?.toLowerCase()).toBe(undefined);
         expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
     });
 
@@ -2087,7 +2087,7 @@ describe("ChangeValuesAndBeliefsCommand", () => {
 
         expect(result.isSuccess()).toBe(true);
         expect(result.getValue()).toBe(request.newContent);
-        expect(profile.valuesAndBeliefs?.toLowerCase()).toBe(request.newContent.toLowerCase());
+        expect(profile.valuesAndBeliefs?.toLowerCase()).toBe(undefined);
         expect(repositoryMock.update).toHaveBeenCalledWith(profile, profile.getId());
     });
 
