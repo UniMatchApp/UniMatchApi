@@ -45,9 +45,6 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
             await this.repository.create(message);
             this.eventBus.publish(message.pullDomainEvents());
 
-            const allMessages = await this.repository.findAll();
-            console.log(allMessages);
-
             return Result.success<Message>(message);
         } catch (error : any) {
             return Result.failure<Message>(error);
