@@ -21,7 +21,7 @@ export class LikeEventCommand implements ICommand<LikeEventDTO, Event> {
             }
 
             event.like(request.userId);
-            await this.repository.update(event, event.getId());
+            await this.repository.update(event, request.eventId);
             return Result.success<Event>(event);
         } catch (error : any) {
             return Result.failure<Event>(error);

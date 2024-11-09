@@ -22,6 +22,9 @@ export class ChangeWeightCommand implements ICommand<ChangeWeightDTO, string> {
 
             await this.repository.update(profile, profile.getId());
 
+            if (request.newWeight === undefined) {
+                return Result.success<string>("");
+            }
             return Result.success<string>(request.newWeight.toString());
 
         } catch (error: any) {

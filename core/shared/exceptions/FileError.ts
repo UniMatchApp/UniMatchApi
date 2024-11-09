@@ -2,7 +2,7 @@ export class FileError extends Error {
     constructor(resource: string);
     constructor(resource: string, cause: Error);
     constructor(resource: string, cause?: Error) {
-        super(`${resource} is not a valid file`);
+        super(`${resource}`);
         this.name = "FileError";
         
         if (cause) {

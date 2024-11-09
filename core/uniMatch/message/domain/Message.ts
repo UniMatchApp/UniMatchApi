@@ -2,13 +2,13 @@
 import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
 import { DomainError } from "@/core/shared/exceptions/DomainError";
 import { DeletedMessageEvent } from "./events/DeletedMessageEvent";
-import {MessageStatusType, MessageStatusEnum, DeletedMessageStatusType} from "@/core/shared/domain/MessageStatusEnum";
+import { MessageStatusType, MessageStatusEnum, DeletedMessageStatusType } from "@/core/shared/domain/MessageStatusEnum";
 import { EditedMessageEvent } from "./events/EditedMessageEvent";
 import { NewMessageEvent } from "./events/NewMessageEvent";
 
 
 export class Message extends AggregateRoot {
-    private _content: string;
+    private _content: string = "";
     private _status: MessageStatusType;
     private _deletedStatus: DeletedMessageStatusType;
     private _timestamp: Date;
@@ -24,11 +24,11 @@ export class Message extends AggregateRoot {
         attachment?: string
     ) {
         super();
-        this._content = content;
+        this.content = content;
         this._timestamp = new Date();
         this._sender = sender;
         this._recipient = recipient;
-        this._attachment = attachment;
+        this.attachment = attachment;
         this._status = MessageStatusEnum.SENT;
         this._deletedStatus = MessageStatusEnum.NOT_DELETED;
     }
@@ -38,7 +38,7 @@ export class Message extends AggregateRoot {
     }
 
     public set content(value: string) {
-        if (value.length === 0) {
+        if (value.trim().length === 0 && !this.attachment) {
             throw new DomainError("Message content cannot be empty.");
         }
         this._content = value;

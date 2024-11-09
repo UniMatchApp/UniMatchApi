@@ -83,9 +83,10 @@ export class EventController {
     }
 
     async delete(req: Request, res: Response): Promise<void> {
-        var id = req.params.id;
+        var eventId = req.params.id;
+        var userId = req.body.userId;
         var command = new DeleteEventCommand(this.eventRepository, this.eventBus, this.fileHandler);
-        var dto = { eventId: id } as DeleteEventDTO;
+        var dto = { eventId: eventId,  userId: userId} as DeleteEventDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());

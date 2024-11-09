@@ -10,6 +10,7 @@ import {SexualOrientation} from "@/core/uniMatch/user/domain/SexualOrientation";
 import {RelationshipType} from "@/core/shared/domain/RelationshipType";
 import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
 import {IFileHandler} from "@/core/shared/application/IFileHandler";
+import {DomainError} from "@/core/shared/exceptions/DomainError";
 import {FileHandler} from "@/core/uniMatch/event/infrastructure/FileHandler";
 import {UUID} from "@/core/shared/domain/UUID";
 import {IProfileRepository} from "@/core/uniMatch/user/application/ports/IProfileRepository";
@@ -20,7 +21,7 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
     private readonly fileHandler: IFileHandler;
     private readonly eventBus: IEventBus;
 
-    constructor(repository: IUserRepository, profileRepository: IProfileRepository,fileHandler: FileHandler, eventBus: IEventBus) {
+    constructor(repository: IUserRepository, profileRepository: IProfileRepository,fileHandler: IFileHandler, eventBus: IEventBus) {
         this.userRepository = repository;
         this.profileRepository = profileRepository;
         this.fileHandler = fileHandler;
@@ -37,7 +38,7 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
             }
 
             const profileUrl = await this.fileHandler.save(UUID.generate().toString(), request.image);
-
+ 
             const profile = new Profile(
                 request.userId,
                 request.name,

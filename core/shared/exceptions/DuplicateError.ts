@@ -2,7 +2,7 @@ export class DuplicateError extends Error {
     constructor(resource: string);
     constructor(resource: string, cause: Error);
     constructor(resource: string, cause?: Error) {
-        super(`${resource} already exists`);
+        super(`${resource}`);
         this.name = "DuplicateError";
         
         if (cause) {

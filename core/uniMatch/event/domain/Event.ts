@@ -7,11 +7,11 @@ import { EventIsModified } from "./events/EventIsModifiedEvent";
 
 export class Event extends AggregateRoot {
     private readonly MAX_SIZE: number = 1000000; // 1MB
-    private _title: string;
+    private _title: string = "";
     private _price?: number;
-    private _location: Location;
-    private _date: Date;
-    private _ownerId: string;
+    private _location: Location = new Location(0, 0, 0);
+    private _date: Date = new Date();
+    private _ownerId: string = "";
     private _participants: string[] = [];
     private _likes: string[] = [];
     private _thumbnail?: string;
@@ -27,14 +27,14 @@ export class Event extends AggregateRoot {
         thumbnail?: string
     ) {
         super();
-        this._title = title;
-        this._price = price;
-        this._location = location;
-        this._date = date;
-        this._ownerId = ownerId;
-        this._participants = participants;
-        this._likes = likes;
-        this._thumbnail = thumbnail;
+        this.title = title;
+        this.price = price;
+        this.location = location;
+        this.date = date;
+        this.ownerId = ownerId;
+        this.participants = participants;
+        this.likes = likes;
+        this.thumbnail = thumbnail;
     }
 
 
@@ -73,7 +73,7 @@ export class Event extends AggregateRoot {
     }
 
     public set date(value: Date) {
-        if (isNaN(value.getTime())) {
+        if (value == null ||  isNaN(value.getTime()) ) {
             throw new DomainError('Invalid date');
         }
         this._date = value;
@@ -84,6 +84,9 @@ export class Event extends AggregateRoot {
     }
 
     public set ownerId(value: string) {
+        if (!value) {
+            throw new DomainError('Owner ID cannot be empty');
+        }
         this._ownerId = value;
     }
 

@@ -10,11 +10,13 @@ import { UserHasChangedPriority } from "./events/UserHasChangedPriority";
 import { UserHasChangedTypeOfRelationship } from "./events/UserHasChangedTypeOfRelationship";
 import { Location } from "@/core/shared/domain/Location";
 import {NewProfile} from "@/core/uniMatch/user/domain/events/NewProfile";
+import { HabitsEnum } from "./enum/HabitsEnum";
+import { ValuesAndBeliefsEnum } from "./enum/ValuesAndBeliefsEnum";
 
 export class Profile extends AggregateRoot {
     private _userId: string;
-    private _name: string;
-    private _age: number;
+    private _name: string = "";
+    private _age: number = 0;
     private _aboutMe: string;
     private _location: Location;
     private _fact?: string;
@@ -29,10 +31,10 @@ export class Profile extends AggregateRoot {
     private _education?: string;
     private _personalityType?: string;
     private _pets?: string;
-    private _drinks?: string;
-    private _smokes?: string;
-    private _doesSports?: string;
-    private _valuesAndBeliefs?: string;
+    private _drinks?: HabitsEnum;
+    private _smokes?: HabitsEnum;
+    private _doesSports?: HabitsEnum;
+    private _valuesAndBeliefs?: ValuesAndBeliefsEnum;
     private _wall: string[] = [];
     private _preferredImage: string;
     private _birthday: Date;
@@ -55,8 +57,8 @@ export class Profile extends AggregateRoot {
     ) {
         super();
         this._userId = userId;
-        this._name = name;
-        this._age = age;
+        this.name = name;
+        this.age = age;
         this._aboutMe = aboutMe;
         this._location = location;
         this._gender = gender;
@@ -77,8 +79,8 @@ export class Profile extends AggregateRoot {
     }
 
     public set name(value: string) {
-        if (value.trim().length === 0) {
-            throw new DomainError("Name cannot be empty.");
+        if (!value) {
+            throw new DomainError('Name cannot be empty.');
         }
         this._name = value;
     }
@@ -198,61 +200,55 @@ export class Profile extends AggregateRoot {
         this._aboutMe = value;
     }
 
-    public get drinks(): string | undefined {
+    public get drinks(): HabitsEnum | undefined {
         return this._drinks;
     }
 
-    public set drinks(value: string | undefined) {
-        const drinksEnum = ["NEVER", "OCCASIONALLY", "OFTEN", "ALWAYS"];
-        
-        if (value && !drinksEnum.includes(value.toUpperCase())) {
+    public set drinks(value: HabitsEnum | undefined) {
+
+        if (value && HabitsEnum[value] === undefined) {
             throw new DomainError("Invalid drinks value.");
         }
-        
-        this._drinks = value?.toUpperCase();
+
+        this._drinks = value;
     }
     
 
-    public get smokes(): string | undefined {
+    public get smokes(): HabitsEnum | undefined {
         return this._smokes;
     }
 
-    public set smokes(value: string | undefined) {
-        const smokesEnum = ["NEVER", "OCCASIONALLY", "OFTEN", "ALWAYS"];
-
-        if (value && !smokesEnum.includes(value.toUpperCase())) {
+    public set smokes(value: HabitsEnum | undefined) {
+        if (value && HabitsEnum[value] === undefined) {
             throw new DomainError("Invalid smokes value.");
         }
 
-        this._smokes = value?.toUpperCase();
+        this._smokes = value;
     }
 
-    public get doesSports(): string | undefined {
+    public get doesSports(): HabitsEnum | undefined {
         return this._doesSports;
     }
 
-    public set doesSports(value: string | undefined) {
-        const doesSportsEnum = ["NEVER", "OCCASIONALLY", "OFTEN", "ALWAYS"];
-
-        if (value && !doesSportsEnum.includes(value.toUpperCase())) {
+    public set doesSports(value: HabitsEnum | undefined) {
+        if (value && HabitsEnum[value] === undefined) {
             throw new DomainError("Invalid doesSports value.");
         }
 
-        this._doesSports = value?.toUpperCase();
+        this._doesSports = value;
     }
 
-    public get valuesAndBeliefs(): string | undefined {
+    public get valuesAndBeliefs(): ValuesAndBeliefsEnum | undefined {
         return this._valuesAndBeliefs;
     }
 
-    public set valuesAndBeliefs(value: string | undefined) {
-        const valuesEnum = ["AGNOSTIC", "ATHEIST", "BUDDHIST", "CATHOLIC", "CHRISTIAN", "HINDU", "JEWISH", "MUSLIM", "PROTESTANT", "OTHER"];
+    public set valuesAndBeliefs(value: ValuesAndBeliefsEnum | undefined) {
         
-        if (value && !valuesEnum.includes(value.toUpperCase())) {
+        if (value && ValuesAndBeliefsEnum[value] === undefined) {
             throw new DomainError("Invalid values and beliefs value.");
         }
     
-        this._valuesAndBeliefs = value?.toUpperCase();
+        this._valuesAndBeliefs = value;
     }
 
     public get pets(): string | undefined {

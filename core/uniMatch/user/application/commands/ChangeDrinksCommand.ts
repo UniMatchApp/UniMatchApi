@@ -3,6 +3,9 @@ import { Result } from "@/core/shared/domain/Result";
 import { IProfileRepository } from "../ports/IProfileRepository";
 import { ChangeLifeStyleDTO } from "../DTO/ChangeLifestyleDTO";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import { HabitsEnum, habitsFromString } from "../../domain/enum/HabitsEnum";
+import { DomainError } from "@/core/shared/exceptions/DomainError";
+import { NullPointerError } from "@/core/shared/exceptions/NullPointerError";
 
 export class ChangeDrinksCommand implements ICommand<ChangeLifeStyleDTO, string> {
 
@@ -18,7 +21,17 @@ export class ChangeDrinksCommand implements ICommand<ChangeLifeStyleDTO, string>
             if(!profile) {
                 return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
-            profile.drinks = request.newContent;
+            if (!request.newContent) {
+                return Result.failure<string>(new NullPointerError(`Invalid drinks value.`));
+            }
+
+            const drinks = habitsFromString(request.newContent);
+                if(drinks === undefined) {
+                    return Result.failure<string>(new DomainError(`Invalid drinks value.`));
+                }
+                profile.drinks = drinks;
+
+            
             await this.repository.update(profile, profile.getId());
             return Result.success<string>(request.newContent);
         } catch (error: any) {

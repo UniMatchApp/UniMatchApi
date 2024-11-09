@@ -27,7 +27,6 @@ export class UserLikedSomebodyCommand implements ICommand<UserLikedSomebodyDTO, 
 
             const like = new Like(user, likedUser);
             await this.repository.likeUser(like);
-
             return Result.success<void>(undefined);
         } catch (error : any) {
             return Result.failure<void>(error);

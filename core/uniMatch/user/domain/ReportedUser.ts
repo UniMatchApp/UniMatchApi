@@ -31,7 +31,4 @@ export class ReportedUser extends Entity {
     public set comment(value: string | undefined) {
         this._comment = value;
     }
-
-
-
 }

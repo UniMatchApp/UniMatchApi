@@ -22,6 +22,9 @@ export class ChangeHeightCommand implements ICommand<ChangeHeightDTO, string> {
 
             await this.repository.update(profile, profile.getId());
 
+            if (request.newHeight === undefined) {
+                return Result.success<string>("");
+            }
             return Result.success<string>(request.newHeight.toString());
         
         } catch (error : any) {

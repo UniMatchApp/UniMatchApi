@@ -5,6 +5,8 @@ import { IEventRepository } from "../ports/IEventRepository";
 import { IEventBus } from "@/core/shared/application/IEventBus";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import { AuthorizationError } from "@/core/shared/exceptions/AuthorizationError";
+import { FileHandler } from "@/core/uniMatch/event/infrastructure/FileHandler";
 
 export class DeleteEventCommand implements ICommand<DeleteEventDTO, void> {
     private readonly repository: IEventRepository;
@@ -26,9 +28,11 @@ export class DeleteEventCommand implements ICommand<DeleteEventDTO, void> {
             if (!event) {
                 return Result.failure<void>(new NotFoundError("Event not found"));
             }
-            
+            if( event.ownerId !== request.userId) {
+                return Result.failure<void>(new AuthorizationError("You are not authorized to delete this event"));
+            }
             if (event?.thumbnail) {
-                this.fileHandler.delete(event.thumbnail);
+                await this.fileHandler.delete(event.thumbnail);
             }
 
             event.delete();
