@@ -11,7 +11,5 @@ export interface CreateNewProfileDTO {
     sexualOrientation: string;           // Orientación sexual del perfil
     relationshipType: string;            // Tipo de relación que busca
     birthday: Date;                      // Fecha de nacimiento
-    interests: string[];                 // Lista de intereses del usuario
-    wall: string[];                      // Lista de publicaciones en el muro
     image: File;                         // Imagen preferida del perfil (File en vez de URL)
 }

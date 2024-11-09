@@ -48,7 +48,7 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
                 new SexualOrientation(request.sexualOrientation),
                 RelationshipType.fromString(request.relationshipType),
                 request.birthday,
-                request.interests,
+                [],
                 [profileUrl]
             )
             profile.preferredImage = profileUrl;
