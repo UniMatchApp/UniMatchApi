@@ -10,9 +10,9 @@ import { FileError } from "@/core/shared/exceptions/FileError";
 import { ValidationError } from "@/core/shared/exceptions/ValidationError";
 
 export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, Message> {
-    private repository: IMessageRepository;
-    private eventBus: IEventBus;
-    private fileHandler: IFileHandler;
+    private readonly repository: IMessageRepository;
+    private readonly eventBus: IEventBus;
+    private readonly fileHandler: IFileHandler;
 
     constructor(repository: IMessageRepository, eventBus: IEventBus, fileHandler: IFileHandler) {
         this.repository = repository;

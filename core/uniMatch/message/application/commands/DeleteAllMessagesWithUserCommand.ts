@@ -7,9 +7,9 @@ import { IFileHandler } from "@/core/shared/application/IFileHandler";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
 export class DeleteAllMessagesWithUserCommand implements ICommand<DeleteAllUserMessagesDTO, void> {
-    private repository: IMessageRepository;
-    private eventBus: IEventBus;
-    private fileHandler: IFileHandler;
+    private readonly repository: IMessageRepository;
+    private readonly eventBus: IEventBus;
+    private readonly fileHandler: IFileHandler;
 
     constructor(repository: IMessageRepository, eventBus: IEventBus, fileHandler: IFileHandler) {
         this.repository = repository;
@@ -29,12 +29,7 @@ export class DeleteAllMessagesWithUserCommand implements ICommand<DeleteAllUserM
             }
 
             for (const message of userMessages) {
-                if (message.sender === userId) {
-                    message.deleteBySender()
-                } else if (message.recipient === userId) {
-                    message.deleteByRecipient();
-                }
-
+                message.deleteForBoth();
                 await this.repository.create(message);
                 this.eventBus.publish(message.pullDomainEvents());
             }

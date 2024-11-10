@@ -6,7 +6,7 @@ import { IMessageRepository } from "../ports/IMessageRepository";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
 export class RetrieveUserLastMessagesCommand implements ICommand<RetrieveUserLastMessagesDTO, Message[]> {
-    private repository: IMessageRepository;
+    private readonly repository: IMessageRepository;
 
     constructor(repository: IMessageRepository) {
         this.repository = repository;
