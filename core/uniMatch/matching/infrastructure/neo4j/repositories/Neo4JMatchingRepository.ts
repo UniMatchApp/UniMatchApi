@@ -1,5 +1,5 @@
 // MatchingRepository.ts
-import { Driver } from 'neo4j-driver';
+import {Driver, session} from 'neo4j-driver';
 import { IMatchingRepository } from '../../../application/ports/IMatchingRepository';
 import { Node } from '../../../domain/Node';
 import { Like } from '../../../domain/relations/Like';
@@ -13,6 +13,33 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
         this.driver = driver;
         console.log("Neo4JMatchingRepository::constructor() -> Neo4j driver created")
     }
+
+    async findUsersThatLikeUser(userId: string): Promise<Node[]> {
+        const session = this.driver.session();
+        try {
+            const result = await session.run(
+                'MATCH (u1:User)-[:LIKES]->(u2:User {userId: $userId}) RETURN u1',
+                { userId }
+            );
+            return result.records.map((record: any): Node => {
+                const userNode: any = record.get('u1').properties;
+                return new Node(
+                    userNode.userId,
+                    userNode.age,
+                    userNode.location,
+                    userNode.maxDistance,
+                    userNode.gender,
+                    userNode.relationshipType,
+                    userNode.genderPriority
+                );
+            });
+        } finally {
+            await session.close();
+        }
+    }
+
+
+
 
     async create(entity: Node): Promise<void> {
         const session = this.driver.session();

@@ -7,7 +7,8 @@ import {IMessageRepository} from "@/core/uniMatch/message/application/ports/IMes
 
 const router = Router();
 
-const messageRepository:IMessageRepository = new TypeORMMessageRepository();
+// const messageRepository:IMessageRepository = new TypeORMMessageRepository();
+const messageRepository:IMessageRepository = new InMemoryMessageRepository();
 const messageController = new MessageController(messageRepository, eventBus);
 
 router.post('/messages', messageController.createMessage.bind(messageController));

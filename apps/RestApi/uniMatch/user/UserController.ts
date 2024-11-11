@@ -440,9 +440,9 @@ export class UserController {
     // Echar un vistazo a este método
     async login(req: Request, res: Response): Promise<void> {
         var command = new LoginUserCommand(this.userRepository);
-        return command.run(req.body).then((result: Result<User>) => {
+        return command.run(req.body).then((result: Result<{token: string, user: User}>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);

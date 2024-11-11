@@ -10,7 +10,8 @@ import {EmailNotifications} from "@/core/shared/infrastructure/EmailNotification
 import { TypeORMUserRepository } from '@/core/uniMatch/user/infrastructure/TypeORM/repositories/TypeORMUserRepository';
 
 const router = Router();
-const userRepository: IUserRepository = new TypeORMUserRepository();
+// const userRepository: IUserRepository = new TypeORMUserRepository();
+const userRepository: IUserRepository = new InMemoryUserRepository();
 const profileRepository: IProfileRepository = new InMemoryProfileRepository();
 const emailNotifications: IEmailNotifications = new EmailNotifications();
 const userController = new UserController(userRepository, profileRepository, emailNotifications, eventBus);
@@ -38,7 +39,7 @@ router.post('', userController.createUser.bind(userController));
 router.delete('/:id/deletePhoto/:photoUrl', userController.deletePhoto.bind(userController));
 router.delete('/:id', userController.deleteUser.bind(userController));
 router.get('/:id', userController.getProfile.bind(userController));
-router.post('/login', userController.login.bind(userController));
+router.post('/auth/login', userController.login.bind(userController));
 router.post('/:id/report', userController.reportUser.bind(userController));
 router.post('/:id/photo', userController.uploadPhoto.bind(userController));
 

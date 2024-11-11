@@ -6,7 +6,8 @@ import {InMemoryEventRepository} from "@/core/uniMatch/event/infrastructure/InMe
 import {IEventRepository} from "@/core/uniMatch/event/application/ports/IEventRepository";
 
 const router = Router();
-const eventRepository: IEventRepository = new TypeORMEventRepository();
+// const eventRepository: IEventRepository = new TypeORMEventRepository();
+const eventRepository: IEventRepository = new InMemoryEventRepository();
 const eventController = new EventController(eventRepository, eventBus);
 
 // Define las rutas

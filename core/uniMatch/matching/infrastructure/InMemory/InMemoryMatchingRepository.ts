@@ -2,10 +2,24 @@ import {IMatchingRepository} from "@/core/uniMatch/matching/application/ports/IM
 import {Dislike} from "@/core/uniMatch/matching/domain/relations/Dislike";
 import {Like} from "@/core/uniMatch/matching/domain/relations/Like";
 import {Node} from "@/core/uniMatch/matching/domain/Node";
+import {mockNode1, mockNode2, mockNode3, mockNode4, mockNode5} from "../../domain/MockNodes";
 
 export class InMemoryMatchingRepository implements IMatchingRepository {
-    private nodes: { [id: string]: Node } = {};
-    private likes: { [userId: string]: Like[] } = {};
+    private nodes: { [id: string]: Node } = {
+        [mockNode1.getId()]: mockNode1,
+        [mockNode2.getId()]: mockNode2,
+        [mockNode3.getId()]: mockNode3,
+        [mockNode4.getId()]: mockNode4,
+        [mockNode5.getId()]: mockNode5,
+    };
+    private likes: { [userId: string]: Like[] } = {
+        [mockNode1.userId]: [new Like(mockNode2, mockNode1), new Like(mockNode3, mockNode1), new Like(mockNode4, mockNode1)],
+        [mockNode2.userId]: [],
+        [mockNode3.userId]: [],
+        [mockNode4.userId]: [],
+        [mockNode5.userId]: [],
+    }
+    ;
     private dislikes: { [userId: string]: Dislike[] } = {};
 
     async create(node: Node): Promise<void> {
@@ -66,5 +80,9 @@ export class InMemoryMatchingRepository implements IMatchingRepository {
         }
         this.nodes[id] = node;
         return node;
+    }
+
+    async findUsersThatLikeUser(userId: string): Promise<Node[]> {
+        return this.likes[userId].map(like => like.fromProfile);
     }
 }

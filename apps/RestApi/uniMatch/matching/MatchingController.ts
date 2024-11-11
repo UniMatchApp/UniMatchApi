@@ -1,21 +1,32 @@
-import { Request, Response } from 'express';  
-import { UserDislikedSomebodyCommand } from '@/core/uniMatch/matching/application/commands/userDislikedSomebodyCommand';
-import { UserDislikedSomebodyDTO } from '@/core/uniMatch/matching/application/DTO/userDislikedSomebodyDTO';
-import { ErrorHandler } from '../../ErrorHandler';
-import { Result } from "@/core/shared/domain/Result";
-import { UserLikedSomebodyCommand } from '@/core/uniMatch/matching/application/commands/userLikedSomebodyCommand';
-import { UserLikedSomebodyDTO } from '@/core/uniMatch/matching/application/DTO/userLikedSomebodyDTO';
-import { IEventBus } from '@/core/shared/application/IEventBus';
+import {Request, Response} from 'express';
+import {UserDislikedSomebodyCommand} from '@/core/uniMatch/matching/application/commands/userDislikedSomebodyCommand';
+import {UserDislikedSomebodyDTO} from '@/core/uniMatch/matching/application/DTO/userDislikedSomebodyDTO';
+import {ErrorHandler} from '../../ErrorHandler';
+import {Result} from "@/core/shared/domain/Result";
+import {UserLikedSomebodyCommand} from '@/core/uniMatch/matching/application/commands/userLikedSomebodyCommand';
+import {UserLikedSomebodyDTO} from '@/core/uniMatch/matching/application/DTO/userLikedSomebodyDTO';
+import {IEventBus} from '@/core/shared/application/IEventBus';
 import {IMatchingRepository} from "@/core/uniMatch/matching/application/ports/IMatchingRepository";
-import { NewProfileEventHandler } from '@/core/uniMatch/matching/application/handlers/NewProfileEventHandler';
-import { UserHasChangedAgeEventHandler } from '@/core/uniMatch/matching/application/handlers/UserHasChangedAgeEventHandler';
-import { UserHasChangedLocationEventHandler } from '@/core/uniMatch/matching/application/handlers/UserHasChangedLocationEventHandler';
-import { UserHasChangedMaxDistanceEventHandler } from '@/core/uniMatch/matching/application/handlers/UserHasChangedMaxDistanceEventHandler';
-import { UserHasChangedSexPriorityEventHandler } from '@/core/uniMatch/matching/application/handlers/UserHasChangedSexPriorityEventHandler';
-import { UserHasChangedTypeOfRelationshipEventHandler } from '@/core/uniMatch/matching/application/handlers/UserHasChangedTypeOfRelationshipEventHandler';
+import {NewProfileEventHandler} from '@/core/uniMatch/matching/application/handlers/NewProfileEventHandler';
+import {
+    UserHasChangedAgeEventHandler
+} from '@/core/uniMatch/matching/application/handlers/UserHasChangedAgeEventHandler';
+import {
+    UserHasChangedLocationEventHandler
+} from '@/core/uniMatch/matching/application/handlers/UserHasChangedLocationEventHandler';
+import {
+    UserHasChangedMaxDistanceEventHandler
+} from '@/core/uniMatch/matching/application/handlers/UserHasChangedMaxDistanceEventHandler';
+import {
+    UserHasChangedSexPriorityEventHandler
+} from '@/core/uniMatch/matching/application/handlers/UserHasChangedSexPriorityEventHandler';
+import {
+    UserHasChangedTypeOfRelationshipEventHandler
+} from '@/core/uniMatch/matching/application/handlers/UserHasChangedTypeOfRelationshipEventHandler';
+import {GetUsersThatLikeUserCommand} from "@/core/uniMatch/matching/application/commands/getUsersThatLikeUserCommand";
 
 export class MatchingController {
-  
+
     private readonly matchingRepository: IMatchingRepository;
     private readonly eventBus: IEventBus
 
@@ -34,7 +45,7 @@ export class MatchingController {
         var userId = req.params.userId;
         var dislikedUserId = req.body.dislikedUserId;
         var command = new UserDislikedSomebodyCommand(this.matchingRepository);
-        var dto = { userId: userId, dislikedUserId: dislikedUserId } as UserDislikedSomebodyDTO;
+        var dto = {userId: userId, dislikedUserId: dislikedUserId} as UserDislikedSomebodyDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());
@@ -49,7 +60,7 @@ export class MatchingController {
         var userId = req.params.userId;
         var likedUserId = req.body.likedUserId;
         var command = new UserLikedSomebodyCommand(this.matchingRepository);
-        var dto = { userId: userId, likedUserId: likedUserId } as UserLikedSomebodyDTO;
+        var dto = {userId: userId, likedUserId: likedUserId} as UserLikedSomebodyDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());
@@ -60,4 +71,16 @@ export class MatchingController {
         });
     }
 
+    async usersThatLikedUser(req: Request, res: Response): Promise<void> {
+        const userId = req.params.userId;
+        const command = new GetUsersThatLikeUserCommand(this.matchingRepository);
+        return command.run(userId).then((result: Result<string[]>) => {
+            if (result.isSuccess()) {
+                res.json(result.getValue());
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
 }
