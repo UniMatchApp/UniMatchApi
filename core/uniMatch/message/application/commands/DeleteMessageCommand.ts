@@ -8,9 +8,9 @@ import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
 import {ValidationError} from "@/core/shared/exceptions/ValidationError";
 
 export class DeleteMessageCommand implements ICommand<DeleteMessageDTO, void> {
-    private repository: IMessageRepository;
-    private eventBus: IEventBus;
-    private fileHandler: IFileHandler;
+    private readonly repository: IMessageRepository;
+    private readonly eventBus: IEventBus;
+    private readonly fileHandler: IFileHandler;
 
     constructor(repository: IMessageRepository, eventBus: IEventBus, fileHandler: IFileHandler) {
         this.repository = repository;
@@ -40,9 +40,7 @@ export class DeleteMessageCommand implements ICommand<DeleteMessageDTO, void> {
             }
 
             await this.repository.create(message);
-
             this.eventBus.publish(message.pullDomainEvents());
-
             return Result.success<void>(undefined);
 
         } catch (error: any) {

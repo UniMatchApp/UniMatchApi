@@ -8,9 +8,9 @@ import { IFileHandler } from "@/core/shared/application/IFileHandler";
 import { FileError } from "@/core/shared/exceptions/FileError";
 
 export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Message> {
-    private repository: IMessageRepository;
-    private eventBus: IEventBus;
-    private fileHandler: IFileHandler;
+    private readonly repository: IMessageRepository;
+    private readonly eventBus: IEventBus;
+    private readonly fileHandler: IFileHandler;
 
     constructor(repository: IMessageRepository, eventBus: IEventBus, fileHandler: IFileHandler) {
         this.repository = repository;

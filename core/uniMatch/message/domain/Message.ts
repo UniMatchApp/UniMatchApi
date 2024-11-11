@@ -107,6 +107,7 @@ export class Message extends AggregateRoot {
         this.attachment = attachment;
         this.timestamp = new Date();
         this.recordEvent(EditedMessageEvent.from(this));
+        this._status = MessageStatusEnum.EDITED;
     }
 
     public send(): void {

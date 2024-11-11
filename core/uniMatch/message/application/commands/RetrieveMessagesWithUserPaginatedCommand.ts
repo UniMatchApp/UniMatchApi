@@ -4,12 +4,10 @@ import {Message} from "../../domain/Message";
 import {IMessageRepository} from "../ports/IMessageRepository";
 import {RetrieveMessagesWithUserDTO} from "@/core/uniMatch/message/application/DTO/RetriveMessagesWithUserDTO";
 import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
-import {
-    RetrieveMessagesWithUserPaginatedDTO
-} from "@/core/uniMatch/message/application/DTO/RetriveMessagesWithUserPaginatedDTO";
+import { RetrieveMessagesWithUserPaginatedDTO } from "@/core/uniMatch/message/application/DTO/RetriveMessagesWithUserPaginatedDTO";
 
 export class RetrieveMessagesWithUserPaginatedCommand implements ICommand<RetrieveMessagesWithUserDTO, Message[]> {
-    private repository: IMessageRepository;
+    private readonly repository: IMessageRepository;
 
     constructor(repository: IMessageRepository) {
         this.repository = repository;

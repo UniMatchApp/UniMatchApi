@@ -7,7 +7,7 @@ import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { ValidationError } from "@/core/shared/exceptions/ValidationError";
 
 export class MessageHasBeenReadCommand implements ICommand<MessageHasBeenSeenDTO, void> {
-    private repository: IMessageRepository;
+    private readonly repository: IMessageRepository;
 
     constructor(repository: IMessageRepository) {
         this.repository = repository;

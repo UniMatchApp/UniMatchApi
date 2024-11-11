@@ -6,7 +6,7 @@ import {RetrieveMessagesWithUserDTO} from "@/core/uniMatch/message/application/D
 import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
 
 export class RetrieveMessagesWithUserCommand implements ICommand<RetrieveMessagesWithUserDTO, Message[]> {
-    private repository: IMessageRepository;
+    private readonly repository: IMessageRepository;
 
     constructor(repository: IMessageRepository) {
         this.repository = repository;
