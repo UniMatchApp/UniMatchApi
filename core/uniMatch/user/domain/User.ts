@@ -26,8 +26,8 @@ export class User extends AggregateRoot {
         super();
         this._code = this.generateVerificationCode();
         this._registrationDate = registrationDate;
-        this.email = email;
-        this.password = password;
+        this._email = email;
+        this._password = password;
         this._blockedUsers = blockedUsers;
         this._registered = registered;
     }

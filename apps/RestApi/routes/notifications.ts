@@ -9,10 +9,15 @@ import {
 } from '@/core/uniMatch/notifications/infrastructure/TypeORM/repositories/TypeORMNotificationRepository';
 import {EmailNotifications} from '@/core/shared/infrastructure/EmailNotifications';
 import {IEmailNotifications} from '@/core/shared/application/IEmailNotifications';
+import {
+    InMemoryNotificationRepository
+} from "@/core/uniMatch/notifications/infrastructure/InMemory/InMemoryNotificationRepository";
 
 const router = Router();
 
-const notificationsRepository: INotificationsRepository = new TypeORMNotificationRepository();
+// const notificationsRepository: INotificationsRepository = new TypeORMNotificationRepository();
+const notificationsRepository: INotificationsRepository = new InMemoryNotificationRepository();
+
 const appNotifications: IAppNotifications = new AppNotifications(wsClientHandler);
 const emailNotifications: IEmailNotifications = new EmailNotifications();
 const notificationsController = new NotificationsController(notificationsRepository, eventBus, appNotifications, emailNotifications);

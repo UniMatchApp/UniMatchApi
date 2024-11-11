@@ -1,8 +1,19 @@
-import { IUserRepository } from "@/core/uniMatch/user/application/ports/IUserRepository";
-import { User } from "@/core/uniMatch/user/domain/User";
+import {IUserRepository} from "@/core/uniMatch/user/application/ports/IUserRepository";
+import {User} from "@/core/uniMatch/user/domain/User";
+import {user1, user2, user3, user4, user5} from "@/core/uniMatch/user/domain/MockUsers";
 
 export class InMemoryUserRepository implements IUserRepository {
-    private users: { [id: string]: User } = {};
+    private users: { [id: string]: User } = {
+        [user1.getId().toString()]: user1,
+        [user2.getId().toString()]: user2,
+        [user3.getId().toString()]: user3,
+        [user4.getId().toString()]: user4,
+        [user5.getId().toString()]: user5,
+    };
+
+    constructor(){
+        console.log("InMemoryUserRepository created! with users: ", this.users);
+    }
 
     async create(entity: User): Promise<void> {
         const id = entity.getId().toString();
