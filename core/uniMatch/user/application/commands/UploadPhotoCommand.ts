@@ -19,8 +19,8 @@ export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, File> {
 
     async run(request: UploadPhotoDTO): Promise<Result<File>> {
         try {
-            const photo = request.photo;
-            const fileName = request.photo?.name;
+            const photo = request.attachment;
+            const fileName = request.attachment?.name;
 
             if (!fileName) {
                 return Result.failure<File>(new FileError(`Invalid file name`));
@@ -32,9 +32,9 @@ export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, File> {
                 return Result.failure<File>(new NullPointerError(`Photo url is null`));
             }
 
-            const profile = await this.repository.findById(request.id)
+            const profile = await this.repository.findById(request.userId)
             if (!profile) {
-                return Result.failure<File>(new NotFoundError(`Profile with id ${request.id} not found`));
+                return Result.failure<File>(new NotFoundError(`Profile with id ${request.userId} not found`));
             }
 
             profile.addPost(photoUrl);

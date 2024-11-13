@@ -4,6 +4,7 @@ import { TypeORMEventRepository } from '@/core/uniMatch/event/infrastructure/Typ
 import { eventBus } from '../Dependencies';
 import {InMemoryEventRepository} from "@/core/uniMatch/event/infrastructure/InMemory/InMemoryEventRepository";
 import {IEventRepository} from "@/core/uniMatch/event/application/ports/IEventRepository";
+import fileUploadMiddleware from '../FileUploadMiddleware';
 
 const router = Router();
 // const eventRepository: IEventRepository = new TypeORMEventRepository();
@@ -13,8 +14,8 @@ const eventController = new EventController(eventRepository, eventBus);
 // Define las rutas
 router.get('/', eventController.getAll.bind(eventController));
 router.get('/:id', eventController.getOne.bind(eventController));
-router.post('/', eventController.create.bind(eventController));
-router.put('/:id', eventController.update.bind(eventController));
+router.post('/', fileUploadMiddleware,  eventController.create.bind(eventController));
+router.put('/:id', fileUploadMiddleware, eventController.update.bind(eventController));
 router.delete('/:id', eventController.delete.bind(eventController));
 router.post('/participate/:id/:userId', eventController.participateEvent.bind(eventController));
 router.post('/unparticipate/:id/:userId', eventController.removeParticipation.bind(eventController));

@@ -394,10 +394,9 @@ export class UserController {
     }
 
     async uploadPhoto(req: Request, res: Response): Promise<void> {
-        var id = req.params.id;
-        var photo = req.body.photo;
+        var userId = req.params.id;
         var command = new UploadPhotoCommand(this.profileRepository, this.fileHandler);
-        var dto = {id: id, photo: photo} as UploadPhotoDTO;
+        var dto = {userId: userId, ...req.body} as UploadPhotoDTO;
         return command.run(dto).then((result: Result<File>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());
@@ -409,10 +408,10 @@ export class UserController {
     }
 
     async deletePhoto(req: Request, res: Response): Promise<void> {
-        var id = req.params.id;
+        var userId = req.params.id;
         var photoURL = req.params.photoUrl;
         var command = new DeletePhotoFromTheWallCommand(this.profileRepository, this.fileHandler);
-        var dto = {id: id, photoURL: photoURL} as DeletePhotoFromTheWallDTO;
+        var dto = {userId: userId, photoURL: photoURL} as DeletePhotoFromTheWallDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());
@@ -439,7 +438,7 @@ export class UserController {
 
     // Echar un vistazo a este método
     async login(req: Request, res: Response): Promise<void> {
-        var command = new LoginUserCommand(this.userRepository);
+        var command = new LoginUserCommand(this.userRepository, this.emailNotifications);
         return command.run(req.body).then((result: Result<{token: string, user: User}>) => {
             if (result.isSuccess()) {
                 res.json(result);

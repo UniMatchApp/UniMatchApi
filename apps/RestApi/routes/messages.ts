@@ -19,6 +19,6 @@ router.post('/message/read/:messageId', messageController.messageHasBeenRead.bin
 router.get('/messages/user/:userId', messageController.retrieveMessagesWithUser.bind(messageController));
 router.get('/messages/paginated/:userId', messageController.retrieveMessagesWithUserPaginated.bind(messageController));
 router.get('/messages/last/:userId', messageController.retrieveUserLastMessages.bind(messageController));
-router.put('/message/:userId', messageController.updateMessage.bind(messageController));
+router.put('/message/:userId', fileUploadMiddleware, messageController.updateMessage.bind(messageController));
 
 export { router };
