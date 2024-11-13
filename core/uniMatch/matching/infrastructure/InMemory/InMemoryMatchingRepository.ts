@@ -29,13 +29,13 @@ export class InMemoryMatchingRepository implements IMatchingRepository {
         }
     
         const potentialMatches = Object.values(this.nodes)
-            .filter(node => node.userId !== userId)  // Exclude the user themselves
-            .filter(node => !this.dislikes[userId]?.some(dislike => dislike.toProfile.userId === node.userId)) // Exclude disliked users
+            .filter(node => node.userId !== userId)
+            .filter(node => node.gender === user.genderPriority)
+            .filter(node => !this.dislikes[userId]?.some(dislike => dislike.toProfile.userId === node.userId))
             .map(node => {
                 const priority =
-                    (node.gender === user.genderPriority ? 1 : 0) +
                     (node.relationshipType === user.relationshipType ? 1 : 0) +
-                    (this.isWithinDistance(user.location, node.location, user.maxDistance) ? 1 : 0);
+                    (user.maxDistance === 0 || this.isWithinDistance(user.location, node.location, user.maxDistance) ? 1 : 0);
     
                 return { node, priority };
             })
@@ -45,6 +45,7 @@ export class InMemoryMatchingRepository implements IMatchingRepository {
     
         return potentialMatches;
     }
+    
 
     async findMutualLikes(userId: string): Promise<Node[]> {
         const user = this.nodes[userId];

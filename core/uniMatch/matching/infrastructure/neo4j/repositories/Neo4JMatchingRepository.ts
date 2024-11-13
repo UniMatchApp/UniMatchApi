@@ -47,11 +47,12 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
                 MATCH (u1:User {userId: $userId})
                 MATCH (u2:User)
                 WHERE u2.userId <> $userId
+                  AND u2.gender = u1.genderPriority
                   AND NOT (u1)-[:DISLIKES]->(u2)
+                  AND NOT (u1)-[:LIKES]->(u2)
                 WITH u2,
-                    (CASE WHEN u2.gender = u1.genderPriority THEN 1 ELSE 0 END +
-                     CASE WHEN u2.relationshipType = u1.relationshipType THEN 1 ELSE 0 END +
-                     CASE WHEN distance(
+                    (CASE WHEN u2.relationshipType = u1.relationshipType THEN 1 ELSE 0 END +
+                     CASE WHEN u1.maxDistance = 0 OR distance(
                         point({longitude: u1.location.longitude, latitude: u1.location.latitude}),
                         point({longitude: u2.location.longitude, latitude: u2.location.latitude})
                      ) <= u1.maxDistance * 1000 THEN 1 ELSE 0 END) AS priority
@@ -78,6 +79,7 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
             await session.close();
         }
     }
+    
     
     
     async findMutualLikes(userId: string): Promise<Node[]> {
