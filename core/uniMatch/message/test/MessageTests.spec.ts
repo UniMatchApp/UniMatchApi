@@ -160,9 +160,13 @@ describe("CreateNewMessageCommand", () => {
         expect(fileHandlerMock.save).toHaveBeenCalled();
         expect(messageRepositoryMock.create).toHaveBeenCalledWith(expect.any(Message));
         expect(eventBusMock.publish).toHaveBeenCalled();
+        
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(Error);
+        expect(result.getErrorMessage()).toBe("Message content cannot be empty.");
     });
     */
-
+    
     test("should return error if profile repository update fails", async () => {
         const command = new CreateNewMessageCommand(messageRepositoryMock, eventBusMock, fileHandlerMock);
 
@@ -884,5 +888,42 @@ describe("UpdateMessageCommand", () => {
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(ValidationError);
         expect(result.getErrorMessage()).toBe("User is not the sender of the message");
+    });
+
+    test("should return error if user is not the sender of the message", async () => {
+        const command = new UpdateMessageCommand(messageRepository, eventBusMock, fileHandlerMock);
+        const createCommand = new CreateNewMessageCommand(messageRepository, eventBusMock, fileHandlerMock);
+
+        const messageRequest1: CreateNewMessageDTO = {
+            content: "hii, how are you?",
+            senderId: "sender123",
+            recipientId: "recipient123",
+            attachment: new File([""], "hi.jpeg", { type: "image/jpeg" })
+        };
+
+        const messageRequest2: CreateNewMessageDTO = {
+            content: "fine, and u?",
+            senderId: "recipient123",
+            recipientId: "sender123"
+        };
+
+        await createCommand.run(messageRequest1);
+        await createCommand.run(messageRequest2);
+
+        const allMessages = await messageRepository.findAll();
+        const firstMessageId = allMessages[0].getId().toString();
+
+        const request: UpdateMessageDTO = {
+            userId: "sender123",
+            messageId: firstMessageId,
+            content: "hii, what is ur name?",
+            attachment: new File([""], "", { type: "image/jpeg" })
+        };
+
+        const result = await command.run(request);
+
+        expect(result.isSuccess()).toBe(false);
+        expect(result.getError()).toBeInstanceOf(FileError);
+        expect(result.getErrorMessage()).toBe("File name is required");
     });
 });

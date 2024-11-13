@@ -26,9 +26,9 @@ export class Message extends AggregateRoot {
         super();
         this.content = content;
         this._timestamp = new Date();
+        this.attachment = attachment;
         this._sender = sender;
         this._recipient = recipient;
-        this.attachment = attachment;
         this._status = MessageStatusEnum.SENT;
         this._deletedStatus = MessageStatusEnum.NOT_DELETED;
     }
@@ -38,11 +38,11 @@ export class Message extends AggregateRoot {
     }
 
     public set content(value: string) {
-        if (value.trim().length === 0 && !this.attachment) {
+        if (value.trim().length === 0 && !this._attachment) {
             throw new DomainError("Message content cannot be empty.");
         }
         this._content = value;
-    }
+    }    
 
     public get status(): string {
         return this._status;
