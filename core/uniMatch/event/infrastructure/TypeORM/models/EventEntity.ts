@@ -34,5 +34,5 @@ export class EventEntity {
   likes!: string[];
 
   @Column({ type: 'text', nullable: true })
-  thumbnail?: string | null;
+  attachment?: string | null;
 }

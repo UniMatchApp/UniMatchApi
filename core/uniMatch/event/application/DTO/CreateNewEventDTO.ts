@@ -5,6 +5,6 @@ export interface CreateNewEventDTO {
     longitude: number,
     altitude: number,
     ownerId: string,
-    thumbnail?: File,
+    attachment?: File,
     price?: number,
 }

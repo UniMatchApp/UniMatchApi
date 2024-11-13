@@ -21,6 +21,7 @@ import { RetrieveUserLastMessagesDTO } from '@/core/uniMatch/message/application
 import { UpdateMessageCommand } from '@/core/uniMatch/message/application/commands/UpdateMessageCommand';
 import { UpdateMessageDTO } from '@/core/uniMatch/message/application/DTO/UpdateMessageDTO';
 import {IMessageRepository} from "@/core/uniMatch/message/application/ports/IMessageRepository";
+import { CreateNewMessageDTO } from '@/core/uniMatch/message/application/DTO/CreateNewMessageDTO';
 
 
 export class MessageController {
@@ -138,7 +139,7 @@ export class MessageController {
     async updateMessage(req: Request, res: Response): Promise<void> {
         var userId = req.params.userId;
         var command = new UpdateMessageCommand(this.messageRepository, this.eventBus, this.fileHandler);
-        var dto = { userId: userId, ...req.body } as UpdateMessageDTO;
+        var dto = { userId: userId, ...req.body, attachment: file } as UpdateMessageDTO;
         return command.run(dto).then((result: Result<Message>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());

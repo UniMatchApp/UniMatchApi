@@ -40,17 +40,17 @@ export class EditEventCommand implements ICommand<EditEventDTO, Event> {
                 request.altitude
             )
 
-            const thumbnail = request.thumbnail;
-            if(thumbnail && !thumbnail.name) {
-                return Result.failure<Event>(new FileError("Thumbnail is not a valid file"));
+            const attachment = request.attachment;
+            if(attachment && !attachment.name) {
+                return Result.failure<Event>(new FileError("attachment is not a valid file"));
             }
 
-            let thumbnailPath: string | undefined = undefined;
-            if(thumbnail) {
-                thumbnailPath = await this.fileHandler.save(thumbnail.name, thumbnail);
+            let attachmentPath: string | undefined = undefined;
+            if(attachment) {
+                attachmentPath = await this.fileHandler.save(attachment.name, attachment);
             }
             
-            event.edit(request.title, location, request.date,request.price, thumbnailPath);
+            event.edit(request.title, location, request.date,request.price, attachmentPath);
 
             await this.repository.update(event, request.eventId);
             this.eventBus.publish(event.pullDomainEvents());

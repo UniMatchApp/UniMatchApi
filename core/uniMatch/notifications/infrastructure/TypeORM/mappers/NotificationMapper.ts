@@ -25,7 +25,7 @@ export class NotificationMapper {
           messagePayload.content,
           messagePayload.sender,
           messagePayload.status,
-          messagePayload.thumbnail,
+          messagePayload.attachment,
           messagePayload.deletedStatus
         );
         break;
@@ -78,7 +78,7 @@ export class NotificationMapper {
           messagePayload.content,
           messagePayload.sender,
           messagePayload.status,
-          messagePayload.thumbnail,
+          messagePayload.attachment,
           messagePayload.deletedStatus
         );
         break;

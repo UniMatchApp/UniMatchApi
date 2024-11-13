@@ -4,6 +4,7 @@ import { MessageController } from '../uniMatch/message/MessageController';
 import { TypeORMMessageRepository } from '@/core/uniMatch/message/infrastructure/TypeORM/repositories/TypeORMMessageRepository';
 import {InMemoryMessageRepository} from "@/core/uniMatch/message/infrastructure/InMemory/InMemoryMessageRepository";
 import {IMessageRepository} from "@/core/uniMatch/message/application/ports/IMessageRepository";
+import fileUploadMiddleware from '../FileUploadMiddleware';
 
 const router = Router();
 
@@ -11,7 +12,7 @@ const router = Router();
 const messageRepository:IMessageRepository = new InMemoryMessageRepository();
 const messageController = new MessageController(messageRepository, eventBus);
 
-router.post('/messages', messageController.createMessage.bind(messageController));
+router.post('/messages', fileUploadMiddleware ,messageController.createMessage.bind(messageController));
 router.delete('/messages/:userId', messageController.deleteAllMessagesWithUser.bind(messageController));
 router.delete('/message/:userId', messageController.deleteMessage.bind(messageController));
 router.post('/message/read/:messageId', messageController.messageHasBeenRead.bind(messageController));

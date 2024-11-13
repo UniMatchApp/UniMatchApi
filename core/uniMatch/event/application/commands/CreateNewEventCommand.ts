@@ -29,14 +29,14 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, Event>
                 request.altitude
             )
           
-            const thumbnail = request.thumbnail;
-            if (thumbnail && !thumbnail.name) {
-                return Result.failure<Event>(new FileError("Thumbnail name is invalid"));
+            const attachment = request.attachment;
+            if (attachment && !attachment.name) {
+                return Result.failure<Event>(new FileError("attachment name is invalid"));
             }
 
-            let thumbnailPath: string | undefined = undefined;
-            if(thumbnail) {
-                thumbnailPath = await this.fileHandler.save(thumbnail.name, thumbnail);
+            let attachmentPath: string | undefined = undefined;
+            if(attachment) {
+                attachmentPath = await this.fileHandler.save(attachment.name, attachment);
             }
 
             const event = new Event(
@@ -47,7 +47,7 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, Event>
                 [],
                 [],
                 request.price,
-                thumbnailPath
+                attachmentPath
             )
 
             
