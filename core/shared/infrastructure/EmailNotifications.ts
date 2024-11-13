@@ -1,24 +1,27 @@
 import nodemailer, { Transporter } from 'nodemailer';
 import { IEmailNotifications } from '../application/IEmailNotifications';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: 'shared.env' });
 
 export class EmailNotifications implements IEmailNotifications {
     private transporter: Transporter;
 
     constructor() {
         this.transporter = nodemailer.createTransport({
-            host: 'smtp.example.com', //TODO: Cambia esto por el host de tu servidor SMTP
-            port: 587, //TODO: Cambia esto si usas otro puerto
+            host: process.env.EMAIL_HOST,
+            port: parseInt(process.env.EMAIL_PORT || '587', 10),
             secure: false,
             auth: {
-                user: 'your-email@example.com', //TODO: Cambia esto por tu dirección de correo
-                pass: 'your-email-password', //TODO: Cambia esto por tu contraseña
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
             },
         });
     }
 
     async sendEmailToOne(to: string, subject: string, body: string, attachments?: string[]): Promise<void> {
         const mailOptions = {
-            from: 'your-email@example.com',
+            from: process.env.EMAIL_USER,
             to,
             subject,
             text: body,
@@ -30,7 +33,7 @@ export class EmailNotifications implements IEmailNotifications {
 
     async sendEmailToMany(to: string[], subject: string, body: string, attachments?: string[]): Promise<void> {
         const mailOptions = {
-            from: 'your-email@example.com',
+            from: process.env.EMAIL_USER,
             to: to.join(','),
             subject,
             text: body,
@@ -41,7 +44,6 @@ export class EmailNotifications implements IEmailNotifications {
     }
 
     async checkEmailStatus(emailId: string): Promise<boolean> {
-        //TODO: La verificación del estado del correo depende del proveedor de correo que uses.
         return true;
     }
 }
