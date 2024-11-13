@@ -63,9 +63,10 @@ export class WebSocketController {
                 }
             });
 
-            ws.on('getUserStatus', (userId: string, targetUserId: string) => {
+            ws.on('getUserStatus', async (userId: string, targetUserId: string) => {
                 const getUserStatusDTO = {userId, targetId: targetUserId} as GetUserStatusDTO;
-                this.getUserStatusCommand.run(getUserStatusDTO);
+                const result = await this.getUserStatusCommand.run(getUserStatusDTO);
+                ws.send(JSON.stringify(result));
             });
 
             ws.on('close', () => {
