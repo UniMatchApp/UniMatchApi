@@ -9,6 +9,8 @@ import {UserIsOnlineDTO} from '@/core/uniMatch/status/application/DTO/UserIsOnli
 import {UserIsTypingDTO} from '@/core/uniMatch/status/application/DTO/UserIsTypingDTO';
 import {ISessionStatusRepository} from '@/core/uniMatch/status/application/ports/ISessionStatusRepository';
 import {UserHasStoppedTypingCommand} from '@/core/uniMatch/status/application/commands/UserHasStoppedTypingCommand';
+import {GetUserStatusCommand} from '@/core/uniMatch/status/application/commands/GetUserStatusCommand';
+import { GetUserStatusDTO } from '@/core/uniMatch/status/application/DTO/GetUserStatusDTO';
 
 export class WebSocketController {
     private wss: WebSocketServer;
@@ -17,6 +19,7 @@ export class WebSocketController {
     private readonly userIsOnlineCommand: UserIsOnlineCommand;
     private readonly userIsTypingCommand: UserIsTypingCommand;
     private readonly userHasStoppedTypingCommand: UserHasStoppedTypingCommand;
+    private readonly getUserStatusCommand: GetUserStatusCommand;
 
     constructor(port: number,
                 repository: ISessionStatusRepository,
@@ -29,6 +32,7 @@ export class WebSocketController {
         this.userIsOnlineCommand = new UserIsOnlineCommand(repository);
         this.userIsTypingCommand = new UserIsTypingCommand(repository);
         this.userHasStoppedTypingCommand = new UserHasStoppedTypingCommand(repository);
+        this.getUserStatusCommand = new GetUserStatusCommand(repository);
 
         this.wss.on('connection', (ws: WebSocket, req) => {
             const userId = req.url?.split('/').pop();
@@ -57,6 +61,11 @@ export class WebSocketController {
                     };
                     this.userHasStoppedTypingCommand.run(stoppedTypingDTO);
                 }
+            });
+
+            ws.on('getUserStatus', (userId: string, targetUserId: string) => {
+                const getUserStatusDTO = {userId, targetId: targetUserId} as GetUserStatusDTO;
+                this.getUserStatusCommand.run(getUserStatusDTO);
             });
 
             ws.on('close', () => {
