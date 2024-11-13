@@ -27,6 +27,10 @@ const envFiles = [
     {
         src: path.resolve('core/uniMatch/event/infrastructure/TypeORM/event.env'),
         dest: path.resolve('dist/apps/RestApi/event.env')
+    },
+    {
+        src: path.resolve('core/shared/infrastructure/shared.env'),
+        dest: path.resolve('dist/apps/RestApi/shared.env')
     }
 
 ];
