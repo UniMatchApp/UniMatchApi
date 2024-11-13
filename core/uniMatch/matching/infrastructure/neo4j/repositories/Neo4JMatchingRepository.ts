@@ -38,9 +38,76 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
         }
     }
 
-
-
-
+    async findPotentialMatches(userId: string, limit: number): Promise<Node[]> {
+        const session = this.driver.session();
+        
+        try {
+            const result = await session.run(
+                `
+                MATCH (u1:User {userId: $userId})
+                MATCH (u2:User)
+                WHERE u2.userId <> $userId
+                  AND NOT (u1)-[:DISLIKES]->(u2)
+                WITH u2,
+                    (CASE WHEN u2.gender = u1.genderPriority THEN 1 ELSE 0 END +
+                     CASE WHEN u2.relationshipType = u1.relationshipType THEN 1 ELSE 0 END +
+                     CASE WHEN distance(
+                        point({longitude: u1.location.longitude, latitude: u1.location.latitude}),
+                        point({longitude: u2.location.longitude, latitude: u2.location.latitude})
+                     ) <= u1.maxDistance * 1000 THEN 1 ELSE 0 END) AS priority
+                ORDER BY priority DESC
+                LIMIT $limit
+                RETURN u2
+                `,
+                { userId, limit }
+            );
+    
+            return result.records.map((record: any): Node => {
+                const userNode: any = record.get('u2').properties;
+                return new Node(
+                    userNode.userId,
+                    userNode.age,
+                    userNode.location,
+                    userNode.maxDistance,
+                    userNode.gender,
+                    userNode.relationshipType,
+                    userNode.genderPriority
+                );
+            });
+        } finally {
+            await session.close();
+        }
+    }
+    
+    
+    async findMutualLikes(userId: string): Promise<Node[]> {
+        const session = this.driver.session();
+        try {
+            const result = await session.run(
+                `
+                MATCH (u1:User {userId: $userId})-[:LIKES]->(u2:User)
+                MATCH (u2)-[:LIKES]->(u1)
+                RETURN u2
+                `,
+                { userId }
+            );
+            return result.records.map((record: any): Node => {
+                const userNode: any = record.get('u2').properties;
+                return new Node(
+                    userNode.userId,
+                    userNode.age,
+                    userNode.location,
+                    userNode.maxDistance,
+                    userNode.gender,
+                    userNode.relationshipType,
+                    userNode.genderPriority
+                );
+            });
+        } finally {
+            await session.close();
+        }
+    }
+    
     async create(entity: Node): Promise<void> {
         const session = this.driver.session();
         try {

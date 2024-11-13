@@ -13,5 +13,7 @@ const matchingController = new MatchingController(matchingRepository, eventBus);
 router.post('/dislike/:userId', matchingController.userDislikedSomebody.bind(matchingController));
 router.post('/like/:userId', matchingController.userLikedSomebody.bind(matchingController));
 router.get('/likes/:userId', matchingController.usersThatLikedUser.bind(matchingController));
+router.get('/potential-matches/:userId', matchingController.getUserPotentialMatches.bind(matchingController));
+router.get('/mutual-likes/:userId', matchingController.getMutualLikes.bind(matchingController));
 
 export {router};

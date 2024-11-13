@@ -1,6 +1,6 @@
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
-import { UserDislikedSomebodyCommand } from "../application/commands/userDislikedSomebodyCommand";
-import { UserLikedSomebodyCommand } from "../application/commands/userLikedSomebodyCommand";
+import { UserDislikedSomebodyCommand } from "../application/commands/UserDislikedSomebodyCommand";
+import { UserLikedSomebodyCommand } from "../application/commands/UserLikedSomebodyCommand";
 import { IMatchingRepository } from "../application/ports/IMatchingRepository";
 import { Dislike } from "../domain/relations/Dislike";
 import { Like } from "../domain/relations/Like";

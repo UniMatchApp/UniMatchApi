@@ -22,6 +22,52 @@ export class InMemoryMatchingRepository implements IMatchingRepository {
     ;
     private dislikes: { [userId: string]: Dislike[] } = {};
 
+    async findPotentialMatches(userId: string, limit: number): Promise<Node[]> {
+        const user = this.nodes[userId];
+        if (!user) {
+            throw new Error(`User with ID ${userId} does not exist.`);
+        }
+    
+        const potentialMatches = Object.values(this.nodes)
+            .filter(node => node.userId !== userId)  // Exclude the user themselves
+            .filter(node => !this.dislikes[userId]?.some(dislike => dislike.toProfile.userId === node.userId)) // Exclude disliked users
+            .map(node => {
+                const priority =
+                    (node.gender === user.genderPriority ? 1 : 0) +
+                    (node.relationshipType === user.relationshipType ? 1 : 0) +
+                    (this.isWithinDistance(user.location, node.location, user.maxDistance) ? 1 : 0);
+    
+                return { node, priority };
+            })
+            .sort((a, b) => b.priority - a.priority)
+            .slice(0, limit)
+            .map(item => item.node);
+    
+        return potentialMatches;
+    }
+
+    async findMutualLikes(userId: string): Promise<Node[]> {
+        const user = this.nodes[userId];
+        if (!user) {
+            throw new Error(`User with ID ${userId} does not exist.`);
+        }
+    
+        const usersThatLikeUser = this.likes[userId] || [];
+        const usersThatUserLikes = usersThatLikeUser.map(like => like.fromProfile);
+    
+        const mutualLikes = usersThatUserLikes.filter(node => usersThatLikeUser.some(like => like.toProfile.userId === node.userId));
+        return mutualLikes;
+    }
+
+    
+    private isWithinDistance(location1: { longitude: number; latitude: number }, location2: { longitude: number; latitude: number }, maxDistance: number): boolean {
+        const distance = Math.sqrt(
+            Math.pow(location1.latitude - location2.latitude, 2) +
+            Math.pow(location1.longitude - location2.longitude, 2)
+        );
+        return distance <= maxDistance;
+    }
+
     async create(node: Node): Promise<void> {
         const id = node.getId().toString();
         this.nodes[id] = node;

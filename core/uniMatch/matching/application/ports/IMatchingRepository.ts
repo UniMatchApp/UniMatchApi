@@ -8,4 +8,6 @@ export interface IMatchingRepository extends IRepository<Node> {
     findUsersThatLikeUser(userId: string): Promise<Node[]>;
     likeUser(like: Like): Promise<void>;
     dislikeUser(dislike: Dislike): Promise<void>;
+    findPotentialMatches(userId: string, limit: number): Promise<Node[]>;
+    findMutualLikes(userId: string): Promise<Node[]>;
 }

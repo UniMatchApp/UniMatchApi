@@ -4,17 +4,19 @@ import {Result} from "@/core/shared/domain/Result";
 import {User} from "../../domain/User";
 import {AuthenticationError} from "@/core/shared/exceptions/AuthenticationError";
 import {LoginUserDTO} from "../DTO/LoginUserDTO";
+import { IEmailNotifications } from "@/core/shared/application/IEmailNotifications";
 
 export class LoginUserCommand implements ICommand<LoginUserDTO, { token: string, user: User }> {
     private readonly repository: IUserRepository;
+    private readonly emailRepository: IEmailNotifications;
 
-    constructor(repository: IUserRepository) {
+    constructor(repository: IUserRepository, emailRepository: IEmailNotifications) {
         this.repository = repository;
+        this.emailRepository = emailRepository;
     }
 
     async run(request: LoginUserDTO): Promise<Result<{ token: string, user: User }>> {
         try {
-            console.log("LoginUserCommand: ", request)
             const user = await this.repository.findByEmail(request.email);
 
             if (!user) {
@@ -33,6 +35,14 @@ export class LoginUserCommand implements ICommand<LoginUserDTO, { token: string,
                     token: string,
                     user: User
                 }>(new AuthenticationError(`Invalid password for email ${request.email}`));
+            }
+
+            if (!user.registered) {
+                await this.emailRepository.sendEmailToOne(
+                    user.email,
+                    "Welcome to UniMatch",
+                    "You have successfully registered to UniMatch"
+                );
             }
 
             // TODO: Implement JWT token generation
