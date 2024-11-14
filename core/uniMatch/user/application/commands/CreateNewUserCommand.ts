@@ -31,11 +31,11 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, User> {
                 if (!profileExists && !userExists.registered) {
                     
                     userExists.updateVerificationCode();
-
-                    await this.emailNotifications.sendEmailToOne(
+                    await this.repository.update(userExists, userExists.getId());
+                    this.emailNotifications.sendEmailToOne(
                         userExists.email,
-                        "Reenvío de código de verificación - UniMatch",
-                        `Tu código de verificación es: ${userExists.code}`
+                        "UniMatch - Confirm your email",
+                        `Your confirmation code is: ${userExists.code}`
                     );
                     return Result.success<User>(userExists);
                 } else {

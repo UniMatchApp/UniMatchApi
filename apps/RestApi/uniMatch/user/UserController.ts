@@ -52,6 +52,8 @@ import {CreateNewProfileDTO} from '@/core/uniMatch/user/application/DTO/CreateNe
 import {GetProfileCommand} from '@/core/uniMatch/user/application/commands/GetProfileCommand';
 import {GetProfileDTO} from '@/core/uniMatch/user/application/DTO/GetProfileDTO';
 import {IEmailNotifications} from "@/core/shared/application/IEmailNotifications";
+import { ForgotPasswordCommand } from '@/core/uniMatch/user/application/commands/ForgotPasswordCommand';
+import { ResendCodeCommand } from '@/core/uniMatch/user/application/commands/ResendCodeCommand';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -129,6 +131,30 @@ export class UserController {
         var command = new BlockUserCommand(this.userRepository);
         var dto = {userId: id, blockUserId: blockUserId} as BlockUserDTO;
         return command.run(dto).then((result: Result<void>) => {
+            if (result.isSuccess()) {
+                res.json(result.getValue());
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async forgotPassword(req: Request, res: Response): Promise<void> {
+        var command = new ForgotPasswordCommand(this.userRepository, this.emailNotifications);
+        return command.run(req.body).then((result: Result<void>) => {
+            if (result.isSuccess()) {
+                res.json(result.getValue());
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async resendCode(req: Request, res: Response): Promise<void> {
+        var command = new ResendCodeCommand(this.userRepository, this.emailNotifications);
+        return command.run(req.body).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());
             } else {

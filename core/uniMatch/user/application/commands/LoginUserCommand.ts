@@ -37,11 +37,15 @@ export class LoginUserCommand implements ICommand<LoginUserDTO, { token: string,
                 }>(new AuthenticationError(`Invalid password for email ${request.email}`));
             }
 
+
             if (!user.registered) {
-                await this.emailRepository.sendEmailToOne(
+                user.updateVerificationCode();
+                const code = user.code
+                await this.repository.update(user, user.getId());
+                this.emailRepository.sendEmailToOne(
                     user.email,
-                    "Welcome to UniMatch",
-                    "You have successfully registered to UniMatch"
+                    "UniMatch - Confirm your email",
+                    `Your confirmation code is: ${code}`
                 );
             }
 

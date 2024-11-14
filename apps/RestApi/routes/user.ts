@@ -43,6 +43,8 @@ router.get('/:id', userController.getProfile.bind(userController));
 router.post('/auth/login', userController.login.bind(userController));
 router.post('/:id/report', userController.reportUser.bind(userController));
 router.post('/:id/photo', fileUploadMiddleware, userController.uploadPhoto.bind(userController));
+router.post('/auth/forgot-password', userController.forgotPassword.bind(userController));
+router.post('/auth/resend-code', userController.resendCode.bind(userController));
 
 
 export {router};
