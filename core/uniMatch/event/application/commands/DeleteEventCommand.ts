@@ -31,8 +31,8 @@ export class DeleteEventCommand implements ICommand<DeleteEventDTO, void> {
             if( event.ownerId !== request.userId) {
                 return Result.failure<void>(new AuthorizationError("You are not authorized to delete this event"));
             }
-            if (event?.thumbnail) {
-                await this.fileHandler.delete(event.thumbnail);
+            if (event?.attachment) {
+                await this.fileHandler.delete(event.attachment);
             }
 
             event.delete();

@@ -21,6 +21,7 @@ import { RetrieveUserLastMessagesDTO } from '@/core/uniMatch/message/application
 import { UpdateMessageCommand } from '@/core/uniMatch/message/application/commands/UpdateMessageCommand';
 import { UpdateMessageDTO } from '@/core/uniMatch/message/application/DTO/UpdateMessageDTO';
 import {IMessageRepository} from "@/core/uniMatch/message/application/ports/IMessageRepository";
+import { CreateNewMessageDTO } from '@/core/uniMatch/message/application/DTO/CreateNewMessageDTO';
 
 
 export class MessageController {

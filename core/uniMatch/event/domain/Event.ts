@@ -14,7 +14,7 @@ export class Event extends AggregateRoot {
     private _ownerId: string = "";
     private _participants: string[] = [];
     private _likes: string[] = [];
-    private _thumbnail?: string;
+    private _attachment?: string;
 
     constructor(
         title: string,
@@ -24,7 +24,7 @@ export class Event extends AggregateRoot {
         participants: string[] = [],
         likes: string[] = [],
         price?: number,
-        thumbnail?: string
+        attachment?: string
     ) {
         super();
         this.title = title;
@@ -34,7 +34,7 @@ export class Event extends AggregateRoot {
         this.ownerId = ownerId;
         this.participants = participants;
         this.likes = likes;
-        this.thumbnail = thumbnail;
+        this.attachment = attachment;
     }
 
 
@@ -106,12 +106,12 @@ export class Event extends AggregateRoot {
         this._likes = value;
     }
 
-    public get thumbnail(): string | undefined {
-        return this._thumbnail;
+    public get attachment(): string | undefined {
+        return this._attachment;
     }
 
-    public set thumbnail(value: string | undefined) {
-        this._thumbnail = value;
+    public set attachment(value: string | undefined) {
+        this._attachment = value;
     }
 
     public addParticipant(participantId: string): void {
@@ -137,7 +137,7 @@ export class Event extends AggregateRoot {
         this._likes = this._likes.filter((like) => like !== userId);
     }
 
-    public isValidThumbnail(file: File): boolean {
+    public isValidattachment(file: File): boolean {
         // Comprobar si es una imagen
         const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
@@ -162,19 +162,19 @@ export class Event extends AggregateRoot {
         ));
     }
 
-    public edit(title: string, location: Location, date: Date, price?: number, thumbnail?: string): void {
+    public edit(title: string, location: Location, date: Date, price?: number, attachment?: string): void {
         this.title = title;
         this.location = location;
         this.date = date;
         this.price = price;
-        this.thumbnail = thumbnail;
+        this.attachment = attachment;
 
         this.recordEvent(new EventIsModified(
             this.getId().toString(),
             this.title,
             this.location.toString(),
             this.participants,
-            this.thumbnail
+            this.attachment
         ));
     }
 }

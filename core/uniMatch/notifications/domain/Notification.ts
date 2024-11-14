@@ -52,10 +52,10 @@ export class Notification extends AggregateRoot {
         content: string, 
         sender: string, 
         status?: MessageStatusType, 
-        thumbnail?: string,
+        attachment?: string,
         deletedStatus?: DeletedMessageStatusType
     ): Notification {
-        const payload = new Message(contentId, content, sender, status, thumbnail, deletedStatus);
+        const payload = new Message(contentId, content, sender, status, attachment, deletedStatus);
         return new Notification(contentId, NotificationTypeEnum.MESSAGE, date, recipient, payload);
     }
 

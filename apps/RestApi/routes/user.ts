@@ -8,6 +8,7 @@ import {IProfileRepository} from "@/core/uniMatch/user/application/ports/IProfil
 import {IEmailNotifications} from "@/core/shared/application/IEmailNotifications";
 import {EmailNotifications} from "@/core/shared/infrastructure/EmailNotifications";
 import { TypeORMUserRepository } from '@/core/uniMatch/user/infrastructure/TypeORM/repositories/TypeORMUserRepository';
+import fileUploadMiddleware from '../FileUploadMiddleware';
 
 const router = Router();
 // const userRepository: IUserRepository = new TypeORMUserRepository();
@@ -41,7 +42,7 @@ router.delete('/:id', userController.deleteUser.bind(userController));
 router.get('/:id', userController.getProfile.bind(userController));
 router.post('/auth/login', userController.login.bind(userController));
 router.post('/:id/report', userController.reportUser.bind(userController));
-router.post('/:id/photo', userController.uploadPhoto.bind(userController));
+router.post('/:id/photo', fileUploadMiddleware, userController.uploadPhoto.bind(userController));
 
 
 export {router};

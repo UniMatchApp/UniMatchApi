@@ -4,15 +4,15 @@ import { MessageStatusType, DeletedMessageStatusType } from "@/core/shared/domai
 export class Message extends NotificationPayload {
     private _content: string;
     private _sender: string;
-    private _thumbnail?: string;
+    private _attachment?: string;
     private _status?: MessageStatusType;
     private _deletedStatus?: DeletedMessageStatusType;
 
-    constructor(id: string, content: string, sender: string, status?: MessageStatusType, thumbnail?: string, deletedStatus?: DeletedMessageStatusType) {
+    constructor(id: string, content: string, sender: string, status?: MessageStatusType, attachment?: string, deletedStatus?: DeletedMessageStatusType) {
         super(id);
         this._content = content;
         this._sender = sender;
-        this._thumbnail = thumbnail;
+        this._attachment = attachment;
         this._status = status;
         this._deletedStatus = deletedStatus;
     }
@@ -33,12 +33,12 @@ export class Message extends NotificationPayload {
         this._sender = sender;
     }
 
-    public get thumbnail(): string | undefined {
-        return this._thumbnail;
+    public get attachment(): string | undefined {
+        return this._attachment;
     }
 
-    public set thumbnail(thumbnail: string | undefined) {
-        this._thumbnail = thumbnail;
+    public set attachment(attachment: string | undefined) {
+        this._attachment = attachment;
     }
 
     public get status(): MessageStatusType | undefined {

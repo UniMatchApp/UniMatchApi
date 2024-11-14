@@ -44,7 +44,7 @@ describe("CreateNewEventCommand", () => {
     
 
     test("should create an event correctly", async () => {
-        (fileHandlerMock.save as jest.Mock).mockResolvedValue("path/to/thumbnail.jpg");
+        (fileHandlerMock.save as jest.Mock).mockResolvedValue("path/to/attachment.jpg");
 
         const command = new CreateNewEventCommand(repositoryMock, fileHandlerMock, eventBusMock);
         const request: CreateNewEventDTO = {
@@ -54,14 +54,14 @@ describe("CreateNewEventCommand", () => {
             longitude: -15.4321,
             altitude: 100,
             ownerId: "owner123",
-            thumbnail: { name: "thumbnail.jpg" } as File,
+            attachment: { name: "attachment.jpg" } as File,
             price: 100
         };
 
         const result = await command.run(request);
         expect(result.isSuccess()).toBe(true);
         expect(repositoryMock.create).toHaveBeenCalled();
-        expect(fileHandlerMock.save).toHaveBeenCalledWith("thumbnail.jpg", request.thumbnail);
+        expect(fileHandlerMock.save).toHaveBeenCalledWith("attachment.jpg", request.attachment);
         expect(eventBusMock.publish).toHaveBeenCalled();
     });
 
@@ -76,7 +76,7 @@ describe("CreateNewEventCommand", () => {
             longitude: -15.4321,
             altitude: 100,
             ownerId: "owner123",
-            thumbnail: { name: "thumbnail.jpg" } as File,
+            attachment: { name: "attachment.jpg" } as File,
             price: 100
         };
 
@@ -95,7 +95,7 @@ describe("CreateNewEventCommand", () => {
             longitude: -15.4321,
             altitude: 100,
             ownerId: "owner123",
-            thumbnail: { name: "thumbnail.jpg" } as File,
+            attachment: { name: "attachment.jpg" } as File,
             price: 100
         };
 
@@ -115,7 +115,7 @@ describe("CreateNewEventCommand", () => {
             longitude: -15.4321,
             altitude: 100,
             ownerId: "owner123",
-            thumbnail: { name: "thumbnail.jpg" } as File,
+            attachment: { name: "attachment.jpg" } as File,
             price: 100
         };
 
@@ -134,7 +134,7 @@ describe("CreateNewEventCommand", () => {
             longitude: -15.4321,
             altitude: 100,
             ownerId: "owner123",
-            thumbnail: { name: "thumbnail.jpg" } as File,
+            attachment: { name: "attachment.jpg" } as File,
             price: -50 
         };
 
@@ -153,7 +153,7 @@ describe("CreateNewEventCommand", () => {
             longitude: -15.4321,
             altitude: 100,
             ownerId: "owner123",
-            thumbnail: { name: "thumbnail.jpg" } as File,
+            attachment: { name: "attachment.jpg" } as File,
             price: 100
         };
 
@@ -163,18 +163,18 @@ describe("CreateNewEventCommand", () => {
         expect(result.getErrorMessage()).toBe("Latitude must be between -90 and 90 degrees.");
     });
 
-    test("should create an event without a thumbnail", async () => {
+    test("should create an event without a attachment", async () => {
         (fileHandlerMock.save as jest.Mock).mockResolvedValue(null);
 
         const command = new CreateNewEventCommand(repositoryMock, fileHandlerMock, eventBusMock);
         const request: CreateNewEventDTO = {
-            title: "Evento sin thumbnail",
+            title: "Evento sin attachment",
             date: new Date(),
             latitude: 28.1234,
             longitude: -15.4321,
             altitude: 100,
             ownerId: "owner123",
-            thumbnail: undefined,
+            attachment: undefined,
             price: 100
         };
 
@@ -186,7 +186,7 @@ describe("CreateNewEventCommand", () => {
     });
 
     test("should create an event with price as zero", async () => {
-        (fileHandlerMock.save as jest.Mock).mockResolvedValue("path/to/thumbnail.jpg");
+        (fileHandlerMock.save as jest.Mock).mockResolvedValue("path/to/attachment.jpg");
 
         const command = new CreateNewEventCommand(repositoryMock, fileHandlerMock, eventBusMock);
         const request: CreateNewEventDTO = {
@@ -196,14 +196,14 @@ describe("CreateNewEventCommand", () => {
             longitude: -15.4321,
             altitude: 100,
             ownerId: "owner123",
-            thumbnail: { name: "thumbnail.jpg" } as File,
+            attachment: { name: "attachment.jpg" } as File,
             price: 0 // precio puede ser cero
         };
 
         const result = await command.run(request);
         expect(result.isSuccess()).toBe(true);
         expect(repositoryMock.create).toHaveBeenCalled();
-        expect(fileHandlerMock.save).toHaveBeenCalledWith("thumbnail.jpg", request.thumbnail);
+        expect(fileHandlerMock.save).toHaveBeenCalledWith("attachment.jpg", request.attachment);
         expect(eventBusMock.publish).toHaveBeenCalled();
     });
 
@@ -216,7 +216,7 @@ describe("CreateNewEventCommand", () => {
             longitude: -15.4321,
             altitude: 100,
             ownerId: "owner123",
-            thumbnail: { name: "thumbnail.jpg" } as File,
+            attachment: { name: "attachment.jpg" } as File,
             price: 100
         };
 
@@ -235,7 +235,7 @@ describe("CreateNewEventCommand", () => {
             longitude: null as any, 
             altitude: 100,
             ownerId: "owner123",
-            thumbnail: { name: "thumbnail.jpg" } as File,
+            attachment: { name: "attachment.jpg" } as File,
             price: 100
         };
 
@@ -254,7 +254,7 @@ describe("CreateNewEventCommand", () => {
             longitude: -15.4321,
             altitude: null as any, 
             ownerId: "owner123",
-            thumbnail: { name: "thumbnail.jpg" } as File,
+            attachment: { name: "attachment.jpg" } as File,
             price: 100
         };
 
@@ -271,7 +271,7 @@ describe("CreateNewEventCommand", () => {
             longitude: -15.4321,
             altitude: 100,
             ownerId: "",
-            thumbnail: { name: "thumbnail.jpg" } as File,
+            attachment: { name: "attachment.jpg" } as File,
             price: 100
         };
 
@@ -313,7 +313,7 @@ describe("DeleteEventCommand", () => {
         const event = {
             id: "event123",
             ownerId: "owner123",
-            thumbnail: "path/to/thumbnail.jpg",
+            attachment: "path/to/attachment.jpg",
             delete: jest.fn(),
             pullDomainEvents: jest.fn()
         };
@@ -326,7 +326,7 @@ describe("DeleteEventCommand", () => {
         expect(result.isSuccess()).toBe(true);
         expect(repositoryMock.deleteById).toHaveBeenCalledWith("event123");
         expect(event.delete).toHaveBeenCalled();
-        expect(fileHandlerMock.delete).toHaveBeenCalledWith("path/to/thumbnail.jpg");
+        expect(fileHandlerMock.delete).toHaveBeenCalledWith("path/to/attachment.jpg");
         expect(eventBusMock.publish).toHaveBeenCalled();
     });
 
@@ -334,7 +334,7 @@ describe("DeleteEventCommand", () => {
         const event = {
             id: "event123",
             ownerId: "owner123",
-            thumbnail: "path/to/thumbnail.jpg",
+            attachment: "path/to/attachment.jpg",
             delete: jest.fn(),
             pullDomainEvents: jest.fn()
         };
@@ -369,7 +369,7 @@ describe("DeleteEventCommand", () => {
         const event = {
             id: "event123",
             ownerId: "owner123",
-            thumbnail: "path/to/thumbnail.jpg",
+            attachment: "path/to/attachment.jpg",
             delete: jest.fn(),
             pullDomainEvents: jest.fn()
         };
@@ -386,7 +386,7 @@ describe("DeleteEventCommand", () => {
         expect(repositoryMock.deleteById).not.toHaveBeenCalled();
     });
     
-    test("should delete an event without thumbnail correctly", async () => {
+    test("should delete an event without attachment correctly", async () => {
         const event = {
             id: "event123",
             ownerId: "owner123",
@@ -410,7 +410,7 @@ describe("DeleteEventCommand", () => {
         const event = {
             id: "event123",
             ownerId: "owner123",
-            thumbnail: "path/to/thumbnail.jpg",
+            attachment: "path/to/attachment.jpg",
             delete: jest.fn(),
             pullDomainEvents: jest.fn()
         };
@@ -425,7 +425,7 @@ describe("DeleteEventCommand", () => {
         expect(result.getError()).toBeInstanceOf(Error);
         expect(result.getErrorMessage()).toBe("Database error");
         expect(event.delete).toHaveBeenCalled(); 
-        expect(fileHandlerMock.delete).toHaveBeenCalledWith("path/to/thumbnail.jpg"); 
+        expect(fileHandlerMock.delete).toHaveBeenCalledWith("path/to/attachment.jpg"); 
         expect(eventBusMock.publish).not.toHaveBeenCalled();
     });
 });
@@ -660,7 +660,7 @@ describe("EditEventCommand", () => {
             pullDomainEvents: jest.fn()
         };
         (repositoryMock.findById as jest.Mock).mockResolvedValue(event);
-        (fileHandlerMock.save as jest.Mock).mockResolvedValue("path/to/thumbnail.jpg");
+        (fileHandlerMock.save as jest.Mock).mockResolvedValue("path/to/attachment.jpg");
 
         const command = new EditEventCommand(repositoryMock, eventBusMock, fileHandlerMock);
         const request: EditEventDTO = {
@@ -671,13 +671,13 @@ describe("EditEventCommand", () => {
             latitude: 28.1234,
             longitude: -15.4321,
             altitude: 100,
-            thumbnail: { name: "thumbnail.jpg" } as File,
+            attachment: { name: "attachment.jpg" } as File,
             price: 100
         };
 
         const result = await command.run(request);
         expect(result.isSuccess()).toBe(true);
-        expect(event.edit).toHaveBeenCalledWith("Evento editado", expect.anything(), request.date, request.price, "path/to/thumbnail.jpg");
+        expect(event.edit).toHaveBeenCalledWith("Evento editado", expect.anything(), request.date, request.price, "path/to/attachment.jpg");
         expect(repositoryMock.update).toHaveBeenCalledWith(event, "event123");
         expect(eventBusMock.publish).toHaveBeenCalled();
     });
@@ -694,7 +694,7 @@ describe("EditEventCommand", () => {
             latitude: 28.1234,
             longitude: -15.4321,
             altitude: 100,
-            thumbnail: { name: "thumbnail.jpg" } as File,
+            attachment: { name: "attachment.jpg" } as File,
             price: 100
         };
 
@@ -723,7 +723,7 @@ describe("EditEventCommand", () => {
             latitude: 28.1234,
             longitude: -15.4321,
             altitude: 100,
-            thumbnail: { name: "thumbnail.jpg" } as File,
+            attachment: { name: "attachment.jpg" } as File,
             price: 100
         };
 
@@ -735,7 +735,7 @@ describe("EditEventCommand", () => {
         expect(eventBusMock.publish).not.toHaveBeenCalled();
     });
 
-    test("should return error if thumbnail name is invalid", async () => {
+    test("should return error if attachment name is invalid", async () => {
         const event = {
             id: "event123",
             ownerId: "owner123",
@@ -752,14 +752,14 @@ describe("EditEventCommand", () => {
             latitude: 28.1234,
             longitude: -15.4321,
             altitude: 100,
-            thumbnail: { name: "" } as File,
+            attachment: { name: "" } as File,
             price: 100
         };
 
         const result = await command.run(request);
         expect(result.isSuccess()).toBe(false);
         expect(result.getError()).toBeInstanceOf(FileError);
-        expect(result.getErrorMessage()).toBe("Thumbnail is not a valid file");
+        expect(result.getErrorMessage()).toBe("attachment is not a valid file");
         expect(repositoryMock.update).not.toHaveBeenCalled();
         expect(eventBusMock.publish).not.toHaveBeenCalled();
     });
@@ -782,7 +782,7 @@ describe("EditEventCommand", () => {
             latitude: 28.1234,
             longitude: -15.4321,
             altitude: 100,
-            thumbnail: { name: "thumbnail.jpg" } as File,
+            attachment: { name: "attachment.jpg" } as File,
             price: 100
         };
 

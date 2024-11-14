@@ -7,7 +7,7 @@ export class EventIsModified extends DomainEvent {
         title: string,
         location: string,
         participants: string[],
-        thumbnail?: string
+        attachment?: string
     ) {
         super(aggregateId, "event-is-modified");
         this.getPayload().set("title", title);

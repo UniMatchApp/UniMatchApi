@@ -22,7 +22,7 @@ export class EditMessageEventHandler implements IEventHandler {
             const newContent = event.getPayload().get("newContent");
             const recipient = event.getAggregateId();
             const sender = event.getPayload().get("sender");
-            const thumbnail = event.getPayload().get("attachment");
+            const attachment = event.getPayload().get("attachment");
 
             if (!messageId || !newContent || !recipient) {
                 throw new ErrorEvent("Recipient, MessageID and new content are required to edit a message.");
@@ -45,7 +45,7 @@ export class EditMessageEventHandler implements IEventHandler {
                 newContent,
                 sender,
                 MessageStatusEnum.EDITED,
-                thumbnail,
+                attachment,
                 undefined
             );
             

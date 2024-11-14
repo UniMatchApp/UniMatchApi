@@ -13,7 +13,7 @@ export class EventMapper {
       entity.participants,
       entity.likes,
       entity.price ?? undefined,
-      entity.thumbnail ?? undefined
+      entity.attachment ?? undefined
     );
     event.setId(entity.id);
     return event;
@@ -31,7 +31,7 @@ export class EventMapper {
     entity.ownerId = event.ownerId;
     entity.participants = event.participants;
     entity.likes = event.likes;
-    entity.thumbnail = event.thumbnail;
+    entity.attachment = event.attachment;
     return entity;
   }
 }

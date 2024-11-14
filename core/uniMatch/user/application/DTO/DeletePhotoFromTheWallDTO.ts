@@ -1,4 +1,4 @@
 export interface DeletePhotoFromTheWallDTO {
-    id: string;
+    userId: string;
     photoURL: string;
 }
