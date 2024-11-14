@@ -1,14 +1,15 @@
-import { Entity, Column, Unique } from "typeorm";
+import { Entity, Column, Unique, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ReportedUsersEntity } from "./ReportedUsersEntity";
+import { CodeEntity } from "./CodeEntity";
 
 @Entity('users')
 @Unique(['id', 'email'])
 export class UserEntity {
-    @Column({ type: 'uuid', primary: true })
+    @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({ type: 'text' })
-    code!: string;
+    @OneToOne(() => CodeEntity, code => code.user, { cascade: true })
+    code!: CodeEntity;
 
     @Column({ type: 'timestamp' })
     registrationDate!: Date;

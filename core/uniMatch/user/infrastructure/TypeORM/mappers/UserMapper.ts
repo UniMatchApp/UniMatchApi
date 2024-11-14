@@ -2,6 +2,7 @@ import { User } from "../../../domain/User";
 import { UserEntity } from "../models/UserEntity";
 import { ReportedUsersEntity } from "../models/ReportedUsersEntity";
 import { ReportedUser } from "../../../domain/ReportedUser";
+import { CodeEntity } from "../models/CodeEntity";
 
 export class UserMapper {
     static toDomain(entity: UserEntity): User {
@@ -12,6 +13,11 @@ export class UserMapper {
             entity.blockedUsers
         );
         user.setId(entity.id);
+
+        if (entity.code) {
+            user.code = entity.code.code;
+        }
+
         user.reportedUsers = entity.reportedUsers.map(reported => {
             const reportedUser = new ReportedUser(
                 reported.userId,
@@ -27,7 +33,13 @@ export class UserMapper {
     static toEntity(user: User): UserEntity {
         const entity = new UserEntity();
         entity.id = user.getId().toString();
-        entity.code = user.code;
+        
+        if (user.code) {
+            const codeEntity = new CodeEntity();
+            codeEntity.code = user.code;
+            entity.code = codeEntity;
+        }
+
         entity.registrationDate = user.registrationDate;
         entity.email = user.email;
         entity.password = user.password;

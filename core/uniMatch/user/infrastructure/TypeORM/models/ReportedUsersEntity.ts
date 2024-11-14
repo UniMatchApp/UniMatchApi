@@ -13,5 +13,5 @@ export class ReportedUsersEntity {
     predefinedReason!: string;
 
     @Column({ type: 'text', nullable: true })
-    comment?: string | null;
+    comment?: string;
 }
