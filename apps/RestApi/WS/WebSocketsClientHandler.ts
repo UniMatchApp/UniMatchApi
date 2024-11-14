@@ -1,15 +1,29 @@
 import WebSocket from 'ws';
 
+interface Sockets {
+    notification: WebSocket;
+    status: WebSocket;
+}
+
 interface Client {
     id: string;
-    socket: WebSocket;
+    socket: Sockets;
 }
 
 export class WebSocketsClientHandler {
     private clients: Map<string, Client> = new Map();
 
-    addClient(userId: string, socket: WebSocket) {
-        this.clients.set(userId, { id: userId, socket });
+    addClient(userId: string, socket: Partial<Sockets>) {
+        const existingClient = this.clients.get(userId);
+
+        const notificationSocket = socket.notification || existingClient?.socket.notification;
+        const statusSocket = socket.status || existingClient?.socket.status;
+
+        if (!notificationSocket || !statusSocket) {
+            throw new Error("Both notification and status WebSocket instances are required.");
+        }
+
+        this.clients.set(userId, { id: userId, socket: { notification: notificationSocket, status: statusSocket } });
     }
 
     removeClient(userId: string) {

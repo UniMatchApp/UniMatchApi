@@ -26,5 +26,5 @@ export class MessageEntity {
     recipient!: string;
 
     @Column({ type: 'text', nullable: true })
-    attachment?: string | null;
+    attachment?: string;
 }

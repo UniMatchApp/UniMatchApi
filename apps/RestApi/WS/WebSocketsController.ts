@@ -41,9 +41,23 @@ export class WebSocketController {
                 return;
             }
 
+            this.clientHandler.addClient(userId, {notification: ws});
+
+            ws.on('close', () => {
+                this.clientHandler.removeClient(userId);
+            });
+        });
+
+        this.wss.on('connection', (ws: WebSocket, req) => {
+            const userId = req.url?.split('/').pop();
+            if (!userId) {
+                ws.close();
+                return;
+            }
+
             const userOnlineDTO: UserIsOnlineDTO = {userId};
             this.userIsOnlineCommand.run(userOnlineDTO);
-            this.clientHandler.addClient(userId, ws);
+            this.clientHandler.addClient(userId, {status: ws});
 
             ws.on('message', (message: string) => {
                 const parsedMessage = JSON.parse(message);
