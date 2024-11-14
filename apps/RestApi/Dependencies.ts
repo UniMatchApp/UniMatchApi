@@ -14,4 +14,4 @@ export const wsClientHandler = new WebSocketsClientHandler();
 // const sessionStatusRepository = new RedisSessionStatusRepository();
 const sessionStatusRepository = new InMemorySessionStatusRepository();
 
-new WebSocketController(8080, sessionStatusRepository, wsClientHandler);
+new WebSocketController(8080, 8081, sessionStatusRepository, wsClientHandler);

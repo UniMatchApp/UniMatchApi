@@ -13,7 +13,8 @@ import {GetUserStatusCommand} from '@/core/uniMatch/status/application/commands/
 import { GetUserStatusDTO } from '@/core/uniMatch/status/application/DTO/GetUserStatusDTO';
 
 export class WebSocketController {
-    private wss: WebSocketServer;
+    private notificationServer: WebSocketServer;
+    private statusServer: WebSocketServer;
     private readonly clientHandler: WebSocketsClientHandler;
     private readonly userHasDisconnectedCommand: UserHasDisconnectedCommand;
     private readonly userIsOnlineCommand: UserIsOnlineCommand;
@@ -21,11 +22,14 @@ export class WebSocketController {
     private readonly userHasStoppedTypingCommand: UserHasStoppedTypingCommand;
     private readonly getUserStatusCommand: GetUserStatusCommand;
 
-    constructor(port: number,
-                repository: ISessionStatusRepository,
-                clientHandler: WebSocketsClientHandler
+    constructor(
+        notificationPort: number, 
+        statusPort: number,
+        repository: ISessionStatusRepository,
+        clientHandler: WebSocketsClientHandler
     ) {
-        this.wss = new WebSocketServer({port});
+        this.notificationServer = new WebSocketServer({port: notificationPort, path: '/notifications'});
+        this.statusServer = new WebSocketServer({port: statusPort, path: '/status'});
         this.clientHandler = clientHandler;
 
         this.userHasDisconnectedCommand = new UserHasDisconnectedCommand(repository);
@@ -34,7 +38,7 @@ export class WebSocketController {
         this.userHasStoppedTypingCommand = new UserHasStoppedTypingCommand(repository);
         this.getUserStatusCommand = new GetUserStatusCommand(repository);
 
-        this.wss.on('connection', (ws: WebSocket, req) => {
+        this.notificationServer.on('connection', (ws: WebSocket, req) => {
             const userId = req.url?.split('/').pop();
             if (!userId) {
                 ws.close();
@@ -48,7 +52,7 @@ export class WebSocketController {
             });
         });
 
-        this.wss.on('connection', (ws: WebSocket, req) => {
+        this.statusServer.on('connection', (ws: WebSocket, req) => {
             const userId = req.url?.split('/').pop();
             if (!userId) {
                 ws.close();
