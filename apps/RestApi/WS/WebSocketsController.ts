@@ -63,29 +63,42 @@ export class WebSocketController {
             this.userIsOnlineCommand.run(userOnlineDTO);
             this.clientHandler.addClient(userId, {status: ws});
 
-            ws.on('message', (message: string) => {
+            ws.on('message', async (message: string) => {
                 const parsedMessage = JSON.parse(message);
-
-                if (parsedMessage.type === 'typing') {
-                    const typingDTO: UserIsTypingDTO = {
-                        userId: parsedMessage.userId,
-                        targetUserId: parsedMessage.targetUserId,
-                    };
-                    this.userIsTypingCommand.run(typingDTO);
-
-                } else if (parsedMessage.type === 'stoppedTyping') {
-                    const stoppedTypingDTO: UserHasStoppedTypingDTO = {
-                        userId: parsedMessage.userId,
-                    };
-                    this.userHasStoppedTypingCommand.run(stoppedTypingDTO);
+            
+                switch (parsedMessage.type) {
+                    case 'typing': {
+                        const typingDTO: UserIsTypingDTO = {
+                            userId: parsedMessage.userId,
+                            targetUserId: parsedMessage.targetUserId,
+                        };
+                        this.userIsTypingCommand.run(typingDTO);
+                        break;
+                    }
+            
+                    case 'stoppedTyping': {
+                        const stoppedTypingDTO: UserHasStoppedTypingDTO = {
+                            userId: parsedMessage.userId,
+                        };
+                        this.userHasStoppedTypingCommand.run(stoppedTypingDTO);
+                        break;
+                    }
+            
+                    case 'getUserStatus': {
+                        const getUserStatusDTO = {
+                            userId: parsedMessage.userId,
+                            targetId: parsedMessage.targetUserId,
+                        } as GetUserStatusDTO;
+                        const result = await this.getUserStatusCommand.run(getUserStatusDTO);
+                        ws.send(JSON.stringify(result));
+                        break;
+                    }
+            
+                    default:
+                        console.warn('Unknown message type:', parsedMessage.type);
                 }
             });
-
-            ws.on('getUserStatus', async (userId: string, targetUserId: string) => {
-                const getUserStatusDTO = {userId, targetId: targetUserId} as GetUserStatusDTO;
-                const result = await this.getUserStatusCommand.run(getUserStatusDTO);
-                ws.send(JSON.stringify(result));
-            });
+            
 
             ws.on('close', () => {
                 const userDisconnectedDTO: UserHasDisconnectedDTO = {userId};
