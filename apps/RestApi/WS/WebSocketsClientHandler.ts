@@ -22,6 +22,10 @@ export class WebSocketsClientHandler {
         this.clients.set(userId, { id: userId, socket: { notification: notificationSocket, status: statusSocket } });
     }
 
+    getAllClients(): Client[] {
+        return Array.from(this.clients.values());
+    }
+
     removeClient(userId: string) {
         this.clients.delete(userId);
     }

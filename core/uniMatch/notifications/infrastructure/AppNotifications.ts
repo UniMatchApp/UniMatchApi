@@ -11,7 +11,9 @@ export class AppNotifications implements IAppNotifications {
 
     async sendNotification(notification: Notification): Promise<void> {
         const client = this.webSocketController.getClient(notification.recipient);
-        if (!(client && client.socket.notification.readyState === WebSocket.OPEN)) {
+        
+
+        if (!(client && client.socket.notification?.readyState === WebSocket.OPEN)) {
             console.log(`Usuario ${notification.recipient} no conectado.`);
             return;
         }

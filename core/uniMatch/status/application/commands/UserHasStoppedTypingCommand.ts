@@ -4,24 +4,30 @@ import { ISessionStatusRepository } from "../ports/ISessionStatusRepository";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { UserHasStoppedTypingDTO } from "../DTO/UserHasStoppedTypingDTO";
 
-export class UserHasStoppedTypingCommand implements ICommand<UserHasStoppedTypingDTO, void> {
+export class UserHasStoppedTypingCommand implements ICommand<UserHasStoppedTypingDTO, string> {
     private readonly repository: ISessionStatusRepository;
 
     constructor(repository: ISessionStatusRepository) {
         this.repository = repository;
     }
 
-    async run(request: UserHasStoppedTypingDTO): Promise<Result<void>> {
+    async run(request: UserHasStoppedTypingDTO): Promise<Result<string>> {
         try {
             const status = await this.repository.findById(request.userId);
             if (!status) {
-                return Result.failure<void>(new NotFoundError('User not found'));
+                return Result.failure<string>(new NotFoundError('User not found'));
             }
+            const targetId = status.targetUser;
+
+            if (!targetId) {
+                return Result.failure<string>(new NotFoundError('Target user not found'));
+            }
+
             status.stopTyping();
             await this.repository.update(status, status.userId);
-            return Result.success<void>(undefined);
+            return Result.success(targetId);
         } catch (error : any) {
-            return Result.failure<void>(error);
+            return Result.failure<string>(error);
         }
     }
 }
