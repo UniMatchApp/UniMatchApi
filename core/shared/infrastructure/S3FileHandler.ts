@@ -2,8 +2,8 @@ import { S3 } from 'aws-sdk';
 import { IFileHandler } from '@/core/shared/application/IFileHandler';
 import dotenv from 'dotenv';
 
-// Cargar las variables de entorno desde el archivo .env
-dotenv.config();
+// Cargar las variables de entorno desde el archivo shared.env
+dotenv.config({ path: 'shared.env' });
 
 export class S3FileHandler implements IFileHandler {
     private s3: S3;

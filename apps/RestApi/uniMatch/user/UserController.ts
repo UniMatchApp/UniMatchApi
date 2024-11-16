@@ -2,7 +2,7 @@ import {Request, Response} from 'express';
 import {IProfileRepository} from '@/core/uniMatch/user/application/ports/IProfileRepository';
 import {IUserRepository} from '@/core/uniMatch/user/application/ports/IUserRepository';
 import {IEventBus} from '@/core/shared/application/IEventBus';
-import {FileHandler} from '@/core/uniMatch/event/infrastructure/FileHandler';
+import { S3FileHandler } from "@/core/shared/infrastructure/S3FileHandler";
 import {CreateNewUserCommand} from '@/core/uniMatch/user/application/commands/CreateNewUserCommand';
 import {ErrorHandler} from '../../ErrorHandler';
 import {User} from '@/core/uniMatch/user/domain/User';
@@ -60,14 +60,14 @@ export class UserController {
     private readonly profileRepository: IProfileRepository;
     private readonly emailNotifications: IEmailNotifications;
     private readonly eventBus: IEventBus;
-    private readonly fileHandler: FileHandler;
+    private readonly fileHandler: S3FileHandler;
 
     constructor(userRepository: IUserRepository, profileRepository: IProfileRepository, emailNotifications: IEmailNotifications, eventBus: IEventBus) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
         this.emailNotifications = emailNotifications;
         this.eventBus = eventBus;
-        this.fileHandler = new FileHandler();
+        this.fileHandler = new S3FileHandler();
     }
 
     // Create y delete user crearán y eliminarán el perfil asociado al usuario??? 
