@@ -18,11 +18,13 @@ export class AppNotifications implements IAppNotifications {
             return;
         }
         client.socket.notification.send(JSON.stringify({
-            id: notification.contentId,
+            id: notification.getId(),
+            contentId: notification.contentId,
             type: notification.type,
             status: notification.status,
             date: notification.date,
             payload: notification.payload,
+            recipient: notification.recipient
         }));
 
     }
