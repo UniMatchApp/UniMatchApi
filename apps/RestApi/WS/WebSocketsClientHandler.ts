@@ -1,8 +1,8 @@
 import WebSocket from 'ws';
 
 interface Sockets {
-    notification: WebSocket;
-    status: WebSocket;
+    notification?: WebSocket;
+    status?: WebSocket;
 }
 
 interface Client {
@@ -18,12 +18,12 @@ export class WebSocketsClientHandler {
 
         const notificationSocket = socket.notification || existingClient?.socket.notification;
         const statusSocket = socket.status || existingClient?.socket.status;
-
-        if (!notificationSocket || !statusSocket) {
-            throw new Error("Both notification and status WebSocket instances are required.");
-        }
-
+        
         this.clients.set(userId, { id: userId, socket: { notification: notificationSocket, status: statusSocket } });
+    }
+
+    getAllClients(): Client[] {
+        return Array.from(this.clients.values());
     }
 
     removeClient(userId: string) {
