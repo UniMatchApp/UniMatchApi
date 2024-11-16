@@ -8,10 +8,15 @@ import {WebSocketsClientHandler} from "@/apps/RestApi/WS/WebSocketsClientHandler
 import {
     InMemorySessionStatusRepository
 } from "@/core/uniMatch/status/infrastructure/InMemory/InMemorySessionStatusRepository";
+import {IEmailNotifications} from "@/core/shared/application/IEmailNotifications";
+import {EmailNotifications} from "@/core/shared/infrastructure/EmailNotifications";
+import {MockEmailNotifications} from "@/core/shared/infrastructure/MockEmailNotifications";
 
 export const eventBus = new InMemoryEventBus();
 export const wsClientHandler = new WebSocketsClientHandler();
 // const sessionStatusRepository = new RedisSessionStatusRepository();
 const sessionStatusRepository = new InMemorySessionStatusRepository();
+// export const emailNotifications: IEmailNotifications = new EmailNotifications();
+export const emailNotifications: IEmailNotifications = new MockEmailNotifications();
 
 new WebSocketController(8080, 8081, sessionStatusRepository, wsClientHandler);

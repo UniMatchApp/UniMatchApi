@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import {UserController} from '../uniMatch/user/UserController';
-import { eventBus } from '../Dependencies';
+import {emailNotifications, eventBus} from '../Dependencies';
 import {InMemoryUserRepository} from "@/core/uniMatch/user/infrastructure/InMemory/InMemoryUserRepository";
 import {IUserRepository} from "@/core/uniMatch/user/application/ports/IUserRepository";
 import {InMemoryProfileRepository} from "@/core/uniMatch/user/infrastructure/InMemory/InMemoryProfileRepository";
@@ -14,7 +14,6 @@ const router = Router();
 // const userRepository: IUserRepository = new TypeORMUserRepository();
 const userRepository: IUserRepository = new InMemoryUserRepository();
 const profileRepository: IProfileRepository = new InMemoryProfileRepository();
-const emailNotifications: IEmailNotifications = new EmailNotifications();
 const userController = new UserController(userRepository, profileRepository, emailNotifications, eventBus);
 
 router.post('/:id/block/:targetId', userController.blockUser.bind(userController));
@@ -45,6 +44,6 @@ router.post('/:id/report', userController.reportUser.bind(userController));
 router.post('/:id/photo', fileUploadMiddleware, userController.uploadPhoto.bind(userController));
 router.post('/auth/forgot-password', userController.forgotPassword.bind(userController));
 router.post('/auth/resend-code', userController.resendCode.bind(userController));
-
+router.post('/auth/verify-code', userController.verifyCode.bind(userController));
 
 export {router};
