@@ -3,7 +3,7 @@ import { IEventHandler } from "../application/IEventHandler";
 import { DomainEvent } from "../domain/DomainEvent";
 
 export class InMemoryEventBus implements IEventBus {
-    private handlers: Map<string, IEventHandler[]> = new Map();
+    private readonly handlers: Map<string, IEventHandler[]> = new Map();
 
     publish(events: DomainEvent[]): void {
         for (const event of events) {

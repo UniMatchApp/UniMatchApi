@@ -2,7 +2,7 @@ import {IEmailNotifications} from "@/core/shared/application/IEmailNotifications
 import {UUID} from "../domain/UUID";
 
 export class MockEmailNotifications implements IEmailNotifications {
-    private emailLog: Map<string, {
+    private readonly emailLog: Map<string, {
         to: string | string[];
         subject: string;
         body: string;
