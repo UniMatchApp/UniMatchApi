@@ -10,8 +10,6 @@ import {SexualOrientation} from "@/core/uniMatch/user/domain/SexualOrientation";
 import {RelationshipType} from "@/core/shared/domain/RelationshipType";
 import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
 import {IFileHandler} from "@/core/shared/application/IFileHandler";
-import {DomainError} from "@/core/shared/exceptions/DomainError";
-import {FileHandler} from "@/core/uniMatch/event/infrastructure/FileHandler";
 import {UUID} from "@/core/shared/domain/UUID";
 import {IProfileRepository} from "@/core/uniMatch/user/application/ports/IProfileRepository";
 
@@ -38,6 +36,8 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
             }
 
             const profileUrl = await this.fileHandler.save(UUID.generate().toString(), request.image);
+
+            const location = request.location ? new Location(request.location.latitude, request.location.longitude) : undefined
  
             const profile = new Profile(
                 request.userId,
@@ -45,12 +45,12 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
                 request.age,
                 request.aboutMe,
                 Gender.fromString(request.gender),
-                new Location(request.location.latitude, request.location.longitude),
                 new SexualOrientation(request.sexualOrientation),
                 RelationshipType.fromString(request.relationshipType),
                 request.birthday,
                 [],
-                [profileUrl]
+                [profileUrl],
+                location
             )
             profile.preferredImage = profileUrl;
 

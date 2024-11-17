@@ -35,7 +35,7 @@ export class InMemoryMatchingRepository implements IMatchingRepository {
             .map(node => {
                 const priority =
                     (node.relationshipType === user.relationshipType ? 1 : 0) +
-                    (user.maxDistance === 0 || this.isWithinDistance(user.location, node.location, user.maxDistance) ? 1 : 0);
+                    (user.maxDistance === 0 || (user.location && node.location && this.isWithinDistance(user.location, node.location, user.maxDistance)) ? 1 : 0);
     
                 return { node, priority };
             })
