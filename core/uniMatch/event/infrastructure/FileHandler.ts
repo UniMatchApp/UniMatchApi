@@ -6,9 +6,6 @@ export class FileHandler implements IFileHandler {
     private readonly allowedFileTypes: string[] = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
     async save(fileName: string, data: File): Promise<string> {
-        if (!this.isValidFileType(data.type)) {
-            throw new Error('Invalid file type. Allowed types: ' + this.allowedFileTypes.join(', '));
-        }
 
         const filePath = path.join(__dirname, 'uploads', fileName);
 

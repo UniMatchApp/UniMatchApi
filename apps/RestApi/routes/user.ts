@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import {UserController} from '../uniMatch/user/UserController';
-import {emailNotifications, eventBus} from '../Dependencies';
+import {emailNotifications, eventBus, fileHandler} from '../Dependencies';
 import {InMemoryUserRepository} from "@/core/uniMatch/user/infrastructure/InMemory/InMemoryUserRepository";
 import {IUserRepository} from "@/core/uniMatch/user/application/ports/IUserRepository";
 import {InMemoryProfileRepository} from "@/core/uniMatch/user/infrastructure/InMemory/InMemoryProfileRepository";
@@ -14,7 +14,7 @@ const router = Router();
 // const userRepository: IUserRepository = new TypeORMUserRepository();
 const userRepository: IUserRepository = new InMemoryUserRepository();
 const profileRepository: IProfileRepository = new InMemoryProfileRepository();
-const userController = new UserController(userRepository, profileRepository, emailNotifications, eventBus);
+const userController = new UserController(userRepository, profileRepository, emailNotifications, eventBus, fileHandler);
 
 router.post('/:id/block/:targetId', userController.blockUser.bind(userController));
 router.put('/:id/about', userController.changeAboutMe.bind(userController));
@@ -39,7 +39,7 @@ router.put('/:id/values-and-beliefs', userController.changeValuesAndBeliefs.bind
 // router.put('/:id/age', userController.changeAge.bind(userController));
 // router.put('/:id/max-distance', userController.changeMaxDistance.bind(userController));
 router.put('/:id/weight', userController.changeWeight.bind(userController));
-router.post('/:id', userController.createProfile.bind(userController));
+router.post('/:id', fileUploadMiddleware, userController.createProfile.bind(userController));
 router.post('', userController.createUser.bind(userController));
 router.delete('/:id/delete-photo/:photoUrl', userController.deletePhoto.bind(userController));
 router.delete('/:id', userController.deleteUser.bind(userController));

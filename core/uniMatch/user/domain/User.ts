@@ -59,6 +59,10 @@ export class User extends AggregateRoot {
         return this._registered;
     }
 
+    public set registered(value: boolean) {
+        this._registered = value;
+    }
+
     public completeRegistration() : void {
         this._registered = true;
     }
@@ -132,6 +136,10 @@ export class User extends AggregateRoot {
 
     public set reportedUsers(value: ReportedUser[]) {
         this._reportedUsers = value;
+    }
+
+    public get reportedUsers(): ReportedUser[] {
+        return this._reportedUsers;
     }
     
     public reportUser(reportedUser: ReportedUser): void {

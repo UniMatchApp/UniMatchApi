@@ -57,23 +57,30 @@ import {ResendCodeCommand} from '@/core/uniMatch/user/application/commands/Resen
 import {VerifyCodeCommand} from "@/core/uniMatch/user/application/commands/VerifyCodeCommand";
 import {VerifyCodeDTO} from "@/core/uniMatch/user/application/DTO/VerifyCodeDTO";
 import { forgotPasswordDTO } from '@/core/uniMatch/user/application/DTO/ForgotPasswordDTO';
+import { IFileHandler } from '@/core/shared/application/IFileHandler';
+import { UserDTO } from '@/core/uniMatch/user/application/DTO/UserDTO';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
     private readonly profileRepository: IProfileRepository;
     private readonly emailNotifications: IEmailNotifications;
     private readonly eventBus: IEventBus;
-    private readonly fileHandler: S3FileHandler;
+    private readonly fileHandler: IFileHandler;
 
-    constructor(userRepository: IUserRepository, profileRepository: IProfileRepository, emailNotifications: IEmailNotifications, eventBus: IEventBus) {
+    constructor(
+        userRepository: IUserRepository, 
+        profileRepository: IProfileRepository, 
+        emailNotifications: IEmailNotifications, 
+        eventBus: IEventBus,
+        fileHandler: IFileHandler
+    ) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
         this.emailNotifications = emailNotifications;
         this.eventBus = eventBus;
-        this.fileHandler = new S3FileHandler();
+        this.fileHandler = fileHandler;
     }
 
-    // Create y delete user crearán y eliminarán el perfil asociado al usuario??? 
     async createUser(req: Request, res: Response): Promise<void> {
         const command = new CreateNewUserCommand(this.userRepository, this.eventBus, this.emailNotifications, this.profileRepository);
         return command.run(req.body).then((result: Result<User>) => {
@@ -486,7 +493,7 @@ export class UserController {
     // Echar un vistazo a este método
     async login(req: Request, res: Response): Promise<void> {
         const command = new LoginUserCommand(this.userRepository, this.emailNotifications);
-        return command.run(req.body).then((result: Result<{ token: string, user: User }>) => {
+        return command.run(req.body).then((result: Result<{ token: string, user: UserDTO }>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
