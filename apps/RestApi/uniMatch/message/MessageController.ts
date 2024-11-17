@@ -3,7 +3,7 @@ import { IEventBus } from "@/core/shared/application/IEventBus";
 import { Result } from "@/core/shared/domain/Result";
 import { CreateNewMessageCommand } from "@/core/uniMatch/message/application/commands/CreateNewMessageCommand";
 import { Message } from "@/core/uniMatch/message/domain/Message";
-import { FileHandler } from "@/core/uniMatch/message/infrastructure/FileHandler";
+import { S3FileHandler } from "@/core/shared/infrastructure/S3FileHandler";
 import { TypeORMMessageRepository } from "@/core/uniMatch/message/infrastructure/TypeORM/repositories/TypeORMMessageRepository";
 import { ErrorHandler } from "../../ErrorHandler";
 import { DeleteAllMessagesWithUserCommand } from "@/core/uniMatch/message/application/commands/DeleteAllMessagesWithUserCommand";
@@ -28,12 +28,12 @@ export class MessageController {
 
     private readonly messageRepository: IMessageRepository;
     private readonly eventBus: IEventBus;
-    private readonly fileHandler: FileHandler; 
+    private readonly fileHandler: S3FileHandler; 
     
     constructor(messageRepository: IMessageRepository, eventBus: IEventBus) {
         this.messageRepository = messageRepository;
         this.eventBus = eventBus;
-        this.fileHandler = new FileHandler();
+        this.fileHandler = new S3FileHandler();
     }
 
     async createMessage(req: Request, res: Response): Promise<void> {
