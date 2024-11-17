@@ -9,11 +9,13 @@ import {IEmailNotifications} from "@/core/shared/application/IEmailNotifications
 import {EmailNotifications} from "@/core/shared/infrastructure/EmailNotifications";
 import { TypeORMUserRepository } from '@/core/uniMatch/user/infrastructure/TypeORM/repositories/TypeORMUserRepository';
 import fileUploadMiddleware from '../FileUploadMiddleware';
+import { TypeORMProfileRepository } from '@/core/uniMatch/user/infrastructure/TypeORM/repositories/TypeORMProfileRepository';
 
 const router = Router();
-// const userRepository: IUserRepository = new TypeORMUserRepository();
-const userRepository: IUserRepository = new InMemoryUserRepository();
-const profileRepository: IProfileRepository = new InMemoryProfileRepository();
+const userRepository: IUserRepository = new TypeORMUserRepository();
+// const userRepository: IUserRepository = new InMemoryUserRepository();
+// const profileRepository: IProfileRepository = new InMemoryProfileRepository();
+const profileRepository: IProfileRepository = new TypeORMProfileRepository();
 const userController = new UserController(userRepository, profileRepository, emailNotifications, eventBus);
 
 router.post('/:id/block/:targetId', userController.blockUser.bind(userController));
