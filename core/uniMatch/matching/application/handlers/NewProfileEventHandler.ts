@@ -19,9 +19,6 @@ export class NewProfileEventHandler implements IEventHandler {
             const id = event.getAggregateId();
 
             const locationStr = event.getPayload().get("location");
-            if (!locationStr) {
-                throw new EventError("Location is required to create a new user.");
-            }
     
             const genderStr = event.getPayload().get("gender")
             if (!genderStr) {
@@ -52,17 +49,17 @@ export class NewProfileEventHandler implements IEventHandler {
             const relationshipType = RelationshipType.fromString(relationshipTypeStr);
             const max = Number(maxDistanceStr);
             const gender = Gender.fromString(genderStr);
-            const location = Location.stringToLocation(locationStr);
+            const location = locationStr ? Location.stringToLocation(locationStr) : undefined;
     
     
             const node = new Node(
                 id,
                 Number(ageStr),
-                location,
                 max,
                 gender,
                 relationshipType,
-                genderPriority
+                genderPriority,
+                location
             );
     
             this.repository.create(node);

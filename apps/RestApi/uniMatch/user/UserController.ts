@@ -56,6 +56,7 @@ import {ForgotPasswordCommand} from '@/core/uniMatch/user/application/commands/F
 import {ResendCodeCommand} from '@/core/uniMatch/user/application/commands/ResendCodeCommand';
 import {VerifyCodeCommand} from "@/core/uniMatch/user/application/commands/VerifyCodeCommand";
 import {VerifyCodeDTO} from "@/core/uniMatch/user/application/DTO/VerifyCodeDTO";
+import { forgotPasswordDTO } from '@/core/uniMatch/user/application/DTO/ForgotPasswordDTO';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -143,8 +144,10 @@ export class UserController {
     }
 
     async forgotPassword(req: Request, res: Response): Promise<void> {
+        const email = req.params.email;
         const command = new ForgotPasswordCommand(this.userRepository, this.emailNotifications);
-        return command.run(req.body).then((result: Result<void>) => {
+        const dto = {email: email} as forgotPasswordDTO;
+        return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());
             } else {
@@ -168,8 +171,8 @@ export class UserController {
 
     async verifyCode(req: Request, res: Response): Promise<void> {
         const command = new VerifyCodeCommand(this.userRepository);
-        const {userId, code} = req.query;
-        const dto = {userId: userId as string, code: code as string} as VerifyCodeDTO;
+        const {id, code} = req.params;
+        const dto = {userId: id as string, code: code as string} as VerifyCodeDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result);
@@ -194,6 +197,7 @@ export class UserController {
             }
         });
     }
+            
 
     async changeDegree(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
@@ -466,8 +470,9 @@ export class UserController {
 
     async reportUser(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
+        const targetId = req.params.targetId;
         const command = new ReportUserCommand(this.userRepository);
-        const dto = {id: id, ...req.body} as ReportUserDTO;
+        const dto = {id: id, reportedUserId: targetId, ...req.body} as ReportUserDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());

@@ -40,7 +40,7 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
 
     async findPotentialMatches(userId: string, limit: number): Promise<Node[]> {
         const session = this.driver.session();
-        
+    
         try {
             const result = await session.run(
                 `
@@ -51,11 +51,15 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
                   AND NOT (u1)-[:DISLIKES]->(u2)
                   AND NOT (u1)-[:LIKES]->(u2)
                 WITH u2,
-                    (CASE WHEN u2.relationshipType = u1.relationshipType THEN 1 ELSE 0 END +
-                     CASE WHEN u1.maxDistance = 0 OR distance(
-                        point({longitude: u1.location.longitude, latitude: u1.location.latitude}),
-                        point({longitude: u2.location.longitude, latitude: u2.location.latitude})
-                     ) <= u1.maxDistance * 1000 THEN 1 ELSE 0 END) AS priority
+                    (CASE 
+                        WHEN u1.location IS NULL OR u2.location IS NULL THEN 1
+                        WHEN u1.maxDistance = 0 OR distance(
+                            point({longitude: u1.location.longitude, latitude: u1.location.latitude}),
+                            point({longitude: u2.location.longitude, latitude: u2.location.latitude})
+                         ) <= u1.maxDistance * 1000 THEN 1 
+                        ELSE 0 
+                     END +
+                     CASE WHEN u2.relationshipType = u1.relationshipType THEN 1 ELSE 0 END) AS priority
                 ORDER BY priority DESC
                 LIMIT $limit
                 RETURN u2
@@ -68,17 +72,17 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
                 return new Node(
                     userNode.userId,
                     userNode.age,
-                    userNode.location,
                     userNode.maxDistance,
                     userNode.gender,
                     userNode.relationshipType,
-                    userNode.genderPriority
+                    userNode.genderPriority,
+                    userNode.location,
                 );
             });
         } finally {
             await session.close();
         }
-    }
+    }    
     
     
     
@@ -98,11 +102,11 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
                 return new Node(
                     userNode.userId,
                     userNode.age,
-                    userNode.location,
                     userNode.maxDistance,
                     userNode.gender,
                     userNode.relationshipType,
-                    userNode.genderPriority
+                    userNode.genderPriority,
+                    userNode.location,
                 );
             });
         } finally {
@@ -118,7 +122,7 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
                 {
                     userId: entity.userId,
                     age: entity.age,
-                    location: entity.location.toString(),
+                    location: entity.location?.toString() || null,
                     maxDistance: entity.maxDistance,
                     gender: entity.gender,
                     relationshipType: entity.relationshipType,
@@ -139,7 +143,7 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
                 {
                     userId: id,
                     age: entity.age,
-                    location: entity.location.toString(),
+                    location: entity.location?.toString() || null,
                     maxDistance: entity.maxDistance,
                     gender: entity.gender,
                     relationshipType: entity.relationshipType,
@@ -166,11 +170,11 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
                 return new Node(
                     userNode.userId,
                     userNode.age,
-                    userNode.location,
                     userNode.maxDistance,
                     userNode.gender,
                     userNode.relationshipType,
-                    userNode.genderPriority
+                    userNode.genderPriority,
+                    userNode.location
                 );
             }
             return null;
@@ -188,11 +192,11 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
                 return new Node(
                     userNode.userId,
                     userNode.age,
-                    userNode.location,
                     userNode.maxDistance,
                     userNode.gender,
                     userNode.relationshipType,
-                    userNode.genderPriority
+                    userNode.genderPriority,
+                    userNode.location
                 );
             });
         } finally {

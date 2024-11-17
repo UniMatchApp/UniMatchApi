@@ -16,7 +16,7 @@ export class UserHasChangedLocationEventHandler implements IEventHandler {
             const userId = event.getAggregateId();
             const stringLocation = event.getPayload().get("location");
     
-            if (!userId || !stringLocation) {
+            if (!userId) {
                 throw new EventError("User ID and location are required to update a user's location.");
             }
     
@@ -25,7 +25,7 @@ export class UserHasChangedLocationEventHandler implements IEventHandler {
                 throw new EventError("User not found");
             }
     
-            const location = Location.stringToLocation(stringLocation);
+            const location = stringLocation ? Location.stringToLocation(stringLocation) : undefined;
             user.location = location;
             this.repository.update(user, user.getId());
         } catch (error : any) {

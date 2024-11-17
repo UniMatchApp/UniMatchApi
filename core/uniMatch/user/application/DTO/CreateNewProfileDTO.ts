@@ -3,7 +3,7 @@ export interface CreateNewProfileDTO {
     name: string;                        // Nombre del perfil
     age: number;                         // Edad del perfil
     aboutMe: string;                     // Descripción breve del usuario
-    location: {
+    location?: {
         latitude: number;
         longitude: number;
     };                                   // Ubicación del perfil
