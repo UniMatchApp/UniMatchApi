@@ -1,8 +1,26 @@
-import { IProfileRepository } from "@/core/uniMatch/user/application/ports/IProfileRepository";
-import { Profile } from "@/core/uniMatch/user/domain/Profile";
+import {IProfileRepository} from "@/core/uniMatch/user/application/ports/IProfileRepository";
+import {Profile} from "@/core/uniMatch/user/domain/Profile";
+import {
+    mockProfile1,
+    mockProfile2,
+    mockProfile3,
+    mockProfile4,
+    mockProfile5
+} from "@/core/uniMatch/user/domain/mocks/MockProfiles";
 
 export class InMemoryProfileRepository implements IProfileRepository {
-    private profiles: { [id: string]: Profile } = {};
+    private profiles: { [id: string]: Profile } = {
+        [mockProfile1.getId().toString()]: mockProfile1,
+        [mockProfile2.getId().toString()]: mockProfile2,
+        [mockProfile3.getId().toString()]: mockProfile3,
+        [mockProfile4.getId().toString()]: mockProfile4,
+        [mockProfile5.getId().toString()]: mockProfile5,
+
+    };
+
+    constructor() {
+        console.log("InMemoryProfileRepository created with profiles: ", this.profiles)
+    }
 
     async create(entity: Profile): Promise<void> {
         const id = entity.getId().toString();
@@ -33,6 +51,7 @@ export class InMemoryProfileRepository implements IProfileRepository {
     }
 
     async findByUserId(userId: string): Promise<Profile | undefined> {
+        console.log("Finding profile by userId: ", userId);
         return Object.values(this.profiles).find(profile => profile.userId === userId);
     }
 

@@ -1,10 +1,12 @@
-import { DomainError } from "@/core/shared/exceptions/DomainError";
+import {DomainError} from "@/core/shared/exceptions/DomainError";
+
+type AllowedGenders = "MALE" | "FEMALE" | "OTHER"
 
 export class Gender {
     private _value: string;
-    private static readonly allowedGenders = ["MALE", "FEMALE", "NON-BINARY", "OTHER"];
+    private static readonly allowedGenders = ["MALE", "FEMALE", "OTHER"];
 
-    constructor(value: string) {
+    constructor(value: AllowedGenders) {
         this._value = value;
     }
 
@@ -12,7 +14,7 @@ export class Gender {
         return this._value;
     }
 
-    public setValue(value: string): void {
+    public setValue(value: AllowedGenders): void {
         const uppercasedValue = value.toUpperCase();
         if (!Gender.allowedGenders.includes(uppercasedValue)) {
             throw new DomainError(`Gender must be one of the following: ${Gender.allowedGenders.join(", ")}.`);
@@ -29,6 +31,6 @@ export class Gender {
         if (!Gender.allowedGenders.includes(uppercasedValue)) {
             throw new DomainError(`Gender must be one of the following: ${Gender.allowedGenders.join(", ")}.`);
         }
-        return new Gender(uppercasedValue);
+        return new Gender(uppercasedValue as AllowedGenders);
     }
 }

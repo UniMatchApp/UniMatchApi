@@ -56,6 +56,8 @@ import {ForgotPasswordCommand} from '@/core/uniMatch/user/application/commands/F
 import {ResendCodeCommand} from '@/core/uniMatch/user/application/commands/ResendCodeCommand';
 import {VerifyCodeCommand} from "@/core/uniMatch/user/application/commands/VerifyCodeCommand";
 import {VerifyCodeDTO} from "@/core/uniMatch/user/application/DTO/VerifyCodeDTO";
+import {UserDTO} from "@/core/uniMatch/user/application/DTO/UserDTO";
+import {ProfileDTO} from "@/core/uniMatch/user/application/DTO/ProfileDTO";
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -117,9 +119,9 @@ export class UserController {
         const id = req.params.id;
         const query = new GetProfileCommand(this.profileRepository);
         const dto = {id: id} as GetProfileDTO;
-        return query.run(dto).then((result: Result<Profile>) => {
+        return query.run(dto).then((result: Result<ProfileDTO>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -481,7 +483,7 @@ export class UserController {
     // Echar un vistazo a este método
     async login(req: Request, res: Response): Promise<void> {
         const command = new LoginUserCommand(this.userRepository, this.emailNotifications);
-        return command.run(req.body).then((result: Result<{ token: string, user: User }>) => {
+        return command.run(req.body).then((result: Result<{ token: string, user: UserDTO }>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {

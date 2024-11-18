@@ -12,13 +12,14 @@ const router = Router();
 const messageRepository:IMessageRepository = new InMemoryMessageRepository();
 const messageController = new MessageController(messageRepository, eventBus);
 
-router.post('/messages', fileUploadMiddleware ,messageController.createMessage.bind(messageController));
-router.delete('/messages/:userId', messageController.deleteAllMessagesWithUser.bind(messageController));
-router.delete('/message/:userId', messageController.deleteMessage.bind(messageController));
-router.post('/message/read/:messageId', messageController.messageHasBeenRead.bind(messageController));
-router.get('/messages/user/:userId', messageController.retrieveMessagesWithUser.bind(messageController));
-router.get('/messages/paginated/:userId', messageController.retrieveMessagesWithUserPaginated.bind(messageController));
-router.get('/messages/last/:userId', messageController.retrieveUserLastMessages.bind(messageController));
-router.put('/message/:userId', fileUploadMiddleware, messageController.updateMessage.bind(messageController));
+router.post('', fileUploadMiddleware ,messageController.createMessage.bind(messageController));
+router.get('', messageController.retrieveMessagesFromUserPaginated.bind(messageController));
+router.delete('/:userId', messageController.deleteAllMessagesWithUser.bind(messageController));
+router.delete('/:userId', messageController.deleteMessage.bind(messageController));
+router.post('/read/:messageId', messageController.messageHasBeenRead.bind(messageController));
+router.get('/user/:userId', messageController.retrieveMessagesWithUser.bind(messageController));
+router.get('/paginated/:userId', messageController.retrieveMessagesWithUserPaginated.bind(messageController));
+router.get('/last/:userId', messageController.retrieveUserLastMessages.bind(messageController));
+router.put('/:userId', fileUploadMiddleware, messageController.updateMessage.bind(messageController));
 
 export { router };

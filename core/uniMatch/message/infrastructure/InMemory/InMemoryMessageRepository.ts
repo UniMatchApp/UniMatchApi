@@ -1,8 +1,33 @@
 import {IMessageRepository} from "@/core/uniMatch/message/application/ports/IMessageRepository";
 import {Message} from "@/core/uniMatch/message/domain/Message";
+import {user1, user2} from "@/core/uniMatch/user/domain/mocks/MockUsers";
+import {UUID} from "@/core/shared/domain/UUID";
 
 export class InMemoryMessageRepository implements IMessageRepository {
-    private messages: { [id: string]: Message } = {};
+    private messages: { [id: string]: Message } = {
+        [UUID.generate().toString()] : new Message(
+            "Mock message 1",
+            user1.getId().toString(),
+            user2.getId().toString(),
+        ),
+        [UUID.generate().toString()] : new Message(
+            "Mock message 2",
+            user2.getId().toString(),
+            user1.getId().toString(),
+        ),
+        [UUID.generate().toString()] : new Message(
+            "Mock message 3",
+            user1.getId().toString(),
+            user2.getId().toString(),
+        ),
+        [UUID.generate().toString()] : new Message(
+            "Mock message 4",
+            user2.getId().toString(),
+            user1.getId().toString(),
+        )
+
+
+    };
 
     async create(entity: Message): Promise<void> {
         const id = entity.getId().toString();
@@ -57,6 +82,15 @@ export class InMemoryMessageRepository implements IMessageRepository {
             )
             .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
             .slice(after, after + limit);
+    }
+
+    findMessagesOfUserPaginated(userId: string, after: number, limit: number): Promise<Message[]> {
+        return Promise.resolve(
+            Object.values(this.messages)
+                .filter(message => message.sender === userId || message.recipient === userId)
+                .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+                .slice(after, after + limit)
+        );
     }
 
     async update(entity: Message, id: string): Promise<Message> {

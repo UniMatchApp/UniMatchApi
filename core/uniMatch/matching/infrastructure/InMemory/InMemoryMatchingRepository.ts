@@ -3,31 +3,41 @@ import {Dislike} from "@/core/uniMatch/matching/domain/relations/Dislike";
 import {Like} from "@/core/uniMatch/matching/domain/relations/Like";
 import {Node} from "@/core/uniMatch/matching/domain/Node";
 import {mockNode1, mockNode2, mockNode3, mockNode4, mockNode5} from "../../domain/MockNodes";
+import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
+
 
 export class InMemoryMatchingRepository implements IMatchingRepository {
     private nodes: { [id: string]: Node } = {
-        [mockNode1.getId()]: mockNode1,
-        [mockNode2.getId()]: mockNode2,
-        [mockNode3.getId()]: mockNode3,
-        [mockNode4.getId()]: mockNode4,
-        [mockNode5.getId()]: mockNode5,
+        [mockNode1.userId]: mockNode1,
+        [mockNode2.userId]: mockNode2,
+        [mockNode3.userId]: mockNode3,
+        [mockNode4.userId]: mockNode4,
+        [mockNode5.userId]: mockNode5,
     };
+
+    // People that like userId
     private likes: { [userId: string]: Like[] } = {
         [mockNode1.userId]: [new Like(mockNode2, mockNode1), new Like(mockNode3, mockNode1), new Like(mockNode4, mockNode1)],
-        [mockNode2.userId]: [],
-        [mockNode3.userId]: [],
-        [mockNode4.userId]: [],
-        [mockNode5.userId]: [],
-    }
-    ;
+        [mockNode2.userId]: [new Like(mockNode1, mockNode2), new Like(mockNode3, mockNode2)],
+        [mockNode3.userId]: [new Like(mockNode2, mockNode3), new Like(mockNode1, mockNode3), new Like(mockNode4, mockNode3)],
+        [mockNode4.userId]: [new Like(mockNode2, mockNode4), new Like(mockNode3, mockNode4), new Like(mockNode1, mockNode4)],
+        [mockNode5.userId]: [new Like(mockNode2, mockNode5), new Like(mockNode3, mockNode5), new Like(mockNode4, mockNode5)]
+    };
+
+    // People that dislike userId
     private dislikes: { [userId: string]: Dislike[] } = {};
+
+
+    constructor() {
+        console.log("InMemoryMatchingRepository created with nodes", this.nodes);
+    }
 
     async findPotentialMatches(userId: string, limit: number): Promise<Node[]> {
         const user = this.nodes[userId];
         if (!user) {
             throw new Error(`User with ID ${userId} does not exist.`);
         }
-    
+
         const potentialMatches = Object.values(this.nodes)
             .filter(node => node.userId !== userId)
             .filter(node => node.gender === user.genderPriority)
@@ -36,32 +46,40 @@ export class InMemoryMatchingRepository implements IMatchingRepository {
                 const priority =
                     (node.relationshipType === user.relationshipType ? 1 : 0) +
                     (user.maxDistance === 0 || this.isWithinDistance(user.location, node.location, user.maxDistance) ? 1 : 0);
-    
-                return { node, priority };
+
+                return {node, priority};
             })
             .sort((a, b) => b.priority - a.priority)
             .slice(0, limit)
             .map(item => item.node);
-    
+
         return potentialMatches;
     }
-    
+
 
     async findMutualLikes(userId: string): Promise<Node[]> {
         const user = this.nodes[userId];
+        console.log("FIND MUTUAL LIKES", user)
         if (!user) {
-            throw new Error(`User with ID ${userId} does not exist.`);
+            throw new NotFoundError(`User with ID ${userId} does not exist.`);
         }
-    
+
+        const usersThatUserLikes = await this.findUsersThatUserLikes(userId);
         const usersThatLikeUser = this.likes[userId] || [];
-        const usersThatUserLikes = usersThatLikeUser.map(like => like.fromProfile);
-    
-        const mutualLikes = usersThatUserLikes.filter(node => usersThatLikeUser.some(like => like.toProfile.userId === node.userId));
+
+        const mutualLikes = usersThatUserLikes.filter(
+            user => usersThatLikeUser.some(
+                like => like.fromProfile.userId === user.userId
+            )
+        );
         return mutualLikes;
     }
 
-    
-    private isWithinDistance(location1: { longitude: number; latitude: number }, location2: { longitude: number; latitude: number }, maxDistance: number): boolean {
+
+    private isWithinDistance(location1: { longitude: number; latitude: number }, location2: {
+        longitude: number;
+        latitude: number
+    }, maxDistance: number): boolean {
         const distance = Math.sqrt(
             Math.pow(location1.latitude - location2.latitude, 2) +
             Math.pow(location1.longitude - location2.longitude, 2)
@@ -131,5 +149,17 @@ export class InMemoryMatchingRepository implements IMatchingRepository {
 
     async findUsersThatLikeUser(userId: string): Promise<Node[]> {
         return this.likes[userId].map(like => like.fromProfile);
+    }
+
+    private async findUsersThatUserLikes(userId: string): Promise<Node[]> {
+        const usersThatUserLikes: Node[] = [];
+        for (const userLikes of Object.values(this.likes)) {
+            for (const like of userLikes) {
+                if (like.fromProfile.userId === userId) {
+                    usersThatUserLikes.push(like.toProfile);
+                }
+            }
+        }
+        return usersThatUserLikes;
     }
 }

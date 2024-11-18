@@ -1,20 +1,21 @@
-import { DomainError } from "@/core/shared/exceptions/DomainError";
+import {DomainError} from "@/core/shared/exceptions/DomainError";
 
+type AllowedOrientations = "HETEROSEXUAL" | "HOMOSEXUAL" | "BISEXUAL" | "ASEXUAL" | "OTHER";
 
 export class SexualOrientation {
-    private _value: string;
-    private static readonly allowedOrientations = ["HETEROSEXUAL", "HOMOSEXUAL", "BISEXUAL", "ASEXUAL", "OTHER"];
+    private _value: AllowedOrientations;
+    private static readonly allowedOrientations: AllowedOrientations[] = ["HETEROSEXUAL", "HOMOSEXUAL", "BISEXUAL", "ASEXUAL", "OTHER"];
 
-    constructor(value: string) {
+    constructor(value: AllowedOrientations) {
         this._value = value;
     }
 
-    public get value(): string {
+    public get value(): AllowedOrientations {
         return this._value;
     }
 
-    public setValue(value: string): void {
-        const uppercasedValue = value.toUpperCase();
+    public setValue(value: AllowedOrientations): void {
+        const uppercasedValue = value.toUpperCase() as AllowedOrientations;
         if (!SexualOrientation.allowedOrientations.includes(uppercasedValue)) {
             throw new DomainError(`Sexual orientation must be one of the following: ${SexualOrientation.allowedOrientations.join(", ")}.`);
         }

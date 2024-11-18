@@ -39,7 +39,7 @@ export class ErrorHandler {
         } else if (error instanceof ValidationError) {
             res.status(422).json(error.message);
         } else {
-            res.status(500).json("An unexpected error occurred");
+            res.status(500).json(error.message || "An unexpected error occurred");
         }
     }
 }

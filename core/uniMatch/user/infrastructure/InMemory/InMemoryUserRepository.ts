@@ -1,6 +1,6 @@
 import {IUserRepository} from "@/core/uniMatch/user/application/ports/IUserRepository";
 import {User} from "@/core/uniMatch/user/domain/User";
-import {user1, user2, user3, user4, user5} from "@/core/uniMatch/user/domain/MockUsers";
+import {user1, user2, user3, user4, user5} from "@/core/uniMatch/user/domain/mocks/MockUsers";
 
 export class InMemoryUserRepository implements IUserRepository {
     private users: { [id: string]: User } = {

@@ -1,7 +1,7 @@
-import { IMessageRepository } from '../../../application/ports/IMessageRepository';
-import { Message } from '../../../domain/Message';
-import { MessageMapper } from '../mappers/MessageMapper';
-import { MessageEntity } from '../models/MessageEntity';
+import {IMessageRepository} from '../../../application/ports/IMessageRepository';
+import {Message} from '../../../domain/Message';
+import {MessageMapper} from '../mappers/MessageMapper';
+import {MessageEntity} from '../models/MessageEntity';
 import AppDataSource from '../Config';
 
 export class TypeORMMessageRepository implements IMessageRepository {
@@ -9,12 +9,12 @@ export class TypeORMMessageRepository implements IMessageRepository {
 
     async deleteAll(): Promise<void> {
         await this.messageRepository.clear();
-    }    
+    }
 
     async findLastMessagesOfUser(userId: string): Promise<Message[]> {
         const entities = await this.messageRepository.find({
-            where: { sender: userId },
-            order: { timestamp: 'DESC' },
+            where: {sender: userId},
+            order: {timestamp: 'DESC'},
         });
         return entities.map(MessageMapper.toDomain);
     }
@@ -22,10 +22,10 @@ export class TypeORMMessageRepository implements IMessageRepository {
     async findLastMessagesBetweenUsers(userId: string, otherUserId: string): Promise<Message[]> {
         const entities = await this.messageRepository.find({
             where: [
-                { sender: userId, recipient: otherUserId },
-                { sender: otherUserId, recipient: userId }
+                {sender: userId, recipient: otherUserId},
+                {sender: otherUserId, recipient: userId}
             ],
-            order: { timestamp: 'DESC' },
+            order: {timestamp: 'DESC'},
         });
         return entities.map(MessageMapper.toDomain);
     }
@@ -33,18 +33,33 @@ export class TypeORMMessageRepository implements IMessageRepository {
     async findMessagesBetweenUsersPaginated(userId: string, otherUserId: string, after: number, limit: number): Promise<Message[]> {
         const entities = await this.messageRepository.find({
             where: [
-                { sender: userId, recipient: otherUserId },
-                { sender: otherUserId, recipient: userId }
+                {sender: userId, recipient: otherUserId},
+                {sender: otherUserId, recipient: userId}
             ],
-            order: { timestamp: 'DESC' },
+            order: {timestamp: 'DESC'},
             skip: after,
             take: limit,
         });
         return entities.map(MessageMapper.toDomain);
     }
 
+    async findMessagesOfUserPaginated(userId: string, after: number, limit: number): Promise<Message[]> {
+        return this.messageRepository.find({
+            where: [
+                {sender: userId},
+                {recipient: userId}
+            ],
+            order: {timestamp: 'DESC'},
+            skip: after,
+            take: limit,
+        }).then(entities => entities.map(MessageMapper.toDomain));
+
+
+    }
+
+
     async findById(id: string): Promise<Message | null> {
-        const entity = await this.messageRepository.findOne({ where: { id } });
+        const entity = await this.messageRepository.findOne({where: {id}});
         return entity ? MessageMapper.toDomain(entity) : null;
     }
 
@@ -75,7 +90,7 @@ export class TypeORMMessageRepository implements IMessageRepository {
     }
 
     async existsById(id: string): Promise<boolean> {
-        const count = await this.messageRepository.count({ where: { id } });
+        const count = await this.messageRepository.count({where: {id}});
         return count > 0;
     }
 }

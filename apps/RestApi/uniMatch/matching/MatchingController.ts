@@ -25,18 +25,28 @@ import {
     UserHasChangedTypeOfRelationshipEventHandler
 } from '@/core/uniMatch/matching/application/handlers/UserHasChangedTypeOfRelationshipEventHandler';
 import {GetUsersThatLikeUserCommand} from "@/core/uniMatch/matching/application/commands/getUsersThatLikeUserCommand";
-import { GetUserPotentialMatchesCommand } from '@/core/uniMatch/matching/application/commands/GetUserPotentialMatchesCommand';
-import { GetUsersWithMutualLikesCommand } from '@/core/uniMatch/matching/application/commands/GetUsersWithMutualLikesCommand';
-import { GetUserPotentialMatchesDTO } from '@/core/uniMatch/matching/application/DTO/GetUserPotentialMatchesDTO';
-import { GetUsersWithMutualLikesDTO } from '@/core/uniMatch/matching/application/DTO/GetUsersWithMutualLikesDTO';
+import {
+    GetUserPotentialMatchesCommand
+} from '@/core/uniMatch/matching/application/commands/GetUserPotentialMatchesCommand';
+import {
+    GetUsersWithMutualLikesCommand
+} from '@/core/uniMatch/matching/application/commands/GetUsersWithMutualLikesCommand';
+import {GetUserPotentialMatchesDTO} from '@/core/uniMatch/matching/application/DTO/GetUserPotentialMatchesDTO';
+import {GetUsersWithMutualLikesDTO} from '@/core/uniMatch/matching/application/DTO/GetUsersWithMutualLikesDTO';
+import {IProfileRepository} from "@/core/uniMatch/user/application/ports/IProfileRepository";
+import {ProfileDTO} from "@/core/uniMatch/user/application/DTO/ProfileDTO";
 
 export class MatchingController {
 
     private readonly matchingRepository: IMatchingRepository;
     private readonly eventBus: IEventBus
+    private readonly profileRepository: IProfileRepository;
 
-    constructor(matchingRepository: IMatchingRepository, eventBus: IEventBus) {
+    constructor(matchingRepository: IMatchingRepository,
+                profileRepository: IProfileRepository,
+                eventBus: IEventBus) {
         this.matchingRepository = matchingRepository;
+        this.profileRepository = profileRepository;
         this.eventBus = eventBus;
         this.eventBus.subscribe(new NewProfileEventHandler(this.matchingRepository));
         this.eventBus.subscribe(new UserHasChangedAgeEventHandler(this.matchingRepository));
@@ -47,10 +57,10 @@ export class MatchingController {
     }
 
     async userDislikedSomebody(req: Request, res: Response): Promise<void> {
-        var userId = req.params.userId;
-        var dislikedUserId = req.body.dislikedUserId;
-        var command = new UserDislikedSomebodyCommand(this.matchingRepository);
-        var dto = {userId: userId, dislikedUserId: dislikedUserId} as UserDislikedSomebodyDTO;
+        const userId = req.params.userId;
+        const dislikedUserId = req.body.dislikedUserId;
+        const command = new UserDislikedSomebodyCommand(this.matchingRepository);
+        const dto = {userId: userId, dislikedUserId: dislikedUserId} as UserDislikedSomebodyDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());
@@ -62,10 +72,10 @@ export class MatchingController {
     }
 
     async userLikedSomebody(req: Request, res: Response): Promise<void> {
-        var userId = req.params.userId;
-        var likedUserId = req.body.likedUserId;
-        var command = new UserLikedSomebodyCommand(this.matchingRepository);
-        var dto = {userId: userId, likedUserId: likedUserId} as UserLikedSomebodyDTO;
+        const userId = req.params.userId;
+        const likedUserId = req.body.likedUserId;
+        const command = new UserLikedSomebodyCommand(this.matchingRepository);
+        const dto = {userId: userId, likedUserId: likedUserId} as UserLikedSomebodyDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());
@@ -107,10 +117,11 @@ export class MatchingController {
     async getMutualLikes(req: Request, res: Response): Promise<void> {
         const userId = req.params.userId;
         const dto = {userId: userId} as GetUsersWithMutualLikesDTO;
-        const command = new GetUsersWithMutualLikesCommand(this.matchingRepository);
-        return command.run(dto).then((result: Result<Node[]>) => {
+        console.warn("GET MUTUAL LIKES: " + dto.userId);
+        const command = new GetUsersWithMutualLikesCommand(this.matchingRepository, this.profileRepository);
+        return command.run(dto).then((result: Result<ProfileDTO[]>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);

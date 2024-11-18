@@ -19,15 +19,19 @@ export class Profile extends AggregateRoot {
     private _age: number = 0;
     private _aboutMe: string;
     private _location: Location;
-    private _fact?: string;
-    private _interests: string[] = [];
     private _gender: Gender;
+    private _sexualOrientation: SexualOrientation;
+    private _relationshipType: RelationshipType;
+    private _birthday: Date;
+    private _interests: string[] = [];
+    private _wall: string[] = [];
+    private _preferredImage: string;
+    private _maxDistance: number = 50; // Default value
+    private _ageRange: [number, number] = [18, 100]; // Default value
+    private _horoscope?: Horoscope;
     private _height?: number;
     private _weight?: number;
-    private _sexualOrientation: SexualOrientation;
     private _job?: string;
-    private _relationshipType: RelationshipType;
-    private _horoscope?: Horoscope;
     private _education?: string;
     private _personalityType?: string;
     private _pets?: string;
@@ -35,12 +39,9 @@ export class Profile extends AggregateRoot {
     private _smokes?: HabitsEnum;
     private _doesSports?: HabitsEnum;
     private _valuesAndBeliefs?: ValuesAndBeliefsEnum;
-    private _wall: string[] = [];
-    private _preferredImage: string;
-    private _birthday: Date;
-    private _maxDistance: number = 50; // Default value
-    private _ageRange: [number, number] = [18, 100]; // Default value
     private _genderPriority?: Gender;
+    private _fact?: string;
+
 
     constructor(
         userId: string,
@@ -64,7 +65,7 @@ export class Profile extends AggregateRoot {
         this._gender = gender;
         this._sexualOrientation = sexualOrientation;
         this._relationshipType = relationshipType;
-        this._preferredImage = this.wall[0];
+        this._preferredImage = this.wall[0] || "";
         this._birthday = birthday;
         this._interests = interests;
         this._wall = wall;

@@ -1,7 +1,7 @@
 import { DomainError } from "@/core/shared/exceptions/DomainError";
 
 // Definimos un type para los valores permitidos
-export type AllowedRelationshipType = "FRIENDSHIP" | "CASUAL" | "LONG-TERM" | "OPEN" | "OTHER";
+export type AllowedRelationshipType = "FRIENDSHIP" | "CASUAL" | "LONG_TERM" | "OPEN" | "OTHER";
 
 export class RelationshipType {
     private _value: AllowedRelationshipType;
@@ -26,18 +26,11 @@ export class RelationshipType {
         return this._value;
     }
 
-    // Método para crear una instancia desde un string
     public static fromString(value: string): RelationshipType {
-        const uppercasedValue = value.toUpperCase() as AllowedRelationshipType;
-        if (!RelationshipType.isValidRelationshipType(uppercasedValue)) {
-            throw new DomainError(`Relationship type must be one of the following: FRIENDSHIP, CASUAL, LONG-TERM, OPEN, OTHER.`);
+        if (!["FRIENDSHIP", "CASUAL", "LONG_TERM", "OPEN", "OTHER"].includes(value)) {
+            throw new DomainError("Invalid relationship type");
         }
-        return new RelationshipType(uppercasedValue);
-    }
-
-    // Método para validar si el tipo es permitido
-    public static isValidRelationshipType(value: string): value is AllowedRelationshipType {
-        return ["FRIENDSHIP", "CASUAL", "LONG-TERM", "OPEN", "OTHER"].includes(value);
+        return new RelationshipType(value as AllowedRelationshipType);
     }
 }
 

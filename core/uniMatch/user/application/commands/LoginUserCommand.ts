@@ -1,12 +1,13 @@
 import {ICommand} from "@/core/shared/application/ICommand";
 import {IUserRepository} from "../ports/IUserRepository";
 import {Result} from "@/core/shared/domain/Result";
-import {User} from "../../domain/User";
 import {AuthenticationError} from "@/core/shared/exceptions/AuthenticationError";
 import {LoginUserDTO} from "../DTO/LoginUserDTO";
-import { IEmailNotifications } from "@/core/shared/application/IEmailNotifications";
+import {IEmailNotifications} from "@/core/shared/application/IEmailNotifications";
+import {UserDTO} from "@/core/uniMatch/user/application/DTO/UserDTO";
+import {User} from "@/core/uniMatch/user/domain/User";
 
-export class LoginUserCommand implements ICommand<LoginUserDTO, { token: string, user: User }> {
+export class LoginUserCommand implements ICommand<LoginUserDTO, { token: string, user: UserDTO }> {
     private readonly repository: IUserRepository;
     private readonly emailRepository: IEmailNotifications;
 
@@ -15,25 +16,28 @@ export class LoginUserCommand implements ICommand<LoginUserDTO, { token: string,
         this.emailRepository = emailRepository;
     }
 
-    async run(request: LoginUserDTO): Promise<Result<{ token: string, user: User }>> {
+    async run(request: LoginUserDTO): Promise<Result<{ token: string, user: UserDTO }>> {
         try {
-            const user = await this.repository.findByEmail(request.email);
+            const user: User | null = await this.repository.findByEmail(request.email);
 
             if (!user) {
                 return Result.failure<{
                     token: string,
-                    user: User
+                    user: UserDTO
                 }>(new AuthenticationError(`User with email ${request.email} not found`));
             }
 
             if (request.password === "") {
-                return Result.failure<{ token: string, user: User }>(new AuthenticationError(`Password is required`));
+                return Result.failure<{
+                    token: string,
+                    user: UserDTO
+                }>(new AuthenticationError(`Password is required`));
             }
 
             if (user.password !== request.password) {
                 return Result.failure<{
                     token: string,
-                    user: User
+                    user: UserDTO
                 }>(new AuthenticationError(`Invalid password for email ${request.email}`));
             }
 
@@ -50,11 +54,22 @@ export class LoginUserCommand implements ICommand<LoginUserDTO, { token: string,
             }
 
             // TODO: Implement JWT token generation
-            return Result.success<{ token: string, user: User }>(
-                {token: "token", user: user}
+            return Result.success<{ token: string, user: UserDTO }>(
+                {
+                    token: "token",
+                    user: {
+                        id: user.getId(),
+                        isActive: user.getIsActive(),
+                        email: user.email,
+                        blockedUsers: user.blockedUsers,
+                        reportedUsers: user.reportedUsers.map(r => r.userId),
+                        registrationDate: user.registrationDate,
+                        registered: user.registered
+                    }
+                }
             );
         } catch (error: any) {
-            return Result.failure<{ token: string, user: User }>(error);
+            return Result.failure<{ token: string, user: UserDTO }>(error);
         }
     }
 }

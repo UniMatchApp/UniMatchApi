@@ -1,10 +1,9 @@
-import { ICommand } from "@/core/shared/application/ICommand";
-import { ChangeRelationshipTypeDTO } from "../DTO/ChangeRelationshipTypeDTO";
-import { Result } from "@/core/shared/domain/Result";
-import { IProfileRepository } from "../ports/IProfileRepository";
-import { IEventBus } from "@/core/shared/application/IEventBus";
-import { error } from "console";
-import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import {ICommand} from "@/core/shared/application/ICommand";
+import {ChangeRelationshipTypeDTO} from "../DTO/ChangeRelationshipTypeDTO";
+import {Result} from "@/core/shared/domain/Result";
+import {IProfileRepository} from "../ports/IProfileRepository";
+import {IEventBus} from "@/core/shared/application/IEventBus";
+import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
 import {RelationshipType} from "@/core/shared/domain/RelationshipType";
 
 export class ChangeRelationshipTypeCommand implements ICommand<ChangeRelationshipTypeDTO, string> {
@@ -30,7 +29,7 @@ export class ChangeRelationshipTypeCommand implements ICommand<ChangeRelationshi
             await this.repository.update(profile, profile.getId());
             this.eventBus.publish(profile.pullDomainEvents());
             return Result.success<string>(request.relationshipType);
-        } catch (error : any) {
+        } catch (error: any) {
             return Result.failure<string>(error);
         }
     }
