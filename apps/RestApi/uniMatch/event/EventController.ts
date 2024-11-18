@@ -35,7 +35,7 @@ export class EventController {
         var query = new GetEventsCommand(this.eventRepository);
         return query.run().then((result: Result<Event[]>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -48,7 +48,7 @@ export class EventController {
         var dto = { eventId: req.params.id } as GetEventDTO;
         return query.run(dto).then((result: Result<Event>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -60,7 +60,7 @@ export class EventController {
         var command = new CreateNewEventCommand(this.eventRepository, this.fileHandler, this.eventBus);
         return command.run(req.body).then((result: Result<Event>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -74,7 +74,7 @@ export class EventController {
         var dto = { eventId: id, ...req.body } as EditEventDTO;
         return command.run(dto).then((result: Result<Event>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -89,7 +89,7 @@ export class EventController {
         var dto = { eventId: eventId,  userId: userId} as DeleteEventDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -104,7 +104,7 @@ export class EventController {
         var dto = { eventId: id, userId: userId } as LikeEventDTO;
         return command.run(dto).then((result: Result<Event>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -119,7 +119,7 @@ export class EventController {
         var dto = { eventId: id, userId: userId } as LikeEventDTO;
         return command.run(dto).then((result: Result<Event>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -134,7 +134,7 @@ export class EventController {
         var dto = { eventId: id, userId: userId } as ParticipateEventDTO;
         return command.run(dto).then((result: Result<Event>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -149,7 +149,7 @@ export class EventController {
         var dto = { eventId: id, userId: userId } as ParticipateEventDTO;
         return command.run(dto).then((result: Result<Event>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);

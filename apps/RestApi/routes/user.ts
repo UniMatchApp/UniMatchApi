@@ -12,10 +12,10 @@ import fileUploadMiddleware from '../FileUploadMiddleware';
 import { TypeORMProfileRepository } from '@/core/uniMatch/user/infrastructure/TypeORM/repositories/TypeORMProfileRepository';
 
 const router = Router();
-const userRepository: IUserRepository = new TypeORMUserRepository();
-// const userRepository: IUserRepository = new InMemoryUserRepository();
-// const profileRepository: IProfileRepository = new InMemoryProfileRepository();
-const profileRepository: IProfileRepository = new TypeORMProfileRepository();
+// const userRepository: IUserRepository = new TypeORMUserRepository();
+const userRepository: IUserRepository = new InMemoryUserRepository();
+const profileRepository: IProfileRepository = new InMemoryProfileRepository();
+// const profileRepository: IProfileRepository = new TypeORMProfileRepository();
 const userController = new UserController(userRepository, profileRepository, emailNotifications, eventBus, fileHandler);
 
 router.post('/:id/block/:targetId', userController.blockUser.bind(userController));

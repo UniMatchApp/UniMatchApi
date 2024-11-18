@@ -62,7 +62,7 @@ export class NotificationsController {
         var dto = { userId: userId } as DeleteAllNotificationsDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -77,7 +77,7 @@ export class NotificationsController {
         var dto = { userId: userId, notificationId: notificationId } as DeleteNotificationDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -92,7 +92,7 @@ export class NotificationsController {
         var dto = { userId: userId, notificationId: notificationId } as NotificationHasBeenSeenDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -106,7 +106,7 @@ export class NotificationsController {
         var dto = { userId: userId } as GetAllNotificationsDTO;
         return command.run(dto).then((result: Result<Notification[]>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
