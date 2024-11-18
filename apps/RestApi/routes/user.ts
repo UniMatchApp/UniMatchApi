@@ -1,18 +1,26 @@
 import {Router} from 'express';
 import {UserController} from '../uniMatch/user/UserController';
-import {emailNotifications, eventBus, profileRepository} from '../Dependencies';
+import {emailNotifications, eventBus, fileHandler} from '../Dependencies';
 import {InMemoryUserRepository} from "@/core/uniMatch/user/infrastructure/InMemory/InMemoryUserRepository";
 import {IUserRepository} from "@/core/uniMatch/user/application/ports/IUserRepository";
+import {InMemoryProfileRepository} from "@/core/uniMatch/user/infrastructure/InMemory/InMemoryProfileRepository";
+import {IProfileRepository} from "@/core/uniMatch/user/application/ports/IProfileRepository";
+import {IEmailNotifications} from "@/core/shared/application/IEmailNotifications";
+import {EmailNotifications} from "@/core/shared/infrastructure/EmailNotifications";
+import { TypeORMUserRepository } from '@/core/uniMatch/user/infrastructure/TypeORM/repositories/TypeORMUserRepository';
 import fileUploadMiddleware from '../FileUploadMiddleware';
+import { TypeORMProfileRepository } from '@/core/uniMatch/user/infrastructure/TypeORM/repositories/TypeORMProfileRepository';
 
 const router = Router();
-// const userRepository: IUserRepository = new TypeORMUserRepository();
-const userRepository: IUserRepository = new InMemoryUserRepository();
-
-const userController = new UserController(userRepository, profileRepository, emailNotifications, eventBus);
+const userRepository: IUserRepository = new TypeORMUserRepository();
+// const userRepository: IUserRepository = new InMemoryUserRepository();
+// const profileRepository: IProfileRepository = new InMemoryProfileRepository();
+const profileRepository: IProfileRepository = new TypeORMProfileRepository();
+const userController = new UserController(userRepository, profileRepository, emailNotifications, eventBus, fileHandler);
 
 router.post('/:id/block/:targetId', userController.blockUser.bind(userController));
 router.put('/:id/about', userController.changeAboutMe.bind(userController));
+// router.put('/:id/fact', userController.changeFact.bind(userController));
 router.put('/:id/degree', userController.changeDegree.bind(userController));
 router.put('/:id/drinks', userController.changeDrings.bind(userController));
 router.put('/:id/email', userController.changeEmail.bind(userController));
@@ -28,17 +36,21 @@ router.put('/:id/sexual-orientation', userController.changeSexualOrientation.bin
 router.put('/:id/smokes', userController.changeSmokes.bind(userController));
 router.put('/:id/sports', userController.changeSports.bind(userController));
 router.put('/:id/values-and-beliefs', userController.changeValuesAndBeliefs.bind(userController));
+// router.put('/:id/gender-priority', userController.changeGenderPriority.bind(userController));
+// router.put('/:id/age-range', userController.changeAgeRange.bind(userController));
+// router.put('/:id/age', userController.changeAge.bind(userController));
+// router.put('/:id/max-distance', userController.changeMaxDistance.bind(userController));
 router.put('/:id/weight', userController.changeWeight.bind(userController));
-router.post('/:id', userController.createProfile.bind(userController));
+router.post('/:id', fileUploadMiddleware, userController.createProfile.bind(userController));
 router.post('', userController.createUser.bind(userController));
-router.delete('/:id/deletePhoto/:photoUrl', userController.deletePhoto.bind(userController));
+router.delete('/:id/delete-photo/:photoUrl', userController.deletePhoto.bind(userController));
 router.delete('/:id', userController.deleteUser.bind(userController));
 router.get('/:id', userController.getProfile.bind(userController));
 router.post('/auth/login', userController.login.bind(userController));
-router.post('/:id/report', userController.reportUser.bind(userController));
+router.post('/:id/report/:targetId', userController.reportUser.bind(userController));
 router.post('/:id/photo', fileUploadMiddleware, userController.uploadPhoto.bind(userController));
-router.post('/auth/forgot-password', userController.forgotPassword.bind(userController));
-router.post('/auth/resend-code', userController.resendCode.bind(userController));
-router.post('/auth/verify-code', userController.verifyCode.bind(userController));
+router.post('/auth/:email/forgot-password', userController.forgotPassword.bind(userController));
+router.post('/auth/:id/resend-code', userController.resendCode.bind(userController));
+router.post('/auth/:id/verify-code/:code', userController.verifyCode.bind(userController));
 
 export {router};

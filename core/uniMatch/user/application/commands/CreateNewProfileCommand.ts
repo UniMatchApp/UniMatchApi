@@ -10,10 +10,11 @@ import {SexualOrientation} from "@/core/uniMatch/user/domain/SexualOrientation";
 import {RelationshipType} from "@/core/shared/domain/RelationshipType";
 import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
 import {IFileHandler} from "@/core/shared/application/IFileHandler";
-import {DomainError} from "@/core/shared/exceptions/DomainError";
-import {FileHandler} from "@/core/uniMatch/event/infrastructure/FileHandler";
 import {UUID} from "@/core/shared/domain/UUID";
 import {IProfileRepository} from "@/core/uniMatch/user/application/ports/IProfileRepository";
+import { DomainError } from "@/core/shared/exceptions/DomainError";
+import { DuplicateError } from "@/core/shared/exceptions/DuplicateError";
+import { AuthenticationError } from "@/core/shared/exceptions/AuthenticationError";
 
 export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Profile> {
     private readonly userRepository: IUserRepository;
@@ -30,14 +31,25 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
 
     async run(request: CreateNewProfileDTO): Promise<Result<Profile>> {
         try {
-            // Check if the user already exists (email)
-            const user = await this.userRepository.findByEmail(request.userId);
+            const user = await this.userRepository.findById(request.userId);
+
+            console.log(user);
+
+            console.log(request)
 
             if (!user) {
                 return Result.failure<Profile>(new NotFoundError(`User with id ${request.userId} does not exist`));
             }
 
-            const profileUrl = await this.fileHandler.save(UUID.generate().toString(), request.image);
+            if (user.registered) {
+                return Result.failure<Profile>(new AuthenticationError(`User with id ${request.userId} has already registered`));
+            }
+
+            const profileUrl = await this.fileHandler.save(UUID.generate().toString(), request.attachment);
+
+            console.log(profileUrl);
+
+            const location = request.location ? new Location(request.location.latitude, request.location.longitude) : undefined
  
             const profile = new Profile(
                 request.userId,
@@ -45,23 +57,24 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
                 request.age,
                 request.aboutMe,
                 Gender.fromString(request.gender),
-                new Location(request.location.latitude, request.location.longitude),
                 new SexualOrientation(request.sexualOrientation),
                 RelationshipType.fromString(request.relationshipType),
                 request.birthday,
                 [],
-                [profileUrl]
+                [profileUrl],
+                location
             )
             profile.preferredImage = profileUrl;
 
             profile.create();
 
             user.completeRegistration();
-
+            
             await this.profileRepository.create(profile);
             this.eventBus.publish(user.pullDomainEvents());
             return Result.success<Profile>(profile);
         } catch (error: any) {
+            console.log(error);
             return Result.failure<Profile>(error);
         }
     }

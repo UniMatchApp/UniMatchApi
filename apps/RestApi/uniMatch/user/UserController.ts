@@ -2,7 +2,7 @@ import {Request, Response} from 'express';
 import {IProfileRepository} from '@/core/uniMatch/user/application/ports/IProfileRepository';
 import {IUserRepository} from '@/core/uniMatch/user/application/ports/IUserRepository';
 import {IEventBus} from '@/core/shared/application/IEventBus';
-import {FileHandler} from '@/core/uniMatch/event/infrastructure/FileHandler';
+import { S3FileHandler } from "@/core/shared/infrastructure/S3FileHandler";
 import {CreateNewUserCommand} from '@/core/uniMatch/user/application/commands/CreateNewUserCommand';
 import {ErrorHandler} from '../../ErrorHandler';
 import {User} from '@/core/uniMatch/user/domain/User';
@@ -56,25 +56,31 @@ import {ForgotPasswordCommand} from '@/core/uniMatch/user/application/commands/F
 import {ResendCodeCommand} from '@/core/uniMatch/user/application/commands/ResendCodeCommand';
 import {VerifyCodeCommand} from "@/core/uniMatch/user/application/commands/VerifyCodeCommand";
 import {VerifyCodeDTO} from "@/core/uniMatch/user/application/DTO/VerifyCodeDTO";
-import {UserDTO} from "@/core/uniMatch/user/application/DTO/UserDTO";
-import {ProfileDTO} from "@/core/uniMatch/user/application/DTO/ProfileDTO";
+import { forgotPasswordDTO } from '@/core/uniMatch/user/application/DTO/ForgotPasswordDTO';
+import { IFileHandler } from '@/core/shared/application/IFileHandler';
+import { UserDTO } from '@/core/uniMatch/user/application/DTO/UserDTO';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
     private readonly profileRepository: IProfileRepository;
     private readonly emailNotifications: IEmailNotifications;
     private readonly eventBus: IEventBus;
-    private readonly fileHandler: FileHandler;
+    private readonly fileHandler: IFileHandler;
 
-    constructor(userRepository: IUserRepository, profileRepository: IProfileRepository, emailNotifications: IEmailNotifications, eventBus: IEventBus) {
+    constructor(
+        userRepository: IUserRepository, 
+        profileRepository: IProfileRepository, 
+        emailNotifications: IEmailNotifications, 
+        eventBus: IEventBus,
+        fileHandler: IFileHandler
+    ) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
         this.emailNotifications = emailNotifications;
         this.eventBus = eventBus;
-        this.fileHandler = new FileHandler();
+        this.fileHandler = fileHandler;
     }
 
-    // Create y delete user crearán y eliminarán el perfil asociado al usuario??? 
     async createUser(req: Request, res: Response): Promise<void> {
         const command = new CreateNewUserCommand(this.userRepository, this.eventBus, this.emailNotifications, this.profileRepository);
         return command.run(req.body).then((result: Result<User>) => {
@@ -119,9 +125,9 @@ export class UserController {
         const id = req.params.id;
         const query = new GetProfileCommand(this.profileRepository);
         const dto = {id: id} as GetProfileDTO;
-        return query.run(dto).then((result: Result<ProfileDTO>) => {
+        return query.run(dto).then((result: Result<Profile>) => {
             if (result.isSuccess()) {
-                res.json(result);
+                res.json(result.getValue());
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -145,8 +151,10 @@ export class UserController {
     }
 
     async forgotPassword(req: Request, res: Response): Promise<void> {
+        const email = req.params.email;
         const command = new ForgotPasswordCommand(this.userRepository, this.emailNotifications);
-        return command.run(req.body).then((result: Result<void>) => {
+        const dto = {email: email} as forgotPasswordDTO;
+        return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());
             } else {
@@ -170,8 +178,8 @@ export class UserController {
 
     async verifyCode(req: Request, res: Response): Promise<void> {
         const command = new VerifyCodeCommand(this.userRepository);
-        const {userId, code} = req.query;
-        const dto = {userId: userId as string, code: code as string} as VerifyCodeDTO;
+        const {id, code} = req.params;
+        const dto = {userId: id as string, code: code as string} as VerifyCodeDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result);
@@ -196,6 +204,7 @@ export class UserController {
             }
         });
     }
+            
 
     async changeDegree(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
@@ -468,8 +477,9 @@ export class UserController {
 
     async reportUser(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
+        const targetId = req.params.targetId;
         const command = new ReportUserCommand(this.userRepository);
-        const dto = {id: id, ...req.body} as ReportUserDTO;
+        const dto = {id: id, reportedUserId: targetId, ...req.body} as ReportUserDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result.getValue());

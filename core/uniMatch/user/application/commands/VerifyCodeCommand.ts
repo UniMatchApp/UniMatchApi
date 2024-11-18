@@ -16,7 +16,6 @@ export class VerifyCodeCommand implements ICommand<VerifyCodeDTO, void> {
     async run(request: VerifyCodeDTO): Promise<Result<null>> {
         try {
             const user = await this.repository.findById(request.userId);
-            console.log("User? ", user)
             if (!user) {
                 return Result.failure(new NotFoundError(`User with email ${request.userId} not found`));
             }

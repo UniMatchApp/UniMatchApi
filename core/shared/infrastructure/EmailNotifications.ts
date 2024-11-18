@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: 'shared.env' });
 
 export class EmailNotifications implements IEmailNotifications {
-    private transporter: Transporter;
+    private readonly transporter: Transporter;
 
     constructor() {
         this.transporter = nodemailer.createTransport({

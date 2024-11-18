@@ -3,7 +3,7 @@ export interface CreateNewProfileDTO {
     name: string;                        // Nombre del perfil
     age: number;                         // Edad del perfil
     aboutMe: string;                     // Descripción breve del usuario
-    location: {
+    location?: {
         latitude: number;
         longitude: number;
     };                                   // Ubicación del perfil
@@ -11,5 +11,5 @@ export interface CreateNewProfileDTO {
     sexualOrientation: string;           // Orientación sexual del perfil
     relationshipType: string;            // Tipo de relación que busca
     birthday: Date;                      // Fecha de nacimiento
-    image: File;                         // Imagen preferida del perfil (File en vez de URL)
+    attachment: File;                         // Imagen preferida del perfil (File en vez de URL)
 }

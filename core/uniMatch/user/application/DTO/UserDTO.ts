@@ -5,5 +5,4 @@ export interface UserDTO {
     registrationDate: Date;
     blockedUsers: string[];
     reportedUsers: string[];
-    isActive: boolean;
 }

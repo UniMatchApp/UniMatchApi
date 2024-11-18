@@ -11,6 +11,7 @@ import {
 import {IEmailNotifications} from "@/core/shared/application/IEmailNotifications";
 import {EmailNotifications} from "@/core/shared/infrastructure/EmailNotifications";
 import {MockEmailNotifications} from "@/core/shared/infrastructure/MockEmailNotifications";
+import { FileHandler } from "@/core/uniMatch/event/infrastructure/FileHandler";
 import {IProfileRepository} from "@/core/uniMatch/user/application/ports/IProfileRepository";
 import {InMemoryProfileRepository} from "@/core/uniMatch/user/infrastructure/InMemory/InMemoryProfileRepository";
 
@@ -21,5 +22,7 @@ const sessionStatusRepository = new InMemorySessionStatusRepository();
 // export const emailNotifications: IEmailNotifications = new EmailNotifications();
 export const emailNotifications: IEmailNotifications = new MockEmailNotifications();
 export const profileRepository: IProfileRepository = new InMemoryProfileRepository();
+
+export const fileHandler = new FileHandler();
 
 new WebSocketController(8080, 8081, sessionStatusRepository, wsClientHandler);
