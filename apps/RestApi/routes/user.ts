@@ -12,10 +12,10 @@ import fileUploadMiddleware from '../FileUploadMiddleware';
 import { TypeORMProfileRepository } from '@/core/uniMatch/user/infrastructure/TypeORM/repositories/TypeORMProfileRepository';
 
 const router = Router();
-const userRepository: IUserRepository = new TypeORMUserRepository();
-// const userRepository: IUserRepository = new InMemoryUserRepository();
-// const profileRepository: IProfileRepository = new InMemoryProfileRepository();
-const profileRepository: IProfileRepository = new TypeORMProfileRepository();
+// const userRepository: IUserRepository = new TypeORMUserRepository();
+const userRepository: IUserRepository = new InMemoryUserRepository();
+const profileRepository: IProfileRepository = new InMemoryProfileRepository();
+// const profileRepository: IProfileRepository = new TypeORMProfileRepository();
 const userController = new UserController(userRepository, profileRepository, emailNotifications, eventBus, fileHandler);
 
 router.post('/:id/block/:targetId', userController.blockUser.bind(userController));
@@ -28,7 +28,7 @@ router.put('/:id/height', userController.changeHeight.bind(userController));
 router.put('/:id/horoscope', userController.changeHoroscope.bind(userController));
 router.put('/:id/interests', userController.changeInterests.bind(userController));
 router.put('/:id/job', userController.changeJob.bind(userController));
-router.put('/:id/password', userController.changePassword.bind(userController));
+router.put('/password/:id', userController.changePassword.bind(userController));
 router.put('/:id/personality', userController.changePersonality.bind(userController));
 router.put('/:id/pets', userController.changePets.bind(userController));
 router.put('/:id/relationship-type', userController.changeRelationshipType.bind(userController));
@@ -50,7 +50,7 @@ router.post('/auth/login', userController.login.bind(userController));
 router.post('/:id/report/:targetId', userController.reportUser.bind(userController));
 router.post('/:id/photo', fileUploadMiddleware, userController.uploadPhoto.bind(userController));
 router.post('/auth/:email/forgot-password', userController.forgotPassword.bind(userController));
-router.post('/auth/:id/resend-code', userController.resendCode.bind(userController));
-router.post('/auth/:id/verify-code/:code', userController.verifyCode.bind(userController));
+router.post('/auth/:email/resend-code', userController.resendCode.bind(userController));
+router.post('/auth/:email/verify-code/:code', userController.verifyCode.bind(userController));
 
 export {router};

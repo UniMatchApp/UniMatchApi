@@ -5,7 +5,7 @@ import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { forgotPasswordDTO } from "../DTO/ForgotPasswordDTO";
 import { IEmailNotifications } from "@/core/shared/application/IEmailNotifications";
 
-export class ForgotPasswordCommand implements ICommand<forgotPasswordDTO, void> {
+export class ForgotPasswordCommand implements ICommand<forgotPasswordDTO, String> {
 
     private readonly repository: IUserRepository;
     private readonly emailRepository: IEmailNotifications;
@@ -15,11 +15,11 @@ export class ForgotPasswordCommand implements ICommand<forgotPasswordDTO, void> 
         this.emailRepository = emailRepository;
     }
 
-    async run(request: forgotPasswordDTO): Promise<Result<void>> {
+    async run(request: forgotPasswordDTO): Promise<Result<String>> {
         try {
             const user = await this.repository.findByEmail(request.email);
             if (!user) {
-                return Result.failure<void>(new NotFoundError(`User with email ${request.email} not found`));
+                return Result.failure<String>(new NotFoundError(`User with email ${request.email} not found`));
             }
 
             user.updateVerificationCode();
@@ -30,9 +30,11 @@ export class ForgotPasswordCommand implements ICommand<forgotPasswordDTO, void> 
                 `Your reset code is: ${user.code}`
             );
 
-            return Result.success<void>(undefined);
+            console.log(user.code);
+
+            return Result.success<String>(user.getId());
         } catch (error: any) {
-            return Result.failure<void>(error);
+            return Result.failure<String>(error);
         }
     }
 }
