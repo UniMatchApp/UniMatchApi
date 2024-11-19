@@ -17,14 +17,18 @@ export class ChangeDrinksCommand implements ICommand<ChangeLifeStyleDTO, string>
 
     async run(request: ChangeLifeStyleDTO): Promise<Result<string>> {
         try {
-            const profile = await this.repository.findById(request.id);
+            const profile = await this.repository.findByUserId(request.id);
+
             if(!profile) {
                 return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
+            console.log(request.newContent);
+            
             if (!request.newContent) {
                 return Result.failure<string>(new NullPointerError(`Invalid drinks value.`));
             }
 
+            
             const drinks = habitsFromString(request.newContent);
                 if(drinks === undefined) {
                     return Result.failure<string>(new DomainError(`Invalid drinks value.`));

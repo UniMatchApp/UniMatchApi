@@ -86,7 +86,7 @@ export class UserController {
         const command = new CreateNewUserCommand(this.userRepository, this.eventBus, this.emailNotifications, this.profileRepository);
         return command.run(req.body).then((result: Result<User>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -100,7 +100,7 @@ export class UserController {
         const dto = {userId: id} as DeleteUserDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -114,7 +114,7 @@ export class UserController {
         const dto = {userId: userId, ...req.body} as CreateNewProfileDTO;
         return command.run(dto).then((result: Result<Profile>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -128,8 +128,8 @@ export class UserController {
         const dto = {id: id} as GetProfileDTO;
         return query.run(dto).then((result: Result<ProfileDTO>) => {
             if (result.isSuccess()) {
-                console.log("Profile found: ", result.getValue());
-                res.json(result.getValue());
+                console.log(result);
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -144,7 +144,7 @@ export class UserController {
         const dto = {userId: id, blockUserId: blockUserId} as BlockUserDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -156,9 +156,9 @@ export class UserController {
         const email = req.params.email;
         const command = new ForgotPasswordCommand(this.userRepository, this.emailNotifications);
         const dto = {email: email} as forgotPasswordDTO;
-        return command.run(dto).then((result: Result<void>) => {
+        return command.run(dto).then((result: Result<String>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -180,8 +180,8 @@ export class UserController {
 
     async verifyCode(req: Request, res: Response): Promise<void> {
         const command = new VerifyCodeCommand(this.userRepository);
-        const {id, code} = req.params;
-        const dto = {userId: id as string, code: code as string} as VerifyCodeDTO;
+        const {email, code} = req.params;
+        const dto = {email: email as string, code: code as string} as VerifyCodeDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result);
@@ -199,7 +199,7 @@ export class UserController {
         const dto = {id: id, newContent: aboutMe} as ChangeAboutMeDTO;
         return command.run(dto).then((result: Result<string>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -215,7 +215,7 @@ export class UserController {
         const dto = {id: id, degree: degree} as ChangeDegreeDTO;
         return command.run(dto).then((result: Result<string>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -230,7 +230,7 @@ export class UserController {
         const dto = {id: id, newContent: drinks} as ChangeLifeStyleDTO;
         return command.run(dto).then((result: Result<string>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -245,7 +245,7 @@ export class UserController {
         const dto = {id: id, newEmail: email} as ChangeEmailDTO;
         return command.run(dto).then((result: Result<string>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -260,7 +260,7 @@ export class UserController {
         const dto = {id: id, newHeight: height} as ChangeHeightDTO;
         return command.run(dto).then((result: Result<string>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -275,7 +275,7 @@ export class UserController {
         const dto = {id: id, newContent: horoscope} as ChangeMoreAboutMeDTO;
         return command.run(dto).then((result: Result<string>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -290,7 +290,7 @@ export class UserController {
         const dto = {id: id, newInterests: interests} as ChangeIntereststDTO;
         return command.run(dto).then((result: Result<string[] | string>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -305,7 +305,7 @@ export class UserController {
         const dto = {id: id, newContent: job} as ChangeMoreAboutMeDTO;
         return command.run(dto).then((result: Result<string>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -318,9 +318,9 @@ export class UserController {
         const password = req.body.password;
         const command = new ChangePasswordCommand(this.userRepository, this.eventBus);
         const dto = {id: id, newPassword: password} as ChangePasswordDTO;
-        return command.run(dto).then((result: Result<string>) => {
+        return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -335,7 +335,7 @@ export class UserController {
         const dto = {id: id, newContent: personality} as ChangeMoreAboutMeDTO;
         return command.run(dto).then((result: Result<string>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -350,7 +350,7 @@ export class UserController {
         const dto = {id: id, newContent: pets} as ChangeLifeStyleDTO;
         return command.run(dto).then((result: Result<string>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -365,7 +365,7 @@ export class UserController {
         const dto = {id: id, relationshipType: relationshipType} as ChangeRelationshipTypeDTO;
         return command.run(dto).then((result: Result<string>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -380,7 +380,7 @@ export class UserController {
         const dto = {id: id, newSexualOrientation: sexualOrientation} as ChangeSexualOrientationDTO;
         return command.run(dto).then((result: Result<string>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -395,7 +395,7 @@ export class UserController {
         const dto = {id: id, newContent: smokes} as ChangeLifeStyleDTO;
         return command.run(dto).then((result: Result<string>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -410,7 +410,7 @@ export class UserController {
         const dto = {id: id, newContent: sports} as ChangeLifeStyleDTO;
         return command.run(dto).then((result: Result<string>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -425,7 +425,7 @@ export class UserController {
         const dto = {id: id, newContent: valuesAndBeliefs} as ChangeLifeStyleDTO;
         return command.run(dto).then((result: Result<string>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -440,7 +440,7 @@ export class UserController {
         const dto = {id: id, newWeight: weight} as ChangeWeightDTO;
         return command.run(dto).then((result: Result<string>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -454,7 +454,7 @@ export class UserController {
         const dto = {userId: userId, ...req.body} as UploadPhotoDTO;
         return command.run(dto).then((result: Result<File>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -469,7 +469,7 @@ export class UserController {
         const dto = {userId: userId, photoURL: photoURL} as DeletePhotoFromTheWallDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -484,7 +484,7 @@ export class UserController {
         const dto = {id: id, reportedUserId: targetId, ...req.body} as ReportUserDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -492,7 +492,6 @@ export class UserController {
         });
     }
 
-    // Echar un vistazo a este método
     async login(req: Request, res: Response): Promise<void> {
         const command = new LoginUserCommand(this.userRepository, this.emailNotifications);
         return command.run(req.body).then((result: Result<{ token: string, user: UserDTO }>) => {

@@ -55,7 +55,7 @@ export class MessageController {
         const command = new CreateNewMessageCommand(this.messageRepository, this.eventBus, this.fileHandler);
         return command.run(req.body).then((result: Result<Message>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -70,7 +70,7 @@ export class MessageController {
         const dto = {userId: userId, targetUserId: targetUserId} as DeleteAllUserMessagesDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -85,7 +85,7 @@ export class MessageController {
         const dto = {userId: userId, messageId: messageId} as DeleteMessageDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -100,7 +100,7 @@ export class MessageController {
         const dto = {messageId: messageId, userId: userId} as MessageHasBeenSeenDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -115,7 +115,7 @@ export class MessageController {
         const dto = {userId: userId, targetUserId: targetUserId} as RetrieveMessagesWithUserDTO;
         return command.run(dto).then((result: Result<Message[]>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -148,7 +148,7 @@ export class MessageController {
         const dto = {userId: userId, ...req.body} as RetrieveMessagesWithUserPaginatedDTO;
         return command.run(dto).then((result: Result<Message[]>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -162,7 +162,7 @@ export class MessageController {
         const dto = {userId: userId} as RetrieveUserLastMessagesDTO;
         return command.run(dto).then((result: Result<Message[]>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -176,7 +176,7 @@ export class MessageController {
         const dto = {userId: userId, ...req.body} as UpdateMessageDTO;
         return command.run(dto).then((result: Result<Message>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);

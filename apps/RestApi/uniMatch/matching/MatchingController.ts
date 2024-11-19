@@ -63,7 +63,7 @@ export class MatchingController {
         const dto = {userId: userId, dislikedUserId: dislikedUserId} as UserDislikedSomebodyDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -78,7 +78,7 @@ export class MatchingController {
         const dto = {userId: userId, likedUserId: likedUserId} as UserLikedSomebodyDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -91,7 +91,7 @@ export class MatchingController {
         const command = new GetUsersThatLikeUserCommand(this.matchingRepository);
         return command.run(userId).then((result: Result<string[]>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -106,7 +106,7 @@ export class MatchingController {
         const command = new GetUserPotentialMatchesCommand(this.matchingRepository);
         return command.run(dto).then((result: Result<Node[]>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);

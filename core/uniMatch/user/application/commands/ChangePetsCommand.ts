@@ -14,10 +14,12 @@ export class ChangePetsCommand implements ICommand<ChangeLifeStyleDTO, string> {
 
     async run(request: ChangeLifeStyleDTO): Promise<Result<string>> {
         try {
-            const profile = await this.repository.findById(request.id);
+            const profile = await this.repository.findByUserId(request.id);
             if(!profile) {
                 return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
+            console.log(request.newContent);
+            
             profile.pets = request.newContent;
             await this.repository.update(profile, profile.getId());
             return Result.success<string>(request.newContent);

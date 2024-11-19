@@ -1,5 +1,5 @@
 export interface VerifyCodeDTO{
-    userId: string;
+    email: string;
     code: string;
 
 }

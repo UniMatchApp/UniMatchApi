@@ -2,6 +2,7 @@ import {Profile} from "@/core/uniMatch/user/domain/Profile";
 
 
 export interface ProfileDTO {
+    profileId: string;
     userId: string;
     name: string;
     age: number;
@@ -34,7 +35,8 @@ export interface ProfileDTO {
 
 export namespace ProfileDTO {
     export function fromProfile(profile: Profile): ProfileDTO {
-        var value = {
+        return {
+            profileId: profile.getId().toString(),
             userId: profile.userId,
             name: profile.name,
             age: profile.age,
@@ -67,7 +69,6 @@ export namespace ProfileDTO {
             genderPriority: profile.genderPriority?.toString(),
             fact: profile.fact ?? undefined,
         };
-        console.log("ProfileDTO created: ", value);
-        return value
+
     }
 }
