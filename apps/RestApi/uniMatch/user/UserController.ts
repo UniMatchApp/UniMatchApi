@@ -84,7 +84,7 @@ export class UserController {
 
     async createUser(req: Request, res: Response): Promise<void> {
         const command = new CreateNewUserCommand(this.userRepository, this.eventBus, this.emailNotifications, this.profileRepository);
-        return command.run(req.body).then((result: Result<User>) => {
+        return command.run(req.body).then((result: Result<{ token: string, user: UserDTO }>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {

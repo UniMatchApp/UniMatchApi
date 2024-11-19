@@ -57,7 +57,7 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
                 request.age,
                 request.aboutMe,
                 Gender.fromString(request.gender),
-                new SexualOrientation(request.sexualOrientation),
+                new SexualOrientation(SexualOrientation.fromString(request.sexualOrientation)),
                 RelationshipType.fromString(request.relationshipType),
                 request.birthday,
                 [],

@@ -7,8 +7,9 @@ import { User } from "../../domain/User";
 import { ValidationError } from "@/core/shared/exceptions/ValidationError";
 import { IEmailNotifications } from '../../../../shared/application/IEmailNotifications';
 import { IProfileRepository } from "../ports/IProfileRepository";
+import { UserDTO } from "../DTO/UserDTO";
 
-export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, User> {
+export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, { token: string, user: UserDTO }> {
     private readonly repository: IUserRepository;
     private readonly profileRepository: IProfileRepository;
     private readonly eventBus: IEventBus;
@@ -21,26 +22,12 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, User> {
         this.profileRepository = profileRepository;
     }
 
-    async run(request: CreateNewUserDTO): Promise<Result<User>> {
+    async run(request: CreateNewUserDTO): Promise<Result<{ token: string, user: UserDTO }>> {
         try {
             const userExists = await this.repository.findByEmail(request.email);
 
-            if (userExists) {
-                const profileExists = await this.profileRepository.findByUserId(userExists.getId().toString());
-                
-                if (!profileExists && !userExists.registered) {
-                    
-                    userExists.updateVerificationCode();
-                    await this.repository.update(userExists, userExists.getId());
-                    this.emailNotifications.sendEmailToOne(
-                        userExists.email,
-                        "UniMatch - Confirm your email",
-                        `Your confirmation code is: ${userExists.code}`
-                    );
-                    return Result.success<User>(userExists);
-                } else {
-                    return Result.failure<User>(new ValidationError(`User with email ${request.email} already exists`));
-                }
+            if (userExists){
+                return Result.failure<{ token: string, user: UserDTO }>(new ValidationError(`User with email ${request.email} already exists`));
             }
 
             const user = new User(
@@ -60,9 +47,21 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, User> {
             );
 
             this.eventBus.publish(user.pullDomainEvents());
-            return Result.success<User>(user);
+            const userDTO: UserDTO = {
+                id: user.getId(),
+                email: user.email,
+                registered: user.registered,
+                registrationDate: user.registrationDate,
+                blockedUsers: user.blockedUsers,
+                reportedUsers: user.reportedUsers.map(user => user.getId())
+            }
+
+            const token = "token";
+
+            console.log("Código de eso: ", user.code);
+            return Result.success<{ token: string, user: UserDTO }>({ token, user: userDTO });
         } catch (error : any) {
-            return Result.failure<User>(error);
+            return Result.failure<{ token: string, user: UserDTO }>(error);
         }
     }
 }

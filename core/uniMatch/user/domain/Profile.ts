@@ -18,7 +18,7 @@ export class Profile extends AggregateRoot {
     private _name: string = "";
     private _age: number = 0;
     private _aboutMe: string;
-    private _location: Location;
+    private _location?: Location;
     private _gender: Gender;
     private _sexualOrientation: SexualOrientation;
     private _relationshipType: RelationshipType;
@@ -49,12 +49,12 @@ export class Profile extends AggregateRoot {
         age: number,
         aboutMe: string,
         gender: Gender,
-        location: Location,
         sexualOrientation: SexualOrientation,
         relationshipType: RelationshipType,
         birthday: Date,
         interests: string[] = [],
-        wall: string[]
+        wall: string[],
+        location?: Location
     ) {
         super();
         this._userId = userId;
@@ -99,11 +99,11 @@ export class Profile extends AggregateRoot {
         this.recordEvent(new UserHasChangedAge(this.getId().toString(), value));
     }
 
-    public get location(): Location {
+    public get location(): Location | undefined {
         return this._location;
     }
 
-    public set location(value: Location) {
+    public set location(value: Location | undefined) {
         this._location = value;
     }
 

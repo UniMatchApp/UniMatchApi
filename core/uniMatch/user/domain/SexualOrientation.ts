@@ -25,4 +25,12 @@ export class SexualOrientation {
     public toString(): string {
         return this._value;
     }
+
+    public static fromString(value: string): AllowedOrientations {
+        const uppercasedValue = value.toUpperCase() as AllowedOrientations;
+        if (!SexualOrientation.allowedOrientations.includes(uppercasedValue)) {
+            throw new DomainError(`Sexual orientation must be one of the following: ${SexualOrientation.allowedOrientations.join(", ")}.`);
+        }
+        return uppercasedValue;
+    }
 }

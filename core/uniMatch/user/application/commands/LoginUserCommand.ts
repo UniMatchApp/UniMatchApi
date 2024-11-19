@@ -59,7 +59,6 @@ export class LoginUserCommand implements ICommand<LoginUserDTO, { token: string,
                     token: "token",
                     user: {
                         id: user.getId(),
-                        isActive: user.getIsActive(),
                         email: user.email,
                         blockedUsers: user.blockedUsers,
                         reportedUsers: user.reportedUsers.map(r => r.userId),
