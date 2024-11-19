@@ -59,6 +59,7 @@ import {VerifyCodeDTO} from "@/core/uniMatch/user/application/DTO/VerifyCodeDTO"
 import { forgotPasswordDTO } from '@/core/uniMatch/user/application/DTO/ForgotPasswordDTO';
 import { IFileHandler } from '@/core/shared/application/IFileHandler';
 import { UserDTO } from '@/core/uniMatch/user/application/DTO/UserDTO';
+import { ProfileDTO } from '@/core/uniMatch/user/application/DTO/ProfileDTO';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -125,8 +126,9 @@ export class UserController {
         const id = req.params.id;
         const query = new GetProfileCommand(this.profileRepository);
         const dto = {id: id} as GetProfileDTO;
-        return query.run(dto).then((result: Result<Profile>) => {
+        return query.run(dto).then((result: Result<ProfileDTO>) => {
             if (result.isSuccess()) {
+                console.log("Profile found: ", result.getValue());
                 res.json(result.getValue());
             } else {
                 const error = result.getError();

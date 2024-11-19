@@ -34,7 +34,7 @@ export interface ProfileDTO {
 
 export namespace ProfileDTO {
     export function fromProfile(profile: Profile): ProfileDTO {
-        return {
+        var value = {
             userId: profile.userId,
             name: profile.name,
             age: profile.age,
@@ -67,5 +67,7 @@ export namespace ProfileDTO {
             genderPriority: profile.genderPriority?.toString(),
             fact: profile.fact ?? undefined,
         };
+        console.log("ProfileDTO created: ", value);
+        return value
     }
 }
