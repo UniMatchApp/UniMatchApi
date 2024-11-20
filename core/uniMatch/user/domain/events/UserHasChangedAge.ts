@@ -8,6 +8,6 @@ export class UserHasChangedAge extends DomainEvent {
     }
 
     public static from(profile: Profile): UserHasChangedAge {
-        return new UserHasChangedAge(profile.getId(), profile.age);
+        return new UserHasChangedAge(profile.userId, profile.age);
     }
 }

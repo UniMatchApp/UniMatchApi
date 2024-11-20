@@ -62,6 +62,8 @@ import { UserDTO } from '@/core/uniMatch/user/application/DTO/UserDTO';
 import { ProfileDTO } from '@/core/uniMatch/user/application/DTO/ProfileDTO';
 import { ChangeFactCommand } from '@/core/uniMatch/user/application/commands/ChangeFactCommand';
 import { ChangeFactDTO } from '@/core/uniMatch/user/application/DTO/ChangeFactDTO';
+import { ChangeGenderDTO } from '@/core/uniMatch/user/application/DTO/ChangeGenderDTO';
+import { ChangeGenderCommand } from '@/core/uniMatch/user/application/commands/ChangeGenderCommand';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -405,6 +407,22 @@ export class UserController {
             }
         });
     }
+
+    async changeGender(req: Request, res: Response): Promise<void> {
+        const id = req.params.id;
+        const gender = req.body.newContent;
+        const command = new ChangeGenderCommand(this.profileRepository, this.eventBus);
+        const dto = {id: id, newGender: gender} as ChangeGenderDTO;
+        return command.run(dto).then((result: Result<string>) => {
+            if (result.isSuccess()) {
+                res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
 
     async changeSmokes(req: Request, res: Response): Promise<void> {
         const id = req.params.id;

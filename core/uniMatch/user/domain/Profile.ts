@@ -96,7 +96,7 @@ export class Profile extends AggregateRoot {
         }
         this._age = value;
 
-        this.recordEvent(new UserHasChangedAge(this.getId().toString(), value));
+        this.recordEvent(new UserHasChangedAge(this.userId.toString(), value));
     }
 
     public get location(): Location | undefined {
@@ -130,7 +130,7 @@ export class Profile extends AggregateRoot {
     public set relationshipType(value: RelationshipType) {
         this._relationshipType = value;
 
-        this.recordEvent(new UserHasChangedTypeOfRelationship(this.getId().toString(), value));
+        this.recordEvent(new UserHasChangedTypeOfRelationship(this.userId.toString(), value));
     }
 
     public get sexualOrientation(): SexualOrientation {
@@ -151,7 +151,7 @@ export class Profile extends AggregateRoot {
         }
         this._maxDistance = value;
 
-        this.recordEvent(new UserHasChangedMaxDistance(this.getId().toString(), value));
+        this.recordEvent(new UserHasChangedMaxDistance(this.userId.toString(), value));
     }
 
     public get ageRange(): [number, number] {
@@ -271,7 +271,7 @@ export class Profile extends AggregateRoot {
     public set genderPriority(value: Gender | undefined) {
         this._genderPriority = value;
 
-        this.recordEvent(new UserHasChangedPriority(this.getId().toString(), value));
+        this.recordEvent(new UserHasChangedPriority(this.userId.toString(), value));
     }
 
     public get genderPriority(): Gender | undefined {

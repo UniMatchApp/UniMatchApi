@@ -34,6 +34,7 @@ router.put('/:id/pets', userController.changePets.bind(userController));
 router.put('/:id/fact', userController.changeFact.bind(userController));
 router.put('/:id/relationship-type', userController.changeRelationshipType.bind(userController));
 router.put('/:id/sexual-orientation', userController.changeSexualOrientation.bind(userController));
+router.put('/:id/gender', userController.changeGender.bind(userController));
 router.put('/:id/smokes', userController.changeSmokes.bind(userController));
 router.put('/:id/sports', userController.changeSports.bind(userController));
 router.put('/:id/values-and-beliefs', userController.changeValuesAndBeliefs.bind(userController));

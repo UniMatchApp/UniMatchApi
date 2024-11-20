@@ -26,11 +26,11 @@ export class Gender {
         return this._value;
     }
 
-    public static fromString(value: string): Gender {
-        const uppercasedValue = value.toUpperCase();
+    public static fromString(value: string): AllowedGenders {
+        const uppercasedValue = value.toUpperCase() as AllowedGenders;
         if (!Gender.allowedGenders.includes(uppercasedValue)) {
             throw new DomainError(`Gender must be one of the following: ${Gender.allowedGenders.join(", ")}.`);
         }
-        return new Gender(uppercasedValue as AllowedGenders);
+        return uppercasedValue;
     }
 }
