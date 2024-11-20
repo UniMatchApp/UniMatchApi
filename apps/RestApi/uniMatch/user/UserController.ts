@@ -304,7 +304,7 @@ export class UserController {
 
     async changeInterests(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
-        const interests = req.body.interests;
+        const interests = req.body.newContent;
         const command = new ChangeInterestsCommand(this.profileRepository);
         const dto = {id: id, newInterests: interests} as ChangeIntereststDTO;
         return command.run(dto).then((result: Result<string[] | string>) => {
