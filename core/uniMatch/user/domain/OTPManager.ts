@@ -4,7 +4,7 @@ export class OTPManager {
 
   private static configure() {
     authenticator.options = {
-        step: 30,
+        step: 180, 
         window: 1,
         digits: 6
     };
