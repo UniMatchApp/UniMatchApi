@@ -39,6 +39,10 @@ export class User extends AggregateRoot {
     public regeneratePrivateKey(): void {
         this._privateKey = OTPManager.generateSecret();
     }
+
+    public set privateKey(value: string) {
+        this._privateKey = value;
+    }
     
     public generateVerificationCode(): string {
         return OTPManager.generateCode(this._privateKey);

@@ -2,7 +2,6 @@ import { User } from "../../../domain/User";
 import { UserEntity } from "../models/UserEntity";
 import { ReportedUsersEntity } from "../models/ReportedUsersEntity";
 import { ReportedUser } from "../../../domain/ReportedUser";
-import { CodeEntity } from "../models/CodeEntity";
 
 export class UserMapper {
     static toDomain(entity: UserEntity): User {
@@ -14,9 +13,8 @@ export class UserMapper {
         );
         user.setId(entity.id);
 
-        if (entity.code) {
-            user.code = entity.code.code;
-        }
+        user.privateKey = entity.privateKey;
+
 
         user.reportedUsers = entity.reportedUsers.map(reported => {
             const reportedUser = new ReportedUser(
@@ -33,12 +31,6 @@ export class UserMapper {
     static toEntity(user: User): UserEntity {
         const entity = new UserEntity();
         entity.id = user.getId().toString();
-        
-        if (user.code) {
-            const codeEntity = new CodeEntity();
-            codeEntity.code = user.code;
-            entity.code = codeEntity;
-        }
 
         entity.registrationDate = user.registrationDate;
         entity.email = user.email;
@@ -52,6 +44,7 @@ export class UserMapper {
             reportedEntity.comment = reported.comment || "";
             return reportedEntity;
         });
+        entity.privateKey = user.privateKey;
 
         return entity;
     }
