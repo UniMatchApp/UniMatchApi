@@ -32,7 +32,7 @@ export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, File> {
                 return Result.failure<File>(new NullPointerError(`Photo url is null`));
             }
 
-            const profile = await this.repository.findById(request.userId)
+            const profile = await this.repository.findByUserId(request.userId)
             if (!profile) {
                 return Result.failure<File>(new NotFoundError(`Profile with id ${request.userId} not found`));
             }

@@ -60,6 +60,8 @@ import { forgotPasswordDTO } from '@/core/uniMatch/user/application/DTO/ForgotPa
 import { IFileHandler } from '@/core/shared/application/IFileHandler';
 import { UserDTO } from '@/core/uniMatch/user/application/DTO/UserDTO';
 import { ProfileDTO } from '@/core/uniMatch/user/application/DTO/ProfileDTO';
+import { ChangeFactCommand } from '@/core/uniMatch/user/application/commands/ChangeFactCommand';
+import { ChangeFactDTO } from '@/core/uniMatch/user/application/DTO/ChangeFactDTO';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -194,7 +196,7 @@ export class UserController {
 
     async changeAboutMe(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
-        const aboutMe = req.body.aboutMe;
+        const aboutMe = req.body.newContent;
         const command = new ChangeAboutMeCommand(this.profileRepository);
         const dto = {id: id, newContent: aboutMe} as ChangeAboutMeDTO;
         return command.run(dto).then((result: Result<string>) => {
@@ -210,7 +212,7 @@ export class UserController {
 
     async changeDegree(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
-        const degree = req.body.degree;
+        const degree = req.body.newContent;
         const command = new ChangeDegreeCommand(this.profileRepository);
         const dto = {id: id, degree: degree} as ChangeDegreeDTO;
         return command.run(dto).then((result: Result<string>) => {
@@ -223,9 +225,24 @@ export class UserController {
         });
     }
 
-    async changeDrings(req: Request, res: Response): Promise<void> {
+    async changeFact(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
-        const drinks = req.body.drinks;
+        const fact = req.body.newContent;
+        const command = new ChangeFactCommand(this.profileRepository);
+        const dto = {id: id, newContent: fact} as ChangeFactDTO;
+        return command.run(dto).then((result: Result<string>) => {
+            if (result.isSuccess()) {
+                res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async changeDrinks(req: Request, res: Response): Promise<void> {
+        const id = req.params.id;
+        const drinks = req.body.newContent;
         const command = new ChangeDrinksCommand(this.profileRepository);
         const dto = {id: id, newContent: drinks} as ChangeLifeStyleDTO;
         return command.run(dto).then((result: Result<string>) => {
@@ -270,7 +287,7 @@ export class UserController {
 
     async changeHoroscope(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
-        const horoscope = req.body.horoscope;
+        const horoscope = req.body.newContent;
         const command = new ChangeHoroscopeCommand(this.profileRepository);
         const dto = {id: id, newContent: horoscope} as ChangeMoreAboutMeDTO;
         return command.run(dto).then((result: Result<string>) => {
@@ -300,7 +317,7 @@ export class UserController {
 
     async changeJob(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
-        const job = req.body.job;
+        const job = req.body.newContent;
         const command = new ChangeJobCommand(this.profileRepository);
         const dto = {id: id, newContent: job} as ChangeMoreAboutMeDTO;
         return command.run(dto).then((result: Result<string>) => {
@@ -330,7 +347,7 @@ export class UserController {
 
     async changePersonality(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
-        const personality = req.body.personality;
+        const personality = req.body.newContent;
         const command = new ChangePersonalityCommand(this.profileRepository);
         const dto = {id: id, newContent: personality} as ChangeMoreAboutMeDTO;
         return command.run(dto).then((result: Result<string>) => {
@@ -345,7 +362,7 @@ export class UserController {
 
     async changePets(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
-        const pets = req.body.pets;
+        const pets = req.body.newContent;
         const command = new ChangePetsCommand(this.profileRepository);
         const dto = {id: id, newContent: pets} as ChangeLifeStyleDTO;
         return command.run(dto).then((result: Result<string>) => {
@@ -360,7 +377,7 @@ export class UserController {
 
     async changeRelationshipType(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
-        const relationshipType = req.body.relationshipType;
+        const relationshipType = req.body.newContent;
         const command = new ChangeRelationshipTypeCommand(this.profileRepository, this.eventBus);
         const dto = {id: id, relationshipType: relationshipType} as ChangeRelationshipTypeDTO;
         return command.run(dto).then((result: Result<string>) => {
@@ -375,7 +392,8 @@ export class UserController {
 
     async changeSexualOrientation(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
-        const sexualOrientation = req.body.sexualOrientation;
+        const sexualOrientation = req.body.newContent;
+        console.log("entro")
         const command = new ChangeSexualOrientationCommand(this.profileRepository, this.eventBus);
         const dto = {id: id, newSexualOrientation: sexualOrientation} as ChangeSexualOrientationDTO;
         return command.run(dto).then((result: Result<string>) => {
@@ -390,7 +408,7 @@ export class UserController {
 
     async changeSmokes(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
-        const smokes = req.body.smokes;
+        const smokes = req.body.newContent;
         const command = new ChangeSmokesCommand(this.profileRepository);
         const dto = {id: id, newContent: smokes} as ChangeLifeStyleDTO;
         return command.run(dto).then((result: Result<string>) => {
@@ -405,7 +423,7 @@ export class UserController {
 
     async changeSports(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
-        const sports = req.body.sports;
+        const sports = req.body.newContent;
         const command = new ChangeSportsCommand(this.profileRepository);
         const dto = {id: id, newContent: sports} as ChangeLifeStyleDTO;
         return command.run(dto).then((result: Result<string>) => {
@@ -420,7 +438,7 @@ export class UserController {
 
     async changeValuesAndBeliefs(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
-        const valuesAndBeliefs = req.body.valuesAndBeliefs;
+        const valuesAndBeliefs = req.body.newContent;
         const command = new ChangeValuesAndBeliefsCommand(this.profileRepository);
         const dto = {id: id, newContent: valuesAndBeliefs} as ChangeLifeStyleDTO;
         return command.run(dto).then((result: Result<string>) => {

@@ -22,7 +22,6 @@ export class ChangeDrinksCommand implements ICommand<ChangeLifeStyleDTO, string>
             if(!profile) {
                 return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
-            console.log(request.newContent);
             
             if (!request.newContent) {
                 return Result.failure<string>(new NullPointerError(`Invalid drinks value.`));
@@ -30,10 +29,10 @@ export class ChangeDrinksCommand implements ICommand<ChangeLifeStyleDTO, string>
 
             
             const drinks = habitsFromString(request.newContent);
-                if(drinks === undefined) {
-                    return Result.failure<string>(new DomainError(`Invalid drinks value.`));
-                }
-                profile.drinks = drinks;
+            if(drinks === undefined) {
+                return Result.failure<string>(new DomainError(`Invalid drinks value.`));
+            }
+            profile.drinks = drinks;
 
             
             await this.repository.update(profile, profile.getId());

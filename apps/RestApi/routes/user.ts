@@ -22,7 +22,7 @@ router.post('/:id/block/:targetId', userController.blockUser.bind(userController
 router.put('/:id/about', userController.changeAboutMe.bind(userController));
 // router.put('/:id/fact', userController.changeFact.bind(userController));
 router.put('/:id/degree', userController.changeDegree.bind(userController));
-router.put('/:id/drinks', userController.changeDrings.bind(userController));
+router.put('/:id/drinks', userController.changeDrinks.bind(userController));
 router.put('/:id/email', userController.changeEmail.bind(userController));
 router.put('/:id/height', userController.changeHeight.bind(userController));
 router.put('/:id/horoscope', userController.changeHoroscope.bind(userController));
@@ -31,6 +31,7 @@ router.put('/:id/job', userController.changeJob.bind(userController));
 router.put('/password/:id', userController.changePassword.bind(userController));
 router.put('/:id/personality', userController.changePersonality.bind(userController));
 router.put('/:id/pets', userController.changePets.bind(userController));
+router.put('/:id/fact', userController.changeFact.bind(userController));
 router.put('/:id/relationship-type', userController.changeRelationshipType.bind(userController));
 router.put('/:id/sexual-orientation', userController.changeSexualOrientation.bind(userController));
 router.put('/:id/smokes', userController.changeSmokes.bind(userController));

@@ -12,12 +12,12 @@ export const mockProfile1 = new Profile(
     31,
     "About user 1",
     new Gender("FEMALE"),
-    new Location(28.123456, -15.123456),
     new SexualOrientation("HETEROSEXUAL"),
     new RelationshipType("CASUAL"),
     new Date('1990-01-01'),
     ["Reading", "Traveling"],
-    ["Post 1", "Post 2"]
+    ["Post 1", "Post 2"],
+    new Location(28.123456, -15.123456)
 );
 
 export const mockProfile2 = new Profile(
@@ -26,12 +26,12 @@ export const mockProfile2 = new Profile(
     21,
     "About user 2",
     new Gender("MALE"),
-    new Location(28.123456, -15.123456),
     new SexualOrientation("HETEROSEXUAL"),
     new RelationshipType("CASUAL"),
     new Date('1990-01-01'),
     ["Reading", "Traveling"],
-    ["Post 1", "Post 2"]
+    ["Post 1", "Post 2"],
+    new Location(28.123456, -15.123456)
 );
 
 
@@ -41,12 +41,12 @@ export const mockProfile3 = new Profile(
     19,
     "About user 3",
     new Gender("FEMALE"),
-    new Location(28.123456, -15.123456),
     new SexualOrientation("HETEROSEXUAL"),
     new RelationshipType("CASUAL"),
     new Date('1999-01-01'),
     ["Reading", "Traveling"],
-    ["Post 1", "Post 2"]
+    ["Post 1", "Post 2"],
+    new Location(28.123456, -15.123456),
 );
 
 export const mockProfile4 = new Profile(
@@ -55,12 +55,12 @@ export const mockProfile4 = new Profile(
     18,
     "About user 4",
     new Gender("FEMALE"),
-    new Location(28.123456, -15.123456),
     new SexualOrientation("HETEROSEXUAL"),
     new RelationshipType("CASUAL"),
     new Date('1994-01-01'),
     ["Reading", "Traveling"],
-    ["Post 1", "Post 2"]
+    ["Post 1", "Post 2"],
+    new Location(28.123456, -15.123456),
 );
 
 
@@ -70,11 +70,11 @@ export const mockProfile5 = new Profile(
     22,
     "About user 5",
     new Gender("MALE"),
-    new Location(28.123456, -15.123456),
     new SexualOrientation("HETEROSEXUAL"),
     new RelationshipType("LONG_TERM"),
     new Date('2009-01-01'),
     ["Reading", "Traveling"],
-    ["Post 1", "Post 2"]
+    ["Post 1", "Post 2"],
+    new Location(28.123456, -15.123456),
 );
 

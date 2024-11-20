@@ -18,7 +18,7 @@ export class ChangeRelationshipTypeCommand implements ICommand<ChangeRelationshi
     async run(request: ChangeRelationshipTypeDTO): Promise<Result<string>> {
         try {
 
-            const profile = await this.repository.findById(request.id);
+            const profile = await this.repository.findByUserId(request.id);
 
             if (!profile) {
                 return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));

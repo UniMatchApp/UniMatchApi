@@ -4,6 +4,7 @@ export enum ValuesAndBeliefsEnum {
     BUDDHIST = "BUDDHIST",
     CATHOLIC = "CATHOLIC",
     CHRISTIAN = "CHRISTIAN",
+    ISLAM = "ISLAM",
     HINDU = "HINDU",
     JEWISH = "JEWISH",
     MUSLIM = "MUSLIM",

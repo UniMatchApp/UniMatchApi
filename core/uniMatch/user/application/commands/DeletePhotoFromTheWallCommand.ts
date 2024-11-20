@@ -17,7 +17,7 @@ export class DeletePhotoFromTheWallCommand implements ICommand<DeletePhotoFromTh
 
     async run(request: DeletePhotoFromTheWallDTO): Promise<Result<void>> {
         try {
-            const profile = await this.repository.findById(request.userId)
+            const profile = await this.repository.findByUserId(request.userId)
             if (!profile) {
                 return Result.failure<void>(new NotFoundError(`Profile with id ${request.userId} not found`));
             }

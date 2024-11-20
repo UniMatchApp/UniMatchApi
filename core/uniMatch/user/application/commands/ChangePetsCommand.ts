@@ -21,6 +21,7 @@ export class ChangePetsCommand implements ICommand<ChangeLifeStyleDTO, string> {
             console.log(request.newContent);
             
             profile.pets = request.newContent;
+            console.log(profile.pets);
             await this.repository.update(profile, profile.getId());
             return Result.success<string>(request.newContent);
         } catch (error: any) {

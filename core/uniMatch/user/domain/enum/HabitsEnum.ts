@@ -1,8 +1,8 @@
 export enum HabitsEnum {
     NEVER = "NEVER",
     OCCASIONALLY = "OCCASIONALLY",
-    OFTEN = "OFTEN",
-    ALWAYS = "ALWAYS"
+    FREQUENTLY = "FREQUENTLY",
+    DAILY = "DAILY"
 }
 
 export function habitsFromString(value: string): HabitsEnum {

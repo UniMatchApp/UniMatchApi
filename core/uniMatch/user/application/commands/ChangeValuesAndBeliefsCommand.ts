@@ -17,7 +17,7 @@ export class ChangeValuesAndBeliefsCommand implements ICommand<ChangeLifeStyleDT
 
     async run(request: ChangeLifeStyleDTO): Promise<Result<string>> {
         try {
-            const profile = await this.repository.findById(request.id);
+            const profile = await this.repository.findByUserId(request.id);
             if(!profile) {
                 return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
@@ -38,6 +38,7 @@ export class ChangeValuesAndBeliefsCommand implements ICommand<ChangeLifeStyleDT
             await this.repository.update(profile, profile.getId());
             return Result.success<string>(request.newContent);
         } catch (error: any) {
+            console.log(error);
             return Result.failure<string>(error);
         }
     }

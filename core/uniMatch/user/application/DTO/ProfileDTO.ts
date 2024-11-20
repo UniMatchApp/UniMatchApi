@@ -7,12 +7,12 @@ export interface ProfileDTO {
     name: string;
     age: number;
     aboutMe: string;
-    location: { latitude: number, longitude: number, altitude?: number };
+    location?: { latitude: number, longitude: number, altitude?: number };
     gender: string;
     sexualOrientation: string;
     relationshipType: string;
     birthday: Date;
-    interests: string;
+    interests: string[];
     wall: string;
     preferredImage: string;
     maxDistance: number;
@@ -35,22 +35,25 @@ export interface ProfileDTO {
 
 export namespace ProfileDTO {
     export function fromProfile(profile: Profile): ProfileDTO {
+
+        const location = profile.location ?? undefined;
+
         return {
             profileId: profile.getId().toString(),
             userId: profile.userId,
             name: profile.name,
             age: profile.age,
             aboutMe: profile.aboutMe,
-            location: {
+            location: profile.location ? {
                 latitude: profile.location.latitude,
                 longitude: profile.location.longitude,
-                altitude: profile.location.altitude ?? undefined,
-            },
+                altitude: profile.location.altitude,
+            } : undefined,
             gender: profile.gender.toString(),
             sexualOrientation: profile.sexualOrientation.toString(),
             relationshipType: profile.relationshipType.toString(),
             birthday: profile.birthday,
-            interests: profile.interests?.join(", ") || "",
+            interests: profile.interests || [],
             wall: profile.wall?.join(", ") || "",
             preferredImage: profile.preferredImage,
             maxDistance: profile.maxDistance,

@@ -13,7 +13,7 @@ export class ChangeWeightCommand implements ICommand<ChangeWeightDTO, string> {
 
     async run(request: ChangeWeightDTO): Promise<Result<string>> {
         try {
-            const profile = await this.repository.findById(request.id)
+            const profile = await this.repository.findByUserId(request.id)
             if (!profile) {
                 return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
