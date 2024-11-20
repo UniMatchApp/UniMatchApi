@@ -15,7 +15,7 @@ export const mockProfile1 = new Profile(
     new SexualOrientation("HETEROSEXUAL"),
     new RelationshipType("CASUAL"),
     new Date('1990-01-01'),
-    ["Reading", "Traveling"],
+    ["reading", "traveling"],
     ["Post 1", "Post 2"],
     new Location(28.123456, -15.123456)
 );
@@ -29,7 +29,7 @@ export const mockProfile2 = new Profile(
     new SexualOrientation("HETEROSEXUAL"),
     new RelationshipType("CASUAL"),
     new Date('1990-01-01'),
-    ["Reading", "Traveling"],
+    ["reading", "traveling"],
     ["Post 1", "Post 2"],
     new Location(28.123456, -15.123456)
 );
@@ -44,7 +44,7 @@ export const mockProfile3 = new Profile(
     new SexualOrientation("HETEROSEXUAL"),
     new RelationshipType("CASUAL"),
     new Date('1999-01-01'),
-    ["Reading", "Traveling"],
+    ["reading", "traveling"],
     ["Post 1", "Post 2"],
     new Location(28.123456, -15.123456),
 );
@@ -58,7 +58,7 @@ export const mockProfile4 = new Profile(
     new SexualOrientation("HETEROSEXUAL"),
     new RelationshipType("CASUAL"),
     new Date('1994-01-01'),
-    ["Reading", "Traveling"],
+    ["reading", "traveling"],
     ["Post 1", "Post 2"],
     new Location(28.123456, -15.123456),
 );
@@ -73,7 +73,7 @@ export const mockProfile5 = new Profile(
     new SexualOrientation("HETEROSEXUAL"),
     new RelationshipType("LONG_TERM"),
     new Date('2009-01-01'),
-    ["Reading", "Traveling"],
+    ["reading", "traveling"],
     ["Post 1", "Post 2"],
     new Location(28.123456, -15.123456),
 );

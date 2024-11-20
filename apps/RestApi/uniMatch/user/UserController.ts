@@ -274,7 +274,7 @@ export class UserController {
 
     async changeHeight(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
-        const height = req.body.height;
+        const height = req.body.newContent;
         const command = new ChangeHeightCommand(this.profileRepository);
         const dto = {id: id, newHeight: height} as ChangeHeightDTO;
         return command.run(dto).then((result: Result<string>) => {
@@ -471,7 +471,7 @@ export class UserController {
 
     async changeWeight(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
-        const weight = req.body.weight;
+        const weight = req.body.newContent;
         const command = new ChangeWeightCommand(this.profileRepository);
         const dto = {id: id, newWeight: weight} as ChangeWeightDTO;
         return command.run(dto).then((result: Result<string>) => {
