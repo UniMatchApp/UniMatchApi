@@ -19,7 +19,7 @@ export class VerifyCodeCommand implements ICommand<VerifyCodeDTO, void> {
             if (!user) {
                 return Result.failure(new NotFoundError(`User with email ${request.email} not found`));
             }
-            if (user.code != request.code) {
+            if (!user.validateVerificationCode(request.code)) {
                 return Result.failure(new AuthenticationError(`Invalid code`));
             }
             return Result.success(null);

@@ -5,9 +5,10 @@ import {UserHasChangedPassword} from "./events/UserHasChangedPassword";
 import {UserHasDeletedTheAccount} from "./events/UserHasDeletedTheAccount";
 import {NewUser} from "./events/NewUser";
 import { ReportedUser } from "./ReportedUser";
+import { OTPManager } from "./OTPManager";
 
 export class User extends AggregateRoot {
-    private _code: string;
+    private _privateKey: string;
     private readonly _registrationDate: Date;
     private _email: string = "";
     private _password: string = "";
@@ -23,28 +24,28 @@ export class User extends AggregateRoot {
         registered: boolean = false
     ) {
         super();
-        this._code = this.generateVerificationCode();
+        this._privateKey = OTPManager.generateSecret();
         this._registrationDate = registrationDate;
-        this._email = email;
-        this._password = password;
+        this.email = email;
+        this.password = password;
         this._blockedUsers = blockedUsers;
         this._registered = registered;
     }
 
-    public get code(): string {
-        return this._code;
+    public get privateKey(): string {
+        return this._privateKey;
     }
-
-    public set code(value: string) {
-        this._code = value;
+    
+    public regeneratePrivateKey(): void {
+        this._privateKey = OTPManager.generateSecret();
     }
-
-    public updateVerificationCode(): void {
-        this._code = this.generateVerificationCode();
+    
+    public generateVerificationCode(): string {
+        return OTPManager.generateCode(this._privateKey);
     }
-
-    private generateVerificationCode(): string {
-        return Math.floor(100000 + Math.random() * 900000).toString();
+    
+    public validateVerificationCode(code: string): boolean {
+        return OTPManager.validateCode(code, this._privateKey);
     }
 
     public get registrationDate(): Date {
@@ -67,14 +68,17 @@ export class User extends AggregateRoot {
         this._registered = true;
     }
 
-    public set email(value: string) {
-        const emailRegex = /^[^\s@]+@(alu\.ulpgc\.es|ulpgc\.es)$/;
-    
-        if (!emailRegex.test(value)) {
-            throw new DomainError("Invalid email format. Only @alu.ulpgc.es and @ulpgc.es domains are allowed.");
+    private validateEmail(email: string): boolean {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            throw new DomainError("Invalid email format.");
         }
+        return true;
+    }
+
+    public set email(value: string) {
+        this.validateEmail(value);
         this._email = value;
-    
         this.recordEvent(new UserHasChangedEmail(this.getId().toString(), value));
     }
 

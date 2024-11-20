@@ -22,15 +22,14 @@ export class ForgotPasswordCommand implements ICommand<forgotPasswordDTO, String
                 return Result.failure<String>(new NotFoundError(`User with email ${request.email} not found`));
             }
 
-            user.updateVerificationCode();
-            await this.repository.update(user, user.getId());
+            const code = user.generateVerificationCode();
             this.emailRepository.sendEmailToOne(
                 user.email,
                 "UniMatch - Reset your password",
-                `Your reset code is: ${user.code}`
+                `Your reset code is: ${code}`
             );
 
-            console.log(user.code);
+            console.log(`Code: ${code}`);
 
             return Result.success<String>(user.getId());
         } catch (error: any) {

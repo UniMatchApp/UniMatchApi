@@ -40,10 +40,11 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, { token:
             
             await this.repository.create(user);
 
+            const code = user.generateVerificationCode();
             await this.emailNotifications.sendEmailToOne(
                 user.email,
                 "¡Hola, bienvenido a UniMatch!",
-                `Habla ya con tus matches. Tu código de registre es: ${user.code}`
+                `Habla ya con tus matches. Tu código de registre es: ${code}`
             );
 
             this.eventBus.publish(user.pullDomainEvents());
@@ -58,7 +59,7 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, { token:
 
             const token = "token";
 
-            console.log("Código de eso: ", user.code);
+            console.log("Código de eso: ", code);
             return Result.success<{ token: string, user: UserDTO }>({ token, user: userDTO });
         } catch (error : any) {
             return Result.failure<{ token: string, user: UserDTO }>(error);

@@ -22,12 +22,11 @@ export class ResendCodeCommand implements ICommand<ResendCodeDTO, void> {
                 return Result.failure<void>(new NotFoundError(`User with email ${request.email} not found`));
             }
 
-            user.updateVerificationCode();
-            await this.repository.update(user, user.getId());
+            const code = user.generateVerificationCode();
             this.emailRepository.sendEmailToOne(
                 user.email,
                 "UniMatch - Resended code",
-                `Your confirmation code is: ${user.code}`
+                `Your confirmation code is: ${code}`
             );
 
             return Result.success<void>(undefined);
