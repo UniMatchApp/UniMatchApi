@@ -5,6 +5,6 @@ export enum HabitsEnum {
     DAILY = "DAILY"
 }
 
-export function habitsFromString(value: string): HabitsEnum {
-    return HabitsEnum[value.toUpperCase() as keyof typeof HabitsEnum];
+export function habitsFromString(value?: string): HabitsEnum | undefined {
+    return HabitsEnum[value?.toUpperCase() as keyof typeof HabitsEnum];
 }

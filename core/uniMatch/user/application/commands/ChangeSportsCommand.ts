@@ -22,15 +22,7 @@ export class ChangeSportsCommand implements ICommand<ChangeLifeStyleDTO, string>
                 return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
             
-            if(!request.newContent) {
-                return Result.failure<string>(new NullPointerError(`Invalid doesSports value.`));
-            }
-
-            const doesSports = habitsFromString(request.newContent);
-            if(doesSports === undefined) {
-                return Result.failure<string>(new DomainError(`Invalid doesSports value.`));
-            }
-            profile.doesSports = doesSports;
+            profile.doesSports = habitsFromString(request.newContent);
 
             await this.repository.update(profile, profile.getId());
             return Result.success<string>(request.newContent);

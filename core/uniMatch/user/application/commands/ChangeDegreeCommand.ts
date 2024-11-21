@@ -17,6 +17,7 @@ export class ChangeDegreeCommand implements ICommand<ChangeDegreeDTO, string> {
             if(!profile) {
                 return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
+            console.log(request)
             profile.education = request.degree;
             await this.repository.update(profile, profile.getId());
             return Result.success<string>(request.degree);

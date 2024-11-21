@@ -23,16 +23,8 @@ export class ChangeSmokesCommand implements ICommand<ChangeLifeStyleDTO, string>
             }
 
             console.log(request);
-            if(!request.newContent) {
-                return Result.failure<string>(new NullPointerError(`Invalid smokes value.`));
-            }
             
-            const smokes = habitsFromString(request.newContent);
-            
-            if(smokes === undefined) {
-                return Result.failure<string>(new DomainError(`Invalid smokes value.`));
-            }
-            profile.smokes = smokes;
+            profile.smokes = habitsFromString(request.newContent);
 
             await this.repository.update(profile, profile.getId());
             return Result.success<string>(request.newContent);
