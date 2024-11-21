@@ -3,8 +3,6 @@ import { DeleteEventCommand } from "../application/commands/DeleteEventCommand";
 import { DislikeEventCommand } from "../application/commands/DislikeEventCommand";
 import { LikeEventCommand } from "../application/commands/LikeEventCommand";
 import { EditEventCommand } from "../application/commands/EditEventCommand";
-import { GetEventCommand } from "../application/commands/GetEventCommand";
-import { GetEventsCommand } from "../application/commands/GetEventsCommand";
 import { ParticipateEventCommand } from "../application/commands/ParticipateEventCommand";
 import { RemoveParticipationCommand } from "../application/commands/RemoveParticipationCommand";
 import { IEventRepository } from "../application/ports/IEventRepository";

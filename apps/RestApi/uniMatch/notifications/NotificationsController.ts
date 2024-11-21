@@ -12,19 +12,8 @@ import { NotificationHasBeenSeenDTO } from '@/core/uniMatch/notifications/applic
 import { GetAllNotificationsCommand } from '@/core/uniMatch/notifications/application/commands/GetAllNotificationsCommand';
 import { GetAllNotificationsDTO } from '@/core/uniMatch/notifications/application/DTO/GetAllNotificationsDTO';
 import { Notification } from '@/core/uniMatch/notifications/domain/Notification';
-import { DeletedMessageEventHandler } from '@/core/uniMatch/notifications/application/handlers/DeletedMessageEventHandler';
 import { IAppNotifications } from '@/core/uniMatch/notifications/application/ports/IAppNotifications';
-import { EditMessageEventHandler } from '@/core/uniMatch/notifications/application/handlers/EditMessageEventHandler';
-import { EventIsDeletedEventHandler } from '@/core/uniMatch/notifications/application/handlers/EventIsDeletedEventHandler';
-import { EventIsGoingToExpireEventHandler } from '@/core/uniMatch/notifications/application/handlers/EventIsGoingToExpireEventHandler';
-import { EventIsModifiedEventHandler } from '@/core/uniMatch/notifications/application/handlers/EventIsModifiedEventHandler';
-import { NewDislikeEventHandler } from '@/core/uniMatch/notifications/application/handlers/NewDislikeEventHandler';
-import { NewLikeEventHandler } from '@/core/uniMatch/notifications/application/handlers/NewLikeEventHandler';
-import { NewMessageEventHandler } from '@/core/uniMatch/notifications/application/handlers/NewMessageEventHandler';
-import { UserHasChangedAgeEventHandler } from '@/core/uniMatch/matching/application/handlers/UserHasChangedAgeEventHandler';
-import { UserHasChangedEmailEventHandler } from '@/core/uniMatch/notifications/application/handlers/UserHasChangedEmailEventHandler';
 import { IEmailNotifications } from '@/core/shared/application/IEmailNotifications';
-import { UserHasChangedPasswordEventHandler } from '@/core/uniMatch/notifications/application/handlers/UserHasChangedPasswordEventHandler';
 
 export class NotificationsController {
 
@@ -43,23 +32,13 @@ export class NotificationsController {
         this.eventBus = eventBus;
         this.appNotifications = appNotifications;
         this.emailNotifications = emailNotifications;
-        this.eventBus.subscribe(new DeletedMessageEventHandler(this.appNotifications, this.notificationsRepository));
-        this.eventBus.subscribe(new EditMessageEventHandler(this.appNotifications, this.notificationsRepository));
-        this.eventBus.subscribe(new EventIsDeletedEventHandler(this.notificationsRepository, this.appNotifications));
-        this.eventBus.subscribe(new EventIsGoingToExpireEventHandler(this.notificationsRepository, this.appNotifications));
-        this.eventBus.subscribe(new EventIsModifiedEventHandler(this.notificationsRepository, this.appNotifications));
-        this.eventBus.subscribe(new NewDislikeEventHandler(this.notificationsRepository, this.appNotifications));
-        this.eventBus.subscribe(new NewLikeEventHandler(this.notificationsRepository, this.appNotifications));
-        this.eventBus.subscribe(new NewMessageEventHandler(this.notificationsRepository, this.appNotifications));
-        this.eventBus.subscribe(new UserHasChangedEmailEventHandler(this.notificationsRepository, this.emailNotifications));
-        this.eventBus.subscribe(new UserHasChangedPasswordEventHandler(this.notificationsRepository, this.emailNotifications));
     }
 
 
     async deletedAllNotifications(req: Request, res: Response): Promise<void> {
-        var userId = req.params.userId;
-        var command = new DeleteAllNotificationsCommand(this.notificationsRepository);
-        var dto = { userId: userId } as DeleteAllNotificationsDTO;
+        const userId = req.params.userId;
+        const command = new DeleteAllNotificationsCommand(this.notificationsRepository);
+        const dto = { userId: userId } as DeleteAllNotificationsDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result);
@@ -71,10 +50,10 @@ export class NotificationsController {
     }
 
     async deleteNotification(req: Request, res: Response): Promise<void> {
-        var userId = req.params.userId;
-        var notificationId = req.body.notificationId;
-        var command = new DeleteNotificationCommand(this.notificationsRepository);
-        var dto = { userId: userId, notificationId: notificationId } as DeleteNotificationDTO;
+        const userId = req.params.userId;
+        const notificationId = req.body.notificationId;
+        const command = new DeleteNotificationCommand(this.notificationsRepository);
+        const dto = { userId: userId, notificationId: notificationId } as DeleteNotificationDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result);
@@ -86,10 +65,10 @@ export class NotificationsController {
     }
 
     async NotificationHasBeenSeen(req: Request, res: Response): Promise<void> {
-        var userId = req.params.userId;
-        var notificationId = req.body.notificationId;
-        var command = new NotificationHasBeenSeenCommand(this.notificationsRepository);
-        var dto = { userId: userId, notificationId: notificationId } as NotificationHasBeenSeenDTO;
+        const userId = req.params.userId;
+        const notificationId = req.body.notificationId;
+        const command = new NotificationHasBeenSeenCommand(this.notificationsRepository);
+        const dto = { userId: userId, notificationId: notificationId } as NotificationHasBeenSeenDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result);
@@ -101,9 +80,9 @@ export class NotificationsController {
     }
 
     async getAllNotifications(req: Request, res: Response): Promise<void> {
-        var userId = req.params.userId;
-        var command = new GetAllNotificationsCommand(this.notificationsRepository);
-        var dto = { userId: userId } as GetAllNotificationsDTO;
+        const userId = req.params.userId;
+        const command = new GetAllNotificationsCommand(this.notificationsRepository);
+        const dto = { userId: userId } as GetAllNotificationsDTO;
         return command.run(dto).then((result: Result<Notification[]>) => {
             if (result.isSuccess()) {
                 res.json(result);

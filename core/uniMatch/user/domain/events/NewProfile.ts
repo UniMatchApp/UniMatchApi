@@ -1,8 +1,7 @@
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
-import { User } from "../User";
 import { Location } from "@/core/shared/domain/Location";
 import { Gender } from "@/core/shared/domain/Gender";
-import { RelationshipType } from "../../../../shared/domain/RelationshipType";
+import { RelationshipType } from "@/core/shared/domain/RelationshipType";
 import { Profile } from "../Profile";
 
 export class NewProfile extends DomainEvent {

@@ -42,6 +42,44 @@ import {
 import {ISessionStatusRepository} from "@/core/uniMatch/status/application/ports/ISessionStatusRepository";
 import {IFileHandler} from "@/core/shared/application/IFileHandler";
 import {S3FileHandler} from "@/core/shared/infrastructure/fileHandler/S3FileHandler";
+import {
+    DeletedMessageEventHandler
+} from "@/core/uniMatch/notifications/application/handlers/DeletedMessageEventHandler";
+import {EditMessageEventHandler} from "@/core/uniMatch/notifications/application/handlers/EditMessageEventHandler";
+import {
+    EventIsDeletedEventHandler
+} from "@/core/uniMatch/notifications/application/handlers/EventIsDeletedEventHandler";
+import {
+    EventIsGoingToExpireEventHandler
+} from "@/core/uniMatch/notifications/application/handlers/EventIsGoingToExpireEventHandler";
+import {
+    EventIsModifiedEventHandler
+} from "@/core/uniMatch/notifications/application/handlers/EventIsModifiedEventHandler";
+import {NewDislikeEventHandler} from "@/core/uniMatch/notifications/application/handlers/NewDislikeEventHandler";
+import {NewLikeEventHandler} from "@/core/uniMatch/notifications/application/handlers/NewLikeEventHandler";
+import {NewMessageEventHandler} from "@/core/uniMatch/notifications/application/handlers/NewMessageEventHandler";
+import {
+    UserHasChangedEmailEventHandler
+} from "@/core/uniMatch/notifications/application/handlers/UserHasChangedEmailEventHandler";
+import {
+    UserHasChangedPasswordEventHandler
+} from "@/core/uniMatch/notifications/application/handlers/UserHasChangedPasswordEventHandler";
+import {NewProfileEventHandler} from "@/core/uniMatch/matching/application/handlers/NewProfileEventHandler";
+import {
+    UserHasChangedAgeEventHandler
+} from "@/core/uniMatch/matching/application/handlers/UserHasChangedAgeEventHandler";
+import {
+    UserHasChangedLocationEventHandler
+} from "@/core/uniMatch/matching/application/handlers/UserHasChangedLocationEventHandler";
+import {
+    UserHasChangedMaxDistanceEventHandler
+} from "@/core/uniMatch/matching/application/handlers/UserHasChangedMaxDistanceEventHandler";
+import {
+    UserHasChangedSexPriorityEventHandler
+} from "@/core/uniMatch/matching/application/handlers/UserHasChangedSexPriorityEventHandler";
+import {
+    UserHasChangedTypeOfRelationshipEventHandler
+} from "@/core/uniMatch/matching/application/handlers/UserHasChangedTypeOfRelationshipEventHandler";
 
 export class DependencyContainer {
     // Dependencias compartidas
@@ -61,6 +99,7 @@ export class DependencyContainer {
     profileRepository: IProfileRepository;
 
     constructor(private useMocks: boolean) {
+
         this.fileHandler = this.createFileHandler();
         this.sessionStatusRepository = this.createSessionStatusRepository();
         this.eventRepository = this.createEventRepository();
@@ -71,6 +110,8 @@ export class DependencyContainer {
         this.emailNotifications = this.createEmailNotifications();
         this.userRepository = this.createUserRepository();
         this.profileRepository = this.createProfileRepository();
+
+        this.subscribeHandlers();
 
         console.log(this.constructor.name + " using -> " + (this.useMocks ? "Mocks" : "Real implementations"));
     }
@@ -110,7 +151,29 @@ export class DependencyContainer {
     private createProfileRepository(): IProfileRepository {
         return this.useMocks ? new InMemoryProfileRepository() : new TypeORMProfileRepository();
     }
+
+
+    subscribeHandlers(){
+        this.eventBus.subscribe(new DeletedMessageEventHandler(this.appNotifications, this.notificationsRepository));
+        this.eventBus.subscribe(new EditMessageEventHandler(this.appNotifications, this.notificationsRepository));
+        this.eventBus.subscribe(new EventIsDeletedEventHandler(this.notificationsRepository, this.appNotifications));
+        this.eventBus.subscribe(new EventIsGoingToExpireEventHandler(this.notificationsRepository, this.appNotifications));
+        this.eventBus.subscribe(new EventIsModifiedEventHandler(this.notificationsRepository, this.appNotifications));
+        this.eventBus.subscribe(new NewDislikeEventHandler(this.notificationsRepository, this.appNotifications));
+        this.eventBus.subscribe(new NewLikeEventHandler(this.notificationsRepository, this.appNotifications));
+        this.eventBus.subscribe(new NewMessageEventHandler(this.notificationsRepository, this.appNotifications));
+        this.eventBus.subscribe(new UserHasChangedEmailEventHandler(this.notificationsRepository, this.emailNotifications));
+        this.eventBus.subscribe(new UserHasChangedPasswordEventHandler(this.notificationsRepository, this.emailNotifications));
+
+        this.eventBus.subscribe(new NewProfileEventHandler(this.matchingRepository));
+        this.eventBus.subscribe(new UserHasChangedAgeEventHandler(this.matchingRepository));
+        this.eventBus.subscribe(new UserHasChangedLocationEventHandler(this.matchingRepository));
+        this.eventBus.subscribe(new UserHasChangedMaxDistanceEventHandler(this.matchingRepository));
+        this.eventBus.subscribe(new UserHasChangedSexPriorityEventHandler(this.matchingRepository));
+        this.eventBus.subscribe(new UserHasChangedTypeOfRelationshipEventHandler(this.matchingRepository));
+    }
+
 }
 
-export const dependencies = new DependencyContainer(false);
+export const dependencies = new DependencyContainer(true);
 

@@ -1,5 +1,5 @@
 // MatchingRepository.ts
-import {Driver, session} from 'neo4j-driver';
+import {Driver} from 'neo4j-driver';
 import { IMatchingRepository } from '../../../application/ports/IMatchingRepository';
 import { Node } from '../../../domain/Node';
 import { Like } from '../../../domain/relations/Like';
