@@ -6,6 +6,7 @@ import {IFileHandler} from "@/core/shared/application/IFileHandler";
 import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
 import {FileError} from "@/core/shared/exceptions/FileError";
 import {NullPointerError} from "@/core/shared/exceptions/NullPointerError";
+import { UUID } from "@/core/shared/domain/UUID";
 
 
 export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, File> {
@@ -20,13 +21,9 @@ export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, File> {
     async run(request: UploadPhotoDTO): Promise<Result<File>> {
         try {
             const photo = request.attachment;
-            const fileName = request.attachment?.name;
 
-            if (!fileName) {
-                return Result.failure<File>(new FileError(`Invalid file name`));
-            }
-
-            const photoUrl= await this.fileHandler.save(fileName, photo);
+            console.log(request)
+            const photoUrl= await this.fileHandler.save(UUID.generate().toString(), photo);
 
             if (!photoUrl) {
                 return Result.failure<File>(new NullPointerError(`Photo url is null`));
