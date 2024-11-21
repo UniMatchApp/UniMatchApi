@@ -3,9 +3,7 @@ import { Result } from "@/core/shared/domain/Result";
 import { IProfileRepository } from "../ports/IProfileRepository";
 import { ChangeLifeStyleDTO } from "../DTO/ChangeLifestyleDTO";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
-import { HabitsEnum, habitsFromString } from "../../domain/enum/HabitsEnum";
-import { DomainError } from "@/core/shared/exceptions/DomainError";
-import { NullPointerError } from "@/core/shared/exceptions/NullPointerError";
+import { habitsFromString } from "../../domain/enum/HabitsEnum";
 
 export class ChangeSmokesCommand implements ICommand<ChangeLifeStyleDTO, string> {
 
@@ -23,16 +21,8 @@ export class ChangeSmokesCommand implements ICommand<ChangeLifeStyleDTO, string>
             }
 
             console.log(request);
-            if(!request.newContent) {
-                return Result.failure<string>(new NullPointerError(`Invalid smokes value.`));
-            }
             
-            const smokes = habitsFromString(request.newContent);
-            
-            if(smokes === undefined) {
-                return Result.failure<string>(new DomainError(`Invalid smokes value.`));
-            }
-            profile.smokes = smokes;
+            profile.smokes = habitsFromString(request.newContent);
 
             await this.repository.update(profile, profile.getId());
             return Result.success<string>(request.newContent);

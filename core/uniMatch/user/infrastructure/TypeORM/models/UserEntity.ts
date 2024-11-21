@@ -1,4 +1,4 @@
-import { Entity, Column, Unique, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, Unique, PrimaryGeneratedColumn } from "typeorm";
 import { ReportedUsersEntity } from "./ReportedUsersEntity";
 
 @Entity('users')

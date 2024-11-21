@@ -1,5 +1,5 @@
 // MatchingRepository.ts
-import {Driver, session} from 'neo4j-driver';
+import {Driver} from 'neo4j-driver';
 import { IMatchingRepository } from '../../../application/ports/IMatchingRepository';
 import { Node } from '../../../domain/Node';
 import { Like } from '../../../domain/relations/Like';
@@ -11,6 +11,14 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
 
     constructor() {
         this.driver = driver;
+        driver.verifyConnectivity()
+            .then(() => {
+                console.log('Data Source has been initialized for Neo4j!');
+            })
+            .catch((err) => {
+                console.error('Error during Data Source initialization for Neo4j', err);
+            });
+
         console.log("Neo4JMatchingRepository::constructor() -> Neo4j driver created")
     }
 

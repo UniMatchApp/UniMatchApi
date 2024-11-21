@@ -5,31 +5,31 @@ const fs = require('fs');
 
 const envFiles = [
     {
-        src: path.resolve('core/uniMatch/user/infrastructure/TypeORM/user.env'),
+        src: path.resolve('core/uniMatch/user/user.env'),
         dest: path.resolve('dist/apps/RestApi/user.env')
     },
     {
-        src: path.resolve('core/uniMatch/status/infrastructure/redis/status.env'),
+        src: path.resolve('core/uniMatch/status/status.env'),
         dest: path.resolve('dist/apps/RestApi/status.env')
     },
     {
-        src: path.resolve('core/uniMatch/notifications/infrastructure/TypeORM/notifications.env'),
+        src: path.resolve('core/uniMatch/notifications/notifications.env'),
         dest: path.resolve('dist/apps/RestApi/notifications.env')
     },
     {
-        src: path.resolve('core/uniMatch/message/infrastructure/TypeORM/message.env'),
+        src: path.resolve('core/uniMatch/message/message.env'),
         dest: path.resolve('dist/apps/RestApi/message.env')
     },
     {
-        src: path.resolve('core/uniMatch/matching/infrastructure/neo4j/matching.env'),
+        src: path.resolve('core/uniMatch/matching/matching.env'),
         dest: path.resolve('dist/apps/RestApi/matching.env')
     },
     {
-        src: path.resolve('core/uniMatch/event/infrastructure/TypeORM/event.env'),
+        src: path.resolve('core/uniMatch/event/event.env'),
         dest: path.resolve('dist/apps/RestApi/event.env')
     },
     {
-        src: path.resolve('core/shared/infrastructure/shared.env'),
+        src: path.resolve('core/shared/shared.env'),
         dest: path.resolve('dist/apps/RestApi/shared.env')
     }
 

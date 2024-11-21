@@ -1,37 +1,19 @@
 import {Request, Response} from 'express';
 import { UserDislikedSomebodyCommand } from '@/core/uniMatch/matching/application/commands/UserDislikedSomebodyCommand';
 import {UserDislikedSomebodyDTO} from '@/core/uniMatch/matching/application/DTO/userDislikedSomebodyDTO';
-import {ErrorHandler} from '../../ErrorHandler';
+import {ErrorHandler} from '../../utils/ErrorHandler';
 import {Result} from "@/core/shared/domain/Result";
 import { UserLikedSomebodyCommand } from '@/core/uniMatch/matching/application/commands/UserLikedSomebodyCommand';
 import {UserLikedSomebodyDTO} from '@/core/uniMatch/matching/application/DTO/userLikedSomebodyDTO';
 import {IEventBus} from '@/core/shared/application/IEventBus';
 import {IMatchingRepository} from "@/core/uniMatch/matching/application/ports/IMatchingRepository";
-import {NewProfileEventHandler} from '@/core/uniMatch/matching/application/handlers/NewProfileEventHandler';
-import {
-    UserHasChangedAgeEventHandler
-} from '@/core/uniMatch/matching/application/handlers/UserHasChangedAgeEventHandler';
-import {
-    UserHasChangedLocationEventHandler
-} from '@/core/uniMatch/matching/application/handlers/UserHasChangedLocationEventHandler';
-import {
-    UserHasChangedMaxDistanceEventHandler
-} from '@/core/uniMatch/matching/application/handlers/UserHasChangedMaxDistanceEventHandler';
-import {
-    UserHasChangedSexPriorityEventHandler
-} from '@/core/uniMatch/matching/application/handlers/UserHasChangedSexPriorityEventHandler';
-import {
-    UserHasChangedTypeOfRelationshipEventHandler
-} from '@/core/uniMatch/matching/application/handlers/UserHasChangedTypeOfRelationshipEventHandler';
 import { GetUsersThatLikeUserCommand } from '@/core/uniMatch/matching/application/commands/GetUsersThatLikeUserCommand';
-import {
-    GetUserPotentialMatchesCommand
-} from '@/core/uniMatch/matching/application/commands/GetUserPotentialMatchesCommand';
 import {
     GetUsersWithMutualLikesCommand
 } from '@/core/uniMatch/matching/application/commands/GetUsersWithMutualLikesCommand';
 import {GetUserPotentialMatchesDTO} from '@/core/uniMatch/matching/application/DTO/GetUserPotentialMatchesDTO';
 import {GetUsersWithMutualLikesDTO} from '@/core/uniMatch/matching/application/DTO/GetUsersWithMutualLikesDTO';
+import { GetUserPotentialMatchesCommand } from '@/core/uniMatch/matching/application/commands/GetUserPotentialMatchesCommand';
 
 export class MatchingController {
 
@@ -42,12 +24,6 @@ export class MatchingController {
                 eventBus: IEventBus) {
         this.matchingRepository = matchingRepository;
         this.eventBus = eventBus;
-        this.eventBus.subscribe(new NewProfileEventHandler(this.matchingRepository));
-        this.eventBus.subscribe(new UserHasChangedAgeEventHandler(this.matchingRepository));
-        this.eventBus.subscribe(new UserHasChangedLocationEventHandler(this.matchingRepository));
-        this.eventBus.subscribe(new UserHasChangedMaxDistanceEventHandler(this.matchingRepository));
-        this.eventBus.subscribe(new UserHasChangedSexPriorityEventHandler(this.matchingRepository));
-        this.eventBus.subscribe(new UserHasChangedTypeOfRelationshipEventHandler(this.matchingRepository));
     }
 
     async userDislikedSomebody(req: Request, res: Response): Promise<void> {

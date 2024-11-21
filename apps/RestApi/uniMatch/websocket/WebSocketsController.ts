@@ -1,5 +1,5 @@
 import WebSocket, {WebSocketServer} from 'ws';
-import {WebSocketsClientHandler} from './WebSocketsClientHandler';
+import {WebSocketsClientHandler} from '@/core/shared/infrastructure/clientHandler/WebSocketsClientHandler';
 import {UserHasStoppedTypingDTO} from '@/core/uniMatch/status/application/DTO/UserHasStoppedTypingDTO';
 import {UserHasDisconnectedCommand} from '@/core/uniMatch/status/application/commands/UserHasDisconnectedCommand';
 import {UserIsOnlineCommand} from '@/core/uniMatch/status/application/commands/UserIsOnlineCommand';
@@ -10,7 +10,7 @@ import {UserIsTypingDTO} from '@/core/uniMatch/status/application/DTO/UserIsTypi
 import {ISessionStatusRepository} from '@/core/uniMatch/status/application/ports/ISessionStatusRepository';
 import {UserHasStoppedTypingCommand} from '@/core/uniMatch/status/application/commands/UserHasStoppedTypingCommand';
 import {GetUserStatusCommand} from '@/core/uniMatch/status/application/commands/GetUserStatusCommand';
-import { GetUserStatusDTO } from '@/core/uniMatch/status/application/DTO/GetUserStatusDTO';
+import {GetUserStatusDTO} from '@/core/uniMatch/status/application/DTO/GetUserStatusDTO';
 
 export class WebSocketController {
     private notificationServer: WebSocketServer;
@@ -22,8 +22,16 @@ export class WebSocketController {
     private readonly userHasStoppedTypingCommand: UserHasStoppedTypingCommand;
     private readonly getUserStatusCommand: GetUserStatusCommand;
 
-    constructor(
-        notificationPort: number, 
+    public static start(notificationPort: number, statusPort: number,
+                        sessionStatusRepository: ISessionStatusRepository,
+                        wsClientHandler: WebSocketsClientHandler
+    ): WebSocketController {
+        return new WebSocketController(notificationPort, statusPort, sessionStatusRepository, wsClientHandler);
+    }
+
+
+    private constructor(
+        notificationPort: number,
         statusPort: number,
         repository: ISessionStatusRepository,
         clientHandler: WebSocketsClientHandler
@@ -73,7 +81,7 @@ export class WebSocketController {
 
             ws.on('message', async (message: string) => {
                 const parsedMessage = JSON.parse(message);
-            
+
                 switch (parsedMessage.type) {
                     case 'typing': {
                         const typingDTO: UserIsTypingDTO = {
@@ -93,26 +101,29 @@ export class WebSocketController {
                         }
                         break;
                     }
-            
+
                     case 'stoppedTyping': {
                         const stoppedTypingDTO: UserHasStoppedTypingDTO = {
                             userId: parsedMessage.userId,
                         };
                         console.log('stoppedTypingDTO', stoppedTypingDTO);
-                       const command = await  this.userHasStoppedTypingCommand.run(stoppedTypingDTO);
+                        const command = await this.userHasStoppedTypingCommand.run(stoppedTypingDTO);
 
-                       if (command.isSuccess()) {
+                        if (command.isSuccess()) {
                             const targetId = command.getValue();
                             if (targetId) {
                                 const targetClient = this.clientHandler.getClient(targetId);
                                 if (targetClient?.socket.status) {
-                                    targetClient.socket.status.send(JSON.stringify({type: 'stoppedTyping', userId: targetId}));
+                                    targetClient.socket.status.send(JSON.stringify({
+                                        type: 'stoppedTyping',
+                                        userId: targetId
+                                    }));
                                 }
                             }
-                       }
+                        }
                         break;
                     }
-            
+
                     case 'getUserStatus': {
                         const getUserStatusDTO = {
                             userId: parsedMessage.userId,
@@ -128,19 +139,19 @@ export class WebSocketController {
                         ws.send(JSON.stringify(response));
                         break;
                     }
-            
+
                     default:
                         console.warn('Unknown message type:', parsedMessage.type);
                 }
             });
-            
+
 
             ws.on('close', () => {
                 console.log('User disconnected:', userId);
                 const userDisconnectedDTO: UserHasDisconnectedDTO = {userId};
                 this.userHasDisconnectedCommand.run(userDisconnectedDTO);
                 this.clientHandler.removeClient(userId);
-                
+
                 const clients = this.clientHandler.getAllClients();
                 for (const client of clients) {
                     if (client.id !== userId) {

@@ -6,7 +6,6 @@ import { IEventBus } from "@/core/shared/application/IEventBus";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { AuthorizationError } from "@/core/shared/exceptions/AuthorizationError";
-import { FileHandler } from "@/core/uniMatch/event/infrastructure/FileHandler";
 
 export class DeleteEventCommand implements ICommand<DeleteEventDTO, void> {
     private readonly repository: IEventRepository;

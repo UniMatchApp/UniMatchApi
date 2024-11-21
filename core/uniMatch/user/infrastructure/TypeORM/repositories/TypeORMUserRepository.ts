@@ -1,12 +1,24 @@
-import { IUserRepository } from "../../../application/ports/IUserRepository";
+import {IUserRepository} from "../../../application/ports/IUserRepository";
 import AppDataSource from '../Config';
-import { UserMapper } from "../mappers/UserMapper";
-import { UserEntity } from "../models/UserEntity";
-import { User } from "../../../domain/User";
+import {UserMapper} from "../mappers/UserMapper";
+import {UserEntity} from "../models/UserEntity";
+import {User} from "../../../domain/User";
+import {Repository} from "typeorm";
 
 export class TypeORMUserRepository implements IUserRepository {
 
-    private readonly userRepository = AppDataSource.getRepository(UserEntity);
+    private readonly userRepository: Repository<UserEntity>;
+
+    constructor() {
+        AppDataSource.initialize()
+            .then(() => {
+                console.log('Data Source has been initialized for Profile');
+            })
+            .catch((err) => {
+                console.error('Error during Data Source initialization for Profile', err);
+            });
+        this.userRepository = AppDataSource.getRepository(UserEntity)
+    }
 
     async create(entity: User): Promise<void> {
         const userEntity = UserMapper.toEntity(entity);
@@ -14,7 +26,7 @@ export class TypeORMUserRepository implements IUserRepository {
     }
 
     async findById(id: string): Promise<User | null> {
-        const entity = await this.userRepository.findOne({ where: { id } });
+        const entity = await this.userRepository.findOne({where: {id}});
         return entity ? UserMapper.toDomain(entity) : null;
     }
 
@@ -32,7 +44,7 @@ export class TypeORMUserRepository implements IUserRepository {
     }
 
     async existsById(id: string): Promise<boolean> {
-        const count = await this.userRepository.count({ where: { id } });
+        const count = await this.userRepository.count({where: {id}});
         return count > 0;
     }
 
@@ -49,7 +61,7 @@ export class TypeORMUserRepository implements IUserRepository {
     }
 
     async findByEmail(email: string): Promise<User | null> {
-        const entity = await this.userRepository.findOne({ where: { email } });
+        const entity = await this.userRepository.findOne({where: {email}});
         return entity ? UserMapper.toDomain(entity) : null;
     }
 }

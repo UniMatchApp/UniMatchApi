@@ -3,9 +3,22 @@ import {Message} from '../../../domain/Message';
 import {MessageMapper} from '../mappers/MessageMapper';
 import {MessageEntity} from '../models/MessageEntity';
 import AppDataSource from '../Config';
+import {Repository} from "typeorm";
 
 export class TypeORMMessageRepository implements IMessageRepository {
-    private readonly messageRepository = AppDataSource.getRepository(MessageEntity);
+    private readonly messageRepository: Repository<MessageEntity>;
+
+    constructor() {
+        AppDataSource.initialize()
+            .then(() => {
+                console.log('Data Source has been initialized for Messages');
+            })
+            .catch((err) => {
+                console.error('Error during Data Source initialization for Messages', err);
+            });
+
+        this.messageRepository = AppDataSource.getRepository(MessageEntity)
+    }
 
     async deleteAll(): Promise<void> {
         await this.messageRepository.clear();

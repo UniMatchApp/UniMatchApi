@@ -7,7 +7,7 @@ import { GetEventCommand } from '@/core/uniMatch/event/application/commands/GetE
 import { GetEventDTO } from '@/core/uniMatch/event/application/DTO/GetEventDTO';
 import { CreateNewEventCommand } from '@/core/uniMatch/event/application/commands/CreateNewEventCommand';
 import { Result } from '@/core/shared/domain/Result';
-import { FileHandler } from '@/core/uniMatch/event/infrastructure/FileHandler';
+import { FileHandler } from '@/core/shared/infrastructure/fileHandler/FileHandler';
 import { EditEventCommand } from '@/core/uniMatch/event/application/commands/EditEventCommand';
 import { DeleteEventCommand } from '@/core/uniMatch/event/application/commands/DeleteEventCommand';
 import { LikeEventCommand } from '@/core/uniMatch/event/application/commands/LikeEventCommand';
@@ -18,7 +18,7 @@ import { EditEventDTO } from '@/core/uniMatch/event/application/DTO/EditEventDTO
 import { DeleteEventDTO } from '@/core/uniMatch/event/application/DTO/DeleteEventDTO';
 import { LikeEventDTO } from '@/core/uniMatch/event/application/DTO/LikeEventDTO';
 import { ParticipateEventDTO } from '@/core/uniMatch/event/application/DTO/ParticipateEventDTO';
-import { ErrorHandler } from '../../ErrorHandler';
+import { ErrorHandler } from '../../utils/ErrorHandler';
 
 export class EventController {
     private readonly eventRepository: IEventRepository;

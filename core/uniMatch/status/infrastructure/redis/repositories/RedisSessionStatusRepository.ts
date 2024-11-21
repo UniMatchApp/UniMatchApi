@@ -6,6 +6,15 @@ import {ISessionStatusRepository} from "@/core/uniMatch/status/application/ports
 export class RedisSessionStatusRepository implements ISessionStatusRepository {
     private readonly redisPrefix = 'sessionStatus:';
 
+
+    constructor() {
+        client.connect()
+            .then(() => console.log('Connected to Redis'))
+            .catch(err => console.error('Error connecting to Redis', err)
+            );
+    }
+
+
     async create(entity: SessionStatus): Promise<void> {
         const key = `${this.redisPrefix}${entity.userId}`;
         await client.set(key, JSON.stringify(entity));

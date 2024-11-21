@@ -4,9 +4,23 @@ import { INotificationsRepository } from '../../../application/ports/INotificati
 import { NotificationMapper } from '../mappers/NotificationMapper';
 import { NotificationEntity } from '../models/NotificationEntity';
 import { NotificationTypeEnum } from '../../../domain/enum/NotificationTypeEnum';
+import {Repository} from "typeorm";
 
 export class TypeORMNotificationRepository implements INotificationsRepository {
-    private readonly notificationRepository = AppDataSource.getRepository(NotificationEntity);
+    private readonly notificationRepository: Repository<NotificationEntity>;
+
+    constructor() {
+        AppDataSource.initialize()
+            .then(() => {
+                console.log('Data Source has been initialized for Notifications');
+            })
+            .catch((err) => {
+                console.error('Error during Data Source initialization for Notifications', err);
+            });
+
+        this.notificationRepository = AppDataSource.getRepository(NotificationEntity);
+
+    }
 
     async findLastNotificationByTypeAndTypeId(type: NotificationTypeEnum, typeId: string): Promise<Notification | null> {
         const entity = await this.notificationRepository.findOne({

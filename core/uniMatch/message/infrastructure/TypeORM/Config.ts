@@ -15,12 +15,5 @@ const AppDataSource = new DataSource({
     useUnifiedTopology: process.env.MESSAGE_DB_USE_UNIFIED_TOPOLOGY === 'true',
 });
 
-AppDataSource.initialize()
-    .then(() => {
-        console.log('Data Source has been initialized for Messages');
-    })
-    .catch((err) => {
-        console.error('Error during Data Source initialization for Messages', err);
-    });
 
 export default AppDataSource;

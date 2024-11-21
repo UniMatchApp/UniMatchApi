@@ -2,10 +2,8 @@ import {Request, Response} from 'express';
 import {IProfileRepository} from '@/core/uniMatch/user/application/ports/IProfileRepository';
 import {IUserRepository} from '@/core/uniMatch/user/application/ports/IUserRepository';
 import {IEventBus} from '@/core/shared/application/IEventBus';
-import { S3FileHandler } from "@/core/shared/infrastructure/S3FileHandler";
 import {CreateNewUserCommand} from '@/core/uniMatch/user/application/commands/CreateNewUserCommand';
-import {ErrorHandler} from '../../ErrorHandler';
-import {User} from '@/core/uniMatch/user/domain/User';
+import {ErrorHandler} from '../../utils/ErrorHandler';
 import {Result} from '@/core/shared/domain/Result';
 import {DeleteUserCommand} from '@/core/uniMatch/user/application/commands/DeleteUserCommand';
 import {DeleteUserDTO} from '@/core/uniMatch/user/application/DTO/DeleteUserDTO';
@@ -426,6 +424,7 @@ export class UserController {
 
     async changeSmokes(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
+        console.log(req.body)
         const smokes = req.body.newContent;
         const command = new ChangeSmokesCommand(this.profileRepository);
         const dto = {id: id, newContent: smokes} as ChangeLifeStyleDTO;

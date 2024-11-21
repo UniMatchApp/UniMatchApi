@@ -14,14 +14,6 @@ const driver: Driver = createDriver.driver(
     )
 );
 
-driver.verifyConnectivity()
-    .then(() => {
-        console.log('Data Source has been initialized for Neo4j!');
-    })
-    .catch((err) => {
-        console.error('Error during Data Source initialization for Neo4j', err);
-    });
-
-console.log("Neo4j driver created")
+console.log("Neo4j driver created");
 
 export default driver;
