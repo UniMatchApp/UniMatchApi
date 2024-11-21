@@ -16,7 +16,11 @@ export const mockProfile1 = new Profile(
     new RelationshipType("CASUAL"),
     new Date('1990-01-01'),
     ["reading", "traveling"],
-    ["Post 1", "Post 2"],
+    ["https://i.ytimg.com/vi/XJgJnoevers/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAAcaL5m0P13W6A6ye4CrqpAhYOTA",
+    "https://pokemonletsgo.pokemon.com/assets/img/common/char-pikachu.png",
+    "https://images.desenio.com/zoom/wb0125-8batman-portrait50x70-55544-10774.jpg?auto=compress%2Cformat&fit=max&w=3840",
+    "https://static.wikia.nocookie.net/onepiece/images/9/9a/Nico_Robin_Anime_Dos_A%C3%B1os_Despu%C3%A9s_Infobox.png/revision/latest?cb=20200902132447&path-prefix=es"
+    ],
     new Location(28.123456, -15.123456)
 );
 
