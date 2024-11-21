@@ -13,7 +13,7 @@ export interface ProfileDTO {
     relationshipType: string;
     birthday: Date;
     interests: string[];
-    wall: string;
+    wall: string[];
     preferredImage: string;
     maxDistance: number;
     ageRange: { min: number, max: number}
@@ -54,7 +54,7 @@ export namespace ProfileDTO {
             relationshipType: profile.relationshipType.toString(),
             birthday: profile.birthday,
             interests: profile.interests || [],
-            wall: profile.wall?.join(", ") || "",
+            wall: profile.wall || [],
             preferredImage: profile.preferredImage,
             maxDistance: profile.maxDistance,
             ageRange: { min: profile.ageRange[0], max: profile.ageRange[1] },

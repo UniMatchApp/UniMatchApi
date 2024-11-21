@@ -5,27 +5,30 @@ import {Gender} from "@/core/shared/domain/Gender";
 import {RelationshipType} from "@/core/shared/domain/RelationshipType";
 
 export const mockNode1 = new Node(
-    user1.getId(), 30, new Location(50, 50),
+    user1.getId(), 30,
     300, new Gender("FEMALE"),
     new RelationshipType("FRIENDSHIP"),
-    new Gender("FEMALE"));
+    new Gender("FEMALE"))
+    new Location(50, 50);
 export const mockNode2 = new Node(
-    user2.getId(), 30, new Location(50, 50),
+    user2.getId(), 30,
     300, new Gender("FEMALE"),
     new RelationshipType("CASUAL"),
-    new Gender("MALE"));
+    new Gender("MALE"))
+    new Location(50, 50);
 export const mockNode3 = new Node(
-    user3.getId(), 30, new Location(50, 50),
+    user3.getId(), 30,
     300, new Gender("MALE"),
     new RelationshipType("CASUAL"),
-    new Gender("MALE"));
+    new Gender("MALE"))
 export const mockNode4 = new Node(
-    user4.getId(), 30, new Location(50, 50),
+    user4.getId(), 30,
     300, new Gender("MALE"),
     new RelationshipType("LONG_TERM"),
-    new Gender("FEMALE"));
+    new Gender("FEMALE"))
+    new Location(50, 50);
 export const mockNode5 = new Node(
-    user5.getId(), 30, new Location(50, 50),
+    user5.getId(), 30,
     300, new Gender("MALE"),
     new RelationshipType("FRIENDSHIP"),
     new Gender("FEMALE"));

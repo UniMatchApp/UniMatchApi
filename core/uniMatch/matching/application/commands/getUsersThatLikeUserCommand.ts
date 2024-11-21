@@ -12,7 +12,6 @@ export class GetUsersThatLikeUserCommand implements ICommand<string, string[]> {
     async run(userId: string): Promise<Result<string[]>> {
         try {
             const usersThatLikeUser = await this.repository.findUsersThatLikeUser(userId);
-            // console.log("USERS THAT LIKE USER: ", usersThatLikeUser);
             return Result.success(
                 usersThatLikeUser.map(user => user.userId)
             );
