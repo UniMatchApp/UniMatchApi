@@ -1,6 +1,4 @@
 import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
-import { Like } from "./relations/Like";
-import { Dislike } from "./relations/Dislike";
 import { Gender } from "@/core/shared/domain/Gender";
 import { Location } from "@/core/shared/domain/Location";
 import { RelationshipType } from "@/core/shared/domain/RelationshipType";

@@ -12,8 +12,6 @@ import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
 import {IFileHandler} from "@/core/shared/application/IFileHandler";
 import {UUID} from "@/core/shared/domain/UUID";
 import {IProfileRepository} from "@/core/uniMatch/user/application/ports/IProfileRepository";
-import { DomainError } from "@/core/shared/exceptions/DomainError";
-import { DuplicateError } from "@/core/shared/exceptions/DuplicateError";
 import { AuthenticationError } from "@/core/shared/exceptions/AuthenticationError";
 
 export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Profile> {

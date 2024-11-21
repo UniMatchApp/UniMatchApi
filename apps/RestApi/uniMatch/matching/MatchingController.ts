@@ -7,23 +7,7 @@ import {UserLikedSomebodyCommand} from '@/core/uniMatch/matching/application/com
 import {UserLikedSomebodyDTO} from '@/core/uniMatch/matching/application/DTO/userLikedSomebodyDTO';
 import {IEventBus} from '@/core/shared/application/IEventBus';
 import {IMatchingRepository} from "@/core/uniMatch/matching/application/ports/IMatchingRepository";
-import {NewProfileEventHandler} from '@/core/uniMatch/matching/application/handlers/NewProfileEventHandler';
 import {Node} from '@/core/uniMatch/matching/domain/Node';
-import {
-    UserHasChangedAgeEventHandler
-} from '@/core/uniMatch/matching/application/handlers/UserHasChangedAgeEventHandler';
-import {
-    UserHasChangedLocationEventHandler
-} from '@/core/uniMatch/matching/application/handlers/UserHasChangedLocationEventHandler';
-import {
-    UserHasChangedMaxDistanceEventHandler
-} from '@/core/uniMatch/matching/application/handlers/UserHasChangedMaxDistanceEventHandler';
-import {
-    UserHasChangedSexPriorityEventHandler
-} from '@/core/uniMatch/matching/application/handlers/UserHasChangedSexPriorityEventHandler';
-import {
-    UserHasChangedTypeOfRelationshipEventHandler
-} from '@/core/uniMatch/matching/application/handlers/UserHasChangedTypeOfRelationshipEventHandler';
 import {GetUsersThatLikeUserCommand} from "@/core/uniMatch/matching/application/commands/getUsersThatLikeUserCommand";
 import {
     GetUserPotentialMatchesCommand
@@ -48,12 +32,6 @@ export class MatchingController {
         this.matchingRepository = matchingRepository;
         this.profileRepository = profileRepository;
         this.eventBus = eventBus;
-        this.eventBus.subscribe(new NewProfileEventHandler(this.matchingRepository));
-        this.eventBus.subscribe(new UserHasChangedAgeEventHandler(this.matchingRepository));
-        this.eventBus.subscribe(new UserHasChangedLocationEventHandler(this.matchingRepository));
-        this.eventBus.subscribe(new UserHasChangedMaxDistanceEventHandler(this.matchingRepository));
-        this.eventBus.subscribe(new UserHasChangedSexPriorityEventHandler(this.matchingRepository));
-        this.eventBus.subscribe(new UserHasChangedTypeOfRelationshipEventHandler(this.matchingRepository));
     }
 
     async userDislikedSomebody(req: Request, res: Response): Promise<void> {

@@ -3,9 +3,7 @@ import { Result } from "@/core/shared/domain/Result";
 import { IProfileRepository } from "../ports/IProfileRepository";
 import { ChangeLifeStyleDTO } from "../DTO/ChangeLifestyleDTO";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
-import { HabitsEnum, habitsFromString } from "../../domain/enum/HabitsEnum";
-import { DomainError } from "@/core/shared/exceptions/DomainError";
-import { NullPointerError } from "@/core/shared/exceptions/NullPointerError";
+import { habitsFromString } from "../../domain/enum/HabitsEnum";
 
 export class ChangeSmokesCommand implements ICommand<ChangeLifeStyleDTO, string> {
 

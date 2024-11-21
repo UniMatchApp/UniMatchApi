@@ -1,7 +1,7 @@
 export abstract class NotificationPayload {
-    private id: string;
+    private readonly id: string;
 
-    constructor(id: string) {
+    protected constructor(id: string) {
         this.id = id;
     }
 

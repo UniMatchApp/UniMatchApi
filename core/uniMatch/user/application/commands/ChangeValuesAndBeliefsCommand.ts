@@ -3,9 +3,7 @@ import { Result } from "@/core/shared/domain/Result";
 import { IProfileRepository } from "../ports/IProfileRepository";
 import { ChangeLifeStyleDTO } from "../DTO/ChangeLifestyleDTO";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
-import { ValuesAndBeliefsEnum, ValuesAndBeliefsFromString } from "../../domain/enum/ValuesAndBeliefsEnum";
-import { DomainError } from "@/core/shared/exceptions/DomainError";
-import { NullPointerError } from "@/core/shared/exceptions/NullPointerError";
+import { ValuesAndBeliefsFromString } from "../../domain/enum/ValuesAndBeliefsEnum";
 
 export class ChangeValuesAndBeliefsCommand implements ICommand<ChangeLifeStyleDTO, string> {
 

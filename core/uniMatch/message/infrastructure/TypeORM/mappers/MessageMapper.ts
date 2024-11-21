@@ -1,6 +1,6 @@
 import { Message } from '@/core/uniMatch/message/domain/Message';
 import { MessageEntity } from '../models/MessageEntity';
-import { MessageStatusEnum, MessageStatusType } from '@/core/shared/domain/MessageStatusEnum';
+import { MessageStatusType } from '@/core/shared/domain/MessageStatusEnum';
 
 export class MessageMapper {
     static toDomain(entity: MessageEntity): Message {

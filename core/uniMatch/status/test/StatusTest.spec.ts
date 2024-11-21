@@ -1,11 +1,6 @@
 import { UserIsOnlineCommand } from "../application/commands/UserIsOnlineCommand";
-import { UserHasDisconnectedCommand } from "../application/commands/UserHasDisconnectedCommand";
-import { UserHasStoppedTypingCommand } from "../application/commands/UserHasStoppedTypingCommand";
-import { UserIsTypingCommand } from "../application/commands/UserIsTypingCommand";
 import { ISessionStatusRepository } from "../application/ports/ISessionStatusRepository";
-import { Result } from "@/core/shared/domain/Result";
 import { SessionStatus } from "../domain/SessionStatus";
-import { ChatStatusEnum } from "../domain/enum/ChatStatusEnum";
 
 
 describe("UserIsOnlineCommand", () => {
