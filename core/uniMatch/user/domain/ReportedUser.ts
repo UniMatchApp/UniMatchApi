@@ -1,7 +1,7 @@
 import { Entity } from "@/core/shared/domain/Entity";
 
 export class ReportedUser extends Entity {
-    private _userId: string;
+    private readonly _userId: string;
     private _predefinedReason: string;
     private _comment?: string;
 
