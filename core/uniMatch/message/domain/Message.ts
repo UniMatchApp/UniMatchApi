@@ -38,7 +38,7 @@ export class Message extends AggregateRoot {
     }
 
     public set content(value: string) {
-        if (value.trim().length === 0 && !this._attachment) {
+        if (!value || value.trim().length === 0 && !this._attachment) {
             throw new DomainError("Message content cannot be empty.");
         }
         this._content = value;

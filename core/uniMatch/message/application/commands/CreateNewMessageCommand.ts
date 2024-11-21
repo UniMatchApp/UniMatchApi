@@ -6,8 +6,9 @@ import { IMessageRepository } from "../ports/IMessageRepository";
 import { IEventBus } from "@/core/shared/application/IEventBus";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
 import { FileError } from "@/core/shared/exceptions/FileError";
+import {MessageDTO} from "@/core/uniMatch/message/application/DTO/MessageDTO";
 
-export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Message> {
+export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, MessageDTO> {
     private readonly repository: IMessageRepository;
     private readonly eventBus: IEventBus;
     private readonly fileHandler: IFileHandler;
@@ -18,13 +19,13 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
         this.fileHandler = fileHandler;
     }
 
-    async run(request: CreateNewMessageDTO): Promise<Result<Message>> {    
+    async run(request: CreateNewMessageDTO): Promise<Result<MessageDTO>> {    
         try {
             const file = request.attachment;
 
             const fileName = request.attachment?.name;
             if (file && !fileName) {
-                return Result.failure<Message>(new FileError('File name is required'));
+                return Result.failure<MessageDTO>(new FileError('File name is required'));
             }
 
             let attachmentUrl: string | undefined = undefined;
@@ -32,6 +33,8 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
             if (file && fileName) {
                 attachmentUrl = await this.fileHandler.save(fileName, file);
             }
+
+            console.log("Request: ", request);
             
             const message = new Message(
                 request.content,
@@ -45,9 +48,9 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
             await this.repository.create(message);
             this.eventBus.publish(message.pullDomainEvents());
 
-            return Result.success<Message>(message);
+            return Result.success<MessageDTO>(MessageDTO.fromDomain(message));
         } catch (error : any) {
-            return Result.failure<Message>(error);
+            return Result.failure<MessageDTO>(error);
         }
     }
 }
