@@ -22,19 +22,8 @@ export class ChangeValuesAndBeliefsCommand implements ICommand<ChangeLifeStyleDT
                 return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
 
-            if(!request.newContent) {
-                return Result.failure<string>(new NullPointerError(`Invalid values and beliefs value.`));
-            }
-
-            const valuesAndBeliefs = ValuesAndBeliefsFromString(request.newContent);
+            profile.valuesAndBeliefs = ValuesAndBeliefsFromString(request.newContent);
             
-                if(valuesAndBeliefs === undefined) {
-                    return Result.failure<string>(new DomainError(`Invalid values and beliefs value.`));
-                }
-    
-                profile.valuesAndBeliefs = valuesAndBeliefs;
-            
-
             await this.repository.update(profile, profile.getId());
             return Result.success<string>(request.newContent);
         } catch (error: any) {

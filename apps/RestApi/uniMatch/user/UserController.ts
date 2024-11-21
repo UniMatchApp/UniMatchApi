@@ -426,6 +426,7 @@ export class UserController {
 
     async changeSmokes(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
+        console.log(req.body)
         const smokes = req.body.newContent;
         const command = new ChangeSmokesCommand(this.profileRepository);
         const dto = {id: id, newContent: smokes} as ChangeLifeStyleDTO;

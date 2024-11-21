@@ -12,6 +12,6 @@ export enum ValuesAndBeliefsEnum {
     OTHER = "OTHER"
 }
 
-export function ValuesAndBeliefsFromString(value: string): ValuesAndBeliefsEnum {
-    return ValuesAndBeliefsEnum[value.toUpperCase() as keyof typeof ValuesAndBeliefsEnum];
+export function ValuesAndBeliefsFromString(value?: string): ValuesAndBeliefsEnum | undefined {
+    return ValuesAndBeliefsEnum[value?.toUpperCase() as keyof typeof ValuesAndBeliefsEnum];
 }
