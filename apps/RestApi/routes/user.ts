@@ -1,22 +1,17 @@
 import {Router} from 'express';
 import {UserController} from '../uniMatch/user/UserController';
-import {emailNotifications, eventBus, fileHandler} from '../Dependencies';
-import {InMemoryUserRepository} from "@/core/uniMatch/user/infrastructure/InMemory/InMemoryUserRepository";
-import {IUserRepository} from "@/core/uniMatch/user/application/ports/IUserRepository";
-import {InMemoryProfileRepository} from "@/core/uniMatch/user/infrastructure/InMemory/InMemoryProfileRepository";
-import {IProfileRepository} from "@/core/uniMatch/user/application/ports/IProfileRepository";
-import {IEmailNotifications} from "@/core/shared/application/IEmailNotifications";
-import {EmailNotifications} from "@/core/shared/infrastructure/EmailNotifications";
-import { TypeORMUserRepository } from '@/core/uniMatch/user/infrastructure/TypeORM/repositories/TypeORMUserRepository';
-import fileUploadMiddleware from '../FileUploadMiddleware';
-import { TypeORMProfileRepository } from '@/core/uniMatch/user/infrastructure/TypeORM/repositories/TypeORMProfileRepository';
+import fileUploadMiddleware from '../utils/FileUploadMiddleware';
+import {dependencies} from "@/apps/RestApi/Dependencies";
 
 const router = Router();
-// const userRepository: IUserRepository = new TypeORMUserRepository();
-const userRepository: IUserRepository = new InMemoryUserRepository();
-const profileRepository: IProfileRepository = new InMemoryProfileRepository();
-// const profileRepository: IProfileRepository = new TypeORMProfileRepository();
-const userController = new UserController(userRepository, profileRepository, emailNotifications, eventBus, fileHandler);
+
+const userController = new UserController(
+    dependencies.userRepository,
+    dependencies.profileRepository,
+    dependencies.emailNotifications,
+    dependencies.eventBus,
+    dependencies.fileHandler
+);
 
 router.post('/:id/block/:targetId', userController.blockUser.bind(userController));
 router.put('/:id/about', userController.changeAboutMe.bind(userController));

@@ -3,8 +3,8 @@ import {IEventBus} from "@/core/shared/application/IEventBus";
 import {Result} from "@/core/shared/domain/Result";
 import {CreateNewMessageCommand} from "@/core/uniMatch/message/application/commands/CreateNewMessageCommand";
 import {Message} from "@/core/uniMatch/message/domain/Message";
-import {FileHandler} from "@/core/uniMatch/message/infrastructure/FileHandler";
-import {ErrorHandler} from "../../ErrorHandler";
+
+import {ErrorHandler} from "../../utils/ErrorHandler";
 import {
     DeleteAllMessagesWithUserCommand
 } from "@/core/uniMatch/message/application/commands/DeleteAllMessagesWithUserCommand";
@@ -37,6 +37,7 @@ import {
     RetrieveMessagesFromUserPaginatedCommand
 } from "@/core/uniMatch/message/application/commands/RetrieveMessagesFromUserPaginatedCommand";
 import {MessageDTO} from "@/core/uniMatch/message/application/DTO/MessageDTO";
+import {FileHandler} from "@/core/shared/infrastructure/fileHandler/FileHandler";
 
 
 export class MessageController {
@@ -45,10 +46,13 @@ export class MessageController {
     private readonly eventBus: IEventBus;
     private readonly fileHandler: FileHandler;
 
-    constructor(messageRepository: IMessageRepository, eventBus: IEventBus) {
+    constructor(messageRepository: IMessageRepository,
+                eventBus: IEventBus,
+                fileHandler: FileHandler
+    ) {
         this.messageRepository = messageRepository;
         this.eventBus = eventBus;
-        this.fileHandler = new FileHandler();
+        this.fileHandler = fileHandler;
     }
 
     async createMessage(req: Request, res: Response): Promise<void> {

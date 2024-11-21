@@ -1,6 +1,6 @@
-import { IEventBus } from "../application/IEventBus";
-import { IEventHandler } from "../application/IEventHandler";
-import { DomainEvent } from "../domain/DomainEvent";
+import { IEventBus } from "../../application/IEventBus";
+import { IEventHandler } from "../../application/IEventHandler";
+import { DomainEvent } from "../../domain/DomainEvent";
 
 export class InMemoryEventBus implements IEventBus {
     private readonly handlers: Map<string, IEventHandler[]> = new Map();

@@ -11,6 +11,7 @@ import { router as userRouter } from './routes/user';
 import { router as matchingRouter } from './routes/matching';
 import { router as notificationRouter } from './routes/notifications';
 import { router as messageRouter } from './routes/messages';
+import { router as sessionRouter } from './routes/session';
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(`${apiRoute}/users`, userRouter);
 app.use(`${apiRoute}/matching`, matchingRouter);
 app.use(`${apiRoute}/notifications`, notificationRouter);
 app.use(`${apiRoute}/messages`, messageRouter);
+app.use(`${apiRoute}/session`, sessionRouter);
 
 
 // catch 404 and forward to error handler

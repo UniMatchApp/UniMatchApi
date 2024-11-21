@@ -1,12 +1,26 @@
-import { IProfileRepository } from "../../../application/ports/IProfileRepository";
-import { Profile } from "../../../domain/Profile";
-import { ProfileMapper } from "../mappers/ProfileMapper";
-import { ProfileEntity } from "../models/ProfileEntity";
+import {IProfileRepository} from "../../../application/ports/IProfileRepository";
+import {Profile} from "../../../domain/Profile";
+import {ProfileMapper} from "../mappers/ProfileMapper";
+import {ProfileEntity} from "../models/ProfileEntity";
 import AppDataSource from '../Config';
+import {Repository} from "typeorm";
 
 export class TypeORMProfileRepository implements IProfileRepository {
 
-    private readonly profileRepository = AppDataSource.getRepository(ProfileEntity);
+    private readonly profileRepository: Repository<ProfileEntity>;
+
+    constructor() {
+        AppDataSource.initialize()
+            .then(() => {
+                console.log('Data Source has been initialized for User');
+            })
+            .catch((err) => {
+                console.error('Error during Data Source initialization for User', err);
+            });
+
+        this.profileRepository = AppDataSource.getRepository(ProfileEntity);
+
+    }
 
     async create(entity: Profile): Promise<void> {
         const profileEntity = ProfileMapper.toEntity(entity);
@@ -14,7 +28,7 @@ export class TypeORMProfileRepository implements IProfileRepository {
     }
 
     async findById(id: string): Promise<Profile | null> {
-        const entity = await this.profileRepository.findOne({ where: { id } });
+        const entity = await this.profileRepository.findOne({where: {id}});
         return entity ? ProfileMapper.toDomain(entity) : null;
     }
 
@@ -32,7 +46,7 @@ export class TypeORMProfileRepository implements IProfileRepository {
     }
 
     async existsById(id: string): Promise<boolean> {
-        const count = await this.profileRepository.count({ where: { id } });
+        const count = await this.profileRepository.count({where: {id}});
         return count > 0;
     }
 
@@ -47,9 +61,9 @@ export class TypeORMProfileRepository implements IProfileRepository {
         await this.profileRepository.save(updatedEntity);
         return ProfileMapper.toDomain(updatedEntity);
     }
-    
+
     async findByUserId(userId: string): Promise<Profile | undefined> {
-        const entity = await this.profileRepository.findOne({ where: { userId } });
+        const entity = await this.profileRepository.findOne({where: {userId}});
         return entity ? ProfileMapper.toDomain(entity) : undefined;
     }
 }

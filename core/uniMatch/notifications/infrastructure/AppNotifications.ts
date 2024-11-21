@@ -1,6 +1,6 @@
 import {Notification} from "@/core/uniMatch/notifications/domain/Notification";
 import {IAppNotifications} from "@/core/uniMatch/notifications/application/ports/IAppNotifications";
-import {WebSocketsClientHandler} from "@/apps/RestApi/WS/WebSocketsClientHandler";
+import {WebSocketsClientHandler} from "@/core/shared/infrastructure/clientHandler/WebSocketsClientHandler";
 
 export class AppNotifications implements IAppNotifications {
     private webSocketController: WebSocketsClientHandler;

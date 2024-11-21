@@ -14,12 +14,5 @@ const AppDataSource = new DataSource({
     database: process.env.USER_DB_NAME ?? 'test',
 });
 
-AppDataSource.initialize()
-    .then(() => {
-        console.log('Data Source has been initialized for User');
-    })
-    .catch((err) => {
-        console.error('Error during Data Source initialization for User', err);
-    });
 
 export default AppDataSource;

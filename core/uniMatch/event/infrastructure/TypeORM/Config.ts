@@ -14,12 +14,6 @@ const AppDataSource = new DataSource({
     database: process.env.EVENT_DB_NAME || 'test',
 });
 
-AppDataSource.initialize()
-    .then(() => {
-        console.log('Data Source has been initialized for Events');
-    })
-    .catch((err) => {
-        console.error('Error during Data Source initialization for Events', err);
-    });
+
 
 export default AppDataSource;

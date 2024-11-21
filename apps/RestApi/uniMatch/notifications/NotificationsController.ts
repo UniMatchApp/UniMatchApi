@@ -4,7 +4,7 @@ import { INotificationsRepository } from "@/core/uniMatch/notifications/applicat
 import { DeleteAllNotificationsCommand } from '@/core/uniMatch/notifications/application/commands/DeleteAllNotificationsCommand';
 import { DeleteAllNotificationsDTO } from '@/core/uniMatch/notifications/application/DTO/DeleteAllNotificationsDTO';
 import { Result } from '@/core/shared/domain/Result';
-import { ErrorHandler } from '../../ErrorHandler';
+import { ErrorHandler } from '../../utils/ErrorHandler';
 import { DeleteNotificationCommand } from '@/core/uniMatch/notifications/application/commands/DeleteNotificationCommand';
 import { DeleteNotificationDTO } from '@/core/uniMatch/notifications/application/DTO/DeleteNotificationDTO';
 import { NotificationHasBeenSeenCommand } from '@/core/uniMatch/notifications/application/commands/NotificationHasBeenSeenCommand';

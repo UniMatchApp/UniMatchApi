@@ -1,18 +1,18 @@
-import { Router } from 'express';
-import { eventBus } from '../Dependencies';
-import { MessageController } from '../uniMatch/message/MessageController';
-import { TypeORMMessageRepository } from '@/core/uniMatch/message/infrastructure/TypeORM/repositories/TypeORMMessageRepository';
-import {InMemoryMessageRepository} from "@/core/uniMatch/message/infrastructure/InMemory/InMemoryMessageRepository";
-import {IMessageRepository} from "@/core/uniMatch/message/application/ports/IMessageRepository";
-import fileUploadMiddleware from '../FileUploadMiddleware';
+import {Router} from 'express';
+import {MessageController} from '../uniMatch/message/MessageController';
+import fileUploadMiddleware from '../utils/FileUploadMiddleware';
+import {dependencies} from "@/apps/RestApi/Dependencies";
 
 const router = Router();
 
-// const messageRepository:IMessageRepository = new TypeORMMessageRepository();
-const messageRepository:IMessageRepository = new InMemoryMessageRepository();
-const messageController = new MessageController(messageRepository, eventBus);
 
-router.post('', fileUploadMiddleware ,messageController.createMessage.bind(messageController));
+const messageController = new MessageController(
+    dependencies.messageRepository,
+    dependencies.eventBus,
+    dependencies.fileHandler
+);
+
+router.post('', fileUploadMiddleware, messageController.createMessage.bind(messageController));
 router.get('', messageController.retrieveMessagesFromUserPaginated.bind(messageController));
 router.delete('/:userId', messageController.deleteAllMessagesWithUser.bind(messageController));
 router.delete('/:userId', messageController.deleteMessage.bind(messageController));
@@ -22,4 +22,4 @@ router.get('/paginated/:userId', messageController.retrieveMessagesWithUserPagin
 router.get('/last/:userId', messageController.retrieveUserLastMessages.bind(messageController));
 router.put('/:userId', fileUploadMiddleware, messageController.updateMessage.bind(messageController));
 
-export { router };
+export {router};

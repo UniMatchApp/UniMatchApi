@@ -15,12 +15,4 @@ const AppDataSource = new DataSource({
     useUnifiedTopology: process.env.NOTIFICATION_DB_USE_UNIFIED_TOPOLOGY === 'true'
 });
 
-AppDataSource.initialize()
-    .then(() => {
-        console.log('Data Source has been initialized for Notifications');
-    })
-    .catch((err) => {
-        console.error('Error during Data Source initialization for Notifications', err);
-    });
-
 export default AppDataSource;

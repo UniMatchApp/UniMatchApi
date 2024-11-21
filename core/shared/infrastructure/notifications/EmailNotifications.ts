@@ -1,5 +1,5 @@
 import nodemailer, { Transporter } from 'nodemailer';
-import { IEmailNotifications } from '../application/IEmailNotifications';
+import { IEmailNotifications } from '../../application/IEmailNotifications';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: 'shared.env' });
