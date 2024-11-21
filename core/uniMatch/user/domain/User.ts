@@ -17,7 +17,6 @@ export class User extends AggregateRoot {
     private _registered: boolean;
 
     constructor(
-        registrationDate: Date,
         email: string,
         password: string,
         blockedUsers: string[] = [],
@@ -25,7 +24,7 @@ export class User extends AggregateRoot {
     ) {
         super();
         this._privateKey = OTPManager.generateSecret();
-        this._registrationDate = registrationDate;
+        this._registrationDate = new Date();
         this.email = email;
         this.password = password;
         this._blockedUsers = blockedUsers;

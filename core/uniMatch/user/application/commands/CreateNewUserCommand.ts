@@ -31,7 +31,6 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, { token:
             }
 
             const user = new User(
-                new Date(),
                 request.email,
                 request.password
             );
