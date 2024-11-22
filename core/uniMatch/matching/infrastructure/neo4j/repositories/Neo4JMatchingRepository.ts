@@ -55,7 +55,7 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
                 MATCH (u1:User {userId: $userId})
                 MATCH (u2:User)
                 WHERE u2.userId <> $userId
-                  AND u2.gender = u1.genderPriority
+                  AND (u1.genderPriority IS NULL OR u2.gender = u1.genderPriority)
                   AND NOT (u1)-[:DISLIKES]->(u2)
                   AND NOT (u1)-[:LIKES]->(u2)
                 WITH u2,

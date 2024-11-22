@@ -4,47 +4,33 @@ import {IMatchingRepository} from "../ports/IMatchingRepository";
 import {Node} from "../../domain/Node";
 import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
 import {GetUsersWithMutualLikesDTO} from "../DTO/GetUsersWithMutualLikesDTO";
-import {ProfileDTO} from "@/core/uniMatch/user/application/DTO/ProfileDTO";
-import {IProfileRepository} from "@/core/uniMatch/user/application/ports/IProfileRepository";
-import {Profile} from "@/core/uniMatch/user/domain/Profile";
 
-export class GetUsersWithMutualLikesCommand implements ICommand<{ userId: string }, ProfileDTO[]> {
+export class GetUsersWithMutualLikesCommand implements ICommand<GetUsersWithMutualLikesDTO, string[]> {
     private readonly matchingRepository: IMatchingRepository;
-    private readonly profileRepository: IProfileRepository;
 
 
-    constructor(repository: IMatchingRepository,
-                profileRepository: IProfileRepository) {
-
+    constructor(repository: IMatchingRepository) {
         this.matchingRepository = repository;
-        this.profileRepository = profileRepository;
     }
 
-    async run(request: GetUsersWithMutualLikesDTO): Promise<Result<ProfileDTO[]>> {
+    async run(request: GetUsersWithMutualLikesDTO): Promise<Result<string[]>> {
         try {
             const user: Node | undefined = await this.matchingRepository.findByUserId(request.userId);
             console.log("USER", user);
 
             if (!user) {
-                return Result.failure<ProfileDTO[]>(new NotFoundError("User not found"));
+                return Result.failure<string[]>(new NotFoundError("User not found"));
             }
 
             const mutualLikes = await this.matchingRepository.findMutualLikes(request.userId);
-            const mutualLikesProfiles = [] as Profile[];
-            for (const like of mutualLikes) {
-                const profile = await this.profileRepository.findByUserId(like.userId);
-                if (profile) {
-                    mutualLikesProfiles.push(profile);
-                }
+
+            if (mutualLikes.length === 0) {
+                return Result.failure<string[]>(new NotFoundError("No mutual likes found"));
             }
-            return Result.success<ProfileDTO[]>(
-                mutualLikesProfiles.map(profile => {
-                        return ProfileDTO.fromProfile(profile)
-                    }
-                )
-            );
+
+            return Result.success<string[]>(mutualLikes.map((node: Node) => node.userId));
         } catch (error: any) {
-            return Result.failure<ProfileDTO[]>(error);
+            return Result.failure<string[]>(error);
         }
     }
 }
