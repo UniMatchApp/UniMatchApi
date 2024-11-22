@@ -7,21 +7,21 @@ export class UserEntity {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({ type: 'text' })
+    @Column({ type: 'varchar', length: 255, unique: true })
     privateKey!: string;
 
     @Column({ type: 'timestamp' })
     registrationDate!: Date;
 
-    @Column({ type: 'text' })
+    @Column({ type: 'varchar', length: 255, unique: true })
     email!: string;
-
+    
     @Column({ type: 'text' })
     password!: string;
 
-    @Column('text', { array: true, default: [] })
+    @Column('json')
     blockedUsers!: string[];
 
-    @Column('json', { array: true, default: [] })
+    @Column('json')
     reportedUsers!: ReportedUsersEntity[];
 }

@@ -17,6 +17,14 @@ export class EmailNotifications implements IEmailNotifications {
                 pass: process.env.EMAIL_PASS,
             },
         });
+
+        this.transporter.verify((error, success) => {
+            if (error) {
+                console.error('Error de conexión al servidor SMTP:', error);
+            } else {
+                console.log('Conexión al servidor SMTP exitosa');
+            }
+        });
     }
 
     async sendEmailToOne(to: string, subject: string, body: string, attachments?: string[]): Promise<void> {
@@ -28,7 +36,12 @@ export class EmailNotifications implements IEmailNotifications {
             attachments: attachments ? attachments.map(file => ({ path: file })) : [],
         };
 
-        await this.transporter.sendMail(mailOptions);
+        try {
+            await this.transporter.sendMail(mailOptions);
+            console.log(`Correo enviado exitosamente a ${to}`);
+        } catch (error) {
+            console.error('Error al enviar correo:', error);
+        }
     }
 
     async sendEmailToMany(to: string[], subject: string, body: string, attachments?: string[]): Promise<void> {
@@ -40,10 +53,21 @@ export class EmailNotifications implements IEmailNotifications {
             attachments: attachments ? attachments.map(file => ({ path: file })) : [],
         };
 
-        await this.transporter.sendMail(mailOptions);
+        try {
+            await this.transporter.sendMail(mailOptions);
+            console.log(`Correo enviado exitosamente a ${to.join(', ')}`);
+        } catch (error) {
+            console.error('Error al enviar correo:', error);
+        }
     }
 
     async checkEmailStatus(emailId: string): Promise<boolean> {
-        return true;
+        try {
+            console.log(`Comprobando el estado del correo con ID: ${emailId}`);
+            return true; 
+        } catch (error) {
+            console.error('Error al comprobar el estado del correo:', error);
+            return false;
+        }
     }
 }

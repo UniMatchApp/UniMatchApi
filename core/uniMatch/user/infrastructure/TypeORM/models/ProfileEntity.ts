@@ -19,10 +19,10 @@ export class ProfileEntity {
     aboutMe!: string;
 
     @Column({ type: 'float' })
-    latitude!: number;
+    latitude?: number;
 
     @Column({ type: 'float' })
-    longitude!: number;
+    longitude?: number;
 
     @Column({ type: 'float', nullable: true })
     altitude?: number;
@@ -30,7 +30,7 @@ export class ProfileEntity {
     @Column({ nullable: true, type: 'text' })
     fact?: string;
 
-    @Column('text', { array: true, default: [] })
+    @Column('json')
     interests!: string[];
 
     @Column({ type: 'text' })
@@ -67,15 +67,15 @@ export class ProfileEntity {
     drinks?: string;
 
     @Column({ type: 'text', nullable: true })
-    smokes?: string ;
+    smokes?: string;
 
     @Column({ type: 'text', nullable: true })
-    doesSports?: string ;
+    doesSports?: string;
 
     @Column({ type: 'text', nullable: true })
-    valuesAndBeliefs?: string ;
+    valuesAndBeliefs?: string;
 
-    @Column('text', { array: true, default: [] })
+    @Column('json')
     wall!: string[];
 
     @Column({ type: 'text' })
@@ -87,7 +87,7 @@ export class ProfileEntity {
     @Column('int', { default: 50 })
     maxDistance!: number;
 
-    @Column('int', { array: true, default: [18, 100] })
+    @Column('json')
     ageRange!: [number, number];
 
     @Column({ type: 'text', nullable: true })

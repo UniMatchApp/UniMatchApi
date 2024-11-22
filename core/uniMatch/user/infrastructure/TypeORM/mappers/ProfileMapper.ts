@@ -11,14 +11,14 @@ import { ValuesAndBeliefsEnum } from "../../../domain/enum/ValuesAndBeliefsEnum"
 
 export class ProfileMapper {
     static toDomain(entity: ProfileEntity): Profile {
-        const location = new Location(entity.latitude, entity.longitude, entity.altitude);
+        const location = (entity.latitude && entity.longitude) ? new Location(entity.latitude, entity.longitude, entity.altitude) : undefined;
         const drinks = entity.drinks ? HabitsEnum[entity.drinks as keyof typeof HabitsEnum] : undefined;
         const smokes = entity.smokes ? HabitsEnum[entity.smokes as keyof typeof HabitsEnum] : undefined;
         const doesSports = entity.doesSports ? HabitsEnum[entity.doesSports as keyof typeof HabitsEnum] : undefined;
         const valuesAndBeliefs = entity.valuesAndBeliefs ? ValuesAndBeliefsEnum[entity.valuesAndBeliefs as keyof typeof ValuesAndBeliefsEnum] : undefined;
-        const sexualOrientation = new SexualOrientation(entity.sexualOrientation);
-        const gender = new Gender(entity.gender);
-        const genderPriority = entity.genderPriority ? new Gender(entity.genderPriority) : undefined;
+        const sexualOrientation = new SexualOrientation(SexualOrientation.fromString(entity.sexualOrientation));
+        const gender = new Gender(Gender.fromString(entity.gender));
+        const genderPriority = entity.genderPriority ? new Gender(Gender.fromString(entity.genderPriority)) : undefined;
         const relationshipType = new RelationshipType(entity.relationshipType as AllowedRelationshipType);
         const horoscope = entity.horoscope ? new Horoscope(entity.horoscope) : undefined;
 
@@ -29,12 +29,12 @@ export class ProfileMapper {
             entity.age,
             entity.aboutMe,
             gender,
-            location,
             sexualOrientation,
             relationshipType,
             entity.birthday,
             entity.interests,
-            entity.wall
+            entity.wall,
+            location
         );
 
         profile.setId(entity.id);
@@ -65,9 +65,9 @@ export class ProfileMapper {
         entity.name = profile.name;
         entity.age = profile.age;
         entity.aboutMe = profile.aboutMe;
-        entity.latitude = profile.location.latitude;
-        entity.longitude = profile.location.longitude;
-        entity.altitude = profile.location.altitude;
+        entity.latitude = profile.location?.latitude;
+        entity.longitude = profile.location?.longitude;
+        entity.altitude = profile.location?.altitude;
         entity.fact = profile.fact;
         entity.interests = profile.interests;
         entity.gender = profile.gender.value;
