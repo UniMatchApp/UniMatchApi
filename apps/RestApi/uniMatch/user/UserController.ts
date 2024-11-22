@@ -275,7 +275,7 @@ export class UserController {
         const height = req.body.newContent;
         const command = new ChangeHeightCommand(this.profileRepository);
         const dto = {id: id, newHeight: height} as ChangeHeightDTO;
-        return command.run(dto).then((result: Result<string>) => {
+        return command.run(dto).then((result: Result<number>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -473,7 +473,7 @@ export class UserController {
         const weight = req.body.newContent;
         const command = new ChangeWeightCommand(this.profileRepository);
         const dto = {id: id, newWeight: weight} as ChangeWeightDTO;
-        return command.run(dto).then((result: Result<string>) => {
+        return command.run(dto).then((result: Result<number>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
