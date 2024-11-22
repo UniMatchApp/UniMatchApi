@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
 import path from 'path';
+import { NotificationEntity } from './models/NotificationEntity';
 
 const envFilePath = path.resolve(__dirname, 'notifications.env');
 dotenv.config({ path: envFilePath });
@@ -10,9 +11,10 @@ const AppDataSource = new DataSource({
     url: process.env.NOTIFICATION_DB_HOST || 'localhost',
     port: parseInt(process.env.NOTIFICATION_DB_PORT || '27017', 10),
     database: process.env.NOTIFICATION_DB_NAME || 'mydatabase',
-    synchronize: process.env.NOTIFICATION_DB_SYNCHRONIZE === 'true',
+    synchronize: false,
+    entities: [NotificationEntity],
     logging: process.env.NOTIFICATION_DB_LOGGING === 'true',
-    useUnifiedTopology: process.env.NOTIFICATION_DB_USE_UNIFIED_TOPOLOGY === 'true'
+    useUnifiedTopology: process.env.NOTIFICATION_DB_USE_UNIFIED_TOPOLOGY === 'true',
 });
 
 export default AppDataSource;

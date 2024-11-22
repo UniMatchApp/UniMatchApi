@@ -1,8 +1,10 @@
 import nodemailer, { Transporter } from 'nodemailer';
 import { IEmailNotifications } from '../../application/IEmailNotifications';
 import dotenv from 'dotenv';
+import path from 'path';
 
-dotenv.config({ path: 'shared.env' });
+const envFilePath = path.resolve(__dirname, 'shared.env');
+dotenv.config({ path: envFilePath });
 
 export class EmailNotifications implements IEmailNotifications {
     private readonly transporter: Transporter;
@@ -17,6 +19,11 @@ export class EmailNotifications implements IEmailNotifications {
                 pass: process.env.EMAIL_PASS,
             },
         });
+
+        console.log("Host: ", process.env.EMAIL_HOST);
+        console.log("Port: ", process.env.EMAIL_PORT);
+        console.log("User: ", process.env.EMAIL_USER);
+        console.log("Pass: ", process.env.EMAIL_PASS);
 
         this.transporter.verify((error, success) => {
             if (error) {

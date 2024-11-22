@@ -41,7 +41,7 @@ export class MessageNotificationPayload extends NotificationPayload {
         this._attachment = attachment;
     }
 
-    public get status(): MessageStatusType | undefined {
+    public get status(): MessageStatusType {
         return this._status;
     }
 
@@ -49,7 +49,7 @@ export class MessageNotificationPayload extends NotificationPayload {
         this._status = status;
     }
 
-    public get deletedStatus(): DeletedMessageStatusType | undefined {
+    public get deletedStatus(): DeletedMessageStatusType {
         return this._deletedStatus;
     }
 

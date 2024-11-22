@@ -117,7 +117,7 @@ export class DependencyContainer {
     }
     
     private createFileHandler(): IFileHandler {
-        return this.useMocks ? new FileHandler() : new S3FileHandler();
+        return !this.useMocks ? new FileHandler() : new S3FileHandler();
     }
 
     private createSessionStatusRepository(): ISessionStatusRepository {
@@ -141,7 +141,7 @@ export class DependencyContainer {
     }
 
     private createEmailNotifications(): IEmailNotifications {
-        return new MockEmailNotifications()
+        return !this.useMocks ? new MockEmailNotifications() : new EmailNotifications();
     }
 
     private createUserRepository(): IUserRepository {

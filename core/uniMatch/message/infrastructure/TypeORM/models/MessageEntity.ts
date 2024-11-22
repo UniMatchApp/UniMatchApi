@@ -1,10 +1,10 @@
-import { Entity, Column, Unique } from 'typeorm';
+import { Entity, Column, Unique, ObjectIdColumn } from 'typeorm';
 import { MessageStatusEnum, DeletedMessageStatusType, MessageStatusType } from '@/core/shared/domain/MessageStatusEnum';
 
 @Entity('messages')
 @Unique(['id'])
 export class MessageEntity {
-    @Column({ type: 'uuid', primary: true })
+    @ObjectIdColumn()
     id!: string;
 
     @Column({ type: 'text' })
