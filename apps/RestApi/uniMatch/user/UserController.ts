@@ -487,7 +487,7 @@ export class UserController {
         const userId = req.params.id;
         const command = new UploadPhotoCommand(this.profileRepository, this.fileHandler);
         const dto = {userId: userId, ...req.body} as UploadPhotoDTO;
-        return command.run(dto).then((result: Result<File>) => {
+        return command.run(dto).then((result: Result<string>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
