@@ -6,10 +6,10 @@ import {
 } from 'typeorm';
 import { NotificationTypeEnum } from '../../../domain/enum/NotificationTypeEnum';
 import { NotificationStatusEnum } from '../../../domain/enum/NotificationStatusEnum';
-import { Message } from '../../../domain/entities/Message';
-import { Event } from '../../../domain/entities/Event';
-import { Match } from '../../../domain/entities/Match';
-import { App } from '../../../domain/entities/App';
+import { MessageNotificationPayload } from '../../../domain/entities/MessageNotificationPayload';
+import { EventNotificationPayload } from '../../../domain/entities/EventNotificationPayload';
+import { MatchNotificationPayload } from '../../../domain/entities/MatchNotificationPayload';
+import { AppNotificationPayload } from '../../../domain/entities/AppNotificationPayload';
 
 @Entity('notifications')
 @Unique(['id'])
@@ -34,7 +34,7 @@ export class NotificationEntity {
     contentId!: string;
 
     @Column('jsonb')
-    payload!: Message | Event | Match | App;
+    payload!: MessageNotificationPayload | EventNotificationPayload | MatchNotificationPayload | AppNotificationPayload;
 
     @CreateDateColumn({ type: 'timestamp' })
     date!: Date;

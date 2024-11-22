@@ -1,7 +1,7 @@
 import { EventStatusType } from "../enum/EventStatusEnum";
 import { NotificationPayload } from "../NotificationPayload";
 
-export class Event extends NotificationPayload {
+export class EventNotificationPayload extends NotificationPayload {
     private _title: string;
     private _status: EventStatusType;
 
