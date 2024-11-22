@@ -141,7 +141,7 @@ export class DependencyContainer {
     }
 
     private createEmailNotifications(): IEmailNotifications {
-        return this.useMocks ? new MockEmailNotifications() : new EmailNotifications();
+        return new MockEmailNotifications()
     }
 
     private createUserRepository(): IUserRepository {
