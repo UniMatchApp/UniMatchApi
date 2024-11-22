@@ -37,18 +37,18 @@ import {
     RetrieveMessagesFromUserPaginatedCommand
 } from "@/core/uniMatch/message/application/commands/RetrieveMessagesFromUserPaginatedCommand";
 import {MessageDTO} from "@/core/uniMatch/message/application/DTO/MessageDTO";
-import {FileHandler} from "@/core/shared/infrastructure/fileHandler/FileHandler";
+import {IFileHandler} from "@/core/shared/application/IFileHandler";
 
 
 export class MessageController {
 
     private readonly messageRepository: IMessageRepository;
     private readonly eventBus: IEventBus;
-    private readonly fileHandler: FileHandler;
+    private readonly fileHandler: IFileHandler;
 
     constructor(messageRepository: IMessageRepository,
                 eventBus: IEventBus,
-                fileHandler: FileHandler
+                fileHandler: IFileHandler
     ) {
         this.messageRepository = messageRepository;
         this.eventBus = eventBus;

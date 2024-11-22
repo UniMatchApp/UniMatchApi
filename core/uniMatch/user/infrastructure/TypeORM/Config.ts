@@ -1,6 +1,10 @@
 import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
 import path from 'path';
+import { UserEntity } from './models/UserEntity';
+import { Profile } from '../../domain/Profile';
+import { ProfileEntity } from './models/ProfileEntity';
+import { ReportedUsersEntity } from './models/ReportedUsersEntity';
 
 const envFilePath = path.resolve(__dirname, 'user.env');
 dotenv.config({ path: envFilePath });
@@ -12,6 +16,8 @@ const AppDataSource = new DataSource({
     username: process.env.USER_DB_USERNAME ?? 'test',
     password: process.env.USER_DB_PASSWORD ?? 'test',
     database: process.env.USER_DB_NAME ?? 'test',
+    entities: [UserEntity, ProfileEntity, ReportedUsersEntity],
+    synchronize: false
 });
 
 

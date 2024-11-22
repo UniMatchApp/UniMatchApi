@@ -72,7 +72,8 @@ export class User extends AggregateRoot {
     }
 
     private validateEmail(email: string): boolean {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        console.log("Validating email: ", email);
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!emailRegex.test(email)) {
             throw new DomainError("Invalid email format.");
         }

@@ -1,9 +1,9 @@
-import { ICommand } from "@/core/shared/application/ICommand";
-import { Result } from "@/core/shared/domain/Result";
-import { IMatchingRepository } from "../ports/IMatchingRepository";
-import { Dislike } from "../../domain/relations/Dislike";
-import { UserDislikedSomebodyDTO } from "../DTO/userDislikedSomebodyDTO";
-import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import {ICommand} from "@/core/shared/application/ICommand";
+import {Result} from "@/core/shared/domain/Result";
+import {IMatchingRepository} from "@/core/uniMatch/matching/application/ports/IMatchingRepository";
+import {Dislike} from "@/core/uniMatch/matching/domain/relations/Dislike";
+import {UserDislikedSomebodyDTO} from "@/core/uniMatch/matching/application/DTO/userDislikedSomebodyDTO";
+import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
 
 export class UserDislikedSomebodyCommand implements ICommand<UserDislikedSomebodyDTO, void> {
     private readonly repository: IMatchingRepository;
@@ -28,7 +28,7 @@ export class UserDislikedSomebodyCommand implements ICommand<UserDislikedSomebod
             const dislike = new Dislike(user, dislikedUser);
             await this.repository.dislikeUser(dislike);
             return Result.success<void>(undefined);
-        } catch (error : any) {
+        } catch (error: any) {
             return Result.failure<void>(error);
         }
     }

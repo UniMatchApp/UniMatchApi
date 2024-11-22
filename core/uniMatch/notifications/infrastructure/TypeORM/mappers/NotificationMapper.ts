@@ -3,10 +3,10 @@ import { NotificationTypeEnum } from '../../../domain/enum/NotificationTypeEnum'
 import { NotificationEntity } from '../models/NotificationEntity';
 import { NotificationStatusEnumFromString } from '../../../domain/enum/NotificationStatusEnum';
 import { NotificationPayload } from '../../../domain/NotificationPayload';
-import { Event } from '../../../domain/entities/Event';
-import { Message } from '../../../domain/entities/Message';
-import { Match } from '../../../domain/entities/Match';
-import { App } from '../../../domain/entities/App';
+import { EventNotificationPayload } from '../../../domain/entities/EventNotificationPayload';
+import { MessageNotificationPayload } from '../../../domain/entities/MessageNotificationPayload';
+import { MatchNotificationPayload } from '../../../domain/entities/MatchNotificationPayload';
+import { AppNotificationPayload } from '../../../domain/entities/AppNotificationPayload';
 import { MapperError } from '@/core/shared/exceptions/MapperError';
 
 export class NotificationMapper {
@@ -15,12 +15,12 @@ export class NotificationMapper {
 
     switch (entity.type) {
       case NotificationTypeEnum.EVENT:
-        const eventPayload = entity.payload as Event;
-        payload = new Event(entity.contentId, eventPayload.title, eventPayload.status);
+        const eventPayload = entity.payload as EventNotificationPayload;
+        payload = new EventNotificationPayload(entity.contentId, eventPayload.title, eventPayload.status);
         break;
       case NotificationTypeEnum.MESSAGE:
-        const messagePayload = entity.payload as Message;
-        payload = new Message(
+        const messagePayload = entity.payload as MessageNotificationPayload;
+        payload = new MessageNotificationPayload(
           entity.contentId,
           messagePayload.content,
           messagePayload.sender,
@@ -30,12 +30,12 @@ export class NotificationMapper {
         );
         break;
       case NotificationTypeEnum.MATCH:
-        const matchPayload = entity.payload as Match;
-        payload = new Match(entity.contentId, matchPayload.userMatched, matchPayload.isLiked);
+        const matchPayload = entity.payload as MatchNotificationPayload;
+        payload = new MatchNotificationPayload(entity.contentId, matchPayload.userMatched, matchPayload.isLiked);
         break;
       case NotificationTypeEnum.APP:
-        const appPayload = entity.payload as App;
-        payload = new App(entity.contentId, appPayload.title, appPayload.description);
+        const appPayload = entity.payload as AppNotificationPayload;
+        payload = new AppNotificationPayload(entity.contentId, appPayload.title, appPayload.description);
         break;
     }
 
@@ -65,15 +65,15 @@ export class NotificationMapper {
 
     switch (notification.type) {
       case NotificationTypeEnum.EVENT:
-        entity.payload = new Event(
+        entity.payload = new EventNotificationPayload(
           notification.contentId,
-          (notification.payload as Event).title!,
-          (notification.payload as Event).status
+          (notification.payload as EventNotificationPayload).title!,
+          (notification.payload as EventNotificationPayload).status
         );
         break;
       case NotificationTypeEnum.MESSAGE:
-        const messagePayload = notification.payload as Message;
-        entity.payload = new Message(
+        const messagePayload = notification.payload as MessageNotificationPayload;
+        entity.payload = new MessageNotificationPayload(
           notification.contentId,
           messagePayload.content,
           messagePayload.sender,
@@ -83,16 +83,16 @@ export class NotificationMapper {
         );
         break;
       case NotificationTypeEnum.MATCH:
-        const matchPayload = notification.payload as Match;
-        entity.payload = new Match(
+        const matchPayload = notification.payload as MatchNotificationPayload;
+        entity.payload = new MatchNotificationPayload(
           notification.contentId,
           matchPayload.userMatched,
           matchPayload.isLiked
         );
         break;
       case NotificationTypeEnum.APP:
-        const appPayload = notification.payload as App;
-        entity.payload = new App(
+        const appPayload = notification.payload as AppNotificationPayload;
+        entity.payload = new AppNotificationPayload(
           notification.contentId,
           appPayload.title,
           appPayload.description

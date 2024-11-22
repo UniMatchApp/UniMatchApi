@@ -48,6 +48,7 @@ export class WebSocketController {
 
         this.notificationServer.on('connection', (ws: WebSocket, req) => {
             const userId = req.url?.split('/').pop();
+            console.log('Notification websocket -> user connected:', userId)
             if (!userId) {
                 ws.close();
                 return;
@@ -62,6 +63,7 @@ export class WebSocketController {
 
         this.statusServer.on('connection', (ws: WebSocket, req) => {
             const userId = req.url?.split('/').pop();
+            console.log('Status websocket -> user connected:', userId)
             if (!userId) {
                 ws.close();
                 return;

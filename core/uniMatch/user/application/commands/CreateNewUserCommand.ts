@@ -33,6 +33,7 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, { token:
                 }>(new ValidationError(`User with email ${request.email} already exists`));
             }
 
+
             const user = new User(
                 request.email,
                 request.password
@@ -64,6 +65,7 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, { token:
             console.log("Código de eso: ", code);
             return Result.success<{ token: string, user: UserDTO }>({token, user: userDTO});
         } catch (error: any) {
+            console.error(error);
             return Result.failure<{ token: string, user: UserDTO }>(error);
         }
     }

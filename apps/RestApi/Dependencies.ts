@@ -115,7 +115,7 @@ export class DependencyContainer {
 
         console.log(this.constructor.name + " using -> " + (this.useMocks ? "Mocks" : "Real implementations"));
     }
-
+    
     private createFileHandler(): IFileHandler {
         return this.useMocks ? new FileHandler() : new S3FileHandler();
     }
@@ -175,5 +175,5 @@ export class DependencyContainer {
 
 }
 
-export const dependencies = new DependencyContainer(true);
+export const dependencies = new DependencyContainer(false);
 

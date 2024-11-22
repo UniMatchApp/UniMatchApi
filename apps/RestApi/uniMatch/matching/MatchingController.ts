@@ -1,19 +1,21 @@
 import {Request, Response} from 'express';
-import { UserDislikedSomebodyCommand } from '@/core/uniMatch/matching/application/commands/UserDislikedSomebodyCommand';
+import {UserDislikedSomebodyCommand} from '@/core/uniMatch/matching/application/commands/userDislikedSomebodyCommand';
 import {UserDislikedSomebodyDTO} from '@/core/uniMatch/matching/application/DTO/userDislikedSomebodyDTO';
 import {ErrorHandler} from '../../utils/ErrorHandler';
 import {Result} from "@/core/shared/domain/Result";
-import { UserLikedSomebodyCommand } from '@/core/uniMatch/matching/application/commands/UserLikedSomebodyCommand';
+import {UserLikedSomebodyCommand} from '@/core/uniMatch/matching/application/commands/userLikedSomebodyCommand';
 import {UserLikedSomebodyDTO} from '@/core/uniMatch/matching/application/DTO/userLikedSomebodyDTO';
 import {IEventBus} from '@/core/shared/application/IEventBus';
 import {IMatchingRepository} from "@/core/uniMatch/matching/application/ports/IMatchingRepository";
-import { GetUsersThatLikeUserCommand } from '@/core/uniMatch/matching/application/commands/GetUsersThatLikeUserCommand';
+import {GetUsersThatLikeUserCommand} from '@/core/uniMatch/matching/application/commands/getUsersThatLikeUserCommand';
 import {
     GetUsersWithMutualLikesCommand
 } from '@/core/uniMatch/matching/application/commands/GetUsersWithMutualLikesCommand';
 import {GetUserPotentialMatchesDTO} from '@/core/uniMatch/matching/application/DTO/GetUserPotentialMatchesDTO';
 import {GetUsersWithMutualLikesDTO} from '@/core/uniMatch/matching/application/DTO/GetUsersWithMutualLikesDTO';
-import { GetUserPotentialMatchesCommand } from '@/core/uniMatch/matching/application/commands/GetUserPotentialMatchesCommand';
+import {
+    GetUserPotentialMatchesCommand
+} from '@/core/uniMatch/matching/application/commands/GetUserPotentialMatchesCommand';
 
 export class MatchingController {
 

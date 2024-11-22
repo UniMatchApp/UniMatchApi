@@ -6,7 +6,6 @@ import { ReportedUser } from "../../../domain/ReportedUser";
 export class UserMapper {
     static toDomain(entity: UserEntity): User {
         const user = new User(
-            entity.registrationDate,
             entity.email,
             entity.password,
             entity.blockedUsers

@@ -1,14 +1,14 @@
-import { NotificationPayload } from "../NotificationPayload";
-import { MessageStatusType, DeletedMessageStatusType } from "@/core/shared/domain/MessageStatusEnum";
+import {NotificationPayload} from "../NotificationPayload";
+import {DeletedMessageStatusType, MessageStatusType} from "@/core/shared/domain/MessageStatusEnum";
 
-export class Message extends NotificationPayload {
+export class MessageNotificationPayload extends NotificationPayload {
     private _content: string;
     private _sender: string;
     private _attachment?: string;
-    private _status?: MessageStatusType;
-    private _deletedStatus?: DeletedMessageStatusType;
+    private _status: MessageStatusType;
+    private _deletedStatus: DeletedMessageStatusType;
 
-    constructor(id: string, content: string, sender: string, status?: MessageStatusType, attachment?: string, deletedStatus?: DeletedMessageStatusType) {
+    constructor(id: string, content: string, sender: string, status: MessageStatusType, deletedStatus: DeletedMessageStatusType, attachment?: string) {
         super(id);
         this._content = content;
         this._sender = sender;
@@ -45,7 +45,7 @@ export class Message extends NotificationPayload {
         return this._status;
     }
 
-    public set status(status: MessageStatusType | undefined) {
+    public set status(status: MessageStatusType) {
         this._status = status;
     }
 
@@ -53,7 +53,7 @@ export class Message extends NotificationPayload {
         return this._deletedStatus;
     }
 
-    public set deletedStatus(deletedStatus: DeletedMessageStatusType | undefined) {
+    public set deletedStatus(deletedStatus: DeletedMessageStatusType) {
         this._deletedStatus = deletedStatus;
     }
 }
