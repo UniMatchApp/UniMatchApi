@@ -4,31 +4,28 @@ import {ChangeWeightDTO} from "../DTO/ChangeWeightDTO";
 import {IProfileRepository} from "../ports/IProfileRepository";
 import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
 
-export class ChangeWeightCommand implements ICommand<ChangeWeightDTO, string> {
+export class ChangeWeightCommand implements ICommand<ChangeWeightDTO, number> {
     private repository: IProfileRepository;
 
     constructor(repository: IProfileRepository) {
         this.repository = repository;
     }
 
-    async run(request: ChangeWeightDTO): Promise<Result<string>> {
+    async run(request: ChangeWeightDTO): Promise<Result<number>> {
         try {
             const profile = await this.repository.findByUserId(request.id)
             if (!profile) {
-                return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
+                return Result.failure<number>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
 
             profile.weight = request.newWeight;
 
             await this.repository.update(profile, profile.getId());
 
-            if (request.newWeight === undefined) {
-                return Result.success<string>("");
-            }
-            return Result.success<string>(request.newWeight.toString());
+            return Result.success<number>(request.newWeight!);
 
         } catch (error: any) {
-            return Result.failure<string>(error);
+            return Result.failure<number>(error);
         }
     }
 

@@ -1,6 +1,6 @@
 import { NotificationPayload } from "../NotificationPayload";
 
-export class Match extends NotificationPayload {
+export class MatchNotificationPayload extends NotificationPayload {
     private _userMatched: string;
     private _isLiked: boolean;
 

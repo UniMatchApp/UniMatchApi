@@ -9,7 +9,7 @@ import {NullPointerError} from "@/core/shared/exceptions/NullPointerError";
 import { UUID } from "@/core/shared/domain/UUID";
 
 
-export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, File> {
+export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, string> {
     private repository: IProfileRepository;
     private fileHandler: IFileHandler;
 
@@ -18,7 +18,7 @@ export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, File> {
         this.fileHandler = fileHandler;
     }
 
-    async run(request: UploadPhotoDTO): Promise<Result<File>> {
+    async run(request: UploadPhotoDTO): Promise<Result<string>> {
         try {
             const photo = request.attachment;
 
@@ -26,20 +26,20 @@ export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, File> {
             const photoUrl= await this.fileHandler.save(UUID.generate().toString(), photo);
 
             if (!photoUrl) {
-                return Result.failure<File>(new NullPointerError(`Photo url is null`));
+                return Result.failure<string>(new NullPointerError(`Photo url is null`));
             }
 
             const profile = await this.repository.findByUserId(request.userId)
             if (!profile) {
-                return Result.failure<File>(new NotFoundError(`Profile with id ${request.userId} not found`));
+                return Result.failure<string>(new NotFoundError(`Profile with id ${request.userId} not found`));
             }
 
             profile.addPost(photoUrl);
             await this.repository.update(profile, profile.getId());
 
-            return Result.success<File>(photo);
+            return Result.success<string>(photoUrl);
         } catch (error: any) {
-            return Result.failure<File>(error);
+            return Result.failure<string>(error);
         }
     }
 }

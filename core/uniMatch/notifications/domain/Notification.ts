@@ -1,14 +1,14 @@
-import { NotificationPayload } from "./NotificationPayload";
-import { NotificationTypeEnum } from "./enum/NotificationTypeEnum";
-import { EventStatusType } from "./enum/EventStatusEnum";
-import { NotificationStatusEnum, NotificationStatusType } from "./enum/NotificationStatusEnum";
-import { DomainError } from "@/core/shared/exceptions/DomainError";
-import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
-import { Message } from "./entities/Message";
-import { Match } from "./entities/Match";
-import { App } from "./entities/App";
-import { Event } from "./entities/Event";
-import { DeletedMessageStatusType, MessageStatusType } from "@/core/shared/domain/MessageStatusEnum";
+import {NotificationPayload} from "./NotificationPayload";
+import {NotificationTypeEnum} from "./enum/NotificationTypeEnum";
+import {EventStatusType} from "./enum/EventStatusEnum";
+import {NotificationStatusEnum, NotificationStatusType} from "./enum/NotificationStatusEnum";
+import {DomainError} from "@/core/shared/exceptions/DomainError";
+import {AggregateRoot} from "@/core/shared/domain/AggregateRoot ";
+import {MessageNotificationPayload} from "./entities/MessageNotificationPayload";
+import {MatchNotificationPayload} from "./entities/MatchNotificationPayload";
+import {AppNotificationPayload} from "./entities/AppNotificationPayload";
+import {EventNotificationPayload} from "./entities/EventNotificationPayload";
+import {DeletedMessageStatusType, MessageStatusType} from "@/core/shared/domain/MessageStatusEnum";
 
 export class Notification extends AggregateRoot {
     private _type: NotificationTypeEnum;
@@ -35,49 +35,49 @@ export class Notification extends AggregateRoot {
     }
 
     public static createEventNotification(
-        contentId: string, 
-        date: Date, 
-        recipient: string, 
-        title: string, 
+        contentId: string,
+        date: Date,
+        recipient: string,
+        title: string,
         status: EventStatusType
     ): Notification {
-        const payload = new Event(contentId, title, status);
+        const payload = new EventNotificationPayload(contentId, title, status);
         return new Notification(contentId, NotificationTypeEnum.EVENT, date, recipient, payload);
     }
 
     public static createMessageNotification(
-        contentId: string, 
-        date: Date, 
-        recipient: string, 
-        content: string, 
-        sender: string, 
-        status?: MessageStatusType, 
+        contentId: string,
+        date: Date,
+        recipient: string,
+        content: string,
+        sender: string,
+        status: MessageStatusType,
+        deletedStatus: DeletedMessageStatusType,
         attachment?: string,
-        deletedStatus?: DeletedMessageStatusType
     ): Notification {
-        const payload = new Message(contentId, content, sender, status, attachment, deletedStatus);
+        const payload = new MessageNotificationPayload(contentId, content, sender, status, deletedStatus, attachment);
         return new Notification(contentId, NotificationTypeEnum.MESSAGE, date, recipient, payload);
     }
 
     public static createMatchNotification(
-        contentId: string, 
-        date: Date, 
-        recipient: string, 
-        userMatched: string, 
+        contentId: string,
+        date: Date,
+        recipient: string,
+        userMatched: string,
         isLiked: boolean
     ): Notification {
-        const payload = new Match(contentId, userMatched, isLiked);
+        const payload = new MatchNotificationPayload(contentId, userMatched, isLiked);
         return new Notification(contentId, NotificationTypeEnum.MATCH, date, recipient, payload);
     }
 
     public static createAppNotification(
-        contentId: string, 
-        date: Date, 
-        recipient: string, 
-        title: string, 
+        contentId: string,
+        date: Date,
+        recipient: string,
+        title: string,
         description: string
     ): Notification {
-        const payload = new App(contentId, title, description);
+        const payload = new AppNotificationPayload(contentId, title, description);
         return new Notification(contentId, NotificationTypeEnum.APP, date, recipient, payload);
     }
 

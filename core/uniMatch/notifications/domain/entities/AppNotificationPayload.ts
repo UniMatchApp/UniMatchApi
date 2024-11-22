@@ -1,6 +1,6 @@
 import { NotificationPayload } from "../NotificationPayload";
 
-export class App extends NotificationPayload {
+export class AppNotificationPayload extends NotificationPayload {
     private _title: string;
     private _description: string;
 

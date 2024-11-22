@@ -1,6 +1,6 @@
 import {ICommand} from "@/core/shared/application/ICommand";
 import {Result} from "@/core/shared/domain/Result";
-import {IMatchingRepository} from "../ports/IMatchingRepository";
+import {IMatchingRepository} from "@/core/uniMatch/matching/application/ports/IMatchingRepository";
 
 export class GetUsersThatLikeUserCommand implements ICommand<string, string[]> {
     private readonly repository: IMatchingRepository;
