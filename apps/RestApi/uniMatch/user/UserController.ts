@@ -62,6 +62,8 @@ import { ChangeFactCommand } from '@/core/uniMatch/user/application/commands/Cha
 import { ChangeFactDTO } from '@/core/uniMatch/user/application/DTO/ChangeFactDTO';
 import { ChangeGenderDTO } from '@/core/uniMatch/user/application/DTO/ChangeGenderDTO';
 import { ChangeGenderCommand } from '@/core/uniMatch/user/application/commands/ChangeGenderCommand';
+import { ChangeWallCommand } from '@/core/uniMatch/user/application/commands/ChangeWallCommand';
+import { ChangeWallDTO } from '@/core/uniMatch/user/application/DTO/ChangeWallDTO';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -483,6 +485,20 @@ export class UserController {
         });
     }
 
+    async changeWall(req: Request, res: Response): Promise<void> {
+        const userId = req.params.id;
+        const command = new ChangeWallCommand(this.profileRepository);
+        const dto = {id: userId, ...req.body} as ChangeWallDTO;
+        return command.run(dto).then((result: Result<string[]>) => {
+            if (result.isSuccess()) {
+                res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
     async uploadPhoto(req: Request, res: Response): Promise<void> {
         const userId = req.params.id;
         const command = new UploadPhotoCommand(this.profileRepository, this.fileHandler);
@@ -496,6 +512,7 @@ export class UserController {
             }
         });
     }
+
 
     async deletePhoto(req: Request, res: Response): Promise<void> {
         const userId = req.params.id;
