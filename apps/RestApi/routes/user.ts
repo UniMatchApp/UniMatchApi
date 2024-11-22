@@ -38,6 +38,7 @@ router.put('/:id/values-and-beliefs', userController.changeValuesAndBeliefs.bind
 // router.put('/:id/age', userController.changeAge.bind(userController));
 // router.put('/:id/max-distance', userController.changeMaxDistance.bind(userController));
 router.put('/:id/weight', userController.changeWeight.bind(userController));
+router.put('/:id/wall', userController.changeWall.bind(userController));
 router.post('/:id', fileUploadMiddleware, userController.createProfile.bind(userController));
 router.post('', userController.createUser.bind(userController));
 router.delete('/:id/delete-photo/:photoUrl', userController.deletePhoto.bind(userController));

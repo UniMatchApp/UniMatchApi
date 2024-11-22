@@ -4,6 +4,7 @@ import { DeletePhotoFromTheWallDTO } from "../DTO/DeletePhotoFromTheWallDTO";
 import { IProfileRepository } from "../ports/IProfileRepository";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import { DomainError } from "@/core/shared/exceptions/DomainError";
 
 export class DeletePhotoFromTheWallCommand implements ICommand<DeletePhotoFromTheWallDTO, void> {
     private repository: IProfileRepository;
@@ -21,6 +22,10 @@ export class DeletePhotoFromTheWallCommand implements ICommand<DeletePhotoFromTh
             console.log(request)
             if (!profile) {
                 return Result.failure<void>(new NotFoundError(`Profile with id ${request.userId} not found`));
+            }
+
+            if(profile.wall.length === 1) {
+                return Result.failure<void>(new DomainError(`Cannot delete the last photo from the wall`));
             }
 
             if (!profile.wall.includes(request.photoURL)) {
