@@ -1,15 +1,20 @@
-import { ICommand } from "@/core/shared/application/ICommand";
-import { Result } from "@/core/shared/domain/Result";
-import { UpdateMessageDTO } from "../DTO/UpdateMessageDTO";
-import { IMessageRepository } from "../ports/IMessageRepository";
-import { IEventBus } from "@/core/shared/application/IEventBus";
-import { IFileHandler } from "@/core/shared/application/IFileHandler";
-import { Message } from "../../domain/Message";
-import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
-import { FileError } from "@/core/shared/exceptions/FileError";
-import { ValidationError } from "@/core/shared/exceptions/ValidationError";
+import {ICommand} from "@/core/shared/application/ICommand";
+import {Result} from "@/core/shared/domain/Result";
+import {UpdateMessageDTO} from "../DTO/UpdateMessageDTO";
+import {IMessageRepository} from "../ports/IMessageRepository";
+import {IEventBus} from "@/core/shared/application/IEventBus";
+import {IFileHandler} from "@/core/shared/application/IFileHandler";
+import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
+import {ValidationError} from "@/core/shared/exceptions/ValidationError";
+import {
+    DeletedMessageStatusType,
+    MessageStatusType,
+    validateDeletedMessageStatusType,
+    validateMessageStatusType
+} from "@/core/shared/domain/MessageStatusEnum";
+import {MessageDTO} from "@/core/uniMatch/message/application/DTO/MessageDTO";
 
-export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, Message> {
+export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, MessageDTO> {
     private readonly repository: IMessageRepository;
     private readonly eventBus: IEventBus;
     private readonly fileHandler: IFileHandler;
@@ -19,46 +24,70 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, Message>
         this.eventBus = eventBus;
         this.fileHandler = fileHandler;
     }
-    
-    async run(request: UpdateMessageDTO): Promise<Result<Message>> {
-         
+
+    async run(request: UpdateMessageDTO): Promise<Result<MessageDTO>> {
+
         try {
             const messageToUpdate = await this.repository.findById(request.messageId);
-            let attachmentUrl: string | undefined = undefined;
 
             if (!messageToUpdate) {
-                return Result.failure<Message>(new NotFoundError('Message not found'));
+                return Result.failure<MessageDTO>(new NotFoundError('Message not found'));
             }
 
-            if (messageToUpdate.sender !== request.userId) {
-                return Result.failure<Message>(new ValidationError('User is not the sender of the message'));
+            // Check if the userId is the sender of the message
+            if (request.content && (messageToUpdate.sender !== request.userId)) {
+                return Result.failure<MessageDTO>(new ValidationError('User is not the sender of the message'));
             }
 
-            if (request.attachment) {
-
-                const fileName = request.attachment.name;
-                if (!fileName) {
-                    return Result.failure<Message>(new FileError('File name is required'));
-                }
-
-                if (messageToUpdate.attachment) {
-                    this.fileHandler.delete(messageToUpdate.attachment);
-                }
-
-                attachmentUrl = await this.fileHandler.save(fileName, request.attachment);
+            if (request.status && !validateMessageStatusType(request.status)) {
+                return Result.failure<MessageDTO>(new ValidationError('Invalid message status'));
             }
+
+            if ((request.status as MessageStatusType === "RECEIVED" || request.status as MessageStatusType === "READ") &&
+                (messageToUpdate.recipient !== request.userId)) {
+                return Result.failure<MessageDTO>(new ValidationError('User is not the recipient of the message. Cannot update status to RECEIVED or READ'));
+            }
+
+            if (request.deletedStatus && !validateDeletedMessageStatusType(request.deletedStatus)) {
+                return Result.failure<MessageDTO>(new ValidationError('Invalid deleted status'));
+            }
+
+            if (request.deletedStatus as DeletedMessageStatusType === "NOT_DELETED") {
+                return Result.failure<MessageDTO>(new ValidationError('Cannot update message to NOT_DELETED status'));
+            }
+
+            if ((request.deletedStatus as DeletedMessageStatusType === "DELETED_BY_SENDER" ||
+                    request.deletedStatus as DeletedMessageStatusType === "DELETED_FOR_BOTH") &&
+                request.userId !== messageToUpdate.sender) {
+                return Result.failure<MessageDTO>(new ValidationError('User is not the sender of the message. Cannot delete message'));
+            }
+
+            if ((request.deletedStatus as DeletedMessageStatusType === "DELETED_BY_RECIPIENT") &&
+                (request.userId !== messageToUpdate.recipient)) {
+                return Result.failure<MessageDTO>(new ValidationError('User is not the recipient of the message. Cannot delete message for recipient'));
+            }
+
+            if (request.deletedStatus && (request.status || request.content)) {
+                return Result.failure<MessageDTO>(new ValidationError('Message status and content cannot be updated when deletedStatus is present'));
+            }
+
+            if (request.content && request.status) {
+                return Result.failure<MessageDTO>(new ValidationError('Message status and content cannot be updated at the same time'));
+            }
+
 
             messageToUpdate.edit(
                 request.content,
-                attachmentUrl
+                request.status as MessageStatusType,
+                request.deletedStatus as DeletedMessageStatusType
             );
 
             await this.repository.update(messageToUpdate, request.messageId);
             this.eventBus.publish(messageToUpdate.pullDomainEvents());
 
-            return Result.success<Message>(messageToUpdate);
-        } catch (error : any) {
-            return Result.failure<Message>(error);
+            return Result.success<MessageDTO>(MessageDTO.fromDomain(messageToUpdate));
+        } catch (error: any) {
+            return Result.failure<MessageDTO>(error);
         }
     }
 

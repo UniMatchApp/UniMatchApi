@@ -1,33 +1,46 @@
 import {IMessageRepository} from "@/core/uniMatch/message/application/ports/IMessageRepository";
 import {Message} from "@/core/uniMatch/message/domain/Message";
 import {user1, user2} from "@/core/uniMatch/user/domain/mocks/MockUsers";
-import {UUID} from "@/core/shared/domain/UUID";
 
 export class InMemoryMessageRepository implements IMessageRepository {
-    private messages: { [id: string]: Message } = {
-        [UUID.generate().toString()] : new Message(
-            "Mock message 1",
-            user1.getId().toString(),
-            user2.getId().toString(),
-        ),
-        [UUID.generate().toString()] : new Message(
-            "Mock message 2",
-            user2.getId().toString(),
-            user1.getId().toString(),
-        ),
-        [UUID.generate().toString()] : new Message(
-            "Mock message 3",
-            user1.getId().toString(),
-            user2.getId().toString(),
-        ),
-        [UUID.generate().toString()] : new Message(
-            "Mock message 4",
-            user2.getId().toString(),
-            user1.getId().toString(),
-        )
 
+    private messages: { [id: string]: Message } = {};
 
-    };
+    constructor() {
+        const _list_of_messages: Message[] = [
+            new Message(
+                "Mock message 1",
+                user1.getId().toString(),
+                user2.getId().toString(),
+            ),
+            new Message(
+                "Mock message 2",
+                user2.getId().toString(),
+                user1.getId().toString(),
+            ),
+            new Message(
+                "Mock message 3",
+                user1.getId().toString(),
+                user2.getId().toString(),
+            ),
+            new Message(
+                "Mock message 4",
+                user2.getId().toString(),
+                user1.getId().toString(),
+            )
+        ];
+
+        _list_of_messages[0].setId("10f577ad-9efa-4365-9015-94f7da265701");
+        _list_of_messages[1].setId("20f577ad-9efa-4365-9015-94f7da265702");
+        _list_of_messages[2].setId("30f577ad-9efa-4365-9015-94f7da265703");
+        _list_of_messages[3].setId("40f577ad-9efa-4365-9015-94f7da265704");
+
+        _list_of_messages.forEach(message => {
+            this.messages[message.getId().toString()] = message;
+        });
+
+        console.log("InMemoryMessageRepository created with messages: ", this.messages);
+    }
 
     async create(entity: Message): Promise<void> {
         const id = entity.getId().toString();

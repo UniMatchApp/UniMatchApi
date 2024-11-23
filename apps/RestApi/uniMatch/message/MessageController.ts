@@ -175,11 +175,16 @@ export class MessageController {
         });
     }
 
+    // Token (userId)
     async updateMessage(req: Request, res: Response): Promise<void> {
-        const userId = req.params.userId;
+        const messageId = req.params.messageId;
+        const userId = req.body.senderId;
         const command = new UpdateMessageCommand(this.messageRepository, this.eventBus, this.fileHandler);
-        const dto = {userId: userId, ...req.body} as UpdateMessageDTO;
-        return command.run(dto).then((result: Result<Message>) => {
+        const dto = {
+            messageId: messageId,
+            userId: userId,
+            ...req.body} as UpdateMessageDTO;
+        return command.run(dto).then((result: Result<MessageDTO>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
