@@ -27,7 +27,7 @@ export class UserHasChangedMaxDistanceEventHandler implements IEventHandler {
             user.maxDistance = Number(maxDistance);
             this.repository.update(user, user.getId());
         } catch (error : any) {
-            throw error;
+            console.error(error);
         }
     }
 

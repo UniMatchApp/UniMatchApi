@@ -38,7 +38,7 @@ export class EventIsDeletedEventHandler implements IEventHandler {
                 this.appNotifications.sendNotification(notification);
             }
         } catch (error: any) {
-            throw error;
+            console.error(error);
         }
     }
 

@@ -25,10 +25,10 @@ export class UserHasChangedSexPriorityEventHandler implements IEventHandler {
                 throw new EventError("User not found");
             }
     
-            user.genderPriority = Gender.fromString(genderPriority);
+            user.genderPriority = new Gender(Gender.fromString(genderPriority));
             this.repository.update(user, user.getId());
         } catch (error : any) {
-            throw error;
+            console.error(error);
         }
     }
 

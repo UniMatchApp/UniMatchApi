@@ -29,7 +29,7 @@ export class UserHasChangedLocationEventHandler implements IEventHandler {
             user.location = location;
             this.repository.update(user, user.getId());
         } catch (error : any) {
-            throw error;
+            console.error(error);
         }
     }
 
