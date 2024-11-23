@@ -62,7 +62,7 @@ export class NewProfileEventHandler implements IEventHandler {
                 location
             );
     
-            this.repository.create(node);
+            await this.repository.create(node);
         } catch (error : any) {
             console.error(error);
         }

@@ -28,7 +28,7 @@ export class UserHasChangedAgeEventHandler implements IEventHandler {
             }
     
             user.age = Number(age);
-            this.repository.update(user, user.getId());
+            await this.repository.update(user, user.getId());
         } catch (error : any) {
             console.error(error);
         }

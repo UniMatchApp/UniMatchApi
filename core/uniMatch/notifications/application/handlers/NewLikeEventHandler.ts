@@ -31,7 +31,7 @@ export class NewLikeEventHandler implements IEventHandler {
                 true
             );
     
-            this.repository.create(notification);
+            await this.repository.create(notification);
             this.appNotifications.sendNotification(notification);
         } catch (error: any) {
             console.error(error);

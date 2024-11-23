@@ -27,7 +27,7 @@ export class UserHasChangedLocationEventHandler implements IEventHandler {
     
             const location = stringLocation ? Location.stringToLocation(stringLocation) : undefined;
             user.location = location;
-            this.repository.update(user, user.getId());
+            await this.repository.update(user, user.getId());
         } catch (error : any) {
             console.error(error);
         }

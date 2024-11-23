@@ -62,7 +62,7 @@ export class NewMessageEventHandler implements IEventHandler {
                 deletedStatus
             );
 
-            this.repository.create(notification);
+            await this.repository.create(notification);
             this.appNotifications.sendNotification(notification);
         } catch (error: any) {
             console.error(error);

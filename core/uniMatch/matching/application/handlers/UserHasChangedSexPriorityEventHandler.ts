@@ -26,7 +26,7 @@ export class UserHasChangedSexPriorityEventHandler implements IEventHandler {
             }
     
             user.genderPriority = new Gender(Gender.fromString(genderPriority));
-            this.repository.update(user, user.getId());
+            await this.repository.update(user, user.getId());
         } catch (error : any) {
             console.error(error);
         }
