@@ -20,11 +20,6 @@ export class EmailNotifications implements IEmailNotifications {
             },
         });
 
-        console.log("Host: ", process.env.EMAIL_HOST);
-        console.log("Port: ", process.env.EMAIL_PORT);
-        console.log("User: ", process.env.EMAIL_USER);
-        console.log("Pass: ", process.env.EMAIL_PASS);
-
         this.transporter.verify((error, success) => {
             if (error) {
                 console.error('Error de conexión al servidor SMTP:', error);

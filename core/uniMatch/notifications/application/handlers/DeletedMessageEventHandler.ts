@@ -41,14 +41,14 @@ export class DeletedMessageEventHandler implements IEventHandler {
                 recipient,
                 "Message deleted",
                 sender,
-                undefined,
-                undefined,
-                MessageStatusEnum.DELETED_FOR_BOTH
+                MessageStatusEnum.SENT,
+                MessageStatusEnum.NOT_DELETED,
+                undefined
             );
 
             this.appNotifications.sendNotification(notification);
         } catch (error: any) {
-            throw error;
+            console.error(error);
         }
     }
 

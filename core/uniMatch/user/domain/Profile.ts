@@ -146,8 +146,8 @@ export class Profile extends AggregateRoot {
     }
 
     public set maxDistance(value: number) {
-        if (value <= 0) {
-            throw new DomainError("Max distance must be greater than 0.");
+        if (value < 0) {
+            throw new DomainError("Max distance can not be below 0.");
         }
         this._maxDistance = value;
 

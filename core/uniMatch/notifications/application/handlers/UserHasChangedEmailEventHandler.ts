@@ -30,13 +30,10 @@ export class UserHasChangedEmailEventHandler implements IEventHandler {
                 "Your email has been changed to " + email
             );
             
-            console.log("Notification: ", notification);
-            this.repository.create(notification);
-            console.log("HOLA");
+            await this.repository.create(notification);
             this.emailNotifications.sendEmailToOne(email, "Your email has been changed", "Your email has been changed to " + email);
         } catch (error: any) {
             console.error("Error handling event: ", event);
-            throw error;
         }
     }
 

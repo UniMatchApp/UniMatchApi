@@ -12,9 +12,9 @@ const notificationsController = new NotificationsController(
     dependencies.appNotifications,
     dependencies.emailNotifications
 );
-router.delete('/notifications/:id', notificationsController.deletedAllNotifications.bind(notificationsController));
-router.delete('/notification/:id', notificationsController.deleteNotification.bind(notificationsController));
-router.post('/notification/seen/:id', notificationsController.NotificationHasBeenSeen.bind(notificationsController));
-router.get('/notifications/:id', notificationsController.getAllNotifications.bind(notificationsController));
+router.delete('/notifications', validateAndRefreshToken, notificationsController.deletedAllNotifications.bind(notificationsController));
+router.delete('/notifications/:id', validateAndRefreshToken, notificationsController.deleteNotification.bind(notificationsController));
+router.post('/notifications/seen/:id', validateAndRefreshToken, notificationsController.NotificationHasBeenSeen.bind(notificationsController));
+router.get('/notifications', validateAndRefreshToken, notificationsController.getAllNotifications.bind(notificationsController));
 
 export {router};

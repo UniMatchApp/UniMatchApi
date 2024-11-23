@@ -34,11 +34,11 @@ export class EventIsDeletedEventHandler implements IEventHandler {
                     EventStatusEnum.CANCELLED
                 );
 
-                this.repository.create(notification);
+                await this.repository.create(notification);
                 this.appNotifications.sendNotification(notification);
             }
         } catch (error: any) {
-            throw error;
+            console.error(error);
         }
     }
 

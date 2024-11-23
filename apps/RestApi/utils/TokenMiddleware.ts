@@ -15,23 +15,12 @@ export const validateAndRefreshToken = (req: Request, res: Response, next: NextF
     try {
         const decoded = dependencies.tokenService.validateToken(token) as jwt.JwtPayload;
 
-        const routeId = req.params.id;
-
-        if (!routeId) {
-            res.status(400).json({ message: 'ID no proporcionado en la ruta' });
-            return;
-        }
-
-        if (decoded.id !== routeId) {
-            res.status(403).json({ message: 'No autorizado: el ID no coincide' });
-            return;
-        }
+        req.body.userId = decoded.id;
 
         next();
     } catch (error: any) {
         if (error instanceof TokenExpiredError) {
             const decoded = jwt.decode(token) as jwt.JwtPayload;
-            console.log("decoded", decoded);
             if (decoded && decoded.id === req.params.id) {
                 const newToken = dependencies.tokenService.generateToken({ id: decoded.id });
                 res.setHeader('Authorization', `Bearer ${newToken}`);

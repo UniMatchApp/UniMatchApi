@@ -33,10 +33,10 @@ export class EventIsGoingToExpireEventHandler implements IEventHandler {
             );
             
     
-            this.repository.create(notification);
+            await this.repository.create(notification);
             this.appNotifications.sendNotification(notification);
         } catch (error: any) {
-            throw error;
+            console.error(error);
         }
     }
 

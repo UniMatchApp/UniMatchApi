@@ -33,7 +33,7 @@ export class NewProfileEventHandler implements IEventHandler {
             const genderPriorityStr = event.getPayload().get("genderPriority");
             let genderPriority: Gender | undefined;
             if (genderPriorityStr) {
-                genderPriority = Gender.fromString(genderPriorityStr);
+                genderPriority = new Gender(Gender.fromString(genderPriorityStr))
             }
     
             const ageStr = event.getPayload().get("age");
@@ -48,7 +48,7 @@ export class NewProfileEventHandler implements IEventHandler {
     
             const relationshipType = RelationshipType.fromString(relationshipTypeStr);
             const max = Number(maxDistanceStr);
-            const gender = Gender.fromString(genderStr);
+            const gender = new Gender(Gender.fromString(genderStr))
             const location = locationStr ? Location.stringToLocation(locationStr) : undefined;
     
     
@@ -62,9 +62,9 @@ export class NewProfileEventHandler implements IEventHandler {
                 location
             );
     
-            this.repository.create(node);
+            await this.repository.create(node);
         } catch (error : any) {
-            throw error;
+            console.error(error);
         }
     }
 
