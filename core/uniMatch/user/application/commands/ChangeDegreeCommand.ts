@@ -22,6 +22,7 @@ export class ChangeDegreeCommand implements ICommand<ChangeDegreeDTO, string> {
             await this.repository.update(profile, profile.getId());
             return Result.success<string>(request.degree);
         } catch (error: any) {
+            console.log(error);
             return Result.failure<string>(error);
         }
     }

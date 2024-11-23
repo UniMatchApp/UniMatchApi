@@ -37,6 +37,7 @@ export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, string> {
             profile.addPost(photoUrl);
             await this.repository.update(profile, profile.getId());
 
+            console.log(profile.wall)
             return Result.success<string>(photoUrl);
         } catch (error: any) {
             return Result.failure<string>(error);
