@@ -65,6 +65,14 @@ import { ChangeGenderCommand } from '@/core/uniMatch/user/application/commands/C
 import { ChangeWallCommand } from '@/core/uniMatch/user/application/commands/ChangeWallCommand';
 import { ChangeWallDTO } from '@/core/uniMatch/user/application/DTO/ChangeWallDTO';
 import { TokenService } from '../../utils/TokenService';
+import { ChangeGenderPriorityCommand } from '@/core/uniMatch/user/application/commands/ChangeGenderPriorityCommand';
+import { ChangeGenderPriorityDTO } from '@/core/uniMatch/user/application/DTO/ChangeGenderPriorityDTO';
+import { ChangeAgeRangeCommand } from '@/core/uniMatch/user/application/commands/ChangeAgeRangeCommand';
+import { ChangeAgeRangeDTO } from '@/core/uniMatch/user/application/DTO/ChangeAgeRangeDTO';
+import { ChangeMaxDistanceCommand } from '@/core/uniMatch/user/application/commands/ChangeMaxDistanceCommand';
+import { ChangeMaxDistanceDTO } from '@/core/uniMatch/user/application/DTO/ChangeMaxDistanceDTO';
+import { ChangeLocationDTO } from '@/core/uniMatch/user/application/DTO/ChangeLocationDTO';
+import { ChangeLocationCommand } from '@/core/uniMatch/user/application/commands/ChangeLocationCommand';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -143,7 +151,6 @@ export class UserController {
         const dto = {id: id} as GetProfileDTO;
         return query.run(dto).then((result: Result<ProfileDTO>) => {
             if (result.isSuccess()) {
-                console.log(result);
                 res.json(result);
             } else {
                 const error = result.getError();
@@ -229,6 +236,23 @@ export class UserController {
         const command = new ChangeDegreeCommand(this.profileRepository);
         const dto = {id: userId, degree: degree} as ChangeDegreeDTO;
         return command.run(dto).then((result: Result<string>) => {
+            if (result.isSuccess()) {
+                res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async changeLocation(req: Request, res: Response): Promise<void> {
+        const userId = req.body.userId;
+        const altitude = req.body.altitude;
+        const longitude = req.body.longitude;
+        const latitude = req.body.latitude;
+        const command = new ChangeLocationCommand(this.profileRepository, this.eventBus);
+        const dto = {id: userId, altitude: altitude, longitude: longitude, latitude: latitude} as ChangeLocationDTO;
+        return command.run(dto).then((result: Result<{latitude?: number, longitude?: number, altitude?: number}>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -406,7 +430,6 @@ export class UserController {
     async changeSexualOrientation(req: Request, res: Response): Promise<void> {
         const userId = req.body.userId;
         const sexualOrientation = req.body.newContent;
-        console.log("entro")
         const command = new ChangeSexualOrientationCommand(this.profileRepository, this.eventBus);
         const dto = {id: userId, newSexualOrientation: sexualOrientation} as ChangeSexualOrientationDTO;
         return command.run(dto).then((result: Result<string>) => {
@@ -437,7 +460,6 @@ export class UserController {
 
     async changeSmokes(req: Request, res: Response): Promise<void> {
         const userId = req.body.userId;
-        console.log(req.body)
         const smokes = req.body.newContent;
         const command = new ChangeSmokesCommand(this.profileRepository);
         const dto = {id: userId, newContent: smokes} as ChangeLifeStyleDTO;
@@ -472,6 +494,52 @@ export class UserController {
         const command = new ChangeValuesAndBeliefsCommand(this.profileRepository);
         const dto = {id: userId, newContent: valuesAndBeliefs} as ChangeLifeStyleDTO;
         return command.run(dto).then((result: Result<string>) => {
+            if (result.isSuccess()) {
+                res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async changeGenderPriority(req: Request, res: Response): Promise<void> {
+        const userId = req.body.userId
+        const newGender = req.body.newContent;
+        const command = new ChangeGenderPriorityCommand(this.profileRepository, this.eventBus);
+        const dto = {id: userId, newGender: newGender} as ChangeGenderPriorityDTO;
+        return command.run(dto).then((result: Result<string | undefined>) => {
+            if (result.isSuccess()) {
+                res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async changeAgeRange(req: Request, res: Response): Promise<void> {
+        const userId = req.body.userId;
+        const min = req.body.min;
+        const max = req.body.max;
+        const command = new ChangeAgeRangeCommand(this.profileRepository);
+        const dto = {id: userId, min: min, max: max} as ChangeAgeRangeDTO;
+        return command.run(dto).then((result: Result<{min: number, max: number}>) => {
+            if (result.isSuccess()) {
+                res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async changeMaxDistance(req: Request, res: Response): Promise<void> {
+        const userId = req.body.userId;
+        const distance = req.body.newContent;
+        const command = new ChangeMaxDistanceCommand(this.profileRepository, this.eventBus);
+        const dto = {id: userId, distance: distance} as ChangeMaxDistanceDTO;
+        return command.run(dto).then((result: Result<number>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {

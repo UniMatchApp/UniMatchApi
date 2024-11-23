@@ -35,7 +35,6 @@ const fileUploadMiddleware = (req: Request, res: Response, next: NextFunction) =
       });
 
       req.body.attachment = file;
-      console.log('req.body.attachment', req.body.attachment);
       next();
     } else {
       next();

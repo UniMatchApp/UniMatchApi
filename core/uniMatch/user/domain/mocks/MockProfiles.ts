@@ -24,8 +24,7 @@ export const mockProfile1 = new Profile(
     "https://i1.rgstatic.net/ii/profile.image/11431281127138961-1678964775589_Q512/Adrian-Penate-Sanchez.jpg",
     "https://www.eii.ulpgc.es/sites/default/files/styles/height/public/team/Foto%20oficial%20Jose%20Carlos%20Rodriguez%2005.jpeg?itok=eFOM2TXu",
     "https://estaticos-cdn.prensaiberica.es/clip/53ccde93-d373-422a-8426-4dbee8ffbcf3_16-9-aspect-ratio_default_0.jpg",
-    ],
-    new Location(28.123456, -15.123456)
+    ]
 );
 
 export const mockProfile2 = new Profile(

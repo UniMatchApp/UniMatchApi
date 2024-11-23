@@ -90,7 +90,6 @@ export class WebSocketController {
                             userId: parsedMessage.userId,
                             targetUserId: parsedMessage.targetUserId,
                         };
-                        console.log('typingDTO', typingDTO);
                         const command = await this.userIsTypingCommand.run(typingDTO);
                         if (command.isSuccess()) {
                             const targetId = command.getValue();
@@ -108,7 +107,6 @@ export class WebSocketController {
                         const stoppedTypingDTO: UserHasStoppedTypingDTO = {
                             userId: parsedMessage.userId,
                         };
-                        console.log('stoppedTypingDTO', stoppedTypingDTO);
                         const command = await this.userHasStoppedTypingCommand.run(stoppedTypingDTO);
 
                         if (command.isSuccess()) {
@@ -131,7 +129,6 @@ export class WebSocketController {
                             userId: parsedMessage.userId,
                             targetId: parsedMessage.targetUserId,
                         } as GetUserStatusDTO;
-                        console.log('getUserStatusDTO', getUserStatusDTO);
                         const result = await this.getUserStatusCommand.run(getUserStatusDTO);
                         const response = {
                             type: 'getUserStatus',

@@ -51,7 +51,6 @@ export class InMemoryProfileRepository implements IProfileRepository {
     }
 
     async findByUserId(userId: string): Promise<Profile | undefined> {
-        console.log("Finding profile by userId: ", userId);
         return Object.values(this.profiles).find(profile => profile.userId === userId);
     }
 

@@ -21,7 +21,6 @@ export const validateAndRefreshToken = (req: Request, res: Response, next: NextF
     } catch (error: any) {
         if (error instanceof TokenExpiredError) {
             const decoded = jwt.decode(token) as jwt.JwtPayload;
-            console.log("decoded", decoded);
             if (decoded && decoded.id === req.params.id) {
                 const newToken = dependencies.tokenService.generateToken({ id: decoded.id });
                 res.setHeader('Authorization', `Bearer ${newToken}`);

@@ -19,6 +19,7 @@ router.post('/block/:targetId', validateAndRefreshToken, userController.blockUse
 router.put('/about', validateAndRefreshToken, userController.changeAboutMe.bind(userController));
 // router.put('/:id/fact', userController.changeFact.bind(userController));
 router.put('/degree', validateAndRefreshToken, userController.changeDegree.bind(userController));
+router.put('/location', validateAndRefreshToken, userController.changeLocation.bind(userController));
 router.put('/drinks', validateAndRefreshToken, userController.changeDrinks.bind(userController));
 router.put('/email', validateAndRefreshToken, userController.changeEmail.bind(userController));
 router.put('/height', validateAndRefreshToken, userController.changeHeight.bind(userController));
@@ -35,10 +36,10 @@ router.put('/gender', validateAndRefreshToken, userController.changeGender.bind(
 router.put('/smokes', validateAndRefreshToken, userController.changeSmokes.bind(userController));
 router.put('/sports', validateAndRefreshToken, userController.changeSports.bind(userController));
 router.put('/values-and-beliefs', validateAndRefreshToken, userController.changeValuesAndBeliefs.bind(userController));
-// router.put('/gender-priority', userController.changeGenderPriority.bind(userController));
-// router.put('/age-range', userController.changeAgeRange.bind(userController));
+router.put('/gender-priority', validateAndRefreshToken, userController.changeGenderPriority.bind(userController));
+router.put('/age-range', validateAndRefreshToken, userController.changeAgeRange.bind(userController));
 // router.put('/age', userController.changeAge.bind(userController));
-// router.put('/max-distance', userController.changeMaxDistance.bind(userController));
+router.put('/max-distance', validateAndRefreshToken, userController.changeMaxDistance.bind(userController));
 router.put('/weight', validateAndRefreshToken, userController.changeWeight.bind(userController));
 router.put('/wall', validateAndRefreshToken, userController.changeWall.bind(userController));
 router.post('/profile', validateAndRefreshToken, fileUploadMiddleware, userController.createProfile.bind(userController));

@@ -56,7 +56,6 @@ export class MessageController {
     }
 
     async createMessage(req: Request, res: Response): Promise<void> {
-        console.log("Req body: ", req.body)
         const command = new CreateNewMessageCommand(this.messageRepository, this.eventBus, this.fileHandler);
         return command.run(req.body).then((result: Result<MessageDTO>) => {
             if (result.isSuccess()) {
