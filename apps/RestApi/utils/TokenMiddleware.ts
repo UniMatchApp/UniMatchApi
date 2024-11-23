@@ -15,17 +15,7 @@ export const validateAndRefreshToken = (req: Request, res: Response, next: NextF
     try {
         const decoded = dependencies.tokenService.validateToken(token) as jwt.JwtPayload;
 
-        const routeId = req.params.id;
-
-        if (!routeId) {
-            res.status(400).json({ message: 'ID no proporcionado en la ruta' });
-            return;
-        }
-
-        if (decoded.id !== routeId) {
-            res.status(403).json({ message: 'No autorizado: el ID no coincide' });
-            return;
-        }
+        req.body.userId = decoded.id;
 
         next();
     } catch (error: any) {

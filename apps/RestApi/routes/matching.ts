@@ -11,10 +11,10 @@ const matchingController = new MatchingController(
     dependencies.eventBus
 )
 
-router.post('/dislike/:id/:dislikedUserId', validateAndRefreshToken ,matchingController.userDislikedSomebody.bind(matchingController));
-router.post('/like/:id/:likedUserId', validateAndRefreshToken, matchingController.userLikedSomebody.bind(matchingController));
-router.get('/likes/:id', validateAndRefreshToken, matchingController.usersThatLikedUser.bind(matchingController));
-router.get('/potential-matches/:id/:limit', validateAndRefreshToken, matchingController.getUserPotentialMatches.bind(matchingController));
-router.get('/mutual-likes/:id', validateAndRefreshToken, matchingController.getMutualLikes.bind(matchingController));
+router.post('/dislike/:dislikedUserId', validateAndRefreshToken ,matchingController.userDislikedSomebody.bind(matchingController));
+router.post('/like/:likedUserId', validateAndRefreshToken, matchingController.userLikedSomebody.bind(matchingController));
+router.get('/likes', validateAndRefreshToken, matchingController.usersThatLikedUser.bind(matchingController));
+router.get('/potential-matches/:limit', validateAndRefreshToken, matchingController.getUserPotentialMatches.bind(matchingController));
+router.get('/mutual-likes', validateAndRefreshToken, matchingController.getMutualLikes.bind(matchingController));
 
 export {router};

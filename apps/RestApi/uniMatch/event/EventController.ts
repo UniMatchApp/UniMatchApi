@@ -19,6 +19,7 @@ import { DeleteEventDTO } from '@/core/uniMatch/event/application/DTO/DeleteEven
 import { LikeEventDTO } from '@/core/uniMatch/event/application/DTO/LikeEventDTO';
 import { ParticipateEventDTO } from '@/core/uniMatch/event/application/DTO/ParticipateEventDTO';
 import { ErrorHandler } from '../../utils/ErrorHandler';
+import { CreateNewEventDTO } from '@/core/uniMatch/event/application/DTO/CreateNewEventDTO';
 
 export class EventController {
     private readonly eventRepository: IEventRepository;
@@ -57,8 +58,10 @@ export class EventController {
     }
 
     async create(req: Request, res: Response): Promise<void> {
+        var userId = req.body.userId;
+        var dto = { ownerId: userId, ...req.body } as CreateNewEventDTO;
         var command = new CreateNewEventCommand(this.eventRepository, this.fileHandler, this.eventBus);
-        return command.run(req.body).then((result: Result<Event>) => {
+        return command.run(dto).then((result: Result<Event>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -69,7 +72,7 @@ export class EventController {
     }
 
     async update(req: Request, res: Response): Promise<void> {
-        var id = req.params.id;
+        var id = req.body.userId;
         var command = new EditEventCommand(this.eventRepository, this.eventBus, this.fileHandler);
         var dto = { eventId: id, ...req.body } as EditEventDTO;
         return command.run(dto).then((result: Result<Event>) => {
