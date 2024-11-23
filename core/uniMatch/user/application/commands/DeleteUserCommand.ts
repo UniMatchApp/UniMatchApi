@@ -29,14 +29,10 @@ export class DeleteUserCommand implements ICommand<DeleteUserDTO, void> {
 
             user.delete();
 
-            
-
             const profile = await this.profileRepository.findByUserId(request.userId);
             if(profile) {
                 await this.profileRepository.deleteById(profile.getId().toString());
             }
-            
-            
         
             this.eventBus.publish(user.pullDomainEvents());
             return Result.success<void>(undefined);

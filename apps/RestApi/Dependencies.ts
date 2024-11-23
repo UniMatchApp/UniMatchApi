@@ -119,7 +119,8 @@ export class DependencyContainer {
     }
     
     private createFileHandler(): IFileHandler {
-        return this.useMocks ? new FileHandler() : new S3FileHandler();
+        // return this.useMocks ? new FileHandler() : new S3FileHandler();
+        return this.useMocks ? new FileHandler() : new FileHandler();
     }
 
     private createSessionStatusRepository(): ISessionStatusRepository {
@@ -177,5 +178,5 @@ export class DependencyContainer {
 
 }
 
-export const dependencies = new DependencyContainer(true);
+export const dependencies = new DependencyContainer(false);
 

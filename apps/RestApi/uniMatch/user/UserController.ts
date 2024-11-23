@@ -329,6 +329,7 @@ export class UserController {
     }
 
     async changeJob(req: Request, res: Response): Promise<void> {
+        console.log(req.body.newContent)
         const id = req.params.id;
         const job = req.body.newContent;
         const command = new ChangeJobCommand(this.profileRepository);
