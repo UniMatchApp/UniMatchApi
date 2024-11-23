@@ -30,7 +30,6 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, UserDTO>
                 return Result.failure<UserDTO>(new ValidationError(`User with email ${request.email} already exists`));
             }
 
-
             const user = new User(
                 request.email,
                 request.password

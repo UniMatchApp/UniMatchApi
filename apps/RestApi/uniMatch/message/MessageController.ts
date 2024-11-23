@@ -176,10 +176,12 @@ export class MessageController {
     }
 
     async updateMessage(req: Request, res: Response): Promise<void> {
-        const userId = req.params.id;
+        const messageId = req.params.id;
+        const userId = req.body.senderId;
+
         const command = new UpdateMessageCommand(this.messageRepository, this.eventBus, this.fileHandler);
-        const dto = {userId: userId, ...req.body} as UpdateMessageDTO;
-        return command.run(dto).then((result: Result<Message>) => {
+        const dto = {messageId: messageId, userId: userId, ...req.body} as UpdateMessageDTO;
+        return command.run(dto).then((result: Result<MessageDTO>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {

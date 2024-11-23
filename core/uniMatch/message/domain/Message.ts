@@ -1,10 +1,9 @@
-
-import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
-import { DomainError } from "@/core/shared/exceptions/DomainError";
-import { DeletedMessageEvent } from "./events/DeletedMessageEvent";
-import { MessageStatusType, MessageStatusEnum, DeletedMessageStatusType } from "@/core/shared/domain/MessageStatusEnum";
-import { EditedMessageEvent } from "./events/EditedMessageEvent";
-import { NewMessageEvent } from "./events/NewMessageEvent";
+import {AggregateRoot} from "@/core/shared/domain/AggregateRoot ";
+import {DomainError} from "@/core/shared/exceptions/DomainError";
+import {DeletedMessageEvent} from "./events/DeletedMessageEvent";
+import {DeletedMessageStatusType, MessageStatusEnum, MessageStatusType} from "@/core/shared/domain/MessageStatusEnum";
+import {EditedMessageEvent} from "./events/EditedMessageEvent";
+import {NewMessageEvent} from "./events/NewMessageEvent";
 
 
 export class Message extends AggregateRoot {
@@ -42,7 +41,7 @@ export class Message extends AggregateRoot {
             throw new DomainError("Message content cannot be empty.");
         }
         this._content = value;
-    }    
+    }
 
     public get status(): string {
         return this._status;
@@ -102,12 +101,13 @@ export class Message extends AggregateRoot {
         // this.recordEvent(DeletedMessageEvent.from(this));
     }
 
-    public edit(content: string, attachment?: string): void {
-        this.content = content;
-        this.attachment = attachment;
+    public edit(content?: string, status?: MessageStatusType, deletedStatus?: DeletedMessageStatusType): void {
+        if (content) this.content = content;
+        if (status) this.status = status;
+        if (deletedStatus) this.deletedStatus = deletedStatus;
         this.timestamp = new Date();
         this.recordEvent(EditedMessageEvent.from(this));
-        this._status = MessageStatusEnum.EDITED;
+
     }
 
     public send(): void {
