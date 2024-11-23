@@ -7,7 +7,7 @@ import {IEmailNotifications} from "@/core/shared/application/IEmailNotifications
 import {UserDTO} from "@/core/uniMatch/user/application/DTO/UserDTO";
 import {User} from "@/core/uniMatch/user/domain/User";
 
-export class LoginUserCommand implements ICommand<LoginUserDTO, { token: string, user: UserDTO }> {
+export class LoginUserCommand implements ICommand<LoginUserDTO, UserDTO> {
     private readonly repository: IUserRepository;
     private readonly emailRepository: IEmailNotifications;
 
@@ -16,29 +16,20 @@ export class LoginUserCommand implements ICommand<LoginUserDTO, { token: string,
         this.emailRepository = emailRepository;
     }
 
-    async run(request: LoginUserDTO): Promise<Result<{ token: string, user: UserDTO }>> {
+    async run(request: LoginUserDTO): Promise<Result<UserDTO>> {
         try {
             const user: User | null = await this.repository.findByEmail(request.email);
 
             if (!user) {
-                return Result.failure<{
-                    token: string,
-                    user: UserDTO
-                }>(new AuthenticationError(`User with email ${request.email} not found`));
+                return Result.failure<UserDTO>(new AuthenticationError(`User with email ${request.email} not found`));
             }
 
             if (request.password === "") {
-                return Result.failure<{
-                    token: string,
-                    user: UserDTO
-                }>(new AuthenticationError(`Password is required`));
+                return Result.failure<UserDTO>(new AuthenticationError(`Password is required`));
             }
 
             if (user.password !== request.password) {
-                return Result.failure<{
-                    token: string,
-                    user: UserDTO
-                }>(new AuthenticationError(`Invalid password for email ${request.email}`));
+                return Result.failure<UserDTO>(new AuthenticationError(`Invalid password for email ${request.email}`));
             }
 
 
@@ -52,22 +43,19 @@ export class LoginUserCommand implements ICommand<LoginUserDTO, { token: string,
                 );
             }
 
-            // TODO: Implement JWT token generation
-            return Result.success<{ token: string, user: UserDTO }>(
-                {
-                    token: "token",
-                    user: {
-                        id: user.getId(),
-                        email: user.email,
-                        blockedUsers: user.blockedUsers,
-                        reportedUsers: user.reportedUsers.map(r => r.userId),
-                        registrationDate: user.registrationDate,
-                        registered: user.registered
-                    }
-                }
-            );
+            const userDTO = {
+                id: user.getId(),
+                email: user.email,
+                blockedUsers: user.blockedUsers,
+                reportedUsers: user.reportedUsers.map(r => r.userId),
+                registrationDate: user.registrationDate,
+                registered: user.registered
+            } as UserDTO;
+
+            return Result.success<UserDTO>(userDTO);
+
         } catch (error: any) {
-            return Result.failure<{ token: string, user: UserDTO }>(error);
+            return Result.failure<UserDTO>(error);
         }
     }
 }

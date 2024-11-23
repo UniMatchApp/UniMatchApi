@@ -69,7 +69,7 @@ export class MessageController {
     }
 
     async deleteAllMessagesWithUser(req: Request, res: Response): Promise<void> {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const targetUserId = req.body.targetUserId;
         const command = new DeleteAllMessagesWithUserCommand(this.messageRepository, this.eventBus, this.fileHandler);
         const dto = {userId: userId, targetUserId: targetUserId} as DeleteAllUserMessagesDTO;
@@ -84,7 +84,7 @@ export class MessageController {
     }
 
     async deleteMessage(req: Request, res: Response): Promise<void> {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const messageId = req.body.messageId;
         const command = new DeleteMessageCommand(this.messageRepository, this.eventBus, this.fileHandler);
         const dto = {userId: userId, messageId: messageId} as DeleteMessageDTO;
@@ -100,7 +100,7 @@ export class MessageController {
 
     async messageHasBeenRead(req: Request, res: Response): Promise<void> {
         const messageId = req.params.messageId;
-        const userId = req.body.userId;
+        const userId = req.body.id;
         const command = new MessageHasBeenReadCommand(this.messageRepository);
         const dto = {messageId: messageId, userId: userId} as MessageHasBeenSeenDTO;
         return command.run(dto).then((result: Result<void>) => {
@@ -114,7 +114,7 @@ export class MessageController {
     }
 
     async retrieveMessagesWithUser(req: Request, res: Response): Promise<void> {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const targetUserId = req.body.targetUserId;
         const command = new RetrieveMessagesWithUserCommand(this.messageRepository);
         const dto = {userId: userId, targetUserId: targetUserId} as RetrieveMessagesWithUserDTO;
@@ -130,10 +130,10 @@ export class MessageController {
 
 
     async retrieveMessagesFromUserPaginated(req: Request, res: Response): Promise<void> {
-        const {userId, after, limit} = req.query;
+        const {id, after, limit} = req.query;
         const command = new RetrieveMessagesFromUserPaginatedCommand(this.messageRepository);
         const dto = {
-            userId: userId as string,
+            userId: id as string,
             after: Number(after),
             limit: Number(limit)
         } as RetrieveMessagesFromUserPaginatedDTO;
@@ -148,7 +148,7 @@ export class MessageController {
     }
 
     async retrieveMessagesWithUserPaginated(req: Request, res: Response): Promise<void> {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const command = new RetrieveMessagesWithUserPaginatedCommand(this.messageRepository);
         const dto = {userId: userId, ...req.body} as RetrieveMessagesWithUserPaginatedDTO;
         return command.run(dto).then((result: Result<Message[]>) => {
@@ -162,7 +162,7 @@ export class MessageController {
     }
 
     async retrieveUserLastMessages(req: Request, res: Response): Promise<void> {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const command = new RetrieveUserLastMessagesCommand(this.messageRepository);
         const dto = {userId: userId} as RetrieveUserLastMessagesDTO;
         return command.run(dto).then((result: Result<Message[]>) => {
@@ -176,7 +176,7 @@ export class MessageController {
     }
 
     async updateMessage(req: Request, res: Response): Promise<void> {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const command = new UpdateMessageCommand(this.messageRepository, this.eventBus, this.fileHandler);
         const dto = {userId: userId, ...req.body} as UpdateMessageDTO;
         return command.run(dto).then((result: Result<Message>) => {
