@@ -25,13 +25,15 @@ export class DeleteUserCommand implements ICommand<DeleteUserDTO, void> {
                 return Result.failure<void>(new NotFoundError(`User with id ${request.userId} not found`));
             }
 
+            await this.repository.deleteById(request.userId); // Optional: could just do soft delete
+
             user.delete();
 
-            await this.repository.deleteById(request.userId); // Optional: could just do soft delete
+            
 
             const profile = await this.profileRepository.findByUserId(request.userId);
             if(profile) {
-                await this.repository.deleteById(profile.getId().toString());
+                await this.profileRepository.deleteById(profile.getId().toString());
             }
             
             
@@ -39,6 +41,7 @@ export class DeleteUserCommand implements ICommand<DeleteUserDTO, void> {
             this.eventBus.publish(user.pullDomainEvents());
             return Result.success<void>(undefined);
         } catch (error : any) {
+            console.log(error);
             return Result.failure<void>(error);
         }
     }
