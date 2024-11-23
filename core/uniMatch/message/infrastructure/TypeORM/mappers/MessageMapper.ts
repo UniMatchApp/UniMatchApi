@@ -13,7 +13,7 @@ export class MessageMapper {
 
         message.status = entity.status;
         message.timestamp = entity.timestamp;
-        message.setId(entity.id);
+        message.setId(entity.id.toString());
         message.deletedStatus = entity.deletedStatus;
 
         return message;
@@ -21,7 +21,7 @@ export class MessageMapper {
 
     static toEntity(domain: Message): MessageEntity {
         const messageEntity = new MessageEntity();
-        messageEntity.id = domain.getId();
+        messageEntity.id = domain.getId()
         messageEntity.content = domain.content;
         messageEntity.status = domain.status as MessageStatusType;
         messageEntity.deletedStatus = domain.deletedStatus;

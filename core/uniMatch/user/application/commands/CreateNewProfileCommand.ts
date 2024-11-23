@@ -69,6 +69,7 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
             user.completeRegistration();
             
             await this.profileRepository.create(profile);
+            await this.userRepository.update(user, user.getId());
             this.eventBus.publish(user.pullDomainEvents());
             return Result.success<Profile>(profile);
         } catch (error: any) {

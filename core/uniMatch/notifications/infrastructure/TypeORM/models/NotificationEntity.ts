@@ -2,7 +2,8 @@ import {
     Entity,
     Column,
     CreateDateColumn,
-    Unique
+    Unique,
+    ObjectIdColumn
 } from 'typeorm';
 import { NotificationTypeEnum } from '../../../domain/enum/NotificationTypeEnum';
 import { NotificationStatusEnum } from '../../../domain/enum/NotificationStatusEnum';
@@ -14,7 +15,7 @@ import { AppNotificationPayload } from '../../../domain/entities/AppNotification
 @Entity('notifications')
 @Unique(['id'])
 export class NotificationEntity {
-    @Column({ type: 'uuid', primary: true })
+    @ObjectIdColumn()
     id!: string;
 
     @Column({
@@ -33,7 +34,7 @@ export class NotificationEntity {
     @Column({ type: 'uuid' })
     contentId!: string;
 
-    @Column('jsonb')
+    @Column({ type: 'json' })
     payload!: MessageNotificationPayload | EventNotificationPayload | MatchNotificationPayload | AppNotificationPayload;
 
     @CreateDateColumn({ type: 'timestamp' })

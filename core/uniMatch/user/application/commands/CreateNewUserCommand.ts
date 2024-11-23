@@ -9,7 +9,7 @@ import {IEmailNotifications} from '../../../../shared/application/IEmailNotifica
 import {IProfileRepository} from "../ports/IProfileRepository";
 import {UserDTO} from "../DTO/UserDTO";
 
-export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, { token: string, user: UserDTO }> {
+export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, UserDTO> {
     private readonly repository: IUserRepository;
     private readonly profileRepository: IProfileRepository;
     private readonly eventBus: IEventBus;
@@ -22,15 +22,12 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, { token:
         this.profileRepository = profileRepository;
     }
 
-    async run(request: CreateNewUserDTO): Promise<Result<{ token: string, user: UserDTO }>> {
+    async run(request: CreateNewUserDTO): Promise<Result<UserDTO>> {
         try {
             const userExists = await this.repository.findByEmail(request.email);
 
             if (userExists) {
-                return Result.failure<{
-                    token: string,
-                    user: UserDTO
-                }>(new ValidationError(`User with email ${request.email} already exists`));
+                return Result.failure<UserDTO>(new ValidationError(`User with email ${request.email} already exists`));
             }
 
 
@@ -60,13 +57,11 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, { token:
                 reportedUsers: user.reportedUsers.map(user => user.getId())
             }
 
-            const token = "token";
-
             console.log("Código de eso: ", code);
-            return Result.success<{ token: string, user: UserDTO }>({token, user: userDTO});
+            return Result.success<UserDTO>(userDTO);
         } catch (error: any) {
             console.error(error);
-            return Result.failure<{ token: string, user: UserDTO }>(error);
+            return Result.failure<UserDTO>(error);
         }
     }
 }

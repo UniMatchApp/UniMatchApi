@@ -9,7 +9,7 @@ import { OTPManager } from "./OTPManager";
 
 export class User extends AggregateRoot {
     private _privateKey: string;
-    private readonly _registrationDate: Date;
+    private _registrationDate: Date;
     private _email: string = "";
     private _password: string = "";
     private _blockedUsers: string[] = [];
@@ -55,6 +55,10 @@ export class User extends AggregateRoot {
         return this._registrationDate;
     }
 
+    public set registrationDate(value: Date) {
+        this._registrationDate = value;
+    }
+
     public get email(): string {
         return this._email;
     }
@@ -83,7 +87,9 @@ export class User extends AggregateRoot {
     public set email(value: string) {
         this.validateEmail(value);
         this._email = value;
-        this.recordEvent(new UserHasChangedEmail(this.getId().toString(), value));
+        if (this._registered) {
+            this.recordEvent(new UserHasChangedEmail(this.getId().toString(), value));
+        }
     }
 
     public validatePassword(password: string): boolean {
@@ -115,7 +121,9 @@ export class User extends AggregateRoot {
 
         this._password = value;
 
-        this.recordEvent(new UserHasChangedPassword(this.getId().toString()));
+        if (this._registered) {
+            this.recordEvent(new UserHasChangedPassword(this.getId().toString()));
+        }
     }
 
     public get blockedUsers(): string[] {

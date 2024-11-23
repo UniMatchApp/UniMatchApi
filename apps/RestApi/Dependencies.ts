@@ -80,11 +80,13 @@ import {
 import {
     UserHasChangedTypeOfRelationshipEventHandler
 } from "@/core/uniMatch/matching/application/handlers/UserHasChangedTypeOfRelationshipEventHandler";
+import { TokenService } from "./utils/TokenService";
 
 export class DependencyContainer {
     // Dependencias compartidas
     readonly eventBus = new InMemoryEventBus();
-    readonly wsClientHandler = new WebSocketsClientHandler();
+    readonly wsClientHandler = new WebSocketsClientHandler()
+    readonly tokenService = new TokenService('secretKey');
 
     // Propiedades que dependen de la configuración
     fileHandler: IFileHandler;
@@ -141,7 +143,7 @@ export class DependencyContainer {
     }
 
     private createEmailNotifications(): IEmailNotifications {
-        return new MockEmailNotifications()
+        return this.useMocks ? new MockEmailNotifications() : new EmailNotifications();
     }
 
     private createUserRepository(): IUserRepository {

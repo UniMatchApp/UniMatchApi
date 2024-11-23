@@ -3,7 +3,7 @@ import {UserDislikedSomebodyCommand} from '@/core/uniMatch/matching/application/
 import {UserDislikedSomebodyDTO} from '@/core/uniMatch/matching/application/DTO/userDislikedSomebodyDTO';
 import {ErrorHandler} from '../../utils/ErrorHandler';
 import {Result} from "@/core/shared/domain/Result";
-import {UserLikedSomebodyCommand} from '@/core/uniMatch/matching/application/commands/userLikedSomebodyCommand';
+import { UserLikedSomebodyCommand } from '@/core/uniMatch/matching/application/commands/UserLikedSomebodyCommand';
 import {UserLikedSomebodyDTO} from '@/core/uniMatch/matching/application/DTO/userLikedSomebodyDTO';
 import {IEventBus} from '@/core/shared/application/IEventBus';
 import {IMatchingRepository} from "@/core/uniMatch/matching/application/ports/IMatchingRepository";
@@ -29,7 +29,7 @@ export class MatchingController {
     }
 
     async userDislikedSomebody(req: Request, res: Response): Promise<void> {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const dislikedUserId = req.params.dislikedUserId;
         const command = new UserDislikedSomebodyCommand(this.matchingRepository);
         const dto = {userId: userId, dislikedUserId: dislikedUserId} as UserDislikedSomebodyDTO;
@@ -44,7 +44,7 @@ export class MatchingController {
     }
 
     async userLikedSomebody(req: Request, res: Response): Promise<void> {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const likedUserId = req.params.likedUserId;
         const command = new UserLikedSomebodyCommand(this.matchingRepository);
         const dto = {userId: userId, likedUserId: likedUserId} as UserLikedSomebodyDTO;
@@ -59,7 +59,7 @@ export class MatchingController {
     }
 
     async usersThatLikedUser(req: Request, res: Response): Promise<void> {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const command = new GetUsersThatLikeUserCommand(this.matchingRepository);
         return command.run(userId).then((result: Result<string[]>) => {
             if (result.isSuccess()) {
@@ -72,7 +72,7 @@ export class MatchingController {
     }
 
     async getUserPotentialMatches(req: Request, res: Response): Promise<void> {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const limit = req.body.limit;
         const dto = {userId: userId, limit: limit} as GetUserPotentialMatchesDTO;
         const command = new GetUserPotentialMatchesCommand(this.matchingRepository);
@@ -87,7 +87,7 @@ export class MatchingController {
     }
 
     async getMutualLikes(req: Request, res: Response): Promise<void> {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const dto = {userId: userId} as GetUsersWithMutualLikesDTO;
         console.warn("GET MUTUAL LIKES: " + dto.userId);
         const command = new GetUsersWithMutualLikesCommand(this.matchingRepository);

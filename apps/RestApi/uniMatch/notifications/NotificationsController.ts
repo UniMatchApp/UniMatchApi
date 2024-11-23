@@ -36,7 +36,7 @@ export class NotificationsController {
 
 
     async deletedAllNotifications(req: Request, res: Response): Promise<void> {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const command = new DeleteAllNotificationsCommand(this.notificationsRepository);
         const dto = { userId: userId } as DeleteAllNotificationsDTO;
         return command.run(dto).then((result: Result<void>) => {
@@ -50,7 +50,7 @@ export class NotificationsController {
     }
 
     async deleteNotification(req: Request, res: Response): Promise<void> {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const notificationId = req.body.notificationId;
         const command = new DeleteNotificationCommand(this.notificationsRepository);
         const dto = { userId: userId, notificationId: notificationId } as DeleteNotificationDTO;
@@ -65,7 +65,7 @@ export class NotificationsController {
     }
 
     async NotificationHasBeenSeen(req: Request, res: Response): Promise<void> {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const notificationId = req.body.notificationId;
         const command = new NotificationHasBeenSeenCommand(this.notificationsRepository);
         const dto = { userId: userId, notificationId: notificationId } as NotificationHasBeenSeenDTO;
@@ -80,7 +80,7 @@ export class NotificationsController {
     }
 
     async getAllNotifications(req: Request, res: Response): Promise<void> {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const command = new GetAllNotificationsCommand(this.notificationsRepository);
         const dto = { userId: userId } as GetAllNotificationsDTO;
         return command.run(dto).then((result: Result<Notification[]>) => {

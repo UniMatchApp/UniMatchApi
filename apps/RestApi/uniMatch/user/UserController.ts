@@ -64,6 +64,7 @@ import { ChangeGenderDTO } from '@/core/uniMatch/user/application/DTO/ChangeGend
 import { ChangeGenderCommand } from '@/core/uniMatch/user/application/commands/ChangeGenderCommand';
 import { ChangeWallCommand } from '@/core/uniMatch/user/application/commands/ChangeWallCommand';
 import { ChangeWallDTO } from '@/core/uniMatch/user/application/DTO/ChangeWallDTO';
+import { TokenService } from '../../utils/TokenService';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -71,26 +72,36 @@ export class UserController {
     private readonly emailNotifications: IEmailNotifications;
     private readonly eventBus: IEventBus;
     private readonly fileHandler: IFileHandler;
+    private readonly tokenService: TokenService;
 
     constructor(
         userRepository: IUserRepository, 
         profileRepository: IProfileRepository, 
         emailNotifications: IEmailNotifications, 
         eventBus: IEventBus,
-        fileHandler: IFileHandler
+        fileHandler: IFileHandler,
+        tokenService: TokenService
     ) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
         this.emailNotifications = emailNotifications;
         this.eventBus = eventBus;
         this.fileHandler = fileHandler;
+        this.tokenService = tokenService
     }
 
     async createUser(req: Request, res: Response): Promise<void> {
         const command = new CreateNewUserCommand(this.userRepository, this.eventBus, this.emailNotifications, this.profileRepository);
-        return command.run(req.body).then((result: Result<{ token: string, user: UserDTO }>) => {
+        return command.run(req.body).then((result: Result<UserDTO>) => {
             if (result.isSuccess()) {
-                res.json(result);
+                const user = result.getValue();
+                if (user) {
+                    const token = this.tokenService.generateToken({ id: user.id });
+                    const newResult = Result.success<{user: UserDTO, token: string}>({ token: token, user: user });
+                    res.json(newResult);
+                } else {
+                    ErrorHandler.handleError(new Error("User not found"), res);
+                }
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -546,9 +557,16 @@ export class UserController {
 
     async login(req: Request, res: Response): Promise<void> {
         const command = new LoginUserCommand(this.userRepository, this.emailNotifications);
-        return command.run(req.body).then((result: Result<{ token: string, user: UserDTO }>) => {
+        return command.run(req.body).then((result: Result<UserDTO>) => {
             if (result.isSuccess()) {
-                res.json(result);
+                const user = result.getValue();
+                if (user) {
+                    const token = this.tokenService.generateToken({id: user.id});
+                    const newResult = Result.success<{user: UserDTO, token: string}>({user: user, token: token});
+                    res.json(newResult);
+                } else {
+                    ErrorHandler.handleError(new Error("User not found"), res);
+                }
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);

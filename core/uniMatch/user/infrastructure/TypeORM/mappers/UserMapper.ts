@@ -14,6 +14,9 @@ export class UserMapper {
 
         user.privateKey = entity.privateKey;
 
+        user.registered = entity.registered;
+
+        user.registrationDate = entity.registrationDate;
 
         user.reportedUsers = entity.reportedUsers.map(reported => {
             const reportedUser = new ReportedUser(
@@ -35,6 +38,7 @@ export class UserMapper {
         entity.email = user.email;
         entity.password = user.password;
         entity.blockedUsers = user.blockedUsers;
+        entity.registered = user.registered;
         entity.reportedUsers = user.reportedUsers.map(reported => {
             const reportedEntity = new ReportedUsersEntity();
             reportedEntity.id = reported.getId().toString();

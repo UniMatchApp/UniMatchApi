@@ -13,6 +13,9 @@ export class UserEntity {
     @Column({ type: 'timestamp' })
     registrationDate!: Date;
 
+    @Column({ type: 'boolean', default: false })
+    registered!: boolean;
+
     @Column({ type: 'varchar', length: 255, unique: true })
     email!: string;
     

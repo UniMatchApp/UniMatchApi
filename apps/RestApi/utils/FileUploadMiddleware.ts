@@ -30,8 +30,11 @@ const fileUploadMiddleware = (req: Request, res: Response, next: NextFunction) =
     if (req.file) {
       const multerFile = req.file;
 
-      // Puedes trabajar con el archivo directamente usando multerFile.buffer (Buffer de Node.js)
-      req.body.attachment = multerFile;  // Aquí almacenamos el archivo directamente
+      const file = new File([multerFile.buffer], multerFile.originalname, {
+        type: multerFile.mimetype,
+      });
+
+      req.body.attachment = file;
       console.log('req.body.attachment', req.body.attachment);
       next();
     } else {

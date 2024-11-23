@@ -25,8 +25,8 @@ export class NotificationMapper {
           messagePayload.content,
           messagePayload.sender,
           messagePayload.status,
+          messagePayload.deletedStatus,
           messagePayload.attachment,
-          messagePayload.deletedStatus
         );
         break;
       case NotificationTypeEnum.MATCH:
@@ -56,7 +56,7 @@ export class NotificationMapper {
     const entity = new NotificationEntity();
     const status = NotificationStatusEnumFromString(notification.status);
 
-    entity.id = notification.getId();
+    entity.id = notification.getId()
     entity.contentId = notification.contentId;
     entity.type = notification.type;
     entity.status = status;
@@ -78,8 +78,8 @@ export class NotificationMapper {
           messagePayload.content,
           messagePayload.sender,
           messagePayload.status,
+          messagePayload.deletedStatus,
           messagePayload.attachment,
-          messagePayload.deletedStatus
         );
         break;
       case NotificationTypeEnum.MATCH:
