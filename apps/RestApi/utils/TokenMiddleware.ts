@@ -7,7 +7,7 @@ export const validateAndRefreshToken = (req: Request, res: Response, next: NextF
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         res.status(401).json({ message: 'Token no proporcionado o inválido' });
-        return; // Asegura que no continúe
+        return;
     }
 
     const token = authHeader.split(' ')[1];
@@ -27,15 +27,15 @@ export const validateAndRefreshToken = (req: Request, res: Response, next: NextF
             return;
         }
 
-        next(); // Continuar si todo está bien
+        next();
     } catch (error: any) {
         if (error instanceof TokenExpiredError) {
             const decoded = jwt.decode(token) as jwt.JwtPayload;
-
+            console.log("decoded", decoded);
             if (decoded && decoded.id === req.params.id) {
                 const newToken = dependencies.tokenService.generateToken({ id: decoded.id });
                 res.setHeader('Authorization', `Bearer ${newToken}`);
-                next(); // Continuar con la solicitud
+                next();
                 return;
             }
         }
