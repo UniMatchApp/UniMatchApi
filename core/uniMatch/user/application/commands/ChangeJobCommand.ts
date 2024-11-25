@@ -17,8 +17,9 @@ export class ChangeJobCommand implements ICommand<ChangeMoreAboutMeDTO, string> 
             if(!profile) {
                 return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
-            console.log(request);
+            
             profile.job = request.newContent;
+            console.log("request job: ", profile.job);
             await this.repository.update(profile, profile.getId());
             return Result.success<string>(request.newContent);
         } catch (error: any) {

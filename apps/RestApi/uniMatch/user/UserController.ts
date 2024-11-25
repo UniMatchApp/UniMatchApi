@@ -523,7 +523,7 @@ export class UserController {
         const userId = req.body.userId;
         const min = req.body.min;
         const max = req.body.max;
-        const command = new ChangeAgeRangeCommand(this.profileRepository);
+        const command = new ChangeAgeRangeCommand(this.profileRepository, this.eventBus);
         const dto = {id: userId, min: min, max: max} as ChangeAgeRangeDTO;
         return command.run(dto).then((result: Result<{min: number, max: number}>) => {
             if (result.isSuccess()) {

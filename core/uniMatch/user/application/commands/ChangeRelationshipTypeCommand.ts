@@ -27,7 +27,7 @@ export class ChangeRelationshipTypeCommand implements ICommand<ChangeRelationshi
             profile.relationshipType = RelationshipType.fromString(request.relationshipType);
 
             await this.repository.update(profile, profile.getId());
-            // this.eventBus.publish(profile.pullDomainEvents());
+            this.eventBus.publish(profile.pullDomainEvents());
             return Result.success<string>(request.relationshipType);
         } catch (error: any) {
             return Result.failure<string>(error);

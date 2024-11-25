@@ -1,6 +1,7 @@
 import { Location } from '@/core/shared/domain/Location';
 import { EventEntity } from '../models/EventEntity';
 import { Event } from "../../../domain/Event";
+import { TransformFromUndefinedToNull } from '@/core/shared/infrastructure/decorators/TransformFromUndefinedToNull';
 
 export class EventMapper {
   static toDomain(entity: EventEntity): Event {
@@ -19,6 +20,7 @@ export class EventMapper {
     return event;
   }
 
+  @TransformFromUndefinedToNull
   static toEntity(event: Event): EventEntity {
     const entity = new EventEntity();
     entity.id = event.getId().toString();

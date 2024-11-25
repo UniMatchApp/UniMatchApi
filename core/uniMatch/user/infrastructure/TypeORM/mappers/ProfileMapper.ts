@@ -8,11 +8,11 @@ import { AllowedRelationshipType } from "@/core/shared/domain/RelationshipType";
 import { Horoscope } from "../../../domain/Horoscope";
 import { HabitsEnum } from "../../../domain/enum/HabitsEnum";
 import { ValuesAndBeliefsEnum } from "../../../domain/enum/ValuesAndBeliefsEnum";
+import { TransformFromUndefinedToNull } from "@/core/shared/infrastructure/decorators/TransformFromUndefinedToNull";
 
 export class ProfileMapper {
     static toDomain(entity: ProfileEntity): Profile {
-        console.log("Entity", entity);
-        const location = (entity.latitude && entity.longitude) ? new Location(entity.latitude, entity.longitude, entity.altitude) : undefined;
+        const location = (entity.latitude && entity.longitude) ? new Location(entity.latitude, entity.longitude, entity.altitude || undefined) : undefined;
         const drinks = entity.drinks ? HabitsEnum[entity.drinks as keyof typeof HabitsEnum] : undefined;
         const smokes = entity.smokes ? HabitsEnum[entity.smokes as keyof typeof HabitsEnum] : undefined;
         const doesSports = entity.doesSports ? HabitsEnum[entity.doesSports as keyof typeof HabitsEnum] : undefined;
@@ -39,13 +39,13 @@ export class ProfileMapper {
         );
 
         profile.setId(entity.id);
-        profile.fact = entity.fact;
-        profile.height = entity.height;
-        profile.weight = entity.weight;
-        profile.job = entity.job;
-        profile.education = entity.education;
-        profile.personalityType = entity.personalityType;
-        profile.pets = entity.pets;
+        profile.fact = entity.fact || undefined;
+        profile.height = entity.height || undefined;
+        profile.weight = entity.weight || undefined;
+        profile.job = entity.job || undefined;
+        profile.education = entity.education || undefined;
+        profile.personalityType = entity.personalityType || undefined;
+        profile.pets = entity.pets || undefined;
         profile.drinks = drinks;
         profile.smokes = smokes;
         profile.doesSports = doesSports;
@@ -59,6 +59,7 @@ export class ProfileMapper {
         return profile;
     }
 
+    @TransformFromUndefinedToNull
     static toEntity(profile: Profile): ProfileEntity {
         const entity = new ProfileEntity();
         entity.id = profile.getId().toString();
@@ -66,15 +67,9 @@ export class ProfileMapper {
         entity.name = profile.name;
         entity.age = profile.age;
         entity.aboutMe = profile.aboutMe;
-        if(profile.location) {
-            entity.latitude = profile.location.latitude;
-            entity.longitude = profile.location.longitude;
-            entity.altitude = profile.location.altitude;
-        } else {
-            entity.latitude = undefined;
-            entity.longitude = undefined;
-            entity.altitude = undefined;
-        }
+        entity.latitude = profile.location?.latitude;
+        entity.longitude = profile.location?.longitude;
+        entity.altitude = profile.location?.altitude;
         entity.fact = profile.fact;
         entity.interests = profile.interests;
         entity.gender = profile.gender.value;
