@@ -11,6 +11,7 @@ import { ValuesAndBeliefsEnum } from "../../../domain/enum/ValuesAndBeliefsEnum"
 
 export class ProfileMapper {
     static toDomain(entity: ProfileEntity): Profile {
+        console.log("Entity", entity);
         const location = (entity.latitude && entity.longitude) ? new Location(entity.latitude, entity.longitude, entity.altitude) : undefined;
         const drinks = entity.drinks ? HabitsEnum[entity.drinks as keyof typeof HabitsEnum] : undefined;
         const smokes = entity.smokes ? HabitsEnum[entity.smokes as keyof typeof HabitsEnum] : undefined;
@@ -65,9 +66,15 @@ export class ProfileMapper {
         entity.name = profile.name;
         entity.age = profile.age;
         entity.aboutMe = profile.aboutMe;
-        entity.latitude = profile.location?.latitude;
-        entity.longitude = profile.location?.longitude;
-        entity.altitude = profile.location?.altitude;
+        if(profile.location) {
+            entity.latitude = profile.location.latitude;
+            entity.longitude = profile.location.longitude;
+            entity.altitude = profile.location.altitude;
+        } else {
+            entity.latitude = undefined;
+            entity.longitude = undefined;
+            entity.altitude = undefined;
+        }
         entity.fact = profile.fact;
         entity.interests = profile.interests;
         entity.gender = profile.gender.value;

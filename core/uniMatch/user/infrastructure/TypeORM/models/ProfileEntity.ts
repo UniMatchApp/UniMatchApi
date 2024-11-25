@@ -18,10 +18,10 @@ export class ProfileEntity {
     @Column({ type: 'text' })
     aboutMe!: string;
 
-    @Column({ type: 'float' })
+    @Column({ type: 'float', nullable: true })
     latitude?: number;
 
-    @Column({ type: 'float' })
+    @Column({ type: 'float', nullable: true })
     longitude?: number;
 
     @Column({ type: 'float', nullable: true })

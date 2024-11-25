@@ -100,6 +100,7 @@ export class Profile extends AggregateRoot {
     }
 
     public get location(): Location | undefined {
+
         return this._location;
     }
 

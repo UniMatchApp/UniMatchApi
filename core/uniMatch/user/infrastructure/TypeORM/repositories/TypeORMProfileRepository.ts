@@ -19,7 +19,6 @@ export class TypeORMProfileRepository implements IProfileRepository {
             });
 
         this.profileRepository = AppDataSource.getRepository(ProfileEntity);
-
     }
 
     async create(entity: Profile): Promise<void> {
@@ -57,6 +56,7 @@ export class TypeORMProfileRepository implements IProfileRepository {
         }
 
         const updatedEntity = ProfileMapper.toEntity(entity);
+        console.log("Entity", updatedEntity);
         updatedEntity.id = id;
         await this.profileRepository.save(updatedEntity);
         return ProfileMapper.toDomain(updatedEntity);
