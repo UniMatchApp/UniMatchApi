@@ -81,6 +81,8 @@ import {
     UserHasChangedTypeOfRelationshipEventHandler
 } from "@/core/uniMatch/matching/application/handlers/UserHasChangedTypeOfRelationshipEventHandler";
 import { TokenService } from "./utils/TokenService";
+import { UserHasChangedAgeRangeEventHandler } from "@/core/uniMatch/matching/application/handlers/UserHasChangedAgeRangeEventHandler";
+import { UserHasChangedGenderEventHandler } from "@/core/uniMatch/matching/application/handlers/UserHasChangedGenderEventHandler";
 
 export class DependencyContainer {
     // Dependencias compartidas
@@ -174,6 +176,9 @@ export class DependencyContainer {
         this.eventBus.subscribe(new UserHasChangedMaxDistanceEventHandler(this.matchingRepository));
         this.eventBus.subscribe(new UserHasChangedSexPriorityEventHandler(this.matchingRepository));
         this.eventBus.subscribe(new UserHasChangedTypeOfRelationshipEventHandler(this.matchingRepository));
+        this.eventBus.subscribe(new UserHasChangedAgeRangeEventHandler(this.matchingRepository));
+        this.eventBus.subscribe(new UserHasChangedGenderEventHandler(this.matchingRepository));
+        
     }
 
 }

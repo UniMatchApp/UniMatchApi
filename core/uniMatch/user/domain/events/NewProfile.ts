@@ -8,6 +8,7 @@ export class NewProfile extends DomainEvent {
     constructor(
         aggregateId: string,
         age: number,
+        ageRange: [number, number],
         gender: string,
         maxDistance: number,
         genderPriority: Gender | undefined,
@@ -16,6 +17,7 @@ export class NewProfile extends DomainEvent {
     ) {
         super(aggregateId, "new-profile");
         this.getPayload().set("age", age.toString());
+        this.getPayload().set("ageRange", ageRange.toString());
         this.getPayload().set("gender", gender.toString());
         this.getPayload().set("maxDistance", maxDistance.toString());
         this.getPayload().set("genderPriority", genderPriority?.toString() || "");
@@ -29,6 +31,7 @@ export class NewProfile extends DomainEvent {
         return new NewProfile(
             profile.getId().toString(),
             profile.age,
+            profile.ageRange,
             profile.gender.toString(),
             profile.maxDistance,
             profile.genderPriority,
