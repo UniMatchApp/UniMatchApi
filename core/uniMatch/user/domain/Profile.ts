@@ -12,6 +12,9 @@ import { Location } from "@/core/shared/domain/Location";
 import {NewProfile} from "@/core/uniMatch/user/domain/events/NewProfile";
 import { HabitsEnum } from "./enum/HabitsEnum";
 import { ValuesAndBeliefsEnum } from "./enum/ValuesAndBeliefsEnum";
+import { UserHasChangedGender } from "./events/UserHasChangedGender";
+import { UserHasChangedLocation } from "./events/UserHasChangedLocation";
+import { UserHasChangedAgeRange } from "./events/UserHasChangedAgeRange";
 
 export class Profile extends AggregateRoot {
     private _userId: string;
@@ -106,6 +109,8 @@ export class Profile extends AggregateRoot {
 
     public set location(value: Location | undefined) {
         this._location = value;
+
+        this.recordEvent(UserHasChangedLocation.from(this));
     }
 
     public get gender(): Gender {
@@ -114,6 +119,8 @@ export class Profile extends AggregateRoot {
 
     public set gender(value: Gender) {
         this._gender = value;
+
+        this.recordEvent(UserHasChangedGender.from(this));
     }
 
     public get horoscope(): Horoscope | undefined {
@@ -131,7 +138,7 @@ export class Profile extends AggregateRoot {
     public set relationshipType(value: RelationshipType) {
         this._relationshipType = value;
 
-        this.recordEvent(new UserHasChangedTypeOfRelationship(this.userId.toString(), value));
+        this.recordEvent(UserHasChangedTypeOfRelationship.from(this));
     }
 
     public get sexualOrientation(): SexualOrientation {
@@ -152,7 +159,7 @@ export class Profile extends AggregateRoot {
         }
         this._maxDistance = value;
 
-        this.recordEvent(new UserHasChangedMaxDistance(this.userId.toString(), value));
+        this.recordEvent(UserHasChangedMaxDistance.from(this));
     }
 
     public get ageRange(): [number, number] {
@@ -165,6 +172,8 @@ export class Profile extends AggregateRoot {
             throw new DomainError("Age range must be valid and between 18 and 100.");
         }
         this._ageRange = value;
+
+        this.recordEvent(UserHasChangedAgeRange.from(this));
     }
 
     public get wall(): string[] {
@@ -272,7 +281,7 @@ export class Profile extends AggregateRoot {
     public set genderPriority(value: Gender | undefined) {
         this._genderPriority = value;
 
-        this.recordEvent(new UserHasChangedPriority(this.userId.toString(), value));
+        this.recordEvent(UserHasChangedPriority.from(this));
     }
 
     public get genderPriority(): Gender | undefined {

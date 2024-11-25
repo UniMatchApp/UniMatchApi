@@ -99,6 +99,7 @@ export class InMemoryMatchingRepository implements IMatchingRepository {
                 const priority = 
                     (isWithinDistance ? 1 : 0) +
                     (node.relationshipType === user.relationshipType ? 1 : 0);
+                    (node.age >= user.ageRange[0] && node.age <= user.ageRange[1] ? 1 : 0);
                 console.log(`Prioridad calculada: ${priority} - Usuario: ${node.userId}`);
     
                 return { node, priority };

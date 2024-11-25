@@ -61,6 +61,7 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
                 WITH u2,
                     (CASE 
                         WHEN u1.location IS NULL OR u2.location IS NULL THEN 1
+                        WHEN u2.age >= u1.ageRange[0] AND u2.age <= u1.ageRange[1] THEN 1
                         WHEN u1.maxDistance = 0 OR distance(
                             point({longitude: u1.location.longitude, latitude: u1.location.latitude}),
                             point({longitude: u2.location.longitude, latitude: u2.location.latitude})

@@ -5,6 +5,7 @@ import { RelationshipType } from "@/core/shared/domain/RelationshipType";
 
 export class Node extends AggregateRoot {
     private _age: number;
+    private _ageRange: [number, number];
     private _userId: string;
     private _maxDistance: number;
     private _gender: Gender;
@@ -15,6 +16,7 @@ export class Node extends AggregateRoot {
     constructor(
         userId: string,
         age: number,
+        ageRange: [number, number],
         maxDistance: number,
         gender: Gender,
         relationshipType: RelationshipType,
@@ -24,6 +26,7 @@ export class Node extends AggregateRoot {
         super();
         this._userId = userId;
         this._age = age;
+        this._ageRange = ageRange;
         this._location = location;
         this._maxDistance = maxDistance;
         this._gender = gender;
@@ -38,6 +41,11 @@ export class Node extends AggregateRoot {
     public get age(): number {
         return this._age;
     }
+
+    public get ageRange(): [number, number] {
+        return this._ageRange;
+    }
+
 
     public get location(): Location | undefined {
         return this._location;
@@ -65,6 +73,10 @@ export class Node extends AggregateRoot {
 
     public set age(value: number) {
         this._age = value;
+    }
+
+    public set ageRange(value: [number, number]) {
+        this._ageRange = value;
     }
 
     public set location(value: Location | undefined) {

@@ -40,6 +40,11 @@ export class NewProfileEventHandler implements IEventHandler {
             if (!ageStr) {
                 throw new EventError("Age is required to create a new user.");
             }
+
+            const ageRangeStr = event.getPayload().get("ageRange");
+            if (!ageRangeStr) {
+                throw new EventError("Age Range is required to create a new user.");
+            }
     
             const maxDistanceStr = event.getPayload().get("maxDistance");
             if (!maxDistanceStr) {
@@ -50,11 +55,12 @@ export class NewProfileEventHandler implements IEventHandler {
             const max = Number(maxDistanceStr);
             const gender = new Gender(Gender.fromString(genderStr))
             const location = locationStr ? Location.stringToLocation(locationStr) : undefined;
-    
+            const parsedAgeRange = JSON.parse(ageRangeStr) as [number, number];
     
             const node = new Node(
                 id,
                 Number(ageStr),
+                parsedAgeRange,
                 max,
                 gender,
                 relationshipType,
