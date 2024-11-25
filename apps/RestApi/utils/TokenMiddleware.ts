@@ -15,7 +15,14 @@ export const validateAndRefreshToken = (req: Request, res: Response, next: NextF
     try {
         const decoded = dependencies.tokenService.validateToken(token) as jwt.JwtPayload;
 
+        if (!req.body) {
+            req.body = {};
+        }
+
         req.body.userId = decoded.id;
+        
+        console.log('decoded: ', req.body);
+
 
         next();
     } catch (error: any) {

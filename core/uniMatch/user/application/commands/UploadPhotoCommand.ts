@@ -23,6 +23,7 @@ export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, string> {
             const photo = request.attachment;
 
             console.log(request)
+            
             const photoUrl= await this.fileHandler.save(UUID.generate().toString(), photo);
 
             if (!photoUrl) {

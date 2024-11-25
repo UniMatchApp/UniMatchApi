@@ -581,6 +581,7 @@ export class UserController {
 
     async uploadPhoto(req: Request, res: Response): Promise<void> {
         const userId = req.body.userId;
+        console.log("userId: ", req.body.userId);
         const command = new UploadPhotoCommand(this.profileRepository, this.fileHandler);
         const dto = {userId: userId, ...req.body} as UploadPhotoDTO;
         return command.run(dto).then((result: Result<string>) => {
