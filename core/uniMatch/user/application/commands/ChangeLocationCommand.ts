@@ -28,7 +28,7 @@ export class ChangeLocationCommand implements ICommand<ChangeLocationDTO, {latit
                 profile.location = undefined;
                 profile.maxDistance = 0;
                 await this.repository.update(profile, profile.getId());
-                // this.eventBus.publish(profile.pullDomainEvents());
+                this.eventBus.publish(profile.pullDomainEvents());
                 return Result.success<{latitude?: number, longitude?: number, altitude?: number}>({latitude: undefined, longitude: undefined, altitude: undefined});
             }
 
@@ -36,7 +36,7 @@ export class ChangeLocationCommand implements ICommand<ChangeLocationDTO, {latit
 
             await this.repository.update(profile, profile.getId());
 
-            // this.eventBus.publish(profile.pullDomainEvents());
+            this.eventBus.publish(profile.pullDomainEvents());
             return Result.success<{latitude?: number, longitude?: number, altitude?: number}>({latitude: request.latitude, longitude: request.longitude, altitude: request.altitude});
         } catch (error : any) {
             console.log(error);
