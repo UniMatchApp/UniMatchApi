@@ -151,6 +151,7 @@ export class UserController {
         const dto = {id: id} as GetProfileDTO;
         return query.run(dto).then((result: Result<ProfileDTO>) => {
             if (result.isSuccess()) {
+                console.log(result);
                 res.json(result);
             } else {
                 const error = result.getError();

@@ -23,7 +23,6 @@ export class ChangeGenderPriorityCommand implements ICommand<ChangeGenderPriorit
                 return Result.failure<string | undefined>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
             
-            console.log('request.newGender', request.newGender);
             profile.genderPriority = request.newGender ? new Gender(Gender.fromString(request.newGender)) : undefined;
 
             await this.repository.update(profile, profile.getId());

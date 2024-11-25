@@ -21,6 +21,8 @@ export class ChangeAgeRangeCommand implements ICommand<ChangeAgeRangeDTO, {min: 
             profile.ageRange = [request.min, request.max];
 
             await this.repository.update(profile, profile.getId());
+            
+            // this.eventBus.publish(profile.pullDomainEvents());
 
             return Result.success<{min: number, max: number}>({min: request.min, max: request.max});
         

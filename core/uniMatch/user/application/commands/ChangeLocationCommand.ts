@@ -23,16 +23,19 @@ export class ChangeLocationCommand implements ICommand<ChangeLocationDTO, {latit
                 return Result.failure<{latitude?: number, longitude?: number, altitude?: number}>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
             
+            console.log(request);
             if (request.latitude === undefined || request.longitude === undefined) {
                 profile.location = undefined;
                 profile.maxDistance = 0;
+                console.log(profile.location);
                 await this.repository.update(profile, profile.getId());
+                this.eventBus.publish(profile.pullDomainEvents());
                 return Result.success<{latitude?: number, longitude?: number, altitude?: number}>({latitude: undefined, longitude: undefined, altitude: undefined});
             }
 
             profile.location = new Location(request.latitude, request.longitude, request.altitude);
 
-            console.log(profile.location);
+            console.log("Location", profile.location);
 
             await this.repository.update(profile, profile.getId());
 
