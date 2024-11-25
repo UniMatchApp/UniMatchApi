@@ -1,6 +1,7 @@
 import { Message } from '@/core/uniMatch/message/domain/Message';
 import { MessageEntity } from '../models/MessageEntity';
 import { MessageStatusType } from '@/core/shared/domain/MessageStatusEnum';
+import { TransformFromUndefinedToNull } from '@/core/shared/infrastructure/decorators/TransformFromUndefinedToNull';
 
 export class MessageMapper {
     static toDomain(entity: MessageEntity): Message {
@@ -8,7 +9,7 @@ export class MessageMapper {
             entity.content,
             entity.sender,
             entity.recipient,
-            entity.attachment
+            entity.attachment || undefined
         );
 
         message.status = entity.status;
@@ -19,6 +20,7 @@ export class MessageMapper {
         return message;
     }
 
+    @TransformFromUndefinedToNull
     static toEntity(domain: Message): MessageEntity {
         const messageEntity = new MessageEntity();
         messageEntity.id = domain.getId()

@@ -22,7 +22,8 @@ export class ChangeLocationCommand implements ICommand<ChangeLocationDTO, {latit
             if (!profile) {
                 return Result.failure<{latitude?: number, longitude?: number, altitude?: number}>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
-            
+            console.log("request: ", request);
+
             if (request.latitude === undefined || request.longitude === undefined) {
                 profile.location = undefined;
                 profile.maxDistance = 0;

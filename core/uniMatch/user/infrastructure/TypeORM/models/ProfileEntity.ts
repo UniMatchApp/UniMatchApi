@@ -19,16 +19,16 @@ export class ProfileEntity {
     aboutMe!: string;
 
     @Column({ type: 'float', nullable: true })
-    latitude?: number;
+    latitude?: number | null;
 
     @Column({ type: 'float', nullable: true })
-    longitude?: number;
+    longitude?: number | null;
 
     @Column({ type: 'float', nullable: true })
-    altitude?: number;
+    altitude?: number | null;
 
     @Column({ nullable: true, type: 'text' })
-    fact?: string;
+    fact?: string | null;
 
     @Column('json')
     interests!: string[];
@@ -37,43 +37,43 @@ export class ProfileEntity {
     gender!: string;
 
     @Column({ type: 'int', nullable: true })
-    height?: number;
+    height?: number | null;
 
     @Column({ type: 'int', nullable: true })
-    weight?: number;
+    weight?: number | null;
 
     @Column({ type: 'text' })
     sexualOrientation!: string;
 
     @Column({ type: 'text', nullable: true })
-    job?: string;
+    job?: string | null;
 
     @Column({ type: 'text' })
     relationshipType!: string;
 
     @Column({ type: 'text', nullable: true })
-    horoscope?: string;
+    horoscope?: string | null;
 
     @Column({ type: 'text', nullable: true })
-    education?: string;
+    education?: string | null;
 
     @Column({ type: 'text', nullable: true })
-    personalityType?: string;
+    personalityType?: string | null;
 
     @Column({ type: 'text', nullable: true })
-    pets?: string;
+    pets?: string | null;
 
     @Column({ type: 'text', nullable: true })
-    drinks?: string;
+    drinks?: string | null;
 
     @Column({ type: 'text', nullable: true })
-    smokes?: string;
+    smokes?: string | null;
 
     @Column({ type: 'text', nullable: true })
-    doesSports?: string;
+    doesSports?: string | null;
 
     @Column({ type: 'text', nullable: true })
-    valuesAndBeliefs?: string;
+    valuesAndBeliefs?: string | null;
 
     @Column('json')
     wall!: string[];
