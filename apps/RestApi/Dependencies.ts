@@ -85,6 +85,11 @@ import { UserHasChangedAgeRangeEventHandler } from "@/core/uniMatch/matching/app
 import { UserHasChangedGenderEventHandler } from "@/core/uniMatch/matching/application/handlers/UserHasChangedGenderEventHandler";
 
 export class DependencyContainer {
+
+    // Variables de entorno
+    readonly server_url = process.env.SERVER_URL || 'http://localhost';
+    readonly server_port = process.env.SERVER_PORT || '3000';
+
     // Dependencias compartidas
     readonly eventBus = new InMemoryEventBus();
     readonly wsClientHandler = new WebSocketsClientHandler()
@@ -121,8 +126,7 @@ export class DependencyContainer {
     }
     
     private createFileHandler(): IFileHandler {
-        // return this.useMocks ? new FileHandler() : new S3FileHandler();
-        return this.useMocks ? new FileHandler() : new FileHandler();
+        return new FileHandler(this.server_url, this.server_port);
     }
 
     private createSessionStatusRepository(): ISessionStatusRepository {
