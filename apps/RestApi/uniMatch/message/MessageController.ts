@@ -183,14 +183,8 @@ export class MessageController {
     }
 
     async updateMessage(req: Request, res: Response): Promise<void> {
-        const messageId = req.params.id;
+        const messageId = req.params.messageId;
         const userId = req.body.userId;
-        const senderId = req.body.senderId;
-
-        if (userId !== senderId) {
-            res.status(401).json({error: "Unauthorized"});
-            return;
-        }
 
         const command = new UpdateMessageCommand(this.messageRepository, this.eventBus, this.fileHandler);
         const dto = {messageId: messageId, userId: userId, ...req.body} as UpdateMessageDTO;

@@ -2,7 +2,7 @@ import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
 import { IMessageRepository } from "../ports/IMessageRepository";
 import { MessageHasBeenSeenDTO } from "../DTO/MessageHasBeenSeenDTO";
-import { MessageStatusEnum } from "@/core/shared/domain/MessageStatusEnum";
+import { MessageReceptionStatusEnum } from "@/core/shared/domain/MessageReceptionStatusEnum";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { ValidationError } from "@/core/shared/exceptions/ValidationError";
 
@@ -26,11 +26,11 @@ export class MessageHasBeenReadCommand implements ICommand<MessageHasBeenSeenDTO
                 return Result.failure<void>(new ValidationError('User is not the recipient of the message.'));
             }
 
-            if (message.status === MessageStatusEnum.READ) {
+            if (message.receptionStatus === MessageReceptionStatusEnum.READ) {
                 return Result.failure<void>(new ValidationError('Message has already been read.'));
             }
 
-            message.status = MessageStatusEnum.READ;
+            message.receptionStatus = MessageReceptionStatusEnum.READ;
             await this.repository.update(message, message.getId());
             return Result.success<void>(undefined);
         } catch (error : any) {

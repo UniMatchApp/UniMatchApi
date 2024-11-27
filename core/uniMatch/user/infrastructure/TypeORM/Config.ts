@@ -2,7 +2,6 @@ import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
 import path from 'path';
 import { UserEntity } from './models/UserEntity';
-import { Profile } from '../../domain/Profile';
 import { ProfileEntity } from './models/ProfileEntity';
 import { ReportedUsersEntity } from './models/ReportedUsersEntity';
 

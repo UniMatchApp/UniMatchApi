@@ -22,7 +22,7 @@ export namespace MessageDTO {
             senderId: message.sender,
             recipientId: message.recipient,
             attachment: message.attachment,
-            status: message.status,
+            status: message.receptionStatus,
             deletedStatus: message.deletedStatus,
             timestamp: message.timestamp.getTime()
         }

@@ -4,7 +4,7 @@ export class TokenService {
     private readonly secretKey: string;
     private readonly expiresIn: string;
 
-    constructor(secretKey: string, expiresIn: string = '1h') {
+    constructor(secretKey: string, expiresIn: string = '24h') {
         this.secretKey = secretKey;
         this.expiresIn = expiresIn;
     }

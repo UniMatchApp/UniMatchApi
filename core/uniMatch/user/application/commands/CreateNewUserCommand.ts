@@ -5,7 +5,7 @@ import {Result} from "@/core/shared/domain/Result";
 import {IEventBus} from "@/core/shared/application/IEventBus";
 import {User} from "../../domain/User";
 import {ValidationError} from "@/core/shared/exceptions/ValidationError";
-import {IEmailNotifications} from '../../../../shared/application/IEmailNotifications';
+import {IEmailNotifications} from '@/core/shared/application/IEmailNotifications';
 import {IProfileRepository} from "../ports/IProfileRepository";
 import {UserDTO} from "../DTO/UserDTO";
 

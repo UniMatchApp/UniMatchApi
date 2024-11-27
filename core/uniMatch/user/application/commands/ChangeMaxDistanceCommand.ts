@@ -4,7 +4,6 @@ import { IEventBus } from "@/core/shared/application/IEventBus";
 import { Result } from "@/core/shared/domain/Result";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { ChangeMaxDistanceDTO } from "../DTO/ChangeMaxDistanceDTO";
-import { ValidationError } from "@/core/shared/exceptions/ValidationError";
 
 export class ChangeMaxDistanceCommand implements ICommand<ChangeMaxDistanceDTO, number> {
 

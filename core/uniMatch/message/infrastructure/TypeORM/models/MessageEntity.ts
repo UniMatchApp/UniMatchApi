@@ -1,5 +1,5 @@
 import { Entity, Column, Unique, ObjectIdColumn } from 'typeorm';
-import { MessageStatusEnum, DeletedMessageStatusType, MessageStatusType } from '@/core/shared/domain/MessageStatusEnum';
+import { MessageReceptionStatusEnum, MessageDeletedStatusType, MessageReceptionStatusType } from '@/core/shared/domain/MessageReceptionStatusEnum';
 
 @Entity('messages')
 @Unique(['id'])
@@ -10,11 +10,11 @@ export class MessageEntity {
     @Column({ type: 'text' })
     content!: string;
 
-    @Column({ type: 'enum', enum: MessageStatusEnum })
-    status!: MessageStatusType;
+    @Column({ type: 'enum', enum: MessageReceptionStatusEnum })
+    status!: MessageReceptionStatusType;
 
-    @Column({ type: 'enum', enum: MessageStatusEnum })
-    deletedStatus!: DeletedMessageStatusType;
+    @Column({ type: 'enum', enum: MessageReceptionStatusEnum })
+    deletedStatus!: MessageDeletedStatusType;
 
     @Column({ type: 'timestamp' })
     timestamp!: Date;

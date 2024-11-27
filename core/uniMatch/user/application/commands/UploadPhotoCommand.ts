@@ -4,7 +4,6 @@ import {UploadPhotoDTO} from "../DTO/UploadPhotoDTO";
 import {IProfileRepository} from "../ports/IProfileRepository";
 import {IFileHandler} from "@/core/shared/application/IFileHandler";
 import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
-import {FileError} from "@/core/shared/exceptions/FileError";
 import {NullPointerError} from "@/core/shared/exceptions/NullPointerError";
 import { UUID } from "@/core/shared/domain/UUID";
 

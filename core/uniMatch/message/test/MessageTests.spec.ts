@@ -467,15 +467,15 @@ describe("MessageHasBeenReadCommand", () => {
             userId: firstMessageRecipient,
         };
         
-        expect(allMessages[0].status).toBe("SENT");
+        expect(allMessages[0].receptionStatus).toBe("SENT");
 
         const result = await command.run(request);
 
         expect(result.isSuccess()).toBe(true);
         expect(messageRepository.update).toHaveBeenCalled();
         expect(allMessages).toHaveLength(2);
-        expect(allMessages[0].status).toBe("READ");
-        expect(allMessages[1].status).toBe("SENT");
+        expect(allMessages[0].receptionStatus).toBe("READ");
+        expect(allMessages[1].receptionStatus).toBe("SENT");
     });
 
     test("should return error if there are no messages", async () => {
@@ -612,7 +612,7 @@ describe("RetrieveMessagesWithUserCommand", () => {
         };
         
         const messages = await messageRepository.findAll();
-        expect(messages[0].status).toBe("SENT");
+        expect(messages[0].receptionStatus).toBe("SENT");
 
         const result = await command.run(request);
 
@@ -683,7 +683,7 @@ describe("RetrieveMessagesWithUserPaginatedCommand", () => {
         };
 
         const allMessages = await messageRepository.findAll();
-        expect(allMessages[0].status).toBe("SENT");
+        expect(allMessages[0].receptionStatus).toBe("SENT");
 
         const result = await command.run(request);
 
@@ -755,7 +755,7 @@ describe("RetrieveUserLastMessagesCommand", () => {
         };
 
         const allMessages = await messageRepository.findAll();
-        expect(allMessages[0].status).toBe("SENT");
+        expect(allMessages[0].receptionStatus).toBe("SENT");
 
         const result = await command.run(request);
 
@@ -834,7 +834,7 @@ describe("UpdateMessageCommand", () => {
         expect(result.isSuccess()).toBe(true);
         expect(allMessages).toHaveLength(2);
         expect(allMessages[0].content).toBe("hii, what is ur name?");
-        expect(allMessages[0].status).toBe("EDITED");
+        expect(allMessages[0].receptionStatus).toBe("EDITED");
     });
 
     test("should return error if there are no messages", async () => {

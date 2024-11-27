@@ -2,7 +2,7 @@ import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
 import { NotificationHasBeenSeenDTO } from "../DTO/NotificationHasBeenSeenDTO";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
-import { MessageStatusEnum } from "@/core/shared/domain/MessageStatusEnum";
+import { MessageReceptionStatusEnum } from "@/core/shared/domain/MessageReceptionStatusEnum";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { ValidationError } from "@/core/shared/exceptions/ValidationError";
 
@@ -26,7 +26,7 @@ export class NotificationHasBeenSeenCommand implements ICommand<NotificationHasB
                 return Result.failure<void>(new ValidationError('User is not the recipient of the notification'));
             }
 
-            notification.status = MessageStatusEnum.READ;
+            notification.status = MessageReceptionStatusEnum.READ;
             await this.repository.create(notification);
 
             return Result.success<void>(undefined);
