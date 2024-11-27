@@ -45,17 +45,26 @@ const copyEnvFiles = (files) => {
     });
 };
 
-esbuild.build({
+// Opciones comunes para build
+const buildOptions = {
     entryPoints: ['./apps/RestApi/Main.ts'],
     bundle: true,
     platform: 'node',
     outfile: './dist/apps/RestApi/Main.js',
+    sourcemap: true, // Generar source maps
+    minify: process.env.NODE_ENV === 'production', // Minificar en producción
     plugins: [
         copyStaticFiles({
             src: './apps/static',
             dest: './dist/static',
         }),
     ],
-}).then(() => {
+    define: {
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+    },
+};
+
+esbuild.build(buildOptions).then(() => {
     copyEnvFiles(envFiles);
+    console.log('Build completado con éxito.');
 }).catch(() => process.exit(1));
