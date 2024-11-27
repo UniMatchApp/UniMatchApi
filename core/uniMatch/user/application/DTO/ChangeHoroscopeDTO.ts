@@ -1,4 +1,4 @@
-export interface ChangeFactDTO {
+export interface ChangeHoroscopeDTO {
     id: string;
     newContent?: string;
 }

@@ -1,4 +1,4 @@
-export interface ChangeFactDTO {
+export interface ChangeDrinksDTO {
     id: string;
     newContent?: string;
 }

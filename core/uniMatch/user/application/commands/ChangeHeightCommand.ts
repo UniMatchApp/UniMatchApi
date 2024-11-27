@@ -4,18 +4,18 @@ import { IProfileRepository } from "../ports/IProfileRepository";
 import { ChangeHeightDTO } from "../DTO/ChangeHeightDTO";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
-export class ChangeHeightCommand implements ICommand<ChangeHeightDTO, number> {
+export class ChangeHeightCommand implements ICommand<ChangeHeightDTO, number | undefined> {
     private repository: IProfileRepository;
 
     constructor(repository: IProfileRepository) {
         this.repository = repository;
     }
     
-    async run(request: ChangeHeightDTO): Promise<Result<number>> {
+    async run(request: ChangeHeightDTO): Promise<Result<number | undefined>> {
         try {
             const profile = await this.repository.findByUserId(request.id)
             if (!profile) {
-                return Result.failure<number>(new NotFoundError(`Profile with id ${request.id} not found`));
+                return Result.failure<number | undefined>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
 
             console.log(request);
@@ -23,10 +23,10 @@ export class ChangeHeightCommand implements ICommand<ChangeHeightDTO, number> {
 
             await this.repository.update(profile, profile.getId());
 
-            return Result.success<number>(request.newHeight!);
+            return Result.success<number | undefined>(request.newHeight);
         
         } catch (error : any) {
-            return Result.failure<number>(error);
+            return Result.failure<number | undefined>(error);
         }
     }
 

@@ -4,7 +4,7 @@ import { IProfileRepository } from "../ports/IProfileRepository";
 import { ChangeLifeStyleDTO } from "../DTO/ChangeLifestyleDTO";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 
-export class ChangePetsCommand implements ICommand<ChangeLifeStyleDTO, string> {
+export class ChangePetsCommand implements ICommand<ChangeLifeStyleDTO, string | undefined> {
 
     private readonly repository: IProfileRepository;
 
@@ -12,20 +12,20 @@ export class ChangePetsCommand implements ICommand<ChangeLifeStyleDTO, string> {
         this.repository = repository;
     }
 
-    async run(request: ChangeLifeStyleDTO): Promise<Result<string>> {
+    async run(request: ChangeLifeStyleDTO): Promise<Result<string | undefined>> {
         try {
             const profile = await this.repository.findByUserId(request.id);
             if(!profile) {
-                return Result.failure<string>(new NotFoundError(`Profile with id ${request.id} not found`));
+                return Result.failure<string | undefined>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
             console.log(request.newContent);
             
             profile.pets = request.newContent;
             console.log(profile.pets);
             await this.repository.update(profile, profile.getId());
-            return Result.success<string>(request.newContent);
+            return Result.success<string | undefined>(request.newContent);
         } catch (error: any) {
-            return Result.failure<string>(error);
+            return Result.failure<string | undefined>(error);
         }
     }
 }

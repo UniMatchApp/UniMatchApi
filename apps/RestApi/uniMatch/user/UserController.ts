@@ -73,6 +73,14 @@ import { ChangeMaxDistanceCommand } from '@/core/uniMatch/user/application/comma
 import { ChangeMaxDistanceDTO } from '@/core/uniMatch/user/application/DTO/ChangeMaxDistanceDTO';
 import { ChangeLocationDTO } from '@/core/uniMatch/user/application/DTO/ChangeLocationDTO';
 import { ChangeLocationCommand } from '@/core/uniMatch/user/application/commands/ChangeLocationCommand';
+import {ChangeDrinksDTO} from '@/core/uniMatch/user/application/DTO/ChangeDrinksDTO';
+import { ChangeHoroscopeDTO } from '@/core/uniMatch/user/application/DTO/ChangeHoroscopeDTO';
+import { ChangeJobDTO } from '@/core/uniMatch/user/application/DTO/ChangeJobDTO';
+import { ChangePersonalityDTO } from '@/core/uniMatch/user/application/DTO/ChangePersonalityDTO';
+import { ChangePetsDTO } from '@/core/uniMatch/user/application/DTO/ChangePetsDTO';
+import { ChangeSmokesDTO } from '@/core/uniMatch/user/application/DTO/ChangeSmokesDTO';
+import { ChangeSportsDTO } from '@/core/uniMatch/user/application/DTO/ChangeSportsDTO';
+import { ChangeValuesAndBeliefsDTO } from '@/core/uniMatch/user/application/DTO/ChangeValuesAndBeliefsDTO';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -236,7 +244,7 @@ export class UserController {
         const degree = req.body.newContent;
         const command = new ChangeDegreeCommand(this.profileRepository);
         const dto = {id: userId, degree: degree} as ChangeDegreeDTO;
-        return command.run(dto).then((result: Result<string>) => {
+        return command.run(dto).then((result: Result<string | undefined>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -268,7 +276,7 @@ export class UserController {
         const fact = req.body.newContent;
         const command = new ChangeFactCommand(this.profileRepository);
         const dto = {id: userId, newContent: fact} as ChangeFactDTO;
-        return command.run(dto).then((result: Result<string>) => {
+        return command.run(dto).then((result: Result<string | undefined>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -282,8 +290,8 @@ export class UserController {
         const userId = req.body.userId;
         const drinks = req.body.newContent;
         const command = new ChangeDrinksCommand(this.profileRepository);
-        const dto = {id: userId, newContent: drinks} as ChangeLifeStyleDTO;
-        return command.run(dto).then((result: Result<string>) => {
+        const dto = {id: userId, newContent: drinks} as ChangeDrinksDTO;
+        return command.run(dto).then((result: Result<string | undefined>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -313,7 +321,7 @@ export class UserController {
         const height = req.body.newContent;
         const command = new ChangeHeightCommand(this.profileRepository);
         const dto = {id: userId, newHeight: height} as ChangeHeightDTO;
-        return command.run(dto).then((result: Result<number>) => {
+        return command.run(dto).then((result: Result<number | undefined>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -327,8 +335,8 @@ export class UserController {
         const userId = req.body.userId;
         const horoscope = req.body.newContent;
         const command = new ChangeHoroscopeCommand(this.profileRepository);
-        const dto = {id: userId, newContent: horoscope} as ChangeMoreAboutMeDTO;
-        return command.run(dto).then((result: Result<string>) => {
+        const dto = {id: userId, newContent: horoscope} as ChangeHoroscopeDTO;
+        return command.run(dto).then((result: Result<string | undefined>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -357,8 +365,8 @@ export class UserController {
         const userId = req.body.userId;
         const job = req.body.newContent;
         const command = new ChangeJobCommand(this.profileRepository);
-        const dto = {id: userId, newContent: job} as ChangeMoreAboutMeDTO;
-        return command.run(dto).then((result: Result<string>) => {
+        const dto = {id: userId, newContent: job} as ChangeJobDTO;
+        return command.run(dto).then((result: Result<string | undefined>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -387,8 +395,8 @@ export class UserController {
         const userId = req.body.userId;
         const personality = req.body.newContent;
         const command = new ChangePersonalityCommand(this.profileRepository);
-        const dto = {id: userId, newContent: personality} as ChangeMoreAboutMeDTO;
-        return command.run(dto).then((result: Result<string>) => {
+        const dto = {id: userId, newContent: personality} as ChangePersonalityDTO;
+        return command.run(dto).then((result: Result<string | undefined>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -402,8 +410,8 @@ export class UserController {
         const userId = req.body.userId;
         const pets = req.body.newContent;
         const command = new ChangePetsCommand(this.profileRepository);
-        const dto = {id: userId, newContent: pets} as ChangeLifeStyleDTO;
-        return command.run(dto).then((result: Result<string>) => {
+        const dto = {id: userId, newContent: pets} as ChangePetsDTO;
+        return command.run(dto).then((result: Result<string | undefined>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -463,8 +471,8 @@ export class UserController {
         const userId = req.body.userId;
         const smokes = req.body.newContent;
         const command = new ChangeSmokesCommand(this.profileRepository);
-        const dto = {id: userId, newContent: smokes} as ChangeLifeStyleDTO;
-        return command.run(dto).then((result: Result<string>) => {
+        const dto = {id: userId, newContent: smokes} as ChangeSmokesDTO;
+        return command.run(dto).then((result: Result<string | undefined>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -478,8 +486,8 @@ export class UserController {
         const userId = req.body.userId;
         const sports = req.body.newContent;
         const command = new ChangeSportsCommand(this.profileRepository);
-        const dto = {id: userId, newContent: sports} as ChangeLifeStyleDTO;
-        return command.run(dto).then((result: Result<string>) => {
+        const dto = {id: userId, newContent: sports} as ChangeSportsDTO;
+        return command.run(dto).then((result: Result<string |undefined>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -493,8 +501,8 @@ export class UserController {
         const userId = req.body.userId;
         const valuesAndBeliefs = req.body.newContent;
         const command = new ChangeValuesAndBeliefsCommand(this.profileRepository);
-        const dto = {id: userId, newContent: valuesAndBeliefs} as ChangeLifeStyleDTO;
-        return command.run(dto).then((result: Result<string>) => {
+        const dto = {id: userId, newContent: valuesAndBeliefs} as ChangeValuesAndBeliefsDTO;
+        return command.run(dto).then((result: Result<string | undefined>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -555,7 +563,7 @@ export class UserController {
         const weight = req.body.newContent;
         const command = new ChangeWeightCommand(this.profileRepository);
         const dto = {id: userId, newWeight: weight} as ChangeWeightDTO;
-        return command.run(dto).then((result: Result<number>) => {
+        return command.run(dto).then((result: Result<number | undefined>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {

@@ -1,4 +1,4 @@
-export interface ChangeFactDTO {
+export interface ChangePetsDTO {
     id: string;
     newContent?: string;
 }
