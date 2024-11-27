@@ -187,5 +187,5 @@ export class DependencyContainer {
 
 }
 
-export const dependencies = new DependencyContainer(true);
+export const dependencies = new DependencyContainer(false);
 

@@ -17,7 +17,6 @@ const userController = new UserController(
 
 router.post('/block/:targetId', validateAndRefreshToken, userController.blockUser.bind(userController));
 router.put('/about', validateAndRefreshToken, userController.changeAboutMe.bind(userController));
-// router.put('/:id/fact', userController.changeFact.bind(userController));
 router.put('/degree', validateAndRefreshToken, userController.changeDegree.bind(userController));
 router.put('/location', validateAndRefreshToken, userController.changeLocation.bind(userController));
 router.put('/drinks', validateAndRefreshToken, userController.changeDrinks.bind(userController));
