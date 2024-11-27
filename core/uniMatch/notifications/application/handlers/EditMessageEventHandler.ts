@@ -1,7 +1,11 @@
 import {IEventHandler} from "@/core/shared/application/IEventHandler";
 import {DomainEvent} from "@/core/shared/domain/DomainEvent";
 import {IAppNotifications} from "../ports/IAppNotifications";
-import { MessageStatusEnum } from "@/core/shared/domain/MessageStatusEnum";
+import {
+    MessageContentStatusEnum,
+    MessageDeletedStatusEnum,
+    MessageReceptionStatusEnum
+} from "@/core/shared/domain/MessageReceptionStatusEnum";
 import { Notification } from "../../domain/Notification";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { NotificationTypeEnum } from "../../domain/enum/NotificationTypeEnum";
@@ -44,10 +48,10 @@ export class EditMessageEventHandler implements IEventHandler {
                 recipient,
                 newContent,
                 sender,
-                MessageStatusEnum.EDITED,
-                MessageStatusEnum.NOT_DELETED,
-                attachment
-            );
+                MessageContentStatusEnum.EDITED,
+                MessageReceptionStatusEnum.SENT,
+                MessageDeletedStatusEnum.NOT_DELETED,
+                attachment);
             
             await this.repository.create(notification);
             this.appNotifications.sendNotification(notification);

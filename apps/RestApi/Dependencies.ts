@@ -163,14 +163,14 @@ export class DependencyContainer {
 
 
     subscribeHandlers(){
-        this.eventBus.subscribe(new DeletedMessageEventHandler(this.appNotifications, this.notificationsRepository));
+        this.eventBus.subscribe(new NewMessageEventHandler(this.notificationsRepository, this.appNotifications));
         this.eventBus.subscribe(new EditMessageEventHandler(this.appNotifications, this.notificationsRepository));
+        this.eventBus.subscribe(new DeletedMessageEventHandler(this.appNotifications, this.notificationsRepository));
         this.eventBus.subscribe(new EventIsDeletedEventHandler(this.notificationsRepository, this.appNotifications));
         this.eventBus.subscribe(new EventIsGoingToExpireEventHandler(this.notificationsRepository, this.appNotifications));
         this.eventBus.subscribe(new EventIsModifiedEventHandler(this.notificationsRepository, this.appNotifications));
         this.eventBus.subscribe(new NewDislikeEventHandler(this.notificationsRepository, this.appNotifications));
         this.eventBus.subscribe(new NewLikeEventHandler(this.notificationsRepository, this.appNotifications));
-        this.eventBus.subscribe(new NewMessageEventHandler(this.notificationsRepository, this.appNotifications));
         this.eventBus.subscribe(new UserHasChangedEmailEventHandler(this.notificationsRepository, this.emailNotifications));
         this.eventBus.subscribe(new UserHasChangedPasswordEventHandler(this.notificationsRepository, this.emailNotifications));
 

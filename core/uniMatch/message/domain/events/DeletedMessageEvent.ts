@@ -1,13 +1,13 @@
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { Message } from "../Message";
-import {DeletedMessageStatusType } from "@/core/shared/domain/MessageStatusEnum";
+import {MessageDeletedStatusType } from "@/core/shared/domain/MessageReceptionStatusEnum";
 
 export class DeletedMessageEvent extends DomainEvent {
     private constructor(
         aggregateId: string, 
         recipient: string, 
         sender: string,
-        deletedStatus: DeletedMessageStatusType
+        deletedStatus: MessageDeletedStatusType
     ) {
         super(aggregateId, "deleted-message");
         this.getPayload().set("recipient", recipient);

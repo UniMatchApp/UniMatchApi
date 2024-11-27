@@ -6,13 +6,16 @@ export class NewMessageEvent extends DomainEvent {
                 content: string,
                 sender: string,
                 recipient: string,
-                status: string,
+                contentStatus: string,
+                receptionStatus: string,
                 deletedStatus: string,
-                attachment?: string) {
+                attachment?: string,
+    ) {
         super(aggregateId, "new-message");
         this.getPayload().set("content", content);
         this.getPayload().set("sender", sender);
-        this.getPayload().set("status", status);
+        this.getPayload().set("receptionStatus", receptionStatus);
+        this.getPayload().set("contentStatus", contentStatus);
         this.getPayload().set("recipient", recipient);
         this.getPayload().set("deletedStatus", deletedStatus);
         if (attachment) {
@@ -26,7 +29,8 @@ export class NewMessageEvent extends DomainEvent {
             message.content,
             message.sender,
             message.recipient,
-            message.status,
+            message.contentStatus,
+            message.receptionStatus,
             message.deletedStatus,
             message.attachment
         );

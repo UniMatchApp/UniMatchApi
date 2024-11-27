@@ -7,11 +7,11 @@ import {IFileHandler} from "@/core/shared/application/IFileHandler";
 import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
 import {ValidationError} from "@/core/shared/exceptions/ValidationError";
 import {
-    DeletedMessageStatusType,
-    MessageStatusType,
+    MessageDeletedStatusType,
+    MessageReceptionStatusType,
     validateDeletedMessageStatusType,
     validateMessageStatusType
-} from "@/core/shared/domain/MessageStatusEnum";
+} from "@/core/shared/domain/MessageReceptionStatusEnum";
 import {MessageDTO} from "@/core/uniMatch/message/application/DTO/MessageDTO";
 
 export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, MessageDTO> {
@@ -43,7 +43,7 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, MessageD
                 return Result.failure<MessageDTO>(new ValidationError('Invalid message status'));
             }
 
-            if ((request.status as MessageStatusType === "RECEIVED" || request.status as MessageStatusType === "READ") &&
+            if ((request.status as MessageReceptionStatusType === "RECEIVED" || request.status as MessageReceptionStatusType === "READ") &&
                 (messageToUpdate.recipient !== request.userId)) {
                 return Result.failure<MessageDTO>(new ValidationError('User is not the recipient of the message. Cannot update status to RECEIVED or READ'));
             }
@@ -52,17 +52,17 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, MessageD
                 return Result.failure<MessageDTO>(new ValidationError('Invalid deleted status'));
             }
 
-            if (request.deletedStatus as DeletedMessageStatusType === "NOT_DELETED") {
+            if (request.deletedStatus as MessageDeletedStatusType === "NOT_DELETED") {
                 return Result.failure<MessageDTO>(new ValidationError('Cannot update message to NOT_DELETED status'));
             }
 
-            if ((request.deletedStatus as DeletedMessageStatusType === "DELETED_BY_SENDER" ||
-                    request.deletedStatus as DeletedMessageStatusType === "DELETED_FOR_BOTH") &&
+            if ((request.deletedStatus as MessageDeletedStatusType === "DELETED_BY_SENDER" ||
+                    request.deletedStatus as MessageDeletedStatusType === "DELETED_FOR_BOTH") &&
                 request.userId !== messageToUpdate.sender) {
                 return Result.failure<MessageDTO>(new ValidationError('User is not the sender of the message. Cannot delete message'));
             }
 
-            if ((request.deletedStatus as DeletedMessageStatusType === "DELETED_BY_RECIPIENT") &&
+            if ((request.deletedStatus as MessageDeletedStatusType === "DELETED_BY_RECIPIENT") &&
                 (request.userId !== messageToUpdate.recipient)) {
                 return Result.failure<MessageDTO>(new ValidationError('User is not the recipient of the message. Cannot delete message for recipient'));
             }
@@ -78,8 +78,8 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, MessageD
 
             messageToUpdate.edit(
                 request.content,
-                request.status as MessageStatusType,
-                request.deletedStatus as DeletedMessageStatusType
+                request.status as MessageReceptionStatusType,
+                request.deletedStatus as MessageDeletedStatusType
             );
 
             await this.repository.update(messageToUpdate, request.messageId);

@@ -1,10 +1,14 @@
-import { IEventHandler } from "@/core/shared/application/IEventHandler";
-import { DomainEvent } from "@/core/shared/domain/DomainEvent";
-import { IAppNotifications } from "../ports/IAppNotifications";
-import { Notification } from "../../domain/Notification";
-import { MessageStatusEnum } from "@/core/shared/domain/MessageStatusEnum";
-import { INotificationsRepository } from "../ports/INotificationsRepository";
-import { NotificationTypeEnum } from "../../domain/enum/NotificationTypeEnum";
+import {IEventHandler} from "@/core/shared/application/IEventHandler";
+import {DomainEvent} from "@/core/shared/domain/DomainEvent";
+import {IAppNotifications} from "../ports/IAppNotifications";
+import {Notification} from "../../domain/Notification";
+import {
+    MessageContentStatusEnum,
+    MessageDeletedStatusEnum,
+    MessageReceptionStatusEnum
+} from "@/core/shared/domain/MessageReceptionStatusEnum";
+import {INotificationsRepository} from "../ports/INotificationsRepository";
+import {NotificationTypeEnum} from "../../domain/enum/NotificationTypeEnum";
 
 export class DeletedMessageEventHandler implements IEventHandler {
     private readonly appNotifications: IAppNotifications;
@@ -20,7 +24,7 @@ export class DeletedMessageEventHandler implements IEventHandler {
             const messageId = event.getPayload().get("messageId");
             const recipient = event.getAggregateId();
             const sender = event.getPayload().get("sender");
-    
+
             if (!messageId || !recipient) {
                 throw new ErrorEvent("Recipient and MessageID is required to delete a message.");
             }
@@ -34,17 +38,17 @@ export class DeletedMessageEventHandler implements IEventHandler {
             if (oldNotification) {
                 await this.repository.deleteById(oldNotification.getId());
             }
-     
+
             const notification = Notification.createMessageNotification(
                 messageId,
                 new Date(),
                 recipient,
                 "Message deleted",
                 sender,
-                MessageStatusEnum.SENT,
-                MessageStatusEnum.NOT_DELETED,
-                undefined
-            );
+                MessageContentStatusEnum.NOT_EDITED,
+                MessageReceptionStatusEnum.SENT,
+                MessageDeletedStatusEnum.NOT_DELETED,
+                undefined);
 
             this.appNotifications.sendNotification(notification);
         } catch (error: any) {

@@ -8,7 +8,11 @@ import {MessageNotificationPayload} from "./entities/MessageNotificationPayload"
 import {MatchNotificationPayload} from "./entities/MatchNotificationPayload";
 import {AppNotificationPayload} from "./entities/AppNotificationPayload";
 import {EventNotificationPayload} from "./entities/EventNotificationPayload";
-import {DeletedMessageStatusType, MessageStatusType} from "@/core/shared/domain/MessageStatusEnum";
+import {
+    MessageContentStatusType,
+    MessageDeletedStatusType,
+    MessageReceptionStatusType
+} from "@/core/shared/domain/MessageReceptionStatusEnum";
 
 export class Notification extends AggregateRoot {
     private _type: NotificationTypeEnum;
@@ -51,11 +55,12 @@ export class Notification extends AggregateRoot {
         recipient: string,
         content: string,
         sender: string,
-        status: MessageStatusType,
-        deletedStatus: DeletedMessageStatusType,
+        contentStatus: MessageContentStatusType,
+        receptionStatus: MessageReceptionStatusType,
+        deletedStatus: MessageDeletedStatusType,
         attachment?: string,
     ): Notification {
-        const payload = new MessageNotificationPayload(contentId, content, sender, status, deletedStatus, attachment);
+        const payload = new MessageNotificationPayload(contentId, content, sender, contentStatus, receptionStatus, deletedStatus, attachment);
         return new Notification(contentId, NotificationTypeEnum.MESSAGE, date, recipient, payload);
     }
 
