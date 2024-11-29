@@ -140,6 +140,7 @@ export class UserController {
     }
 
     async createProfile(req: Request, res: Response): Promise<void> {
+        console.log(req.body);
         const command = new CreateNewProfileCommand(this.userRepository, this.profileRepository, this.fileHandler, this.eventBus);
         const userId = req.body.userId;
         const dto = {userId: userId, ...req.body} as CreateNewProfileDTO;
@@ -255,6 +256,7 @@ export class UserController {
     }
 
     async changeLocation(req: Request, res: Response): Promise<void> {
+        console.log(req.body);
         const userId = req.body.userId;
         const altitude = req.body.altitude;
         const longitude = req.body.longitude;
@@ -544,6 +546,7 @@ export class UserController {
     }
 
     async changeMaxDistance(req: Request, res: Response): Promise<void> {
+        console.log(req.body);
         const userId = req.body.userId;
         const distance = req.body.newContent;
         const command = new ChangeMaxDistanceCommand(this.profileRepository, this.eventBus);

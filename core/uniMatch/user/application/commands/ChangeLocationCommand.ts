@@ -18,6 +18,7 @@ export class ChangeLocationCommand implements ICommand<ChangeLocationDTO, {latit
 
     async run(request: ChangeLocationDTO): Promise<Result<{latitude?: number, longitude?: number, altitude?: number}>> {
         try {
+            console.log("request: ", request);
             const profile = await this.repository.findByUserId(request.id)
             if (!profile) {
                 return Result.failure<{latitude?: number, longitude?: number, altitude?: number}>(new NotFoundError(`Profile with id ${request.id} not found`));

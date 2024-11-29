@@ -8,15 +8,15 @@ import {GetUsersWithMutualLikesDTO} from "../DTO/GetUsersWithMutualLikesDTO";
 export class GetUsersWithMutualLikesCommand implements ICommand<GetUsersWithMutualLikesDTO, string[]> {
     private readonly matchingRepository: IMatchingRepository;
 
-
     constructor(repository: IMatchingRepository) {
         this.matchingRepository = repository;
     }
 
     async run(request: GetUsersWithMutualLikesDTO): Promise<Result<string[]>> {
         try {
+            console.log("Request", request.userId);
             const user: Node | undefined = await this.matchingRepository.findByUserId(request.userId);
-
+            console.log("User: ", user);
             if (!user) {
                 return Result.failure<string[]>(new NotFoundError("User not found"));
             }
@@ -29,6 +29,7 @@ export class GetUsersWithMutualLikesCommand implements ICommand<GetUsersWithMutu
 
             return Result.success<string[]>(mutualLikes.map((node: Node) => node.userId));
         } catch (error: any) {
+            console.log("Error: ", error);
             return Result.failure<string[]>(error);
         }
     }
