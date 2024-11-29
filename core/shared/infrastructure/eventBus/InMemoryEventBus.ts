@@ -13,6 +13,8 @@ export class InMemoryEventBus implements IEventBus {
                     handler.handle(event);
                 }
             }
+
+            this.removeEvent(event.getEventId())
         }
     }
 
@@ -23,4 +25,14 @@ export class InMemoryEventBus implements IEventBus {
         }
         this.handlers.get(eventId)?.push(handler);
     }
+
+    removeEvent(eventId: string): void {
+        if (this.handlers.has(eventId)) {
+            this.handlers.delete(eventId);
+            console.log(`Event '${eventId}' and its handlers have been removed.`);
+        } else {
+            console.log(`Event '${eventId}' does not exist.`);
+        }
+    }
 }
+

@@ -83,6 +83,7 @@ import {
 import { TokenService } from "./utils/TokenService";
 import { UserHasChangedAgeRangeEventHandler } from "@/core/uniMatch/matching/application/handlers/UserHasChangedAgeRangeEventHandler";
 import { UserHasChangedGenderEventHandler } from "@/core/uniMatch/matching/application/handlers/UserHasChangedGenderEventHandler";
+import { NewUser } from "@/core/uniMatch/user/domain/events/NewUser";
 
 export class DependencyContainer {
 

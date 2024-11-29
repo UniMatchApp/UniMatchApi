@@ -45,6 +45,7 @@ export class Profile extends AggregateRoot {
     private _genderPriority?: Gender;
     private _fact?: string;
 
+    private _isNew: boolean = true;
 
     constructor(
         userId: string,
@@ -72,6 +73,9 @@ export class Profile extends AggregateRoot {
         this._birthday = birthday;
         this._interests = interests;
         this._wall = wall;
+
+        this.recordEvent(NewProfile.from(this));
+        this._isNew = false;
     }
 
     public get userId(): string {
@@ -86,6 +90,7 @@ export class Profile extends AggregateRoot {
         if (!value) {
             throw new DomainError('Name cannot be empty.');
         }
+        
         this._name = value;
     }
 
@@ -99,7 +104,7 @@ export class Profile extends AggregateRoot {
         }
         this._age = value;
 
-        this.recordEvent(new UserHasChangedAge(this.userId.toString(), value));
+        if (!this._isNew) this.recordEvent(new UserHasChangedAge(this.userId.toString(), value));
     }
 
     public get location(): Location | undefined {

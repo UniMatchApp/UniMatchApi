@@ -12,6 +12,8 @@ export class UserHasChangedAgeEventHandler implements IEventHandler {
 
     async handle(event: DomainEvent): Promise<void> {
         try {
+            const eventPayload = event.getEventId()
+            console.log("eventPayload", eventPayload)
             
             const userId = event.getAggregateId();
             const age = event.getPayload().get("age");

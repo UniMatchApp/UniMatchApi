@@ -5,6 +5,9 @@ import { Node } from '../../../domain/Node';
 import { Like } from '../../../domain/relations/Like';
 import { Dislike } from '../../../domain/relations/Dislike';
 import driver from '../Config';
+import { Location } from '@/core/shared/domain/Location';
+import { Gender } from '@/core/shared/domain/Gender';
+import { RelationshipType } from '@/core/shared/domain/RelationshipType';
 
 export class Neo4JMatchingRepository implements IMatchingRepository {
     private driver: Driver;
@@ -78,14 +81,20 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
     
             return result.records.map((record: any): Node => {
                 const userNode: any = record.get('u2').properties;
+                const location = Location.stringToLocation(userNode.location)
+                const gender = new Gender(Gender.fromString(userNode.gender))
+                const genderPriority = new Gender(Gender.fromString(userNode.genderPriority))
+                const relationshipType = RelationshipType.fromString(userNode.relationshipType)
+                const ageRange = userNode.ageRange
                 return new Node(
                     userNode.userId,
                     userNode.age,
+                    ageRange,
                     userNode.maxDistance,
-                    userNode.gender,
-                    userNode.relationshipType,
-                    userNode.genderPriority,
-                    userNode.location,
+                    gender,
+                    relationshipType,
+                    genderPriority,
+                    location
                 );
             });
         } finally {
@@ -107,15 +116,21 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
                 { userId }
             );
             return result.records.map((record: any): Node => {
-                const userNode: any = record.get('u2').properties;
+                const userNode = record.get('u').properties;
+                const location = Location.stringToLocation(userNode.location)
+                const gender = new Gender(Gender.fromString(userNode.gender))
+                const genderPriority = new Gender(Gender.fromString(userNode.genderPriority))
+                const relationshipType = RelationshipType.fromString(userNode.relationshipType)
+                const ageRange = userNode.ageRange
                 return new Node(
                     userNode.userId,
                     userNode.age,
+                    ageRange,
                     userNode.maxDistance,
-                    userNode.gender,
-                    userNode.relationshipType,
-                    userNode.genderPriority,
-                    userNode.location,
+                    gender,
+                    relationshipType,
+                    genderPriority,
+                    location
                 );
             });
         } finally {
@@ -124,18 +139,20 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
     }
     
     async create(entity: Node): Promise<void> {
+        console.log("I CALLED CREATE FUNCTION")
         const session = this.driver.session();
         try {
             await session.run(
-                'CREATE (u:User {userId: $userId, age: $age, location: $location, maxDistance: $maxDistance, gender: $gender, relationshipType: $relationshipType, genderPriority: $genderPriority})',
+                'CREATE (u:User {userId: $userId, age: $age, ageRange: $ageRange, location: $location, maxDistance: $maxDistance, gender: $gender, relationshipType: $relationshipType, genderPriority: $genderPriority})',
                 {
                     userId: entity.userId,
                     age: entity.age,
+                    ageRange: entity.ageRange,
                     location: entity.location?.toString() || null,
                     maxDistance: entity.maxDistance,
-                    gender: entity.gender,
-                    relationshipType: entity.relationshipType,
-                    genderPriority: entity.genderPriority
+                    gender: entity.gender.toString(),
+                    relationshipType: entity.relationshipType.toString(),
+                    genderPriority: entity.genderPriority?.toString() || null
                 }
             );
         } finally {
@@ -148,15 +165,16 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
         try {
             await session.run(
                 'MATCH (u:User {userId: $userId}) ' +
-                'SET u.age = $age, u.location = $location, u.maxDistance = $maxDistance, u.gender = $gender, u.relationshipType = $relationshipType, u.genderPriority = $genderPriority',
+                'SET u.age = $age, u.location = $location, u.ageRange = $ageRange, u.maxDistance = $maxDistance, u.gender = $gender, u.relationshipType = $relationshipType, u.genderPriority = $genderPriority',
                 {
                     userId: id,
                     age: entity.age,
+                    ageRange: entity.ageRange,
                     location: entity.location?.toString() || null,
                     maxDistance: entity.maxDistance,
-                    gender: entity.gender,
-                    relationshipType: entity.relationshipType,
-                    genderPriority: entity.genderPriority
+                    gender: entity.gender.toString(),
+                    relationshipType: entity.relationshipType.toString(),
+                    genderPriority: entity.genderPriority?.toString() || null
                 }
             );
             return entity;
@@ -176,14 +194,20 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
             const record = result.records[0];
             if (record) {
                 const userNode = record.get('u').properties;
+                const location = Location.stringToLocation(userNode.location)
+                const gender = new Gender(Gender.fromString(userNode.gender))
+                const genderPriority = new Gender(Gender.fromString(userNode.genderPriority))
+                const relationshipType = RelationshipType.fromString(userNode.relationshipType)
+                const ageRange = userNode.ageRange
                 return new Node(
                     userNode.userId,
                     userNode.age,
+                    ageRange,
                     userNode.maxDistance,
-                    userNode.gender,
-                    userNode.relationshipType,
-                    userNode.genderPriority,
-                    userNode.location
+                    gender,
+                    relationshipType,
+                    genderPriority,
+                    location
                 );
             }
             return null;
@@ -197,15 +221,21 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
         try {
             const result = await session.run('MATCH (u:User) RETURN u');
             return result.records.map((record: any): Node => {
-                const userNode: any = record.get('u').properties;
+                const userNode = record.get('u').properties;
+                const location = Location.stringToLocation(userNode.location)
+                const gender = new Gender(Gender.fromString(userNode.gender))
+                const genderPriority = new Gender(Gender.fromString(userNode.genderPriority))
+                const relationshipType = RelationshipType.fromString(userNode.relationshipType)
+                const ageRange = userNode.ageRange
                 return new Node(
                     userNode.userId,
                     userNode.age,
+                    ageRange,
                     userNode.maxDistance,
-                    userNode.gender,
-                    userNode.relationshipType,
-                    userNode.genderPriority,
-                    userNode.location
+                    gender,
+                    relationshipType,
+                    genderPriority,
+                    location
                 );
             });
         } finally {
