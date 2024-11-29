@@ -84,6 +84,10 @@ import { TokenService } from "./utils/TokenService";
 import { UserHasChangedAgeRangeEventHandler } from "@/core/uniMatch/matching/application/handlers/UserHasChangedAgeRangeEventHandler";
 import { UserHasChangedGenderEventHandler } from "@/core/uniMatch/matching/application/handlers/UserHasChangedGenderEventHandler";
 
+import { createMoreUsers } from "@/scripts/createMoreUsers";
+import { createMoreProfiles } from "@/scripts/createMoreProfiles";
+import { createMoreMessages } from "@/scripts/createMoreMessages";
+
 export class DependencyContainer {
 
     // Variables de entorno
@@ -108,6 +112,10 @@ export class DependencyContainer {
     profileRepository: IProfileRepository;
 
     constructor(private useMocks: boolean) {
+
+        // createMoreUsers().catch(console.error);
+        // createMoreProfiles().catch(console.error);
+        createMoreMessages().catch(console.error);
 
         this.fileHandler = this.createFileHandler();
         this.sessionStatusRepository = this.createSessionStatusRepository();
