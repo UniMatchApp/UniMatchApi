@@ -8,6 +8,6 @@ export class UserHasChangedMaxDistance extends DomainEvent {
     }
 
     public static from(profile: Profile): UserHasChangedMaxDistance {
-        return new UserHasChangedMaxDistance(profile.getId(), profile.maxDistance);
+        return new UserHasChangedMaxDistance(profile.userId, profile.maxDistance);
     }
 }

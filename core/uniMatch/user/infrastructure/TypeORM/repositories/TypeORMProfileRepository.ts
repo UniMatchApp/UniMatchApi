@@ -59,7 +59,7 @@ export class TypeORMProfileRepository implements IProfileRepository {
         console.log("Updated Entity", updatedEntity);
         updatedEntity.id = id;
         await this.profileRepository.save(updatedEntity);
-        return ProfileMapper.toDomain(updatedEntity);
+        return entity;
     }
 
     async findByUserId(userId: string): Promise<Profile | undefined> {

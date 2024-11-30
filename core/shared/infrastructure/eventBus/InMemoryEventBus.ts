@@ -8,13 +8,12 @@ export class InMemoryEventBus implements IEventBus {
     publish(events: DomainEvent[]): void {
         for (const event of events) {
             const eventHandlers = this.handlers.get(event.getEventId());
+            console.log(eventHandlers);
             if (eventHandlers) {
                 for (const handler of eventHandlers) {
                     handler.handle(event);
                 }
             }
-
-            this.removeEvent(event.getEventId())
         }
     }
 
@@ -25,14 +24,6 @@ export class InMemoryEventBus implements IEventBus {
         }
         this.handlers.get(eventId)?.push(handler);
     }
-
-    removeEvent(eventId: string): void {
-        if (this.handlers.has(eventId)) {
-            this.handlers.delete(eventId);
-            console.log(`Event '${eventId}' and its handlers have been removed.`);
-        } else {
-            console.log(`Event '${eventId}' does not exist.`);
-        }
-    }
+    
 }
 

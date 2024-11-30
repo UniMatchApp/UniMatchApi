@@ -11,6 +11,6 @@ export class UserHasChangedLocation extends DomainEvent {
     }
 
     public static from(profile: Profile): UserHasChangedLocation {
-        return new UserHasChangedLocation(profile.getId(), profile.location);
+        return new UserHasChangedLocation(profile.userId, profile.location);
     }
 }

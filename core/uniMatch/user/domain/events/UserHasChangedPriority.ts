@@ -9,6 +9,6 @@ export class UserHasChangedPriority extends DomainEvent {
     }
 
     public static from(profile: Profile): UserHasChangedPriority {
-        return new UserHasChangedPriority(profile.getId(), profile.genderPriority);
+        return new UserHasChangedPriority(profile.userId, profile.genderPriority);
     }
 }

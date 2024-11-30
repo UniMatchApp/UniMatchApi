@@ -55,6 +55,8 @@ export class ProfileMapper {
         profile.ageRange = entity.ageRange;
         profile.horoscope = horoscope;
         profile.genderPriority = genderPriority;
+
+        profile.clearEvents();
         
         return profile;
     }
