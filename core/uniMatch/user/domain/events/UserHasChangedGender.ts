@@ -11,7 +11,7 @@ export class UserHasChangedGender extends DomainEvent {
     }
 
     public static from(profile: Profile): UserHasChangedGender {
-        return new UserHasChangedGender(profile.getId(), profile.gender);
+        return new UserHasChangedGender(profile.userId, profile.gender);
     }
 
     

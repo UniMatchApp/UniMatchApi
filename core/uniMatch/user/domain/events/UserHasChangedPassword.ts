@@ -7,6 +7,6 @@ export class UserHasChangedPassword extends DomainEvent {
     }
 
     public static from(user: User): UserHasChangedPassword {
-        return new UserHasChangedPassword(user.getId().toString());
+        return new UserHasChangedPassword(user.getId());
     }
 }

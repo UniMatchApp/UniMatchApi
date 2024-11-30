@@ -26,7 +26,7 @@ export class UserHasChangedAgeRangeEventHandler implements IEventHandler {
                 throw new EventError("User not found");
             }
             
-            const parsedAgeRange = JSON.parse(ageRange) as [number, number];
+            const parsedAgeRange = ageRange.split(',').map(Number) as [number, number];
             user.ageRange = parsedAgeRange;
             await this.repository.update(user, user.getId());
         } catch (error : any) {

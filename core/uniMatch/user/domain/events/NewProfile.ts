@@ -29,7 +29,7 @@ export class NewProfile extends DomainEvent {
 
     public static from(profile: Profile): NewProfile {
         return new NewProfile(
-            profile.getId().toString(),
+            profile.userId,
             profile.age,
             profile.ageRange,
             profile.gender.toString(),

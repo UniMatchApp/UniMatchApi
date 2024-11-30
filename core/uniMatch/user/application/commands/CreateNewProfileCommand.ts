@@ -60,13 +60,14 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
             )
             profile.preferredImage = profileUrl;
 
-            profile.create();
-
             user.completeRegistration();
             
             await this.profileRepository.create(profile);
             await this.userRepository.update(user, user.getId());
+
             this.eventBus.publish(user.pullDomainEvents());
+            this.eventBus.publish(profile.pullDomainEvents())
+            console.log("Events bus", this.eventBus)
             return Result.success<Profile>(profile);
         } catch (error: any) {
             console.log(error);

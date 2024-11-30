@@ -6,4 +6,8 @@ package-lock.json
 .idea
 .idea/
 dist
+<<<<<<< HEAD
 createRandomUserAndProfile.ts
+=======
+borrar.ts
+>>>>>>> 741c8ddff419237b2a4ef46f4a37d7e157d81f68
