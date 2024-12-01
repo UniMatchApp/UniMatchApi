@@ -7,7 +7,8 @@ export class NodeEntity {
     gender: string;
     relationshipType: string;
     genderPriority?: string;
-    location?: string;
+    latitude?: number;
+    longitude?: number;
 
     constructor(
         id: string,
@@ -28,6 +29,10 @@ export class NodeEntity {
         this.gender = gender;
         this.relationshipType = relationshipType;
         this.genderPriority = genderPriority;
-        this.location = location;
+        if (location) {
+            const [latitude, longitude] = location.split(',');
+            this.latitude = parseFloat(latitude);
+            this.longitude = parseFloat(longitude);
+        }
     }
 }

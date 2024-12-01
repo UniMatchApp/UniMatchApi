@@ -57,11 +57,11 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
                     AND NOT (u1)-[:LIKES]->(u2)
                 WITH u2,
                     (CASE 
-                        WHEN u1.location IS NULL OR u2.location IS NULL THEN 1
+                        WHEN u1.longitude IS NULL OR u2.longitude IS NULL THEN 1
                         WHEN u2.age >= u1.ageRange[0] AND u2.age <= u1.ageRange[1] THEN 1
                         WHEN u1.maxDistance = 0 OR point.distance(
-                            point({longitude: u1.location.longitude, latitude: u1.location.latitude}),
-                            point({longitude: u2.location.longitude, latitude: u2.location.latitude})
+                            point({longitude: u1.longitude, latitude: u1.latitude}),
+                            point({longitude: u2.longitude, latitude: u2.latitude})
                         ) <= u1.maxDistance * 1000 THEN 1 
                         ELSE 0 
                      END +
@@ -112,13 +112,14 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
         const session = this.driver.session();
         try {
             await session.run(
-                'CREATE (u:User {entityId: $id, userId: $userId, age: $age, ageRange: $ageRange, location: $location, maxDistance: $maxDistance, gender: $gender, relationshipType: $relationshipType, genderPriority: $genderPriority})',
+                'CREATE (u:User {entityId: $id, userId: $userId, age: $age, ageRange: $ageRange, latitude: $latitude, longitude: $longitude, maxDistance: $maxDistance, gender: $gender, relationshipType: $relationshipType, genderPriority: $genderPriority})',
                 {
                     id: entity.getId(),
                     userId: entity.userId,
                     age: entity.age,
                     ageRange: entity.ageRange,
-                    location: entity.location?.toString() || null,
+                    latitude : entity.location?.latitude || null,
+                    longitude : entity.location?.longitude || null,
                     maxDistance: entity.maxDistance,
                     gender: entity.gender.toString(),
                     relationshipType: entity.relationshipType.toString(),
@@ -135,12 +136,13 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
         try {
             await session.run(
                 'MATCH (u:User {entityId: $id}) ' +
-                'SET u.age = $age, u.location = $location, u.ageRange = $ageRange, u.maxDistance = $maxDistance, u.gender = $gender, u.relationshipType = $relationshipType, u.genderPriority = $genderPriority',
+                'SET u.age = $age, u.latitude = $latitude, u.longitude = $longitude, u.ageRange = $ageRange, u.maxDistance = $maxDistance, u.gender = $gender, u.relationshipType = $relationshipType, u.genderPriority = $genderPriority',
                 {
                     id,
                     age: entity.age,
                     ageRange: entity.ageRange,
-                    location: entity.location?.toString() || null,
+                    latitude : entity.location?.latitude,
+                    longitude : entity.location?.longitude,
                     maxDistance: entity.maxDistance,
                     gender: entity.gender.toString(),
                     relationshipType: entity.relationshipType.toString(),
