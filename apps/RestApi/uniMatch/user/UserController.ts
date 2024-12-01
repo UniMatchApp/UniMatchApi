@@ -141,9 +141,7 @@ export class UserController {
 
     async createProfile(req: Request, res: Response): Promise<void> {
         const command = new CreateNewProfileCommand(this.userRepository, this.profileRepository, this.fileHandler, this.eventBus);
-        const userId = req.body.userId;
-        const dto = {userId: userId, ...req.body} as CreateNewProfileDTO;
-        return command.run(dto).then((result: Result<Profile>) => {
+        return command.run(req.body).then((result: Result<Profile>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
