@@ -6,7 +6,9 @@ import { NodeEntity } from "../entities/NodeEntity";
 
 export class NodeMapper {
     static toDomain(entity: NodeEntity): Node {
-        const location = entity.location ? Location.stringToLocation(entity.location) : undefined;
+        const longitude = entity.longitude;
+        const latitude = entity.latitude;
+        const location = longitude && latitude ? new Location(latitude, longitude) : undefined;
         const gender = new Gender(Gender.fromString(entity.gender));
         const genderPriority = entity.genderPriority ? new Gender(Gender.fromString(entity.genderPriority)) : undefined;
         const relationshipType = RelationshipType.fromString(entity.relationshipType);
@@ -24,6 +26,7 @@ export class NodeMapper {
         );
 
         node.setId(entity.entityId);
+        node.clearEvents();
         return node;
     }
 

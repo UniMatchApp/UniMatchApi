@@ -16,7 +16,7 @@ import { router as sessionRouter } from './routes/session';
 const app = express();
 
 // Configurar la carpeta "static" para servir archivos estáticos
-app.use(express.static(path.join(__dirname, './uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(logger('dev'));
 app.use(express.json());

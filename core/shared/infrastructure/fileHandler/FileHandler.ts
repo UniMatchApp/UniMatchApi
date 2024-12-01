@@ -14,13 +14,17 @@ export class FileHandler implements IFileHandler {
 
     private readonly allowedFileTypes: string[] = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
+
     async save(fileName: string, data: File): Promise<string> {
-
-        const filePath = path.join(__dirname, 'uploads', fileName);
-
+        const extname = path.extname(fileName) || (data.type ? `.${data.type.split('/')[1]}` : '.txt');
+        
+        const filePath = path.join(__dirname, 'uploads', fileName + extname);
+        console.log('FileHandler.save', filePath);
+    
         return new Promise(async (resolve, reject) => {
-            const serverUrl = `${this.server_url}:${this.server_port}/uploads/${fileName}`;
+            const serverUrl = `${this.server_url}:${this.server_port}/uploads/${fileName}${extname}`;
             const writeStream = fs.createWriteStream(filePath);
+    
             writeStream.on('error', (err) => reject(err));
             writeStream.write(Buffer.from(await data.arrayBuffer()));
             writeStream.end(() => resolve(serverUrl));

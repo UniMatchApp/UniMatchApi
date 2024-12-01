@@ -4,6 +4,7 @@ import { IMatchingRepository } from "../ports/IMatchingRepository";
 import { Node } from "../../domain/Node";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { GetUserPotentialMatchesDTO } from "../DTO/GetUserPotentialMatchesDTO";
+import { ValidationError } from "@/core/shared/exceptions/ValidationError";
 
 export class GetUserPotentialMatchesCommand implements ICommand<GetUserPotentialMatchesDTO, string[]> {
     private readonly repository: IMatchingRepository;
@@ -19,10 +20,15 @@ export class GetUserPotentialMatchesCommand implements ICommand<GetUserPotential
             if (!user) {
                 return Result.failure<string[]>(new NotFoundError("User not found"));
             }
-            console.log("user: ", user);    
-            
-            const potentialMatches = await this.repository.findPotentialMatches(request.userId, request.limit);
-            console.log("potentialMatches: ", potentialMatches);
+
+            const limit = Math.floor(Number(request.limit));
+
+            if (isNaN(limit) || limit <= 0) {
+                return Result.failure<string[]>(new ValidationError("Limit must be a positive integer"));
+            }
+
+            const potentialMatches = await this.repository.findPotentialMatches(request.userId, limit);
+
             if (potentialMatches.length === 0) {
                 return Result.failure<string[]>(new NotFoundError("No potential matches found"));
             }
