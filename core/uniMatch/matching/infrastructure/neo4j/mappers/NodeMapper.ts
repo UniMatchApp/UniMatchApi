@@ -24,6 +24,7 @@ export class NodeMapper {
         );
 
         node.setId(entity.entityId);
+        node.clearEvents();
         return node;
     }
 
