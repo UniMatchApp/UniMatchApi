@@ -10,11 +10,7 @@
   "devDependencies": {
     "@types/cookie-parser": "^1.4.7",
     "@types/express": "^5.0.0",
-<<<<<<< HEAD
-    "@types/faker": "^6.6.8",
-=======
     "@types/faker": "^6.6.11",
->>>>>>> 741c8ddff419237b2a4ef46f4a37d7e157d81f68
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/morgan": "^1.9.9",

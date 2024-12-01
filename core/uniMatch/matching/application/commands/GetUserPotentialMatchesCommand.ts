@@ -19,15 +19,17 @@ export class GetUserPotentialMatchesCommand implements ICommand<GetUserPotential
             if (!user) {
                 return Result.failure<string[]>(new NotFoundError("User not found"));
             }
-
+            console.log("user: ", user);    
+            
             const potentialMatches = await this.repository.findPotentialMatches(request.userId, request.limit);
-
+            console.log("potentialMatches: ", potentialMatches);
             if (potentialMatches.length === 0) {
                 return Result.failure<string[]>(new NotFoundError("No potential matches found"));
             }
 
             return Result.success<string[]>(potentialMatches.map((node: Node) => node.userId));
         } catch (error: any) {
+            console.error('Error getting potential matches:', error);
             return Result.failure<string[]>(error);
         }
     }
