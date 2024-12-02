@@ -198,6 +198,10 @@ export class Profile extends AggregateRoot {
         if (index > -1) {
             this._wall.splice(index, 1);
         }
+
+        if (this._preferredImage === post) {
+            this._preferredImage = this._wall[0] || "";
+        }
     }
     
     public get preferredImage(): string {

@@ -51,6 +51,7 @@ export class ProfileMapper {
         profile.doesSports = doesSports;
         profile.valuesAndBeliefs = valuesAndBeliefs;
         profile.wall = entity.wall;
+        profile.preferredImage = entity.preferredImage;
         profile.maxDistance = entity.maxDistance;
         profile.ageRange = entity.ageRange;
         profile.horoscope = horoscope;
@@ -89,6 +90,7 @@ export class ProfileMapper {
         entity.doesSports = profile.doesSports;
         entity.valuesAndBeliefs = profile.valuesAndBeliefs;
         entity.wall = profile.wall;
+        entity.preferredImage = profile.preferredImage;
         entity.birthday = profile.birthday;
         entity.maxDistance = profile.maxDistance;
         entity.ageRange = profile.ageRange;

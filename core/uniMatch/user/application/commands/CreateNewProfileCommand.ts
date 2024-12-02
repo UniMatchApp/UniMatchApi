@@ -31,6 +31,7 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
         try {
             console.log("Request", request);
             const user = await this.userRepository.findById(request.userId);
+
             if (!user) {
                 return Result.failure<Profile>(new NotFoundError(`User with id ${request.userId} does not exist`));
             }
