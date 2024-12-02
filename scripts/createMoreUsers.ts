@@ -20,9 +20,9 @@ export async function createMoreUsers() {
 
     const command = new CreateNewUserCommand(userRepository, eventBus, emailNotifications, profileRepository);
 
-    for (let i = 1; i <= 200; i++) {
+    for (let i = 5; i <= 200; i++) {
         const request: CreateNewUserDTO = {
-            email: `user${i}@example.com`,
+            email: `user${i}@alu.ulpgc.es`,
             password: `Password24?`
         };
 

@@ -3,9 +3,8 @@ import { IMessageRepository } from '@/core/uniMatch/message/application/ports/IM
 import { IEventBus } from '@/core/shared/application/IEventBus';
 import { CreateNewMessageDTO } from '@/core/uniMatch/message/application/DTO/CreateNewMessageDTO';
 import { TypeORMMessageRepository } from '@/core/uniMatch/message/infrastructure/TypeORM/repositories/TypeORMMessageRepository';
-import { EmailNotifications } from '@/core/shared/infrastructure/notifications/EmailNotifications';
 import { InMemoryEventBus } from '@/core/shared/infrastructure/eventBus/InMemoryEventBus';
-import AppDataSource from '@/core/uniMatch/user/infrastructure/TypeORM/Config';
+import AppDataSource from '@/core/uniMatch/message/infrastructure/TypeORM/Config';
 import { FileHandler } from '@/core/shared/infrastructure/fileHandler/FileHandler';
 
 import { IUserRepository } from '@/core/uniMatch/user/application/ports/IUserRepository';
@@ -22,7 +21,7 @@ export async function createMoreMessages() {
 
     const messageRepository: IMessageRepository = new TypeORMMessageRepository();
     const eventBus: IEventBus = new InMemoryEventBus();
-    const fileHandler: IFileHandler = new FileHandler();
+    const fileHandler: FileHandler = new FileHandler('http://localhost', '8080');
 
     const command = new CreateNewMessageCommand(messageRepository, eventBus, fileHandler);
 
