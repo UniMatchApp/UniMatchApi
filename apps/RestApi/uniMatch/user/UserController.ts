@@ -127,6 +127,7 @@ export class UserController {
 
     async deleteUser(req: Request, res: Response): Promise<void> {
         const id = req.body.userId;
+        console.log("Deleteid", id);
         const command = new DeleteUserCommand(this.userRepository, this.profileRepository, this.eventBus);
         const dto = {userId: id} as DeleteUserDTO;
         return command.run(dto).then((result: Result<void>) => {

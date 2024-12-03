@@ -84,6 +84,7 @@ import { TokenService } from "./utils/TokenService";
 import { UserHasChangedAgeRangeEventHandler } from "@/core/uniMatch/matching/application/handlers/UserHasChangedAgeRangeEventHandler";
 import { UserHasChangedGenderEventHandler } from "@/core/uniMatch/matching/application/handlers/UserHasChangedGenderEventHandler";
 import { NewUser } from "@/core/uniMatch/user/domain/events/NewUser";
+import { UserHasDeletedAccount } from "@/core/uniMatch/matching/application/handlers/UserHasDeletedAccount";
 
 export class DependencyContainer {
 
@@ -175,6 +176,7 @@ export class DependencyContainer {
         this.eventBus.subscribe(new UserHasChangedEmailEventHandler(this.notificationsRepository, this.emailNotifications));
         this.eventBus.subscribe(new UserHasChangedPasswordEventHandler(this.notificationsRepository, this.emailNotifications));
 
+        this.eventBus.subscribe(new UserHasDeletedAccount(this.matchingRepository));
         this.eventBus.subscribe(new NewProfileEventHandler(this.matchingRepository));
         this.eventBus.subscribe(new UserHasChangedAgeEventHandler(this.matchingRepository));
         this.eventBus.subscribe(new UserHasChangedLocationEventHandler(this.matchingRepository));

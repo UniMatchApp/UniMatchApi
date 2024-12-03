@@ -25,7 +25,6 @@ export class Location {
     }
 
     public setLatitude(value: number): void {
-        console.log("Latitude: ", value);
         if (value == null || value < -90 || value > 90) {
             throw new DomainError('Latitude must be between -90 and 90 degrees.');
         }
