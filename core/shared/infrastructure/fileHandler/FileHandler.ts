@@ -23,11 +23,10 @@ export class FileHandler implements IFileHandler {
         const extname = path.extname(fileName) || (data.type ? `.${data.type.split('/')[1]}` : '.txt');
         
         const filePath = path.join(__dirname, 'uploads', fileName + extname);
-        console.log('FileHandler.save', filePath);
     
-
         return new Promise(async (resolve, reject) => {
             const serverUrl = `${this.server_url}:${this.server_port}/uploads/${fileName}${extname}`;
+            console.log('FileHandler.save', serverUrl);
             const writeStream = fs.createWriteStream(filePath);
     
             writeStream.on('finish', () => resolve(serverUrl));
@@ -49,9 +48,21 @@ export class FileHandler implements IFileHandler {
         });
     }
 
+    
     async delete(filePath: string): Promise<void> {
+        const uploadsDir = path.join(__dirname, 'uploads');
+        console.log('Uploads dir', uploadsDir);
+
+        const url = new URL(filePath);
+        const fileName = path.basename(url.pathname);
+
+        // Construir la ruta completa en el sistema
+        const systemPath = path.join(uploadsDir, fileName);
+        console.log("SystemPath", systemPath);
+
+
         return new Promise((resolve, reject) => {
-            fs.unlink(filePath, (err) => {
+            fs.unlink(systemPath, (err) => {
                 if (err) {
                     return reject(err);
                 }
@@ -64,3 +75,5 @@ export class FileHandler implements IFileHandler {
         return this.allowedFileTypes.includes(fileType);
     }
 }
+
+
