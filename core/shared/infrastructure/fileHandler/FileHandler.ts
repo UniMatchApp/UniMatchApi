@@ -56,10 +56,8 @@ export class FileHandler implements IFileHandler {
         const url = new URL(filePath);
         const fileName = path.basename(url.pathname);
 
-        // Construir la ruta completa en el sistema
         const systemPath = path.join(uploadsDir, fileName);
         console.log("SystemPath", systemPath);
-
 
         return new Promise((resolve, reject) => {
             fs.unlink(systemPath, (err) => {
