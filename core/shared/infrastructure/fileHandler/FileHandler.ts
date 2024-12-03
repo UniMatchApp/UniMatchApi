@@ -1,6 +1,10 @@
 import fs from 'fs';
 import path from 'path';
+
 import { IFileHandler } from '@/core/shared/application/IFileHandler';
+import { promisify } from 'util';
+
+const writeFile = promisify(fs.writeFile);
 
 export class FileHandler implements IFileHandler {
 
@@ -21,15 +25,17 @@ export class FileHandler implements IFileHandler {
         const filePath = path.join(__dirname, 'uploads', fileName + extname);
         console.log('FileHandler.save', filePath);
     
+
         return new Promise(async (resolve, reject) => {
             const serverUrl = `${this.server_url}:${this.server_port}/uploads/${fileName}${extname}`;
             const writeStream = fs.createWriteStream(filePath);
     
-            writeStream.on('error', (err) => reject(err));
+            writeStream.on('finish', () => resolve(serverUrl));
             writeStream.write(Buffer.from(await data.arrayBuffer()));
             writeStream.end(() => resolve(serverUrl));
         });
     }
+
 
     async read(filePath: string): Promise<File> {
         return new Promise((resolve, reject) => {
