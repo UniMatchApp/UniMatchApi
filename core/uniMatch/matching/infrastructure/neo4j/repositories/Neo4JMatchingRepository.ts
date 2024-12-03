@@ -208,6 +208,19 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
         }
     }
 
+    async deleteByUserId(userId: string): Promise<void> {
+        const session = this.driver.session();
+        try {
+            console.log("Deleting node")
+            await session.run(
+                'MATCH (n {userId: $userId}) DETACH DELETE n',
+                { userId }
+            );
+        } finally {
+            await session.close();
+        }
+    }
+
     async existsById(id: string): Promise<boolean> {
         const session = this.driver.session();
         try {

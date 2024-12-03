@@ -32,6 +32,9 @@ export class InMemoryMatchingRepository implements IMatchingRepository {
     constructor() {
         console.log("InMemoryMatchingRepository created with nodes", this.nodes);
     }
+    deleteByUserId(userId: string): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
 
     // async findPotentialMatches(userId: string, limit: number): Promise<Node[]> {
     //     const user = this.nodes[userId];

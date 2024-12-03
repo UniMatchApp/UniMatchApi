@@ -20,7 +20,9 @@ export class UserHasDeletedAccountHandler implements IEventHandler {
                 throw new EventError("User ID is required to delete a user");
             }
     
-            await this.repository.deleteById(userId);
+            await this.repository.deleteByUserId(userId);
+
+            console.log("User deleted from matching repository", this.repository.findByUserId(userId));
     
         } catch (error : any) {
             console.error(error);
