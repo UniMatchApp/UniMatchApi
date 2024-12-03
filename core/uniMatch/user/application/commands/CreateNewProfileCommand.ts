@@ -44,8 +44,8 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
 
             console.log("ProfileUrl", profileUrl);
 
-            console.log("Location request", request.location);
-            const location = request.location ? new Location(request.location.latitude, request.location.longitude) : undefined
+            console.log("Location request", request.latitude);
+            const location = request.latitude && request.longitude  ? new Location(request.latitude, request.longitude) : undefined
  
             console.log("Location", location);
             const profile = new Profile(
