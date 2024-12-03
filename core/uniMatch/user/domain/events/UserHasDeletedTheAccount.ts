@@ -3,7 +3,7 @@ import { User } from "../User";
 
 export class UserHasDeletedTheAccount extends DomainEvent {
     constructor(aggregateId: string) {
-        super(aggregateId, "user-has-deleted-the-account");
+        super(aggregateId, "user-has-deleted-account");
     }
 
     public static from(user: User): UserHasDeletedTheAccount {

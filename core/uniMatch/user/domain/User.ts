@@ -169,7 +169,7 @@ export class User extends AggregateRoot {
     
     public delete(): void {
         this.makeInactive();
-        this.recordEvent(new UserHasDeletedTheAccount(this.getId().toString()));
+        this.recordEvent(UserHasDeletedTheAccount.from(this));
     }
 
     public create(): void {

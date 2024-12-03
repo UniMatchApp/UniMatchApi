@@ -3,7 +3,7 @@ import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { IMatchingRepository } from "../ports/IMatchingRepository";
 import { EventError } from "@/core/shared/exceptions/EventError";
 
-export class UserHasDeletedAccount implements IEventHandler {
+export class UserHasDeletedAccountHandler implements IEventHandler {
 
     private readonly repository: IMatchingRepository;
 
