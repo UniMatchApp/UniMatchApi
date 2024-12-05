@@ -29,8 +29,6 @@ export class ForgotPasswordCommand implements ICommand<forgotPasswordDTO, String
                 `Your reset code is: ${code}`
             );
 
-            console.log(`Code: ${code}`);
-
             return Result.success<String>(user.getId());
         } catch (error: any) {
             return Result.failure<String>(error);

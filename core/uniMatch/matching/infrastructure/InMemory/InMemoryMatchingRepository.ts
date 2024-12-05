@@ -68,56 +68,44 @@ export class InMemoryMatchingRepository implements IMatchingRepository {
     // }
 
     async findPotentialMatches(userId: string, limit: number): Promise<Node[]> {
-        console.log(`Buscando emparejamientos para el usuario con ID: ${userId} con un límite de ${limit}`);
-        
         const user = this.nodes[userId];
         if (!user) {
             throw new Error(`User with ID ${userId} does not exist.`);
         }
-        console.log("Usuario encontrado:", user);
-    
+
         const potentialMatches = Object.values(this.nodes)
             .filter(node => {
                 const isDifferentUser = node.userId !== userId;
-                console.log(`¿Es un usuario diferente? ${isDifferentUser} - Usuario actual: ${node.userId}`);
                 return isDifferentUser;
             })
             .filter(node => {
                 const matchesGenderPriority = user.genderPriority || node.gender === user.genderPriority;
-                console.log(`¿Cumple con la prioridad de género? ${matchesGenderPriority} - Usuario: ${node.userId}`);
                 return matchesGenderPriority;
             })
             .filter(node => {
                 const isNotDisliked = !this.dislikes[userId]?.some(dislike => dislike.toProfile.userId === node.userId);
                 const isNotLiked = !this.likes[userId]?.some(like => like.toProfile.userId === node.userId);
-                console.log(`¿No está en dislikes? ${isNotDisliked} - ¿No está en likes? ${isNotLiked} - Usuario: ${node.userId}`);
                 return isNotDisliked && isNotLiked;
             })
             .map(node => {
                 const isWithinDistance = user.location && node.location
                     ? this.isWithinDistance(user.location, node.location, user.maxDistance)
                     : true;
-                console.log(`¿Está dentro de la distancia máxima? ${isWithinDistance} - Usuario: ${node.userId}`);
-    
+
                 const priority = 
                     (isWithinDistance ? 1 : 0) +
                     (node.relationshipType === user.relationshipType ? 1 : 0);
                     (node.age >= user.ageRange[0] && node.age <= user.ageRange[1] ? 1 : 0);
-                console.log(`Prioridad calculada: ${priority} - Usuario: ${node.userId}`);
-    
                 return { node, priority };
             })
             .sort((a, b) => {
-                console.log(`Comparando prioridades: ${b.priority} (Usuario ${b.node.userId}) vs ${a.priority} (Usuario ${a.node.userId})`);
                 return b.priority - a.priority;
             })
             .slice(0, limit)
             .map(item => {
-                console.log(`Emparejamiento seleccionado: ${item.node.userId}`);
                 return item.node;
             });
     
-        console.log("Emparejamientos potenciales encontrados:", potentialMatches);
         return potentialMatches;
     }
     
@@ -125,7 +113,6 @@ export class InMemoryMatchingRepository implements IMatchingRepository {
 
     async findMutualLikes(userId: string): Promise<Node[]> {
         const user = this.nodes[userId];
-        console.log("FIND MUTUAL LIKES", user)
         if (!user) {
             throw new NotFoundError(`User with ID ${userId} does not exist.`);
         }

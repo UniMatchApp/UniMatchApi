@@ -20,7 +20,7 @@ export class ChangeHoroscopeCommand implements ICommand<ChangeMoreAboutMeDTO, st
             }
 
             profile.horoscope = request.newContent ? new Horoscope(request.newContent) : undefined;
-            console.log("horoscope", profile.horoscope);
+
             await this.repository.update(profile, profile.getId());
             return Result.success<string | undefined>(request.newContent);
         } catch (error: any) {

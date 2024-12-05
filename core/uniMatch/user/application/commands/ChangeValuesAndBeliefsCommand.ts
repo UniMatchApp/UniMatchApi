@@ -25,7 +25,6 @@ export class ChangeValuesAndBeliefsCommand implements ICommand<ChangeLifeStyleDT
             await this.repository.update(profile, profile.getId());
             return Result.success<string | undefined>(request.newContent);
         } catch (error: any) {
-            console.log(error);
             return Result.failure<string | undefined>(error);
         }
     }

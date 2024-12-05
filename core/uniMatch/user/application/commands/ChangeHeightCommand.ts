@@ -18,7 +18,6 @@ export class ChangeHeightCommand implements ICommand<ChangeHeightDTO, number | u
                 return Result.failure<number | undefined>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
 
-            console.log(request);
             profile.height = request.newHeight;
 
             await this.repository.update(profile, profile.getId());

@@ -18,10 +18,9 @@ export class ChangePetsCommand implements ICommand<ChangeLifeStyleDTO, string | 
             if(!profile) {
                 return Result.failure<string | undefined>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
-            console.log(request.newContent);
             
             profile.pets = request.newContent;
-            console.log(profile.pets);
+
             await this.repository.update(profile, profile.getId());
             return Result.success<string | undefined>(request.newContent);
         } catch (error: any) {

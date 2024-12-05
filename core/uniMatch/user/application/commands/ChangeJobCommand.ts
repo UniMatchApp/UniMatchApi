@@ -19,11 +19,10 @@ export class ChangeJobCommand implements ICommand<ChangeMoreAboutMeDTO, string |
             }
             
             profile.job = request.newContent;
-            console.log("request job: ", profile.job);
+
             await this.repository.update(profile, profile.getId());
             return Result.success<string | undefined>(request.newContent);
         } catch (error: any) {
-            console.log(error);
             return Result.failure<string | undefined>(error);
         }
     }

@@ -22,16 +22,17 @@ export class TypeORMNotificationRepository implements INotificationsRepository {
 
     }
 
-    async findLastNotificationByTypeAndTypeId(type: NotificationTypeEnum, typeId: string): Promise<Notification | null> {
-        const entity = await this.notificationRepository.findOne({
-            where: {
-                type,
-                contentId: typeId
-            },
-            order: {
-                date: 'DESC'
-            }
-        });
+    async findLastNotificationByTypeAndTypeId(
+        type: NotificationTypeEnum,
+        typeId: string
+    ): Promise<Notification | null> {
+        const entity = await this.notificationRepository
+            .createQueryBuilder('notification')
+            .where('notification.payload ->> "type" = :type', { type })
+            .andWhere('notification.contentId = :typeId', { typeId })
+            .orderBy('notification.date', 'DESC')
+            .getOne();
+    
         return entity ? NotificationMapper.toDomain(entity) : null;
     }
 
@@ -40,14 +41,15 @@ export class TypeORMNotificationRepository implements INotificationsRepository {
     }
 
     async findByTypeAndTypeId(type: NotificationTypeEnum, typeId: string): Promise<Notification[]> {
-        const entities = await this.notificationRepository.find({
-            where: {
-                type,
-                contentId: typeId
-            }
-        });
+        const entities = await this.notificationRepository
+            .createQueryBuilder('notification')
+            .where('notification.payload ->> "type" = :type', { type })
+            .andWhere('notification.contentId = :typeId', { typeId })
+            .getMany();
+    
         return entities.map(NotificationMapper.toDomain);
     }
+    
 
     async create(notification: Notification): Promise<void> {
         const notificationEntity = NotificationMapper.toEntity(notification);
@@ -55,16 +57,17 @@ export class TypeORMNotificationRepository implements INotificationsRepository {
     }
 
     async findById(id: string): Promise<Notification | null> {
-        const entity = await this.notificationRepository.findOne({ where: { id } });
+        const entity = await this.notificationRepository.findOne({ where: { entityId: id } });
         return entity ? NotificationMapper.toDomain(entity) : null;
     }
+
     async findAll(): Promise<Notification[]> {
         const entities = await this.notificationRepository.find();
         return entities.map(NotificationMapper.toDomain);
     }
 
     async deleteById(id: string): Promise<void> {
-        await this.notificationRepository.delete(id);
+        await this.notificationRepository.delete({ entityId: id });
     }
 
     async deleteAll(): Promise<void> {
@@ -72,7 +75,7 @@ export class TypeORMNotificationRepository implements INotificationsRepository {
     }
 
     async existsById(id: string): Promise<boolean> {
-        const count = await this.notificationRepository.count({ where: { id } });
+        const count = await this.notificationRepository.count({ where: { entityId: id } });
         return count > 0;
     }
 
@@ -88,7 +91,6 @@ export class TypeORMNotificationRepository implements INotificationsRepository {
         }
 
         const updatedEntity = NotificationMapper.toEntity(entity);
-        updatedEntity.id = id;
         await this.notificationRepository.save(updatedEntity);
         return NotificationMapper.toDomain(updatedEntity);
     }

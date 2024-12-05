@@ -56,7 +56,6 @@ export class CreateNewUserCommand implements ICommand<CreateNewUserDTO, UserDTO>
                 reportedUsers: user.reportedUsers.map(user => user.getId())
             }
 
-            console.log("Código de eso: ", code);
             return Result.success<UserDTO>(userDTO);
         } catch (error: any) {
             console.error(error);

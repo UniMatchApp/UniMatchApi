@@ -65,7 +65,6 @@ export class EmailNotifications implements IEmailNotifications {
 
     async checkEmailStatus(emailId: string): Promise<boolean> {
         try {
-            console.log(`Comprobando el estado del correo con ID: ${emailId}`);
             return true; 
         } catch (error) {
             console.error('Error al comprobar el estado del correo:', error);

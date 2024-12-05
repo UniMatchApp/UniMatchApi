@@ -17,8 +17,7 @@ export class ChangeInterestsCommand implements ICommand<ChangeIntereststDTO, str
             if (!profile) {
                 return Result.failure<string[]>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
-
-            console.log(request);
+            
             profile.interests = request.newInterests;
 
             await this.repository.update(profile, profile.getId());

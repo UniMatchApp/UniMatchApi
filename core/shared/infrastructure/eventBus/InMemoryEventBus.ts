@@ -8,7 +8,6 @@ export class InMemoryEventBus implements IEventBus {
     publish(events: DomainEvent[]): void {
         for (const event of events) {
             const eventHandlers = this.handlers.get(event.getEventId());
-            console.log(eventHandlers);
             if (eventHandlers) {
                 for (const handler of eventHandlers) {
                     handler.handle(event);

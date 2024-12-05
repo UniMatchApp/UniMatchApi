@@ -1,4 +1,5 @@
 import { EventStatusType } from "../enum/EventStatusEnum";
+import { NotificationTypeEnum } from "../enum/NotificationTypeEnum";
 import { NotificationPayload } from "../NotificationPayload";
 
 export class EventNotificationPayload extends NotificationPayload {
@@ -6,7 +7,8 @@ export class EventNotificationPayload extends NotificationPayload {
     private _status: EventStatusType;
 
     constructor(id: string, title: string, status: EventStatusType) {
-        super(id);
+        const type = NotificationTypeEnum.EVENT;
+        super(id, type);
         this._title = title;
         this._status = status;
     }

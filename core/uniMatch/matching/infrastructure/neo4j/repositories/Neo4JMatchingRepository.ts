@@ -108,7 +108,6 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
     }
     
     async create(entity: Node): Promise<void> {
-        console.log("I CALLED CREATE FUNCTION")
         const session = this.driver.session();
         try {
             await session.run(
@@ -211,7 +210,6 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
     async deleteByUserId(userId: string): Promise<void> {
         const session = this.driver.session();
         try {
-            console.log("Deleting node")
             await session.run(
                 'MATCH (n {userId: $userId}) DETACH DELETE n',
                 { userId }

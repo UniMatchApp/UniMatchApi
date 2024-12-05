@@ -17,28 +17,19 @@ export class NewProfileEventHandler implements IEventHandler {
     async handle(event: DomainEvent): Promise<void> {
         try {
             const eventPayload = event.getEventId()
-            console.log("eventPayload", eventPayload)
             const id = event.getAggregateId();
-
-            console.log("id: " + id)
 
             const locationStr = event.getPayload().get("location");
 
-            console.log("location str: ", locationStr)
-    
             const genderStr = event.getPayload().get("gender")
             if (!genderStr) {
                 throw new EventError("Gender is required to create a new user.");
             }
-
-            console.log("gender str: ", genderStr)
     
             const relationshipTypeStr = event.getPayload().get("relationshipType");
             if (!relationshipTypeStr) {
                 throw new EventError("Relationship Type is required to create a new user.");
             }
-
-            console.log("relationsship str: ", relationshipTypeStr)
     
             const genderPriorityStr = event.getPayload().get("genderPriority");
             let genderPriority: Gender | undefined;
@@ -65,7 +56,6 @@ export class NewProfileEventHandler implements IEventHandler {
             const max = Number(maxDistanceStr);
             const gender = new Gender(Gender.fromString(genderStr))
             const location = locationStr ? Location.stringToLocation(locationStr) : undefined;
-            console.log("ageRangeStr: " + ageRangeStr)
             const parsedAgeRange = ageRangeStr.split(',').map(Number) as [number, number];
     
             const node = new Node(

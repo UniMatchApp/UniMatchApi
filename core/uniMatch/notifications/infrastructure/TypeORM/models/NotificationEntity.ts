@@ -5,24 +5,20 @@ import {
     Unique,
     ObjectIdColumn
 } from 'typeorm';
-import { NotificationTypeEnum } from '../../../domain/enum/NotificationTypeEnum';
 import { NotificationStatusEnum } from '../../../domain/enum/NotificationStatusEnum';
 import { MessageNotificationPayload } from '../../../domain/entities/MessageNotificationPayload';
 import { EventNotificationPayload } from '../../../domain/entities/EventNotificationPayload';
 import { MatchNotificationPayload } from '../../../domain/entities/MatchNotificationPayload';
 import { AppNotificationPayload } from '../../../domain/entities/AppNotificationPayload';
+import { ObjectId } from 'mongodb';
 
 @Entity('notifications')
-@Unique(['id'])
 export class NotificationEntity {
-    @ObjectIdColumn()
-    id!: string;
+    @Column({ type: 'uuid' })
+    entityId!: string;
 
-    @Column({
-        type: 'enum',
-        enum: NotificationTypeEnum,
-    })
-    type!: NotificationTypeEnum;
+    @ObjectIdColumn()
+    _id!: ObjectId;
 
     @Column({
         type: 'enum',

@@ -33,8 +33,6 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
             if (file && fileName) {
                 attachmentUrl = await this.fileHandler.save(fileName, file);
             }
-
-            console.log("Request: ", request);
             
             const message = new Message(
                 request.content,

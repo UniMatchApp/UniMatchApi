@@ -8,12 +8,13 @@ import {MessageNotificationPayload} from '../../../domain/entities/MessageNotifi
 import {MatchNotificationPayload} from '../../../domain/entities/MatchNotificationPayload';
 import {AppNotificationPayload} from '../../../domain/entities/AppNotificationPayload';
 import {MapperError} from '@/core/shared/exceptions/MapperError';
+import {ObjectId} from 'mongodb';
 
 export class NotificationMapper {
     static toDomain(entity: NotificationEntity): Notification {
         let payload: NotificationPayload | undefined;
 
-        switch (entity.type) {
+        switch (entity.payload.type) {
             case NotificationTypeEnum.EVENT:
                 const eventPayload = entity.payload as EventNotificationPayload;
                 payload = new EventNotificationPayload(entity.contentId, eventPayload.title, eventPayload.status);
@@ -30,33 +31,38 @@ export class NotificationMapper {
                 const appPayload = entity.payload as AppNotificationPayload;
                 payload = new AppNotificationPayload(entity.contentId, appPayload.title, appPayload.description);
                 break;
+            default:
+                console.log(entity.payload.getType);
+                throw new MapperError('Unknown notification type');
         }
 
         if (!payload) {
             throw new MapperError('Unknown notification type');
         }
 
-        return new Notification(
+        const notification = new Notification(
             entity.contentId,
-            entity.type,
             entity.date,
             entity.recipient,
             payload
         );
+
+        notification.setId(entity.entityId);
+      
+        return notification;
     }
 
     static toEntity(notification: Notification): NotificationEntity {
         const entity = new NotificationEntity();
         const status = NotificationStatusEnumFromString(notification.status);
 
-        entity.id = notification.getId()
+        entity.entityId = notification.getId();
         entity.contentId = notification.contentId;
-        entity.type = notification.type;
         entity.status = status;
         entity.date = notification.date;
         entity.recipient = notification.recipient;
 
-        switch (notification.type) {
+        switch (notification.payload.getType) {
             case NotificationTypeEnum.EVENT:
                 entity.payload = new EventNotificationPayload(
                     notification.contentId,

@@ -14,6 +14,7 @@ import { GetAllNotificationsDTO } from '@/core/uniMatch/notifications/applicatio
 import { Notification } from '@/core/uniMatch/notifications/domain/Notification';
 import { IAppNotifications } from '@/core/uniMatch/notifications/application/ports/IAppNotifications';
 import { IEmailNotifications } from '@/core/shared/application/IEmailNotifications';
+import { NotificationDTO } from '@/core/uniMatch/notifications/application/DTO/NotificationDTO';
 
 export class NotificationsController {
 
@@ -83,8 +84,9 @@ export class NotificationsController {
         const userId = req.body.userId;
         const command = new GetAllNotificationsCommand(this.notificationsRepository);
         const dto = { userId: userId } as GetAllNotificationsDTO;
-        return command.run(dto).then((result: Result<Notification[]>) => {
+        return command.run(dto).then((result: Result<NotificationDTO[]>) => {
             if (result.isSuccess()) {
+                console.log(result);
                 res.json(result);
             } else {
                 const error = result.getError();

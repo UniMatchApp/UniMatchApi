@@ -127,7 +127,6 @@ export class UserController {
 
     async deleteUser(req: Request, res: Response): Promise<void> {
         const id = req.body.userId;
-        console.log("Deleteid", id);
         const command = new DeleteUserCommand(this.userRepository, this.profileRepository, this.eventBus);
         const dto = {userId: id} as DeleteUserDTO;
         return command.run(dto).then((result: Result<void>) => {
@@ -141,7 +140,6 @@ export class UserController {
     }
 
     async createProfile(req: Request, res: Response): Promise<void> {
-        console.log(req.body);
         const command = new CreateNewProfileCommand(this.userRepository, this.profileRepository, this.fileHandler, this.eventBus);
         return command.run(req.body).then((result: Result<Profile>) => {
             if (result.isSuccess()) {
@@ -159,7 +157,6 @@ export class UserController {
         const dto = {id: id} as GetProfileDTO;
         return query.run(dto).then((result: Result<ProfileDTO>) => {
             if (result.isSuccess()) {
-                console.log(result);
                 res.json(result);
             } else {
                 const error = result.getError();
@@ -255,7 +252,6 @@ export class UserController {
     }
 
     async changeLocation(req: Request, res: Response): Promise<void> {
-        console.log(req.body);
         const userId = req.body.userId;
         const altitude = req.body.altitude;
         const longitude = req.body.longitude;
@@ -545,7 +541,6 @@ export class UserController {
     }
 
     async changeMaxDistance(req: Request, res: Response): Promise<void> {
-        console.log(req.body);
         const userId = req.body.userId;
         const distance = req.body.newContent;
         const command = new ChangeMaxDistanceCommand(this.profileRepository, this.eventBus);
@@ -591,7 +586,6 @@ export class UserController {
 
     async uploadPhoto(req: Request, res: Response): Promise<void> {
         const userId = req.body.userId;
-        console.log("userId: ", req.body.userId);
         const command = new UploadPhotoCommand(this.profileRepository, this.fileHandler);
         const dto = {userId: userId, ...req.body} as UploadPhotoDTO;
         return command.run(dto).then((result: Result<string>) => {

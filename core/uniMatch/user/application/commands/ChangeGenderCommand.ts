@@ -30,7 +30,6 @@ export class ChangeGenderCommand implements ICommand<ChangeGenderDTO, string> {
             this.eventBus.publish(profile.pullDomainEvents());
             return Result.success<string>(request.newGender);
         } catch (error : any) {
-            console.log(error);
             return Result.failure<string>(error);
         }
     }

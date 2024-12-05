@@ -26,7 +26,6 @@ export class FileHandler implements IFileHandler {
     
         return new Promise(async (resolve, reject) => {
             const serverUrl = `${this.server_url}:${this.server_port}/uploads/${fileName}${extname}`;
-            console.log('FileHandler.save', serverUrl);
             const writeStream = fs.createWriteStream(filePath);
     
             writeStream.on('finish', () => resolve(serverUrl));
@@ -51,13 +50,11 @@ export class FileHandler implements IFileHandler {
     
     async delete(filePath: string): Promise<void> {
         const uploadsDir = path.join(__dirname, 'uploads');
-        console.log('Uploads dir', uploadsDir);
 
         const url = new URL(filePath);
         const fileName = path.basename(url.pathname);
 
         const systemPath = path.join(uploadsDir, fileName);
-        console.log("SystemPath", systemPath);
 
         return new Promise((resolve, reject) => {
             fs.unlink(systemPath, (err) => {

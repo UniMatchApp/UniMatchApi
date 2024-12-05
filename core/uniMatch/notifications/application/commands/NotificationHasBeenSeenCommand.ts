@@ -27,7 +27,7 @@ export class NotificationHasBeenSeenCommand implements ICommand<NotificationHasB
             }
 
             notification.status = MessageReceptionStatusEnum.READ;
-            await this.repository.create(notification);
+            await this.repository.update(notification, notification.getId());
 
             return Result.success<void>(undefined);
         } catch (error : any) {

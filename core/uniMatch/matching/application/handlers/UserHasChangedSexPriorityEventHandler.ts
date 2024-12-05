@@ -15,9 +15,7 @@ export class UserHasChangedSexPriorityEventHandler implements IEventHandler {
         try {
             const userId = event.getAggregateId();
             const genderPriority = event.getPayload().get("priority");
-    
-            console.log(`User ${userId} has changed ${genderPriority} priority.`);
-            
+
             if (!userId || !genderPriority) {
                 throw new EventError("User ID and gender priority are required to update a user's sex priority.");
             }

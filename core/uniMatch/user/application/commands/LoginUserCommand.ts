@@ -35,7 +35,6 @@ export class LoginUserCommand implements ICommand<LoginUserDTO, UserDTO> {
 
             if (!user.registered) {
                 const code = user.generateVerificationCode();
-                console.log(`Code: ${code}`);
                 this.emailRepository.sendEmailToOne(
                     user.email,
                     "UniMatch - Confirm your login",

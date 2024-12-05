@@ -26,8 +26,8 @@ export class NewLikeEventHandler implements IEventHandler {
             const notification = Notification.createMatchNotification(
                 id,
                 new Date(),
-                user,
                 target,
+                user,
                 true
             );
     
