@@ -91,7 +91,7 @@ export class TypeORMNotificationRepository implements INotificationsRepository {
         }
 
         const updatedEntity = NotificationMapper.toEntity(entity);
-        await this.notificationRepository.save(updatedEntity);
+        await this.notificationRepository.update({ entityId: id }, updatedEntity);
         return NotificationMapper.toDomain(updatedEntity);
     }
 }

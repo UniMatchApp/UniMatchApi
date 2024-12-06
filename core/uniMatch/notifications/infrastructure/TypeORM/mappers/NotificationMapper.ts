@@ -48,6 +48,7 @@ export class NotificationMapper {
         );
 
         notification.setId(entity.entityId);
+        notification.status = entity.status;
       
         return notification;
     }
