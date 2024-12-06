@@ -31,8 +31,8 @@ import {
     TypeORMNotificationRepository
 } from "@/core/uniMatch/notifications/infrastructure/TypeORM/repositories/TypeORMNotificationRepository";
 import {
-    TypeORMMessageRepository
-} from "@/core/uniMatch/message/infrastructure/TypeORM/repositories/TypeORMMessageRepository";
+    MongooseMessageRepository
+} from "@/core/uniMatch/message/infrastructure/TypeORM/repositories/MongooseMessageRepository";
 import {
     Neo4JMatchingRepository
 } from "@/core/uniMatch/matching/infrastructure/neo4j/repositories/Neo4JMatchingRepository";
@@ -144,7 +144,7 @@ export class DependencyContainer {
     }
 
     private createMessageRepository(): IMessageRepository {
-        return this.useMocks ? new InMemoryMessageRepository() : new TypeORMMessageRepository();
+        return this.useMocks ? new InMemoryMessageRepository() : new MongooseMessageRepository();
     }
 
     private createNotificationsRepository(): INotificationsRepository {

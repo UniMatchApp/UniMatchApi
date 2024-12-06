@@ -99,7 +99,7 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
                 { userId }
             );
             return result.records.map((record: any): Node => {
-                const userNode = record.get('u').properties;
+                const userNode = record.get('u2').properties;
                 return NodeMapper.toDomain(userNode);
             });
         } finally {

@@ -1,30 +1,26 @@
-import { Entity, Column, Unique, ObjectIdColumn } from 'typeorm';
+import { Schema, model, Document } from 'mongoose';
 import { MessageReceptionStatusEnum, MessageDeletedStatusType, MessageReceptionStatusType } from '@/core/shared/domain/MessageReceptionStatusEnum';
 
-@Entity('messages')
-@Unique(['id'])
-export class MessageEntity {
-    @ObjectIdColumn()
-    id!: string;
-
-    @Column({ type: 'text' })
-    content!: string;
-
-    @Column({ type: 'enum', enum: MessageReceptionStatusEnum })
-    status!: MessageReceptionStatusType;
-
-    @Column({ type: 'enum', enum: MessageReceptionStatusEnum })
-    deletedStatus!: MessageDeletedStatusType;
-
-    @Column({ type: 'timestamp' })
-    timestamp!: Date;
-
-    @Column({ type: 'varchar', length: 255 })
-    sender!: string;
-
-    @Column({ type: 'varchar', length: 255 })
-    recipient!: string;
-
-    @Column({ type: 'text', nullable: true })
+interface IMessageEntity extends Document {
+    content: string;
+    status: MessageReceptionStatusType;
+    deletedStatus: MessageDeletedStatusType;
+    timestamp: Date;
+    sender: string;
+    recipient: string;
     attachment?: string | null;
 }
+
+const MessageSchema = new Schema<IMessageEntity>({
+    content: { type: String, required: true },
+    status: { type: String, enum: Object.values(MessageReceptionStatusEnum), required: true },
+    deletedStatus: { type: String, enum: Object.values(MessageReceptionStatusEnum), required: true },
+    timestamp: { type: Date, required: true },
+    sender: { type: String, required: true, maxlength: 255 },
+    recipient: { type: String, required: true, maxlength: 255 },
+    attachment: { type: String, default: null }
+});
+
+const MessageModel = model<IMessageEntity>('Message', MessageSchema);
+
+export { IMessageEntity, MessageModel };

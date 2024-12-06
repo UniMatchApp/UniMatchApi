@@ -28,6 +28,7 @@ export class GetUsersWithMutualLikesCommand implements ICommand<GetUsersWithMutu
 
             return Result.success<string[]>(mutualLikes.map((node: Node) => node.userId));
         } catch (error: any) {
+            console.error(error);
             return Result.failure<string[]>(error);
         }
     }

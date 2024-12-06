@@ -1,10 +1,10 @@
 import { Message } from '@/core/uniMatch/message/domain/Message';
-import { MessageEntity } from '../models/MessageEntity';
+import { MessageModel } from '@/core/uniMatch/message/infrastructure/TypeORM/models/MessageEntity';
 import { MessageReceptionStatusType } from '@/core/shared/domain/MessageReceptionStatusEnum';
 import { TransformFromUndefinedToNull } from '@/core/shared/infrastructure/decorators/TransformFromUndefinedToNull';
 
 export class MessageMapper {
-    static toDomain(entity: MessageEntity): Message {
+    static toDomain(entity: any): Message {
         const message = new Message(
             entity.content,
             entity.sender,
@@ -14,23 +14,24 @@ export class MessageMapper {
 
         message.receptionStatus = entity.status;
         message.timestamp = entity.timestamp;
-        message.setId(entity.id.toString());
+        message.setId(entity._id.toString()); // En Mongoose, el ID es _id, no id
         message.deletedStatus = entity.deletedStatus;
 
         return message;
     }
 
     @TransformFromUndefinedToNull
-    static toEntity(domain: Message): MessageEntity {
-        const messageEntity = new MessageEntity();
-        messageEntity.id = domain.getId()
-        messageEntity.content = domain.content;
-        messageEntity.status = domain.receptionStatus as MessageReceptionStatusType;
-        messageEntity.deletedStatus = domain.deletedStatus;
-        messageEntity.timestamp = domain.timestamp;
-        messageEntity.sender = domain.sender;
-        messageEntity.recipient = domain.recipient;
-        messageEntity.attachment = domain.attachment;
+    static toEntity(domain: Message): any { // Usamos 'any' porque Mongoose devuelve un documento
+        const messageEntity = new MessageModel({
+            _id: domain.getId(), // _id en lugar de id
+            content: domain.content,
+            status: domain.receptionStatus as MessageReceptionStatusType,
+            deletedStatus: domain.deletedStatus,
+            timestamp: domain.timestamp,
+            sender: domain.sender,
+            recipient: domain.recipient,
+            attachment: domain.attachment
+        });
 
         return messageEntity;
     }

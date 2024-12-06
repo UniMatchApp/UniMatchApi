@@ -23,6 +23,7 @@ export class RetrieveMessagesFromUserPaginatedCommand implements ICommand<Retrie
             const messages = await this.repository.findMessagesOfUserPaginated(userId, after, limit);
             return Result.success<MessageDTO[]>(MessageDTO.fromDomainArray(messages));
         } catch (error: any) {
+            console.error(error);
             return Result.failure<MessageDTO[]>(error);
         }
     }
