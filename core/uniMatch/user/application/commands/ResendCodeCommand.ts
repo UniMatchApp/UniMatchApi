@@ -23,11 +23,7 @@ export class ResendCodeCommand implements ICommand<ResendCodeDTO, void> {
             }
 
             const code = user.generateVerificationCode();
-            this.emailRepository.sendEmailToOne(
-                user.email,
-                "UniMatch - Resended code",
-                `Your confirmation code is: ${code}`
-            );
+            this.emailRepository.resendCodeEmail(user.email, code);
 
             return Result.success<void>(undefined);
         } catch (error: any) {

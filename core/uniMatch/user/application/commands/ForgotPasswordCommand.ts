@@ -23,11 +23,7 @@ export class ForgotPasswordCommand implements ICommand<forgotPasswordDTO, String
             }
 
             const code = user.generateVerificationCode();
-            this.emailRepository.sendEmailToOne(
-                user.email,
-                "UniMatch - Reset your password",
-                `Your reset code is: ${code}`
-            );
+            this.emailRepository.forgotPasswordEmail(user.email, code);
 
             return Result.success<String>(user.getId());
         } catch (error: any) {
