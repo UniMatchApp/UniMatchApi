@@ -36,19 +36,27 @@ export class MongooseMessageRepository implements IMessageRepository {
         return entities.map(MessageMapper.toDomain);
     }
 
-    async findMessagesBetweenUsersPaginated(userId: string, otherUserId: string, after: number, limit: number): Promise<Message[]> {
+    async findMessagesBetweenUsersPaginated(
+        userId: string, 
+        otherUserId: string, 
+        after: number, 
+        limit: number
+    ): Promise<Message[]> {
+        const afterDate = new Date(after);
+        
         const entities = await MessageModel.find({
             $or: [
                 { sender: userId, recipient: otherUserId },
                 { sender: otherUserId, recipient: userId }
-            ]
+            ],
+            timestamp: { $gt: afterDate }
         })
-        .sort({ timestamp: -1 })
-        .skip(after)
+        .sort({ timestamp: 1 })
         .limit(limit);
-
+    
         return entities.map(MessageMapper.toDomain);
     }
+    
 
     async findMessagesOfUserPaginated(userId: string, after: number, limit: number): Promise<Message[]> {
         const entities = await MessageModel.find({
@@ -57,7 +65,7 @@ export class MongooseMessageRepository implements IMessageRepository {
                 { recipient: userId }
             ]
         })
-        .sort({ timestamp: -1 })
+        .sort({ timestamp: 1 })
         .skip(after)
         .limit(limit);
 

@@ -1,15 +1,13 @@
 import {Message} from "@/core/uniMatch/message/domain/Message";
 
-
-
-
 export interface MessageDTO {
     messageId: string;
     content: string;
     senderId: string;
     recipientId: string;
     attachment?: string;
-    status: string;
+    receptionStatus: string;
+    contentStatus: string;
     deletedStatus: string;
     timestamp: number;
 }
@@ -22,7 +20,8 @@ export namespace MessageDTO {
             senderId: message.sender,
             recipientId: message.recipient,
             attachment: message.attachment,
-            status: message.receptionStatus,
+            receptionStatus: message.receptionStatus,
+            contentStatus: message.contentStatus,
             deletedStatus: message.deletedStatus,
             timestamp: message.timestamp.getTime()
         }
