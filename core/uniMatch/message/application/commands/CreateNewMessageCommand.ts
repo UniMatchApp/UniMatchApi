@@ -48,6 +48,7 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
 
             return Result.success<MessageDTO>(MessageDTO.fromDomain(message));
         } catch (error : any) {
+            console.error(error);
             return Result.failure<MessageDTO>(error);
         }
     }

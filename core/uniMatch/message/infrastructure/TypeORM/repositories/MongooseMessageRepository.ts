@@ -71,8 +71,8 @@ export class MongooseMessageRepository implements IMessageRepository {
 
     async create(message: Message): Promise<void> {
         const messageEntity = MessageMapper.toEntity(message);
-        const messageDocument = new MessageModel(messageEntity);
-        await messageDocument.save();
+        console.log('Creating message: ', messageEntity);
+        await messageEntity.save();
     }
 
     async deleteById(id: string): Promise<void> {

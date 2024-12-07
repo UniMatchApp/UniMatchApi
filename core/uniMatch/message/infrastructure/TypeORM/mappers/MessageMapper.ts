@@ -14,16 +14,15 @@ export class MessageMapper {
 
         message.receptionStatus = entity.status;
         message.timestamp = entity.timestamp;
-        message.setId(entity._id.toString()); // En Mongoose, el ID es _id, no id
+        message.setId(entity._id.toString());
         message.deletedStatus = entity.deletedStatus;
 
         return message;
     }
 
-    @TransformFromUndefinedToNull
-    static toEntity(domain: Message): any { // Usamos 'any' porque Mongoose devuelve un documento
+    static toEntity(domain: Message): any {
         const messageEntity = new MessageModel({
-            _id: domain.getId(), // _id en lugar de id
+            _id: domain.getId(),
             content: domain.content,
             status: domain.receptionStatus as MessageReceptionStatusType,
             deletedStatus: domain.deletedStatus,
@@ -32,6 +31,8 @@ export class MessageMapper {
             recipient: domain.recipient,
             attachment: domain.attachment
         });
+
+        messageEntity.toObject();
 
         return messageEntity;
     }
