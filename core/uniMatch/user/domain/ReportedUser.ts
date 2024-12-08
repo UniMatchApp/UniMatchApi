@@ -1,6 +1,7 @@
+import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
 import { Entity } from "@/core/shared/domain/Entity";
 
-export class ReportedUser extends Entity {
+export class ReportedUser extends AggregateRoot {
     private readonly _userId: string;
     private _predefinedReason: string;
     private _comment?: string;
