@@ -6,7 +6,7 @@ import {IAppNotifications} from "../ports/IAppNotifications";
 import {
     validateDeletedMessageStatusType,
     validateMessageContentStatusType,
-    validateMessageStatusType
+    validateMessageReceptionStatusType
 } from "@/core/shared/domain/MessageReceptionStatusEnum";
 
 export class NewMessageEventHandler implements IEventHandler {
@@ -40,7 +40,7 @@ export class NewMessageEventHandler implements IEventHandler {
                 throw new ErrorEvent("Status is required to create a notification.");
             }
 
-            if (validateMessageStatusType(receptionStatus) === false) {
+            if (validateMessageReceptionStatusType(receptionStatus) === false) {
                 throw new ErrorEvent("Status value is not valid : " + receptionStatus);
             }
 

@@ -1,8 +1,8 @@
 import { Message } from '@/core/uniMatch/message/domain/Message';
-import { MessageModel } from '@/core/uniMatch/message/infrastructure/TypeORM/models/MessageEntity';
+import {IMessageEntity, MessageEntity} from '@/core/uniMatch/message/infrastructure/TypeORM/models/MessageEntity';
 
 export class MessageMapper {
-    static toDomain(entity: any): Message {
+    static toDomain(entity: IMessageEntity): Message {
         const message = new Message(
             entity.content,
             entity.sender,
@@ -12,7 +12,8 @@ export class MessageMapper {
 
         message.receptionStatus = entity.receptionStatus;
         message.contentStatus = entity.contentStatus;
-        message.timestamp = entity.timestamp;
+        message.createdAt = entity.createdAt;
+        message.updatedAt = entity.updatedAt;
         message.setId(entity._id.toString());
         message.deletedStatus = entity.deletedStatus;
 
@@ -20,13 +21,14 @@ export class MessageMapper {
     }
 
     static toEntity(domain: Message): any {
-        const messageEntity = new MessageModel({
+        const messageEntity = new MessageEntity({
             _id: domain.getId(),
             content: domain.content,
             receptionStatus: domain.receptionStatus,
             contentStatus: domain.contentStatus,
             deletedStatus: domain.deletedStatus,
-            timestamp: domain.timestamp,
+            createdAt: domain.createdAt,
+            updatedAt: domain.updatedAt,
             sender: domain.sender,
             recipient: domain.recipient,
             attachment: domain.attachment

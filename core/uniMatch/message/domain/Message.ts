@@ -2,7 +2,8 @@ import {AggregateRoot} from "@/core/shared/domain/AggregateRoot ";
 import {DomainError} from "@/core/shared/exceptions/DomainError";
 import {DeletedMessageEvent} from "./events/DeletedMessageEvent";
 import {
-    MessageContentStatusEnum, MessageDeletedStatusEnum,
+    MessageContentStatusEnum,
+    MessageDeletedStatusEnum,
     MessageDeletedStatusType,
     MessageReceptionStatusEnum,
     MessageReceptionStatusType
@@ -15,8 +16,12 @@ export class Message extends AggregateRoot {
     private _content: string = "";
     private _contentStatus: MessageContentStatusEnum;
     private _receptionStatus: MessageReceptionStatusType;
-    private _deletedStatus: MessageDeletedStatusType;
-    private _timestamp: Date;
+    private _deletedStatus: {
+        _sender: MessageDeletedStatusType;
+        _recipient: MessageDeletedStatusType;
+    }
+    private _createdAt: Date;
+    private _updatedAt: Date;
     private readonly _sender: string;
     private readonly _recipient: string;
     private _attachment?: string;
@@ -30,13 +35,17 @@ export class Message extends AggregateRoot {
     ) {
         super();
         this.content = content;
-        this._timestamp = new Date();
+        this._createdAt = new Date();
+        this._updatedAt = new Date();
         this.attachment = attachment;
         this._sender = sender;
         this._recipient = recipient;
         this._contentStatus = MessageContentStatusEnum.NOT_EDITED;
         this._receptionStatus = MessageReceptionStatusEnum.SENT;
-        this._deletedStatus = MessageDeletedStatusEnum.NOT_DELETED;
+        this._deletedStatus = {
+            _sender: MessageDeletedStatusEnum.NOT_DELETED,
+            _recipient: MessageDeletedStatusEnum.NOT_DELETED
+        }
     }
 
     public get content(): string {
@@ -60,12 +69,20 @@ export class Message extends AggregateRoot {
         this._receptionStatus = value;
     }
 
-    public get timestamp(): Date {
-        return this._timestamp;
+    public get createdAt(): Date {
+        return this._createdAt;
     }
 
-    public set timestamp(value: Date) {
-        this._timestamp = value;
+    public set createdAt(value: Date) {
+        this._createdAt = value;
+    }
+
+    get updatedAt(): Date {
+        return this._updatedAt;
+    }
+
+    set updatedAt(value: Date) {
+        this._updatedAt = value;
     }
 
     public get sender(): string {
@@ -84,11 +101,11 @@ export class Message extends AggregateRoot {
         this._attachment = value;
     }
 
-    get deletedStatus(): MessageDeletedStatusType {
+    get deletedStatus(): { _sender: MessageDeletedStatusType; _recipient: MessageDeletedStatusType } {
         return this._deletedStatus;
     }
 
-    set deletedStatus(value: MessageDeletedStatusType) {
+    set deletedStatus(value: { _sender: MessageDeletedStatusType; _recipient: MessageDeletedStatusType }) {
         this._deletedStatus = value;
     }
 
@@ -101,30 +118,40 @@ export class Message extends AggregateRoot {
     }
 
     public deleteForBoth(): void {
-        this._deletedStatus = MessageDeletedStatusEnum.DELETED_FOR_BOTH;
+        this._deletedStatus = {
+            _sender: MessageDeletedStatusEnum.DELETED,
+            _recipient: MessageDeletedStatusEnum.DELETED
+        }
         this.setIsActive(false);
+        this.updatedAt = new Date();
         this.recordEvent(DeletedMessageEvent.from(this));
     }
 
-    public deleteBySender(): void {
-        this._deletedStatus = MessageDeletedStatusEnum.DELETED_BY_SENDER;
+    public deleteForSender(): void {
+        this._deletedStatus = {
+            ...this._deletedStatus,
+            _sender: MessageDeletedStatusEnum.DELETED
+        }
+        this.updatedAt = new Date();
         this.setIsActive(false);
         // this.recordEvent(DeletedMessageEvent.from(this));
     }
 
-    public deleteByRecipient(): void {
-        this._deletedStatus = MessageDeletedStatusEnum.DELETED_BY_RECIPIENT;
+    public deleteForRecipient(): void {
+        this._deletedStatus = {
+            ...this._deletedStatus,
+            _recipient: MessageDeletedStatusEnum.DELETED
+        }
+        this.updatedAt = new Date();
         this.setIsActive(false);
         // this.recordEvent(DeletedMessageEvent.from(this));
     }
 
-    public edit(content?: string, status?: MessageReceptionStatusType, deletedStatus?: MessageDeletedStatusType): void {
+    public edit(content?: string, receptionStatus?: MessageReceptionStatusType): void {
         if (content) this.content = content;
-        if (status) this.receptionStatus = status;
-        if (deletedStatus) this.deletedStatus = deletedStatus;
-        this.timestamp = new Date();
+        if (receptionStatus) this.receptionStatus = receptionStatus;
+        this.updatedAt = new Date();
         this.recordEvent(EditedMessageEvent.from(this));
-
     }
 
     public send(): void {

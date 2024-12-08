@@ -31,10 +31,10 @@ export class DeleteMessageCommand implements ICommand<DeleteMessageDTO, void> {
                 this.fileHandler.delete(message.attachment);
             }
 
-            if (message.sender === request.userId) {
-                message.deleteForBoth();
+            if (message.sender === request.userId ) {
+                (request.deleteForBoth) ? message.deleteForBoth() : message.deleteForSender();
             } else if (message.recipient === request.userId) {
-                message.deleteByRecipient();
+                message.deleteForRecipient();
             } else {
                 return Result.failure<void>(new ValidationError('User is not allowed to delete this message'));
             }

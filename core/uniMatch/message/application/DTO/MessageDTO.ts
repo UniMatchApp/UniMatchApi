@@ -9,7 +9,8 @@ export interface MessageDTO {
     receptionStatus: string;
     contentStatus: string;
     deletedStatus: string;
-    timestamp: number;
+    createdAt: number;
+    updatedAt: number;
 }
 
 export namespace MessageDTO {
@@ -23,7 +24,8 @@ export namespace MessageDTO {
             receptionStatus: message.receptionStatus,
             contentStatus: message.contentStatus,
             deletedStatus: message.deletedStatus,
-            timestamp: message.timestamp.getTime()
+            createdAt: message.createdAt.getTime(),
+            updatedAt: message.updatedAt.getTime()
         }
     }
 
