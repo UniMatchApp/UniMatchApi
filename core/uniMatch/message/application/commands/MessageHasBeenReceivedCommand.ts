@@ -34,7 +34,7 @@ export class MessageHasBeenReceivedCommand implements ICommand<MessageHasBeenRec
                 return Result.failure<void>(new ValidationError('Message has already been received.'));
             }
 
-            message.received();
+            message.received(userId);
 
             await this.repository.update(message, message.getId());
             this.eventBus.publish(message.pullDomainEvents());

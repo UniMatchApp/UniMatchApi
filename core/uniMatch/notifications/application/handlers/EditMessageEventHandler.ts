@@ -4,11 +4,13 @@ import {IAppNotifications} from "../ports/IAppNotifications";
 import {
     MessageContentStatusEnum,
     MessageDeletedStatusEnum,
+    MessageDeletedUsersType,
     MessageReceptionStatusEnum
 } from "@/core/shared/domain/MessageReceptionStatusEnum";
 import { Notification } from "../../domain/Notification";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { NotificationTypeEnum } from "../../domain/enum/NotificationTypeEnum";
+import { de } from "@faker-js/faker/.";
 
 
 export class EditMessageEventHandler implements IEventHandler {

@@ -16,8 +16,8 @@ export class MessageMapper {
         message.updatedAt = entity.updatedAt;
         message.setId(entity._id.toString());
         message.deletedStatus = {
-            _sender: entity.deletedStatusSender,
-            _recipient: entity.deletedStatusRecipient
+            sender: entity.deletedStatusSender,
+            recipient: entity.deletedStatusRecipient
         }
 
         return message;
@@ -29,8 +29,8 @@ export class MessageMapper {
             content: domain.content,
             receptionStatus: domain.receptionStatus,
             contentStatus: domain.contentStatus,
-            deletedStatusSender: domain.deletedStatus._sender,
-            deletedStatusRecipient: domain.deletedStatus._recipient,
+            deletedStatusSender: domain.deletedStatus.sender,
+            deletedStatusRecipient: domain.deletedStatus.recipient,
             createdAt: domain.createdAt,
             updatedAt: domain.updatedAt,
             sender: domain.sender,

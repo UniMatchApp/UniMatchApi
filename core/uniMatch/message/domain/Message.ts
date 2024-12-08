@@ -4,6 +4,7 @@ import {DeletedMessageEvent} from "./events/DeletedMessageEvent";
 import {
     MessageContentStatusEnum, MessageDeletedStatusEnum,
     MessageDeletedStatusType,
+    MessageDeletedUsersType,
     MessageReceptionStatusEnum,
     MessageReceptionStatusType
 } from "@/core/shared/domain/MessageReceptionStatusEnum";
@@ -15,10 +16,7 @@ export class Message extends AggregateRoot {
     private _content: string = "";
     private _contentStatus: MessageContentStatusEnum;
     private _receptionStatus: MessageReceptionStatusType;
-    private _deletedStatus: {
-        _sender: MessageDeletedStatusType;
-        _recipient: MessageDeletedStatusType;
-    }
+    private _deletedStatus: MessageDeletedUsersType;
     private _createdAt: Date;
     private _updatedAt: Date;
     private readonly _sender: string;
@@ -42,9 +40,9 @@ export class Message extends AggregateRoot {
         this._contentStatus = MessageContentStatusEnum.NOT_EDITED;
         this._receptionStatus = MessageReceptionStatusEnum.SENT;
         this._deletedStatus = {
-            _sender: MessageDeletedStatusEnum.NOT_DELETED,
-            _recipient: MessageDeletedStatusEnum.NOT_DELETED
-        }
+            sender: MessageDeletedStatusEnum.NOT_DELETED,
+            recipient: MessageDeletedStatusEnum.NOT_DELETED
+        } as MessageDeletedUsersType;
     }
 
     public get content(): string {
@@ -100,11 +98,11 @@ export class Message extends AggregateRoot {
         this._attachment = value;
     }
 
-    get deletedStatus(): { _sender: MessageDeletedStatusType; _recipient: MessageDeletedStatusType } {
+    get deletedStatus(): MessageDeletedUsersType {
         return this._deletedStatus;
     }
 
-    set deletedStatus(value: { _sender: MessageDeletedStatusType; _recipient: MessageDeletedStatusType }) {
+    set deletedStatus(value: MessageDeletedUsersType) {
         this._deletedStatus = value;
     }
 
@@ -116,54 +114,54 @@ export class Message extends AggregateRoot {
         this._contentStatus = value;
     }
 
-    public deleteForBoth(): void {
+    public deleteForBoth(requester: string): void {
         this._deletedStatus = {
-            _sender: MessageDeletedStatusEnum.DELETED,
-            _recipient: MessageDeletedStatusEnum.DELETED
+            sender: MessageDeletedStatusEnum.DELETED,
+            recipient: MessageDeletedStatusEnum.DELETED
         }
         this.setIsActive(false);
         this.updatedAt = new Date();
-        this.recordEvent(DeletedMessageEvent.from(this));
+        this.recordEvent(DeletedMessageEvent.from(this, requester));
     }
 
-    public deleteForSender(): void {
+    public deleteForSender(requester: string): void {
         this._deletedStatus = {
             ...this._deletedStatus,
-            _sender: MessageDeletedStatusEnum.DELETED
+            sender: MessageDeletedStatusEnum.DELETED
         }
         this.updatedAt = new Date();
         this.setIsActive(false);
         // this.recordEvent(DeletedMessageEvent.from(this));
     }
 
-    public deleteForRecipient(): void {
+    public deleteForRecipient(requester: string): void {
         this._deletedStatus = {
             ...this._deletedStatus,
-            _recipient: MessageDeletedStatusEnum.DELETED
+            recipient: MessageDeletedStatusEnum.DELETED
         }
         this.updatedAt = new Date();
         this.setIsActive(false);
         // this.recordEvent(DeletedMessageEvent.from(this));
     }
 
-    public edit(content?: string, receptionStatus?: MessageReceptionStatusType): void {
+    public edit(requester: string, content?: string, receptionStatus?: MessageReceptionStatusType): void {
         if (content) this.content = content;
         if (receptionStatus) this.receptionStatus = receptionStatus;
         this.updatedAt = new Date();
-        this.recordEvent(EditedMessageEvent.from(this));
+        this.recordEvent(EditedMessageEvent.from(this, requester));
     }
 
-    public read(): void {
+    public read(requester: string): void {
         this.receptionStatus = MessageReceptionStatusEnum.READ
-        this.recordEvent(EditedMessageEvent.from(this));
+        this.recordEvent(EditedMessageEvent.from(this, requester));
     }
 
-    public received(): void {
+    public received(requester: string): void {
         this.receptionStatus = MessageReceptionStatusEnum.RECEIVED
-        this.recordEvent(EditedMessageEvent.from(this));
+        this.recordEvent(EditedMessageEvent.from(this, requester));
     }
 
-    public send(): void {
-        this.recordEvent(NewMessageEvent.from(this));
+    public send(requester: string): void {
+        this.recordEvent(NewMessageEvent.from(this, requester));
     }
 }

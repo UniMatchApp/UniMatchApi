@@ -1,6 +1,7 @@
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { Message } from "../Message";
 import { MessageContentStatusEnum, MessageDeletedStatusEnum, MessageReceptionStatusEnum } from "@/core/shared/domain/MessageReceptionStatusEnum";
+import { MessageDTO } from "../../application/DTO/MessageDTO";
 
 export class EditedMessageEvent extends DomainEvent {
     constructor(
@@ -10,8 +11,7 @@ export class EditedMessageEvent extends DomainEvent {
         recipient: string,
         contentStatus: MessageContentStatusEnum,
         receptionStatus: MessageReceptionStatusEnum,
-        deletedStatusSender: MessageDeletedStatusEnum,
-        deletedStatusRecipient: MessageDeletedStatusEnum,
+        deletedStatus: MessageDeletedStatusEnum,
         attachment?: string
     ) {
         super(aggregateId, "edited-message");
@@ -23,21 +23,20 @@ export class EditedMessageEvent extends DomainEvent {
         }
         this.getPayload().set("contentStatus", contentStatus);
         this.getPayload().set("receptionStatus", receptionStatus);
-        this.getPayload().set("deletedStatusSender", deletedStatusSender);
-        this.getPayload().set("deletedStatusRecipient", deletedStatusRecipient);
+        this.getPayload().set("deletedStatus", deletedStatus);
     }
 
-    public static from(message: Message): EditedMessageEvent {
+    public static from(message: Message, requester: string): EditedMessageEvent {
+        const messageDTO = MessageDTO.fromDomain(requester, message);
         return new EditedMessageEvent(
-            message.getId().toString(),
-            message.content,
-            message.sender,
-            message.recipient,
-            message.contentStatus as MessageContentStatusEnum,
-            message.receptionStatus as MessageReceptionStatusEnum,
-            message.deletedStatus._sender as MessageDeletedStatusEnum,
-            message.deletedStatus._recipient as MessageDeletedStatusEnum,
-            message.attachment
+            messageDTO.messageId,
+            messageDTO.content,
+            messageDTO.senderId,
+            messageDTO.recipientId,
+            messageDTO.contentStatus as MessageContentStatusEnum,
+            messageDTO.receptionStatus as MessageReceptionStatusEnum,
+            messageDTO.deletedStatus as MessageDeletedStatusEnum,
+            messageDTO.attachment
         );
     }
 }

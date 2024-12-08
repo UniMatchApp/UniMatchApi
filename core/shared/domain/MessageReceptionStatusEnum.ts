@@ -3,6 +3,11 @@ export type MessageReceptionStatusType = "SENT" | "RECEIVED" | "READ" ; // En ba
 export type MessageDeletedStatusType =
     "DELETED"  | "NOT_DELETED"; // En base al sender
 
+export type MessageDeletedUsersType = {
+    sender: MessageDeletedStatusType;
+    recipient: MessageDeletedStatusType;
+}
+
 export function validateMessageContentStatusType(value: string | undefined): value is MessageContentStatusType {
     return value === "NOT_EDITED" || value === "EDITED";
 }

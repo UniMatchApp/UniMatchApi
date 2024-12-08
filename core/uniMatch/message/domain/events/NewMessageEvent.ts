@@ -1,5 +1,8 @@
 import {DomainEvent} from "@/core/shared/domain/DomainEvent";
 import {Message} from "../Message";
+import { MessageDeletedUsersType } from "@/core/shared/domain/MessageReceptionStatusEnum";
+import { Delete } from "@aws-sdk/client-s3";
+import { MessageDTO } from "../../application/DTO/MessageDTO";
 
 export class NewMessageEvent extends DomainEvent {
     constructor(aggregateId: string,
@@ -23,16 +26,17 @@ export class NewMessageEvent extends DomainEvent {
         }
     }
 
-    public static from(message: Message): NewMessageEvent {
+    public static from(message: Message, requester: string): NewMessageEvent {
+        const messageDTO = MessageDTO.fromDomain(requester, message);
         return new NewMessageEvent(
-            message.getId().toString(),
-            message.content,
-            message.sender,
-            message.recipient,
-            message.contentStatus,
-            message.receptionStatus,
-            message.deletedStatus,
-            message.attachment
+            messageDTO.messageId,
+            messageDTO.content,
+            messageDTO.senderId,
+            messageDTO.recipientId,
+            messageDTO.contentStatus,
+            messageDTO.receptionStatus,
+            messageDTO.deletedStatus,
+            messageDTO.attachment
         );
     }
 }

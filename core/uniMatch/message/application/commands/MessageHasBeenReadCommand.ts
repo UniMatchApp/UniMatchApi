@@ -33,7 +33,7 @@ export class MessageHasBeenReadCommand implements ICommand<MessageHasBeenSeenDTO
                 return Result.failure<void>(new ValidationError('Message has already been read.'));
             }
 
-            message.read();
+            message.read(userId);
 
             await this.repository.update(message, message.getId());
             this.eventBus.publish(message.pullDomainEvents());

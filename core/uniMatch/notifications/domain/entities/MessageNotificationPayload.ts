@@ -2,7 +2,9 @@ import { NotificationTypeEnum } from "../enum/NotificationTypeEnum";
 import {NotificationPayload} from "../NotificationPayload";
 import {
     MessageContentStatusType,
+    MessageDeletedStatusEnum,
     MessageDeletedStatusType,
+    MessageDeletedUsersType,
     MessageReceptionStatusType
 } from "@/core/shared/domain/MessageReceptionStatusEnum";
 
@@ -12,7 +14,7 @@ export class MessageNotificationPayload extends NotificationPayload {
     private _attachment?: string;
     private _receptionStatus: MessageReceptionStatusType;
     private _contentStatus: MessageContentStatusType;
-    private _deletedStatus: MessageDeletedStatusType;
+    private _deletedStatus: MessageDeletedStatusType
 
     constructor(
         id: string,
@@ -20,7 +22,7 @@ export class MessageNotificationPayload extends NotificationPayload {
         sender: string, 
         contentStatus: MessageContentStatusType, 
         receptionStatus: MessageReceptionStatusType, 
-        deletedStatus: MessageDeletedStatusType, 
+        deletedStatus: MessageDeletedStatusType,
         attachment?: string
     ) {
         const type = NotificationTypeEnum.MESSAGE;

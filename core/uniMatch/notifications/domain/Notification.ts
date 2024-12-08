@@ -10,6 +10,7 @@ import {AppNotificationPayload} from "./entities/AppNotificationPayload";
 import {EventNotificationPayload} from "./entities/EventNotificationPayload";
 import {
     MessageContentStatusType,
+    MessageDeletedStatusEnum,
     MessageDeletedStatusType,
     MessageReceptionStatusType
 } from "@/core/shared/domain/MessageReceptionStatusEnum";

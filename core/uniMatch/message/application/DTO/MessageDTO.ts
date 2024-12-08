@@ -16,11 +16,11 @@ export interface MessageDTO {
 
 export namespace MessageDTO {
     function mustShowAsDeleted(requesterId: string, message: Message): MessageDeletedStatusType {
-        const {_recipient, _sender} = message.deletedStatus;
-        if (_recipient === "DELETED" && _sender === "DELETED") {
+        const {recipient, sender} = message.deletedStatus;
+        if (recipient === "DELETED" && sender === "DELETED") {
             return "DELETED";
         }
-        if ((message.sender === requesterId && _sender === "DELETED") || (message.recipient === requesterId && _recipient === "DELETED")) {
+        if ((message.sender === requesterId && sender === "DELETED") || (message.recipient === requesterId && recipient === "DELETED")) {
             return "DELETED";
         }
         return "NOT_DELETED";

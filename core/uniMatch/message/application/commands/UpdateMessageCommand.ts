@@ -11,6 +11,7 @@ import {
     validateMessageReceptionStatusType
 } from "@/core/shared/domain/MessageReceptionStatusEnum";
 import {MessageDTO} from "@/core/uniMatch/message/application/DTO/MessageDTO";
+import { r } from "@faker-js/faker/dist/airline-BLb3y-7w";
 
 export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, MessageDTO> {
     private readonly repository: IMessageRepository;
@@ -51,6 +52,7 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, MessageD
             }
 
             messageToUpdate.edit(
+                request.userId,
                 request.content,
                 request.receptionStatus as MessageReceptionStatusType,
             );

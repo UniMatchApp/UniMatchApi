@@ -34,12 +34,14 @@ export class DeleteMessageCommand implements ICommand<DeleteMessageDTO, void> {
                 return Result.failure<void>(new ValidationError('User is not the sender and is not allowed to delete this message for both users'));
             }
 
-            switch (request.userId) {
+            const userId = request.userId;
+
+            switch (userId) {
                 case message.sender:
-                    (request.deleteForBoth) ? message.deleteForBoth() : message.deleteForSender();
+                    (request.deleteForBoth) ? message.deleteForBoth(userId) : message.deleteForSender(userId);
                     break;
                 case message.recipient:
-                    message.deleteForRecipient();
+                    message.deleteForRecipient(userId);
                     break;
                 default:
                     return Result.failure<void>(new ValidationError('User is not allowed to delete this message'));
