@@ -10,7 +10,8 @@ export class EditedMessageEvent extends DomainEvent {
         recipient: string,
         contentStatus: MessageContentStatusEnum,
         receptionStatus: MessageReceptionStatusEnum,
-        deletedStatus: MessageDeletedStatusEnum,
+        deletedStatusSender: MessageDeletedStatusEnum,
+        deletedStatusRecipient: MessageDeletedStatusEnum,
         attachment?: string
     ) {
         super(aggregateId, "edited-message");
@@ -22,7 +23,8 @@ export class EditedMessageEvent extends DomainEvent {
         }
         this.getPayload().set("contentStatus", contentStatus);
         this.getPayload().set("receptionStatus", receptionStatus);
-        this.getPayload().set("deletedStatus", deletedStatus);
+        this.getPayload().set("deletedStatusSender", deletedStatusSender);
+        this.getPayload().set("deletedStatusRecipient", deletedStatusRecipient);
     }
 
     public static from(message: Message): EditedMessageEvent {
@@ -33,7 +35,8 @@ export class EditedMessageEvent extends DomainEvent {
             message.recipient,
             message.contentStatus as MessageContentStatusEnum,
             message.receptionStatus as MessageReceptionStatusEnum,
-            message.deletedStatus as MessageDeletedStatusEnum,
+            message.deletedStatus._sender as MessageDeletedStatusEnum,
+            message.deletedStatus._recipient as MessageDeletedStatusEnum,
             message.attachment
         );
     }

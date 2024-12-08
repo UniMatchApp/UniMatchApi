@@ -23,8 +23,8 @@ export class RetrieveMessagesFromUserPaginatedCommand implements ICommand<Retrie
             console.log(`Retrieving messages from user ${userId} paginated after ${after} with limit ${limit}`);
             const messages = await this.repository.findMessagesOfUserPaginated(userId, after, limit);
             console.log(`Retrieved ${messages.length} messages`);
-            console.log(MessageDTO.fromDomainArray(messages));
-            return Result.success<MessageDTO[]>(MessageDTO.fromDomainArray(messages));
+
+            return Result.success<MessageDTO[]>(MessageDTO.fromDomainArray(userId , messages));
         } catch (error: any) {
             console.error(error);
             return Result.failure<MessageDTO[]>(error);

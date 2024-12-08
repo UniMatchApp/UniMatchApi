@@ -1,7 +1,6 @@
 export interface UpdateMessageDTO {
-    messageId: string;
     userId: string;
+    messageId: string;
     content?: string;
-    status?: string;
-    deletedStatus?: string;
+    receptionStatus?: string;
 }

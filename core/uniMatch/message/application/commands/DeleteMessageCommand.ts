@@ -20,7 +20,6 @@ export class DeleteMessageCommand implements ICommand<DeleteMessageDTO, void> {
 
     async run(request: DeleteMessageDTO): Promise<Result<void>> {
         try {
-
             const message = await this.repository.findById(request.messageId);
 
             if (!message) {
@@ -31,15 +30,22 @@ export class DeleteMessageCommand implements ICommand<DeleteMessageDTO, void> {
                 this.fileHandler.delete(message.attachment);
             }
 
-            if (message.sender === request.userId) {
-                message.deleteForBoth();
-            } else if (message.recipient === request.userId) {
-                message.deleteByRecipient();
-            } else {
-                return Result.failure<void>(new ValidationError('User is not allowed to delete this message'));
+            if (request.deleteForBoth && message.sender !== request.userId) {
+                return Result.failure<void>(new ValidationError('User is not the sender and is not allowed to delete this message for both users'));
             }
 
-            await this.repository.create(message);
+            switch (request.userId) {
+                case message.sender:
+                    (request.deleteForBoth) ? message.deleteForBoth() : message.deleteForSender();
+                    break;
+                case message.recipient:
+                    message.deleteForRecipient();
+                    break;
+                default:
+                    return Result.failure<void>(new ValidationError('User is not allowed to delete this message'));
+            }
+
+            await this.repository.update(message, message.getId());
             this.eventBus.publish(message.pullDomainEvents());
             return Result.success<void>(undefined);
 
