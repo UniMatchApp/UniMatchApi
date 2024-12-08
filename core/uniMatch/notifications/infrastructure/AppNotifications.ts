@@ -10,8 +10,8 @@ export class AppNotifications implements IAppNotifications {
         this.webSocketController = webSocketsNotificationsHandler;
     }
 
-    async sendNotification(notification: Notification): Promise<void> {
-        const client = this.webSocketController.getClient(notification.recipient);
+    async sendNotification(notification: Notification, recipient?: string): Promise<void> {
+        const client = this.webSocketController.getClient(recipient || notification.recipient);
 
         if (!(client && client.socket.notification?.readyState === WebSocket.OPEN)) {
             return;

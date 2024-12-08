@@ -19,7 +19,7 @@ export class MessageNotificationPayload extends NotificationPayload {
     constructor(
         id: string,
         content: string, 
-        sender: string, 
+        sender: string,
         contentStatus: MessageContentStatusType, 
         receptionStatus: MessageReceptionStatusType, 
         deletedStatus: MessageDeletedStatusType,

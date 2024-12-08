@@ -10,6 +10,8 @@ import {
 } from "@/core/shared/domain/MessageReceptionStatusEnum";
 import {EditedMessageEvent} from "./events/EditedMessageEvent";
 import {NewMessageEvent} from "./events/NewMessageEvent";
+import { ReadMessageEvent } from "./events/ReadMessageEvent";
+import { ReceivedMessageEvent } from "./events/ReceivedMessageEvent";
 
 
 export class Message extends AggregateRoot {
@@ -153,12 +155,12 @@ export class Message extends AggregateRoot {
 
     public read(requester: string): void {
         this.receptionStatus = MessageReceptionStatusEnum.READ
-        this.recordEvent(EditedMessageEvent.from(this, requester));
+        this.recordEvent(ReadMessageEvent.from(this, requester));
     }
 
     public received(requester: string): void {
         this.receptionStatus = MessageReceptionStatusEnum.RECEIVED
-        this.recordEvent(EditedMessageEvent.from(this, requester));
+        this.recordEvent(ReceivedMessageEvent.from(this, requester));
     }
 
     public send(requester: string): void {
