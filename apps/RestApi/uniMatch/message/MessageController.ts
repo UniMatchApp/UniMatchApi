@@ -100,7 +100,7 @@ export class MessageController {
     async messageHasBeenRead(req: Request, res: Response): Promise<void> {
         const messageId = req.params.messageId;
         const userId = req.body.userId;
-        const command = new MessageHasBeenReadCommand(this.messageRepository);
+        const command = new MessageHasBeenReadCommand(this.messageRepository, this.eventBus);
         const dto = {messageId: messageId, userId: userId} as MessageHasBeenSeenDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {

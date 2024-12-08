@@ -2,8 +2,7 @@ import {AggregateRoot} from "@/core/shared/domain/AggregateRoot ";
 import {DomainError} from "@/core/shared/exceptions/DomainError";
 import {DeletedMessageEvent} from "./events/DeletedMessageEvent";
 import {
-    MessageContentStatusEnum,
-    MessageDeletedStatusEnum,
+    MessageContentStatusEnum, MessageDeletedStatusEnum,
     MessageDeletedStatusType,
     MessageReceptionStatusEnum,
     MessageReceptionStatusType
@@ -151,6 +150,11 @@ export class Message extends AggregateRoot {
         if (content) this.content = content;
         if (receptionStatus) this.receptionStatus = receptionStatus;
         this.updatedAt = new Date();
+        this.recordEvent(EditedMessageEvent.from(this));
+    }
+
+    public read(): void {
+        this.receptionStatus = MessageReceptionStatusEnum.READ
         this.recordEvent(EditedMessageEvent.from(this));
     }
 

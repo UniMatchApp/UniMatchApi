@@ -27,9 +27,18 @@ export class EditMessageEventHandler implements IEventHandler {
             const recipient = event.getAggregateId();
             const sender = event.getPayload().get("sender");
             const attachment = event.getPayload().get("attachment");
+            const contentStatus = event.getPayload().get("contentStatus");
+            const receptionStatus = event.getPayload().get("receptionStatus");
+            const deletedStatus = event.getPayload().get("deletedStatus");
+
+            console.log("EditMessageEventHandler: ", messageId, newContent, recipient, sender, contentStatus, receptionStatus, deletedStatus);
 
             if (!messageId || !newContent || !recipient) {
                 throw new ErrorEvent("Recipient, MessageID and new content are required to edit a message.");
+            }
+
+            if (!contentStatus || !receptionStatus || !deletedStatus) {
+                throw new ErrorEvent("Content status, reception status and deleted status are required to edit a message.");
             }
 
             if (!sender) {
@@ -48,9 +57,9 @@ export class EditMessageEventHandler implements IEventHandler {
                 recipient,
                 newContent,
                 sender,
-                MessageContentStatusEnum.EDITED,
-                MessageReceptionStatusEnum.SENT,
-                MessageDeletedStatusEnum.NOT_DELETED,
+                contentStatus as MessageContentStatusEnum,
+                receptionStatus as MessageReceptionStatusEnum,
+                deletedStatus as MessageDeletedStatusEnum,
                 attachment);
             
             await this.repository.create(notification);
