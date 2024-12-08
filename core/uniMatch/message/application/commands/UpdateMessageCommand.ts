@@ -79,6 +79,7 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, MessageD
             messageToUpdate.edit(
                 request.content,
                 request.status as MessageReceptionStatusType,
+                messageToUpdate.contentStatus,
                 request.deletedStatus as MessageDeletedStatusType
             );
 

@@ -118,13 +118,17 @@ export class Message extends AggregateRoot {
         // this.recordEvent(DeletedMessageEvent.from(this));
     }
 
-    public edit(content?: string, status?: MessageReceptionStatusType, deletedStatus?: MessageDeletedStatusType): void {
+    public edit(content?: string, receptionStatus?: MessageReceptionStatusType, contentStatus?: MessageContentStatusEnum, deletedStatus?: MessageDeletedStatusType): void {
         if (content) this.content = content;
-        if (status) this.receptionStatus = status;
+        if (receptionStatus) this.receptionStatus = receptionStatus;
+        if (contentStatus) this.contentStatus = contentStatus;
         if (deletedStatus) this.deletedStatus = deletedStatus;
-        this.timestamp = new Date();
         this.recordEvent(EditedMessageEvent.from(this));
+    }
 
+    public read(): void {
+        this.receptionStatus = MessageReceptionStatusEnum.READ
+        this.recordEvent(EditedMessageEvent.from(this));
     }
 
     public send(): void {
