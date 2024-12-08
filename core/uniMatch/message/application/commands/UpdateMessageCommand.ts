@@ -58,7 +58,7 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, MessageD
             await this.repository.update(messageToUpdate, request.messageId);
             this.eventBus.publish(messageToUpdate.pullDomainEvents());
 
-            return Result.success<MessageDTO>(MessageDTO.fromDomain(messageToUpdate));
+            return Result.success<MessageDTO>(MessageDTO.fromDomain(request.userId, messageToUpdate));
         } catch (error: any) {
             return Result.failure<MessageDTO>(error);
         }

@@ -7,7 +7,8 @@ interface IMessageEntity extends Document {
     content: string;
     receptionStatus: MessageReceptionStatusType;
     contentStatus: MessageContentStatusEnum;
-    deletedStatus: MessageDeletedStatusType;
+    deletedStatusSender: MessageDeletedStatusType;
+    deletedStatusRecipient: MessageDeletedStatusType;
     createdAt: Date;
     updatedAt: Date;
     sender: string;
@@ -20,7 +21,8 @@ const MessageSchema = new Schema<IMessageEntity>({
     content: { type: String, required: true },
     receptionStatus: { type: String, enum: Object.values(MessageReceptionStatusEnum), required: true },
     contentStatus: { type: String, enum: Object.values(MessageContentStatusEnum), required: true },
-    deletedStatus: { type: String, enum: Object.values(MessageDeletedStatusEnum), required: true },
+    deletedStatusSender: { type: String, enum: Object.values(MessageDeletedStatusEnum), required: true },
+    deletedStatusRecipient: { type: String, enum: Object.values(MessageDeletedStatusEnum), required: true },
     createdAt: { type: Date, required: true, default: Date.now },
     updatedAt: { type: Date, required: true, default: Date.now },
     sender: { type: String, required: true, maxlength: 255 },

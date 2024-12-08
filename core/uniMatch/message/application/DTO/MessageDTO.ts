@@ -1,4 +1,5 @@
 import {Message} from "@/core/uniMatch/message/domain/Message";
+import {MessageDeletedStatusType} from "@/core/shared/domain/MessageReceptionStatusEnum";
 
 export interface MessageDTO {
     messageId: string;
@@ -14,7 +15,18 @@ export interface MessageDTO {
 }
 
 export namespace MessageDTO {
-    export function fromDomain(message: Message): MessageDTO {
+    function mustShowAsDeleted(requesterId: string, message: Message): MessageDeletedStatusType {
+        const {_recipient, _sender} = message.deletedStatus;
+        if (_recipient === "DELETED" && _sender === "DELETED") {
+            return "DELETED";
+        }
+        if ((message.sender === requesterId && _sender === "DELETED") || (message.recipient === requesterId && _recipient === "DELETED")) {
+            return "DELETED";
+        }
+        return "NOT_DELETED";
+    }
+
+    export function fromDomain(requesterId: string, message: Message): MessageDTO {
         return {
             messageId: message.getId().toString(),
             content: message.content,
@@ -23,13 +35,14 @@ export namespace MessageDTO {
             attachment: message.attachment,
             receptionStatus: message.receptionStatus,
             contentStatus: message.contentStatus,
-            deletedStatus: message.deletedStatus,
+            deletedStatus: mustShowAsDeleted(requesterId, message),
             createdAt: message.createdAt.getTime(),
             updatedAt: message.updatedAt.getTime()
         }
     }
 
-    export function fromDomainArray(messages: Message[]) {
-        return messages.map(message => fromDomain(message));
+    export function fromDomainArray(userId: string, messages: Message[]) {
+        return messages.map(message => fromDomain(userId, message));
     }
 }
+

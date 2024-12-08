@@ -85,8 +85,9 @@ export class MessageController {
     async deleteMessage(req: Request, res: Response): Promise<void> {
         const userId = req.body.userId;
         const messageId = req.params.messageId;
+        const deleteForBoth = Boolean(req.query.deleteForBoth === 'true');
         const command = new DeleteMessageCommand(this.messageRepository, this.eventBus, this.fileHandler);
-        const dto = {userId: userId, messageId: messageId} as DeleteMessageDTO;
+        const dto = {userId: userId, messageId: messageId, deleteForBoth: deleteForBoth} as DeleteMessageDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result);

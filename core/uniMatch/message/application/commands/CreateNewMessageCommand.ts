@@ -46,7 +46,7 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
             await this.repository.create(message);
             this.eventBus.publish(message.pullDomainEvents());
 
-            return Result.success<MessageDTO>(MessageDTO.fromDomain(message));
+            return Result.success<MessageDTO>(MessageDTO.fromDomain(request.userId, message));
         } catch (error : any) {
             console.error(error);
             return Result.failure<MessageDTO>(error);

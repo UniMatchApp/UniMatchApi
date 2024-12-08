@@ -15,7 +15,7 @@ const messageController = new MessageController(
 
 router.post('', validateAndRefreshToken, fileUploadMiddleware, messageController.createMessage.bind(messageController));
 router.get('', validateAndRefreshToken, messageController.retrieveMessagesFromUserPaginated.bind(messageController));
-router.delete('/:targetId', validateAndRefreshToken, messageController.deleteAllMessagesWithUser.bind(messageController));
+router.delete('/user/:targetId', validateAndRefreshToken, messageController.deleteAllMessagesWithUser.bind(messageController));
 router.delete('/:messageId', validateAndRefreshToken, messageController.deleteMessage.bind(messageController));
 router.post('/read/:messageId', validateAndRefreshToken, messageController.messageHasBeenRead.bind(messageController));
 router.get('/user/:targetId', validateAndRefreshToken, messageController.retrieveMessagesWithUser.bind(messageController));
