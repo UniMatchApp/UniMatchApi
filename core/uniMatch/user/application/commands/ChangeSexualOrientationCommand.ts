@@ -30,7 +30,6 @@ export class ChangeSexualOrientationCommand implements ICommand<ChangeSexualOrie
             this.eventBus.publish(profile.pullDomainEvents());
             return Result.success<string>(request.newSexualOrientation);
         } catch (error : any) {
-            console.log(error);
             return Result.failure<string>(error);
         }
     }

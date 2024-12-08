@@ -7,12 +7,11 @@ import {IFileHandler} from "@/core/shared/application/IFileHandler";
 import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
 import {ValidationError} from "@/core/shared/exceptions/ValidationError";
 import {
-    MessageDeletedStatusType,
     MessageReceptionStatusType,
-    validateDeletedMessageStatusType,
-    validateMessageStatusType
+    validateMessageReceptionStatusType
 } from "@/core/shared/domain/MessageReceptionStatusEnum";
 import {MessageDTO} from "@/core/uniMatch/message/application/DTO/MessageDTO";
+import { r } from "@faker-js/faker/dist/airline-BLb3y-7w";
 
 export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, MessageDTO> {
     private readonly repository: IMessageRepository;
@@ -26,7 +25,6 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, MessageD
     }
 
     async run(request: UpdateMessageDTO): Promise<Result<MessageDTO>> {
-
         try {
             const messageToUpdate = await this.repository.findById(request.messageId);
 
@@ -34,58 +32,35 @@ export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, MessageD
                 return Result.failure<MessageDTO>(new NotFoundError('Message not found'));
             }
 
+            if (request.content && request.receptionStatus) {
+                return Result.failure<MessageDTO>(new ValidationError('Message status and content cannot be updated at the same time'));
+            }
+
             // Check if the userId is the sender of the message
             if (request.content && (messageToUpdate.sender !== request.userId)) {
                 return Result.failure<MessageDTO>(new ValidationError('User is not the sender of the message'));
             }
 
-            if (request.status && !validateMessageStatusType(request.status)) {
-                return Result.failure<MessageDTO>(new ValidationError('Invalid message status'));
+            if (request.receptionStatus && !validateMessageReceptionStatusType(request.receptionStatus)) {
+                return Result.failure<MessageDTO>(new ValidationError('Invalid message reception status'));
             }
 
-            if ((request.status as MessageReceptionStatusType === "RECEIVED" || request.status as MessageReceptionStatusType === "READ") &&
+            if ((request.receptionStatus as MessageReceptionStatusType === "RECEIVED" ||
+                    request.receptionStatus as MessageReceptionStatusType === "READ") &&
                 (messageToUpdate.recipient !== request.userId)) {
                 return Result.failure<MessageDTO>(new ValidationError('User is not the recipient of the message. Cannot update status to RECEIVED or READ'));
             }
 
-            if (request.deletedStatus && !validateDeletedMessageStatusType(request.deletedStatus)) {
-                return Result.failure<MessageDTO>(new ValidationError('Invalid deleted status'));
-            }
-
-            if (request.deletedStatus as MessageDeletedStatusType === "NOT_DELETED") {
-                return Result.failure<MessageDTO>(new ValidationError('Cannot update message to NOT_DELETED status'));
-            }
-
-            if ((request.deletedStatus as MessageDeletedStatusType === "DELETED_BY_SENDER" ||
-                    request.deletedStatus as MessageDeletedStatusType === "DELETED_FOR_BOTH") &&
-                request.userId !== messageToUpdate.sender) {
-                return Result.failure<MessageDTO>(new ValidationError('User is not the sender of the message. Cannot delete message'));
-            }
-
-            if ((request.deletedStatus as MessageDeletedStatusType === "DELETED_BY_RECIPIENT") &&
-                (request.userId !== messageToUpdate.recipient)) {
-                return Result.failure<MessageDTO>(new ValidationError('User is not the recipient of the message. Cannot delete message for recipient'));
-            }
-
-            if (request.deletedStatus && (request.status || request.content)) {
-                return Result.failure<MessageDTO>(new ValidationError('Message status and content cannot be updated when deletedStatus is present'));
-            }
-
-            if (request.content && request.status) {
-                return Result.failure<MessageDTO>(new ValidationError('Message status and content cannot be updated at the same time'));
-            }
-
-
             messageToUpdate.edit(
+                request.userId,
                 request.content,
-                request.status as MessageReceptionStatusType,
-                request.deletedStatus as MessageDeletedStatusType
+                request.receptionStatus as MessageReceptionStatusType,
             );
 
             await this.repository.update(messageToUpdate, request.messageId);
             this.eventBus.publish(messageToUpdate.pullDomainEvents());
 
-            return Result.success<MessageDTO>(MessageDTO.fromDomain(messageToUpdate));
+            return Result.success<MessageDTO>(MessageDTO.fromDomain(request.userId, messageToUpdate));
         } catch (error: any) {
             return Result.failure<MessageDTO>(error);
         }

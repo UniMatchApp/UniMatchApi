@@ -13,7 +13,6 @@ export class UserHasDeletedAccountHandler implements IEventHandler {
 
     async handle(event: DomainEvent): Promise<void> {
         try {
-            console.log("UserHasDeletedAccount event", event);
             const userId = event.getAggregateId();
     
             if (!userId ) {
@@ -22,8 +21,6 @@ export class UserHasDeletedAccountHandler implements IEventHandler {
     
             await this.repository.deleteByUserId(userId);
 
-            console.log("User deleted from matching repository", this.repository.findByUserId(userId));
-    
         } catch (error : any) {
             console.error(error);
         }

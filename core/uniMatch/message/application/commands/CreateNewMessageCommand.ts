@@ -33,8 +33,6 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
             if (file && fileName) {
                 attachmentUrl = await this.fileHandler.save(fileName, file);
             }
-
-            console.log("Request: ", request);
             
             const message = new Message(
                 request.content,
@@ -43,13 +41,14 @@ export class CreateNewMessageCommand implements ICommand<CreateNewMessageDTO, Me
                 attachmentUrl
             )
 
-            message.send();
+            message.send(request.userId);
 
             await this.repository.create(message);
             this.eventBus.publish(message.pullDomainEvents());
 
-            return Result.success<MessageDTO>(MessageDTO.fromDomain(message));
+            return Result.success<MessageDTO>(MessageDTO.fromDomain(request.userId, message));
         } catch (error : any) {
+            console.error(error);
             return Result.failure<MessageDTO>(error);
         }
     }

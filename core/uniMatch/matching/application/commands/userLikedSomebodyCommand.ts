@@ -1,15 +1,17 @@
 import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
 import { IMatchingRepository } from "../ports/IMatchingRepository";
-import { Like } from "../../domain/relations/Like";
 import { UserLikedSomebodyDTO } from "../DTO/userLikedSomebodyDTO";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import { IEventBus } from "@/core/shared/application/IEventBus";
 
 export class UserLikedSomebodyCommand implements ICommand<UserLikedSomebodyDTO, void> {
     private readonly repository: IMatchingRepository;
+    private readonly eventBus: IEventBus;
 
-    constructor(repository: IMatchingRepository) {
+    constructor(repository: IMatchingRepository, eventBus: IEventBus) {
         this.repository = repository;
+        this.eventBus = eventBus;
     }
 
     async run(request: UserLikedSomebodyDTO): Promise<Result<void>> {
@@ -25,8 +27,9 @@ export class UserLikedSomebodyCommand implements ICommand<UserLikedSomebodyDTO, 
                 return Result.failure<void>(new NotFoundError("Liked user not found"));
             }
 
-            const like = new Like(user, likedUser);
+            const like = user.like(likedUser);
             await this.repository.likeUser(like);
+            this.eventBus.publish(user.pullDomainEvents());
             return Result.success<void>(undefined);
         } catch (error : any) {
             return Result.failure<void>(error);

@@ -17,12 +17,11 @@ export class ChangeDegreeCommand implements ICommand<ChangeDegreeDTO, string | u
             if(!profile) {
                 return Result.failure<string | undefined>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
-            console.log(request)
+            
             profile.education = request.degree;
             await this.repository.update(profile, profile.getId());
             return Result.success<string | undefined>(request.degree);
         } catch (error: any) {
-            console.log(error);
             return Result.failure<string | undefined>(error);
         }
     }

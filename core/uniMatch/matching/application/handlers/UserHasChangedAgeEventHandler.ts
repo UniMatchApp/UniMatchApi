@@ -13,16 +13,13 @@ export class UserHasChangedAgeEventHandler implements IEventHandler {
     async handle(event: DomainEvent): Promise<void> {
         try {
             const eventPayload = event.getEventId()
-            console.log("eventPayload", eventPayload)
-            
             const userId = event.getAggregateId();
             const age = event.getPayload().get("age");
             
             if (!userId || !age) {
                 throw new EventError("User ID and Age is required to update a user's age.");
             }
-            
-            console.log("UserHasChangedAgeEventHandler", this.repository.findAll());
+         
             const user = await this.repository.findByUserId(userId);
 
             if (!user) {

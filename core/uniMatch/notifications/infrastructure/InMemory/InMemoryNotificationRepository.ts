@@ -40,13 +40,13 @@ export class InMemoryNotificationRepository implements INotificationsRepository 
 
     async findByTypeAndTypeId(type: string, typeId: string): Promise<Notification[]> {
         return Object.values(this.notifications).filter(
-            notification => notification.type === type && notification.contentId === typeId
+            notification => notification.payload.getType === type && notification.contentId === typeId
         );
     }
 
     async findLastNotificationByTypeAndTypeId(type: string, typeId: string): Promise<Notification | null> {
         return Object.values(this.notifications)
-            .filter(notification => notification.type === type && notification.contentId === typeId)
+            .filter(notification => notification.payload.getType === type && notification.contentId === typeId)
             .sort((a, b) => b.date.getTime() - a.date.getTime())[0] || null;
     }
 

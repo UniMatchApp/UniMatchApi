@@ -4,10 +4,12 @@ import {Notification} from "../../domain/Notification";
 import {DomainEvent} from "@/core/shared/domain/DomainEvent";
 import {IAppNotifications} from "../ports/IAppNotifications";
 import {
+    MessageDeletedUsersType,
     validateDeletedMessageStatusType,
     validateMessageContentStatusType,
-    validateMessageStatusType
+    validateMessageReceptionStatusType
 } from "@/core/shared/domain/MessageReceptionStatusEnum";
+import { EventError } from "@/core/shared/exceptions/EventError";
 
 export class NewMessageEventHandler implements IEventHandler {
     private readonly repository: INotificationsRepository;
@@ -27,37 +29,25 @@ export class NewMessageEventHandler implements IEventHandler {
             const receptionStatus: string | undefined = event.getPayload().get("receptionStatus");
             const deletedStatus: string | undefined = event.getPayload().get("deletedStatus");
             const id = event.getAggregateId();
-
+    
             if (!sender || !recipient) {
-                throw new ErrorEvent("Recipient and Sender are required to create a notification.");
+                throw new EventError("Recipient and Sender are required to create a notification.");
             }
-
+    
             if (!content) {
-                throw new ErrorEvent("Content is required to create a notification.");
+                throw new EventError("Content is required to create a notification.");
             }
-
-            if (!receptionStatus) {
-                throw new ErrorEvent("Status is required to create a notification.");
+    
+            if (!receptionStatus || validateMessageReceptionStatusType(receptionStatus) === false) {
+                throw new EventError("Reception status is not valid: " + receptionStatus);
             }
-
-            if (validateMessageStatusType(receptionStatus) === false) {
-                throw new ErrorEvent("Status value is not valid : " + receptionStatus);
+    
+            if (!contentStatus || validateMessageContentStatusType(contentStatus) === false) {
+                throw new EventError("Content status value is not valid: " + contentStatus);
             }
-
-            if (!contentStatus) {
-                throw new ErrorEvent("Content status is required to create a notification.");
-            }
-
-            if (validateMessageContentStatusType(contentStatus) === false) {
-                throw new ErrorEvent("Content status value is not valid : " + contentStatus);
-            }
-
-            if (!deletedStatus) {
-                throw new ErrorEvent("Deleted status is required to create a notification.");
-            }
-
-            if (validateDeletedMessageStatusType(deletedStatus) === false) {
-                throw new ErrorEvent("Deleted status value is not valid : " + deletedStatus);
+    
+            if (!deletedStatus || validateDeletedMessageStatusType(deletedStatus) === false) {
+                throw new EventError("Deleted status value is not valid: " + deletedStatus);
             }
 
             const notification = Notification.createMessageNotification(
@@ -68,14 +58,15 @@ export class NewMessageEventHandler implements IEventHandler {
                 sender,
                 contentStatus,
                 receptionStatus,
-                deletedStatus);
-
+                deletedStatus
+            );
+    
             await this.repository.create(notification);
             this.appNotifications.sendNotification(notification);
         } catch (error: any) {
             console.error(error);
         }
-    }
+    }    
 
     getEventId(): string {
         return "new-message";

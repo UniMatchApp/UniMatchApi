@@ -20,8 +20,7 @@ export class UserHasChangedGenderEventHandler implements IEventHandler {
             if (!userId || !gender) {
                 throw new EventError("User ID and Gender are required to update a user's gender.");
             }
-            
-            console.log("UserHasChangedGender event handled");
+
             const user = await this.repository.findByUserId(userId);
 
             if (!user) {

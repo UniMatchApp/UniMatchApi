@@ -77,13 +77,14 @@ export class WebSocketController {
 
             for (const client of clients) {
                 if (client.id !== userId) {
-                    ws.send(JSON.stringify({type: 'userOnline', userId: client.id}));
+                    if (client.socket.status) {
+                        client.socket.status.send(JSON.stringify({type: 'userOnline', userId}));
+                    }
                 }
             }
 
             ws.on('message', async (message: string) => {
                 const parsedMessage = JSON.parse(message);
-
                 switch (parsedMessage.type) {
                     case 'typing': {
                         const typingDTO: UserIsTypingDTO = {
@@ -96,9 +97,11 @@ export class WebSocketController {
                             if (targetId) {
                                 const targetClient = this.clientHandler.getClient(targetId);
                                 if (targetClient?.socket.status) {
-                                    targetClient.socket.status.send(JSON.stringify({type: 'typing', userId: targetId}));
+                                    targetClient.socket.status.send(JSON.stringify({type: 'typing', userId: userId}));
                                 }
                             }
+                        }else{
+                            console.error('Error:', command.getError());
                         }
                         break;
                     }
@@ -116,7 +119,7 @@ export class WebSocketController {
                                 if (targetClient?.socket.status) {
                                     targetClient.socket.status.send(JSON.stringify({
                                         type: 'stoppedTyping',
-                                        userId: targetId
+                                        userId: userId,
                                     }));
                                 }
                             }
@@ -133,7 +136,7 @@ export class WebSocketController {
                         const response = {
                             type: 'getUserStatus',
                             status: result.getValue(),
-                            userId: parsedMessage.targetId,
+                            userId: parsedMessage.targetUserId,
                         };
                         ws.send(JSON.stringify(response));
                         break;
@@ -154,7 +157,9 @@ export class WebSocketController {
                 const clients = this.clientHandler.getAllClients();
                 for (const client of clients) {
                     if (client.id !== userId) {
-                        ws.send(JSON.stringify({type: 'userOffline', userId: client.id}));
+                        if (client.socket.status) {
+                            client.socket.status.send(JSON.stringify({type: 'userOffline', userId}));
+                        }
                     }
                 }
             });

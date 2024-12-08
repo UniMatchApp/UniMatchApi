@@ -77,13 +77,13 @@ export class InMemoryMessageRepository implements IMessageRepository {
                     (message.sender === userId && message.recipient === otherUserId) ||
                     (message.sender === otherUserId && message.recipient === userId)
             )
-            .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+            .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     }
 
     async findLastMessagesOfUser(userId: string): Promise<Message[]> {
         return Object.values(this.messages)
             .filter(message => message.sender === userId || message.recipient === userId)
-            .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+            .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     }
 
     async findMessagesBetweenUsersPaginated(userId: string, otherUserId: string, after: number, limit: number): Promise<Message[]> {
@@ -93,7 +93,7 @@ export class InMemoryMessageRepository implements IMessageRepository {
                     (message.sender === userId && message.recipient === otherUserId) ||
                     (message.sender === otherUserId && message.recipient === userId)
             )
-            .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+            .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
             .slice(after, after + limit);
     }
 
@@ -101,7 +101,7 @@ export class InMemoryMessageRepository implements IMessageRepository {
         return Promise.resolve(
             Object.values(this.messages)
                 .filter(message => message.sender === userId || message.recipient === userId)
-                .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+                .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
                 .slice(after, after + limit)
         );
     }

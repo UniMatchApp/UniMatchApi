@@ -20,11 +20,8 @@ export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, string> {
     async run(request: UploadPhotoDTO): Promise<Result<string>> {
         try {
             const photo = request.attachment;
-
-            console.log(request)
             
             const photoUrl= await this.fileHandler.save(UUID.generate().toString(), photo);
-            console.log("PhotoURL", photoUrl)
             if (!photoUrl) {
                 return Result.failure<string>(new NullPointerError(`Photo url is null`));
             }
@@ -37,7 +34,6 @@ export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, string> {
             profile.addPost(photoUrl);
             await this.repository.update(profile, profile.getId());
 
-            console.log(profile.wall)
             return Result.success<string>(photoUrl);
         } catch (error: any) {
             return Result.failure<string>(error);

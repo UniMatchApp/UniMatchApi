@@ -56,7 +56,6 @@ export class TypeORMProfileRepository implements IProfileRepository {
         }
 
         const updatedEntity = ProfileMapper.toEntity(entity);
-        console.log("Updated Entity", updatedEntity);
         updatedEntity.id = id;
         await this.profileRepository.save(updatedEntity);
         return entity;

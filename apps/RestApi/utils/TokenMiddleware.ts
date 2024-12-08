@@ -20,8 +20,6 @@ export const validateAndRefreshToken = (req: Request, res: Response, next: NextF
         }
 
         req.body.userId = decoded.id;
-    
-
 
         next();
     } catch (error: any) {

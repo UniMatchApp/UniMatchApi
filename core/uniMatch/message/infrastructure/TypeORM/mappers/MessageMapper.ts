@@ -1,10 +1,8 @@
 import { Message } from '@/core/uniMatch/message/domain/Message';
-import { MessageEntity } from '../models/MessageEntity';
-import { MessageReceptionStatusType } from '@/core/shared/domain/MessageReceptionStatusEnum';
-import { TransformFromUndefinedToNull } from '@/core/shared/infrastructure/decorators/TransformFromUndefinedToNull';
+import {IMessageEntity, MessageEntity} from '@/core/uniMatch/message/infrastructure/TypeORM/models/MessageEntity';
 
 export class MessageMapper {
-    static toDomain(entity: MessageEntity): Message {
+    static toDomain(entity: IMessageEntity): Message {
         const message = new Message(
             entity.content,
             entity.sender,
@@ -12,25 +10,35 @@ export class MessageMapper {
             entity.attachment || undefined
         );
 
-        message.receptionStatus = entity.status;
-        message.timestamp = entity.timestamp;
-        message.setId(entity.id.toString());
-        message.deletedStatus = entity.deletedStatus;
+        message.receptionStatus = entity.receptionStatus;
+        message.contentStatus = entity.contentStatus;
+        message.createdAt = entity.createdAt;
+        message.updatedAt = entity.updatedAt;
+        message.setId(entity._id.toString());
+        message.deletedStatus = {
+            sender: entity.deletedStatusSender,
+            recipient: entity.deletedStatusRecipient
+        }
 
         return message;
     }
 
-    @TransformFromUndefinedToNull
-    static toEntity(domain: Message): MessageEntity {
-        const messageEntity = new MessageEntity();
-        messageEntity.id = domain.getId()
-        messageEntity.content = domain.content;
-        messageEntity.status = domain.receptionStatus as MessageReceptionStatusType;
-        messageEntity.deletedStatus = domain.deletedStatus;
-        messageEntity.timestamp = domain.timestamp;
-        messageEntity.sender = domain.sender;
-        messageEntity.recipient = domain.recipient;
-        messageEntity.attachment = domain.attachment;
+    static toEntity(domain: Message): any {
+        const messageEntity = new MessageEntity({
+            _id: domain.getId(),
+            content: domain.content,
+            receptionStatus: domain.receptionStatus,
+            contentStatus: domain.contentStatus,
+            deletedStatusSender: domain.deletedStatus.sender,
+            deletedStatusRecipient: domain.deletedStatus.recipient,
+            createdAt: domain.createdAt,
+            updatedAt: domain.updatedAt,
+            sender: domain.sender,
+            recipient: domain.recipient,
+            attachment: domain.attachment
+        });
+
+        messageEntity.toObject();
 
         return messageEntity;
     }

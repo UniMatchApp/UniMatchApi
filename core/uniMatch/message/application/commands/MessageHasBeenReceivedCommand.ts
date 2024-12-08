@@ -6,8 +6,9 @@ import { MessageContentStatusEnum, MessageDeletedStatusEnum, MessageReceptionSta
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { ValidationError } from "@/core/shared/exceptions/ValidationError";
 import { IEventBus } from "@/core/shared/application/IEventBus";
+import { MessageHasBeenReceivedDTO } from "../DTO/MessageHasBeenReceivedDTO";
 
-export class MessageHasBeenReadCommand implements ICommand<MessageHasBeenSeenDTO, void> {
+export class MessageHasBeenReceivedCommand implements ICommand<MessageHasBeenReceivedDTO, void> {
     private readonly repository: IMessageRepository;
     private readonly eventBus: IEventBus;
 
@@ -16,7 +17,7 @@ export class MessageHasBeenReadCommand implements ICommand<MessageHasBeenSeenDTO
         this.eventBus = eventBus;
     }
 
-    async run(request: MessageHasBeenSeenDTO): Promise<Result<void>> {
+    async run(request: MessageHasBeenReceivedDTO): Promise<Result<void>> {
         try {
             const message = await this.repository.findById(request.messageId);
             const userId = request.userId;
@@ -29,11 +30,11 @@ export class MessageHasBeenReadCommand implements ICommand<MessageHasBeenSeenDTO
                 return Result.failure<void>(new ValidationError('User is not the recipient of the message.'));
             }
 
-            if (message.receptionStatus === MessageReceptionStatusEnum.READ) {
-                return Result.failure<void>(new ValidationError('Message has already been read.'));
+            if (message.receptionStatus === MessageReceptionStatusEnum.RECEIVED) {
+                return Result.failure<void>(new ValidationError('Message has already been received.'));
             }
 
-            message.read(userId);
+            message.received(userId);
 
             await this.repository.update(message, message.getId());
             this.eventBus.publish(message.pullDomainEvents());

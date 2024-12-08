@@ -10,12 +10,12 @@ import {AppNotificationPayload} from "./entities/AppNotificationPayload";
 import {EventNotificationPayload} from "./entities/EventNotificationPayload";
 import {
     MessageContentStatusType,
+    MessageDeletedStatusEnum,
     MessageDeletedStatusType,
     MessageReceptionStatusType
 } from "@/core/shared/domain/MessageReceptionStatusEnum";
 
 export class Notification extends AggregateRoot {
-    private _type: NotificationTypeEnum;
     private _status: NotificationStatusType;
     private _contentId: string;
     private _payload: NotificationPayload;
@@ -24,14 +24,12 @@ export class Notification extends AggregateRoot {
 
     constructor(
         contentId: string,
-        type: NotificationTypeEnum,
         date: Date,
         recipient: string,
         payload: NotificationPayload
     ) {
         super();
         this._contentId = contentId;
-        this._type = type;
         this._status = NotificationStatusEnum.SENT;
         this._date = date;
         this._recipient = recipient;
@@ -46,7 +44,7 @@ export class Notification extends AggregateRoot {
         status: EventStatusType
     ): Notification {
         const payload = new EventNotificationPayload(contentId, title, status);
-        return new Notification(contentId, NotificationTypeEnum.EVENT, date, recipient, payload);
+        return new Notification(contentId, date, recipient, payload);
     }
 
     public static createMessageNotification(
@@ -61,7 +59,7 @@ export class Notification extends AggregateRoot {
         attachment?: string,
     ): Notification {
         const payload = new MessageNotificationPayload(contentId, content, sender, contentStatus, receptionStatus, deletedStatus, attachment);
-        return new Notification(contentId, NotificationTypeEnum.MESSAGE, date, recipient, payload);
+        return new Notification(contentId, date, recipient, payload);
     }
 
     public static createMatchNotification(
@@ -72,7 +70,7 @@ export class Notification extends AggregateRoot {
         isLiked: boolean
     ): Notification {
         const payload = new MatchNotificationPayload(contentId, userMatched, isLiked);
-        return new Notification(contentId, NotificationTypeEnum.MATCH, date, recipient, payload);
+        return new Notification(contentId, date, recipient, payload);
     }
 
     public static createAppNotification(
@@ -83,15 +81,7 @@ export class Notification extends AggregateRoot {
         description: string
     ): Notification {
         const payload = new AppNotificationPayload(contentId, title, description);
-        return new Notification(contentId, NotificationTypeEnum.APP, date, recipient, payload);
-    }
-
-    public get type(): NotificationTypeEnum {
-        return this._type;
-    }
-
-    public set type(value: NotificationTypeEnum) {
-        this._type = value;
+        return new Notification(contentId, date, recipient, payload);
     }
 
     public get status(): string {

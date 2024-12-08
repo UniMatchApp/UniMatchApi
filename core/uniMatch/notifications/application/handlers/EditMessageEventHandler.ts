@@ -4,11 +4,13 @@ import {IAppNotifications} from "../ports/IAppNotifications";
 import {
     MessageContentStatusEnum,
     MessageDeletedStatusEnum,
+    MessageDeletedUsersType,
     MessageReceptionStatusEnum
 } from "@/core/shared/domain/MessageReceptionStatusEnum";
 import { Notification } from "../../domain/Notification";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { NotificationTypeEnum } from "../../domain/enum/NotificationTypeEnum";
+import { de } from "@faker-js/faker/.";
 
 
 export class EditMessageEventHandler implements IEventHandler {
@@ -22,14 +24,21 @@ export class EditMessageEventHandler implements IEventHandler {
 
     async handle(event: DomainEvent): Promise<void> {
         try {
-            const messageId = event.getPayload().get("messageId");
+            const messageId = event.getAggregateId();
             const newContent = event.getPayload().get("newContent");
-            const recipient = event.getAggregateId();
+            const recipient = event.getPayload().get("recipient");
             const sender = event.getPayload().get("sender");
             const attachment = event.getPayload().get("attachment");
+            const contentStatus = event.getPayload().get("contentStatus");
+            const receptionStatus = event.getPayload().get("receptionStatus");
+            const deletedStatus = event.getPayload().get("deletedStatus");
 
             if (!messageId || !newContent || !recipient) {
                 throw new ErrorEvent("Recipient, MessageID and new content are required to edit a message.");
+            }
+
+            if (!contentStatus || !receptionStatus || !deletedStatus) {
+                throw new ErrorEvent("Content status, reception status and deleted status are required to edit a message.");
             }
 
             if (!sender) {
@@ -48,9 +57,9 @@ export class EditMessageEventHandler implements IEventHandler {
                 recipient,
                 newContent,
                 sender,
-                MessageContentStatusEnum.EDITED,
-                MessageReceptionStatusEnum.SENT,
-                MessageDeletedStatusEnum.NOT_DELETED,
+                contentStatus as MessageContentStatusEnum,
+                receptionStatus as MessageReceptionStatusEnum,
+                deletedStatus as MessageDeletedStatusEnum,
                 attachment);
             
             await this.repository.create(notification);
@@ -62,6 +71,6 @@ export class EditMessageEventHandler implements IEventHandler {
     }
 
     getEventId(): string {
-        return "edit-message";
+        return "edited-message";
     }
 }

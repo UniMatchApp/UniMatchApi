@@ -29,7 +29,6 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
 
     async run(request: CreateNewProfileDTO): Promise<Result<Profile>> {
         try {
-            console.log("Request", request);
             const user = await this.userRepository.findById(request.userId);
 
             if (!user) {
@@ -42,12 +41,8 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
 
             const profileUrl = await this.fileHandler.save(UUID.generate().toString(), request.attachment);
 
-            console.log("ProfileUrl", profileUrl);
-
-            console.log("Location request", request.latitude);
             const location = request.latitude && request.longitude  ? new Location(request.latitude, request.longitude) : undefined
  
-            console.log("Location", location);
             const profile = new Profile(
                 request.userId,
                 request.name,
@@ -70,10 +65,8 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
 
             this.eventBus.publish(user.pullDomainEvents());
             this.eventBus.publish(profile.pullDomainEvents())
-            console.log("Events bus", this.eventBus)
             return Result.success<Profile>(profile);
         } catch (error: any) {
-            console.log(error);
             return Result.failure<Profile>(error);
         }
     }

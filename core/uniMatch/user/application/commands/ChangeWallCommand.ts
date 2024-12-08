@@ -13,7 +13,6 @@ export class ChangeWallCommand implements ICommand<ChangeWallDTO, string[]> {
 
     async run(request: ChangeWallDTO): Promise<Result<string[]>> {
         try {
-            console.log(request)
             const profile = await this.repository.findByUserId(request.id)
 
             
@@ -30,7 +29,6 @@ export class ChangeWallCommand implements ICommand<ChangeWallDTO, string[]> {
             return Result.success<string[]>(request.newContent);
 
         } catch (error: any) {
-            console.log(error)
             return Result.failure<string[]>(error);
         }
     }

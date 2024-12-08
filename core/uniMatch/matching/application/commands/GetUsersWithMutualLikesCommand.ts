@@ -14,9 +14,8 @@ export class GetUsersWithMutualLikesCommand implements ICommand<GetUsersWithMutu
 
     async run(request: GetUsersWithMutualLikesDTO): Promise<Result<string[]>> {
         try {
-            console.log("Request", request.userId);
             const user: Node | undefined = await this.matchingRepository.findByUserId(request.userId);
-            console.log("User: ", user);
+
             if (!user) {
                 return Result.failure<string[]>(new NotFoundError("User not found"));
             }
@@ -29,7 +28,7 @@ export class GetUsersWithMutualLikesCommand implements ICommand<GetUsersWithMutu
 
             return Result.success<string[]>(mutualLikes.map((node: Node) => node.userId));
         } catch (error: any) {
-            console.log("Error: ", error);
+            console.error(error);
             return Result.failure<string[]>(error);
         }
     }

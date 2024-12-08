@@ -22,7 +22,6 @@ export class GetProfileCommand implements ICommand<GetProfileDTO, ProfileDTO> {
                 ProfileDTO.fromProfile(profile)
             );
         } catch (error: any) {
-            console.log(error);
             return Result.failure<ProfileDTO>(error);
         }
     }

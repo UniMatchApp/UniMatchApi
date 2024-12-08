@@ -1,21 +1,20 @@
-import { DataSource } from 'typeorm';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import path from 'path';
-import { MessageEntity } from './models/MessageEntity';
 
 const envFilePath = path.resolve(__dirname, 'message.env');
 dotenv.config({ path: envFilePath });
 
-const AppDataSource = new DataSource({
-    type: 'mongodb',
-    url: process.env.MESSAGE_DB_HOST || 'localhost',
-    port: parseInt(process.env.MESSAGE_DB_PORT || '27017', 10),
-    database: process.env.MESSAGE_DB_NAME || 'mydatabase',
-    synchronize: false,
-    entities: [MessageEntity],
-    logging: process.env.MESSAGE_DB_LOGGING === 'true',
-    useUnifiedTopology: process.env.MESSAGE_DB_USE_UNIFIED_TOPOLOGY === 'true',
-});
+const connectToDatabase = async () => {
+    const mongoUri = process.env.MESSAGE_DB_HOST || 'mongodb://localhost:27017/mydatabase'; // Usando directamente el URI de conexión
 
+    try {
+        await mongoose.connect(mongoUri);
+        console.log('Data Source has been initialized for Message');
+    } catch (error) {
+        console.error('Error connecting to the database', error);
+        throw error;
+    }
+};
 
-export default AppDataSource;
+export default connectToDatabase;

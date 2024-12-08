@@ -18,10 +18,9 @@ export class ChangeFactCommand implements ICommand<ChangeFactDTO, string | undef
             if(!profile) {
                 return Result.failure<string | undefined>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
-            console.log(request.newContent);
-            
+          
             profile.fact = request.newContent;
-            console.log(profile.fact);
+
             await this.repository.update(profile, profile.getId());
             return Result.success<string | undefined>(request.newContent);
         } catch (error: any) {

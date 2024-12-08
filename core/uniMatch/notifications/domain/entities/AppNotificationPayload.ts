@@ -1,3 +1,4 @@
+import { NotificationTypeEnum } from "../enum/NotificationTypeEnum";
 import { NotificationPayload } from "../NotificationPayload";
 
 export class AppNotificationPayload extends NotificationPayload {
@@ -5,7 +6,8 @@ export class AppNotificationPayload extends NotificationPayload {
     private _description: string;
 
     constructor(id: string, title: string, description: string) {
-        super(id);
+        const type = NotificationTypeEnum.APP;
+        super(id, type);
         this._title = title;
         this._description = description;
     }

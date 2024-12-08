@@ -22,7 +22,6 @@ export class DeleteUserCommand implements ICommand<DeleteUserDTO, void> {
         try {
             
             const user = await this.repository.findById(request.userId)
-            console.log("User", user);
             if(!user) {
                 return Result.failure<void>(new NotFoundError(`User with id ${request.userId} not found`));
             }
@@ -39,7 +38,6 @@ export class DeleteUserCommand implements ICommand<DeleteUserDTO, void> {
             this.eventBus.publish(user.pullDomainEvents());
             return Result.success<void>(undefined);
         } catch (error : any) {
-            console.log(error);
             return Result.failure<void>(error);
         }
     }

@@ -3,7 +3,7 @@ import {UserDislikedSomebodyCommand} from '@/core/uniMatch/matching/application/
 import {UserDislikedSomebodyDTO} from '@/core/uniMatch/matching/application/DTO/userDislikedSomebodyDTO';
 import {ErrorHandler} from '../../utils/ErrorHandler';
 import {Result} from "@/core/shared/domain/Result";
-import { UserLikedSomebodyCommand } from '@/core/uniMatch/matching/application/commands/UserLikedSomebodyCommand';
+import {UserLikedSomebodyCommand} from '@/core/uniMatch/matching/application/commands/userLikedSomebodyCommand';
 import {UserLikedSomebodyDTO} from '@/core/uniMatch/matching/application/DTO/userLikedSomebodyDTO';
 import {IEventBus} from '@/core/shared/application/IEventBus';
 import {IMatchingRepository} from "@/core/uniMatch/matching/application/ports/IMatchingRepository";
@@ -31,7 +31,7 @@ export class MatchingController {
     async userDislikedSomebody(req: Request, res: Response): Promise<void> {
         const userId = req.body.userId;
         const dislikedUserId = req.params.dislikedUserId;
-        const command = new UserDislikedSomebodyCommand(this.matchingRepository);
+        const command = new UserDislikedSomebodyCommand(this.matchingRepository, this.eventBus);
         const dto = {userId: userId, dislikedUserId: dislikedUserId} as UserDislikedSomebodyDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
@@ -46,7 +46,7 @@ export class MatchingController {
     async userLikedSomebody(req: Request, res: Response): Promise<void> {
         const userId = req.body.userId;
         const likedUserId = req.params.likedUserId;
-        const command = new UserLikedSomebodyCommand(this.matchingRepository);
+        const command = new UserLikedSomebodyCommand(this.matchingRepository, this.eventBus);
         const dto = {userId: userId, likedUserId: likedUserId} as UserLikedSomebodyDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {

@@ -1,4 +1,5 @@
 // SessionStatusRepository.ts
+import { ne } from '@faker-js/faker/.';
 import {SessionStatus} from '../../../domain/SessionStatus';
 import client from '../Config';
 import {ISessionStatusRepository} from "@/core/uniMatch/status/application/ports/ISessionStatusRepository";
@@ -29,7 +30,11 @@ export class RedisSessionStatusRepository implements ISessionStatusRepository {
     async findById(id: string): Promise<SessionStatus | null> {
         const key = `${this.redisPrefix}${id}`;
         const data = await client.get(key);
-        return data ? JSON.parse(data) : null;
+        if (!data) {
+            return null;
+        }
+        const parsedData = JSON.parse(data);
+        return new SessionStatus(parsedData._userId, parsedData._status, parsedData._targetUser);
     }
 
     async findAll(): Promise<SessionStatus[]> {

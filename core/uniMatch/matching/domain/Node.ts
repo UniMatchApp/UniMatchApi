@@ -2,6 +2,11 @@ import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
 import { Gender } from "@/core/shared/domain/Gender";
 import { Location } from "@/core/shared/domain/Location";
 import { RelationshipType } from "@/core/shared/domain/RelationshipType";
+import { Like } from "./relations/Like";
+import { th } from "@faker-js/faker/.";
+import { NewLike } from "./events/NewLike";
+import { Dislike } from "./relations/Dislike";
+import { NewDislike } from "./events/NewDislike";
 
 export class Node extends AggregateRoot {
     private _age: number;
@@ -98,5 +103,17 @@ export class Node extends AggregateRoot {
     public set gender(value: Gender) {
         this._gender = value;
     }
+
+    public like(node: Node): Like {
+        const like = new Like(this, node);
+        this.recordEvent(NewLike.from(this.getId().toString(), this, node));
+        return like;
+    }
+
+    public dislike(node: Node): Dislike {
+        const dislike = new Dislike(this, node);
+        this.recordEvent(NewDislike.from(this.getId().toString(), this, node));
+        return dislike;
+    } 
 
 }

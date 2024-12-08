@@ -47,7 +47,7 @@ export class DeletedMessageEventHandler implements IEventHandler {
                 sender,
                 MessageContentStatusEnum.NOT_EDITED,
                 MessageReceptionStatusEnum.SENT,
-                MessageDeletedStatusEnum.NOT_DELETED,
+                MessageDeletedStatusEnum.DELETED,
                 undefined);
 
             this.appNotifications.sendNotification(notification);

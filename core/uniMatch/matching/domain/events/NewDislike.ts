@@ -1,18 +1,18 @@
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { Node } from "../Node";
 
-export class NewLike extends DomainEvent {
+export class NewDislike extends DomainEvent {
     constructor(aggregateId: string, user: string, target: string) {
-        super(aggregateId, "new-like");
+        super(aggregateId, "new-dislike");
         this.getPayload().set("user", user);
         this.getPayload().set("target", target);
     }
 
-    public static from(aggregateId: string, user: Node, target: Node): NewLike {
-        return new NewLike(
+    public static from(aggregateId: string, user: Node, target: Node): NewDislike {
+        return new NewDislike(
             aggregateId,
-            user.getId().toString(),
-            target.getId().toString()
+            user.userId,
+            target.userId
         );
     }
 }

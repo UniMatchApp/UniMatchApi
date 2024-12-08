@@ -1,3 +1,4 @@
+import { NotificationTypeEnum } from "../enum/NotificationTypeEnum";
 import { NotificationPayload } from "../NotificationPayload";
 
 export class MatchNotificationPayload extends NotificationPayload {
@@ -5,7 +6,8 @@ export class MatchNotificationPayload extends NotificationPayload {
     private _isLiked: boolean;
 
     constructor(id: string, userMatched: string, isLiked: boolean) {
-        super(id);
+        const type = NotificationTypeEnum.MATCH;
+        super(id, type);
         this._userMatched = userMatched;
         this._isLiked = isLiked;
     }

@@ -19,15 +19,12 @@ export class ChangeSmokesCommand implements ICommand<ChangeLifeStyleDTO, string 
             if(!profile) {
                 return Result.failure<string | undefined>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
-
-            console.log(request);
             
             profile.smokes = habitsFromString(request.newContent);
 
             await this.repository.update(profile, profile.getId());
             return Result.success<string | undefined>(request.newContent);
         } catch (error: any) {
-            console.log(error);
             return Result.failure<string | undefined>(error);
         }
     }
