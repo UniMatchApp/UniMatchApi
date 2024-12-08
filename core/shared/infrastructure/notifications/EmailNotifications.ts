@@ -30,11 +30,20 @@ export class EmailNotifications implements IEmailNotifications {
     }
 
     async sendEmailToOne(to: string, subject: string, body: string, attachments?: string[]): Promise<void> {
+        const htmlBody = `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <h2 style="color: #4CAF50;">${subject}</h2>
+                <p>${body}</p>
+                <footer style="margin-top: 20px; font-size: 0.9em; color: #777;">
+                    <p>Este mensaje fue enviado desde <strong>${process.env.EMAIL_USER}</strong></p>
+                </footer>
+            </div>
+        `;
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to,
             subject,
-            text: body,
+            html: htmlBody,
             attachments: attachments ? attachments.map(file => ({ path: file })) : [],
         };
 
@@ -47,11 +56,21 @@ export class EmailNotifications implements IEmailNotifications {
     }
 
     async sendEmailToMany(to: string[], subject: string, body: string, attachments?: string[]): Promise<void> {
+        const htmlBody = `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <h2 style="color: #4CAF50;">${subject}</h2>
+                <p>${body}</p>
+                <footer style="margin-top: 20px; font-size: 0.9em; color: #777;">
+                    <p>Este mensaje fue enviado desde <strong>${process.env.EMAIL_USER}</strong></p>
+                </footer>
+            </div>
+        `;
+
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: to.join(','),
             subject,
-            text: body,
+            html: htmlBody,
             attachments: attachments ? attachments.map(file => ({ path: file })) : [],
         };
 
