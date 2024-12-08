@@ -7,6 +7,7 @@ export class EditedMessageEvent extends DomainEvent {
         aggregateId: string, 
         newContent: string, 
         sender: string,
+        recipient: string,
         contentStatus: MessageContentStatusEnum,
         receptionStatus: MessageReceptionStatusEnum,
         deletedStatus: MessageDeletedStatusEnum,
@@ -15,6 +16,7 @@ export class EditedMessageEvent extends DomainEvent {
         super(aggregateId, "edited-message");
         this.getPayload().set("newContent", newContent);
         this.getPayload().set("sender", sender);
+        this.getPayload().set("recipient", recipient);
         if (attachment) {
             this.getPayload().set("attachment", attachment);
         }
@@ -28,6 +30,7 @@ export class EditedMessageEvent extends DomainEvent {
             message.getId().toString(),
             message.content,
             message.sender,
+            message.recipient,
             message.contentStatus as MessageContentStatusEnum,
             message.receptionStatus as MessageReceptionStatusEnum,
             message.deletedStatus as MessageDeletedStatusEnum,

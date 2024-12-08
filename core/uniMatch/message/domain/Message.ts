@@ -131,6 +131,11 @@ export class Message extends AggregateRoot {
         this.recordEvent(EditedMessageEvent.from(this));
     }
 
+    public received(): void {
+        this.receptionStatus = MessageReceptionStatusEnum.RECEIVED
+        this.recordEvent(EditedMessageEvent.from(this));
+    }
+
     public send(): void {
         this.recordEvent(NewMessageEvent.from(this));
     }

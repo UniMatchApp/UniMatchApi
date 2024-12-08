@@ -22,5 +22,7 @@ router.get('/user/:targetId',  validateAndRefreshToken, messageController.retrie
 router.get('/paginated/:targetId',  validateAndRefreshToken, messageController.retrieveMessagesWithUserPaginated.bind(messageController));
 router.get('/last',  validateAndRefreshToken, messageController.retrieveUserLastMessages.bind(messageController));
 router.put('/:messageId', validateAndRefreshToken,  fileUploadMiddleware, messageController.updateMessage.bind(messageController));
+router.post('/received/:messageId', validateAndRefreshToken, messageController.messageHasBeenReceived.bind(messageController));
+
 
 export {router};

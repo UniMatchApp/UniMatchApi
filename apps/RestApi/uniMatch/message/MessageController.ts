@@ -38,6 +38,8 @@ import {
 } from "@/core/uniMatch/message/application/commands/RetrieveMessagesFromUserPaginatedCommand";
 import {MessageDTO} from "@/core/uniMatch/message/application/DTO/MessageDTO";
 import {IFileHandler} from "@/core/shared/application/IFileHandler";
+import { MessageHasBeenReceivedCommand } from '@/core/uniMatch/message/application/commands/MessageHasBeenReceivedCommand';
+import { MessageHasBeenReceivedDTO } from '@/core/uniMatch/message/application/DTO/MessageHasBeenReceivedDTO';
 
 
 export class MessageController {
@@ -189,6 +191,21 @@ export class MessageController {
         const command = new UpdateMessageCommand(this.messageRepository, this.eventBus, this.fileHandler);
         const dto = {messageId: messageId, userId: userId, ...req.body} as UpdateMessageDTO;
         return command.run(dto).then((result: Result<MessageDTO>) => {
+            if (result.isSuccess()) {
+                res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async messageHasBeenReceived(req: Request, res: Response): Promise<void> {
+        const messageId = req.params.messageId;
+        const userId = req.body.userId;
+        const command = new MessageHasBeenReceivedCommand(this.messageRepository, this.eventBus);
+        const dto = {messageId: messageId, userId: userId} as MessageHasBeenReceivedDTO;
+        return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {

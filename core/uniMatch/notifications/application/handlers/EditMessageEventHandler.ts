@@ -22,16 +22,14 @@ export class EditMessageEventHandler implements IEventHandler {
 
     async handle(event: DomainEvent): Promise<void> {
         try {
-            const messageId = event.getPayload().get("messageId");
+            const messageId = event.getAggregateId();
             const newContent = event.getPayload().get("newContent");
-            const recipient = event.getAggregateId();
+            const recipient = event.getPayload().get("recipient");
             const sender = event.getPayload().get("sender");
             const attachment = event.getPayload().get("attachment");
             const contentStatus = event.getPayload().get("contentStatus");
             const receptionStatus = event.getPayload().get("receptionStatus");
             const deletedStatus = event.getPayload().get("deletedStatus");
-
-            console.log("EditMessageEventHandler: ", messageId, newContent, recipient, sender, contentStatus, receptionStatus, deletedStatus);
 
             if (!messageId || !newContent || !recipient) {
                 throw new ErrorEvent("Recipient, MessageID and new content are required to edit a message.");
@@ -71,6 +69,6 @@ export class EditMessageEventHandler implements IEventHandler {
     }
 
     getEventId(): string {
-        return "edit-message";
+        return "edited-message";
     }
 }

@@ -5,6 +5,7 @@ import { NotificationMapper } from '../mappers/NotificationMapper';
 import { NotificationEntity } from '../models/NotificationEntity';
 import { NotificationTypeEnum } from '../../../domain/enum/NotificationTypeEnum';
 import {Repository} from "typeorm";
+import { Raw } from 'typeorm';
 
 export class TypeORMNotificationRepository implements INotificationsRepository {
     private readonly notificationRepository: Repository<NotificationEntity>;
@@ -26,31 +27,36 @@ export class TypeORMNotificationRepository implements INotificationsRepository {
         type: NotificationTypeEnum,
         typeId: string
     ): Promise<Notification | null> {
-        const entity = await this.notificationRepository
-            .createQueryBuilder('notification')
-            .where('notification.payload ->> "type" = :type', { type })
-            .andWhere('notification.contentId = :typeId', { typeId })
-            .orderBy('notification.date', 'DESC')
-            .getOne();
+        const entity = await this.notificationRepository.findOne({
+            where: {
+                contentId: typeId,
+                payload: Raw((alias) => `${alias} ->> 'type' = :type`, { type }),
+            },
+            order: { date: 'DESC' },
+        });
     
         return entity ? NotificationMapper.toDomain(entity) : null;
     }
+    
 
     async deleteAllNotificationsByRecipient(recipient: string): Promise<void> {
         await this.notificationRepository.delete({ recipient });
     }
 
-    async findByTypeAndTypeId(type: NotificationTypeEnum, typeId: string): Promise<Notification[]> {
-        const entities = await this.notificationRepository
-            .createQueryBuilder('notification')
-            .where('notification.payload ->> "type" = :type', { type })
-            .andWhere('notification.contentId = :typeId', { typeId })
-            .getMany();
+    async findByTypeAndTypeId(
+        type: NotificationTypeEnum,
+        typeId: string
+    ): Promise<Notification[]> {
+        const entities = await this.notificationRepository.find({
+            where: {
+                contentId: typeId,
+                payload: Raw((alias) => `${alias} ->> 'type' = :type`, { type }),
+            },
+        });
     
         return entities.map(NotificationMapper.toDomain);
     }
     
-
     async create(notification: Notification): Promise<void> {
         const notificationEntity = NotificationMapper.toEntity(notification);
         await this.notificationRepository.save(notificationEntity);

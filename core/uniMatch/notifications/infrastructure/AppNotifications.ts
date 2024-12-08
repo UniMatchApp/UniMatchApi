@@ -26,15 +26,6 @@ export class AppNotifications implements IAppNotifications {
             recipient: notification.recipient
         }));
 
-        console.log("Notification " +JSON.stringify({
-            id: notification.getId(),
-            contentId: notification.contentId,
-            status: notification.status,
-            date: notification.date,
-            payload: notification.payload,
-            recipient: notification.recipient
-        }) + " sent to user: ", notification.recipient)
-
     }
 
     async sendNotificationToMany(notifications: Notification[]): Promise<void> {
