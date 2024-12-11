@@ -85,6 +85,8 @@ import { UserHasChangedAgeRangeEventHandler } from "@/core/uniMatch/matching/app
 import { UserHasChangedGenderEventHandler } from "@/core/uniMatch/matching/application/handlers/UserHasChangedGenderEventHandler";
 import { NewUser } from "@/core/uniMatch/user/domain/events/NewUser";
 import { UserHasDeletedAccountHandler } from "@/core/uniMatch/matching/application/handlers/UserHasDeletedAccountHandler";
+import { ReadMessageEventHandler } from "@/core/uniMatch/notifications/application/handlers/ReadMessageEventHandler";
+import { ReceivedMessageEventHandler } from "@/core/uniMatch/notifications/application/handlers/ReceivedMessageEventHandler";
 
 export class DependencyContainer {
 
@@ -167,6 +169,8 @@ export class DependencyContainer {
     subscribeHandlers(){
         this.eventBus.subscribe(new NewMessageEventHandler(this.notificationsRepository, this.appNotifications));
         this.eventBus.subscribe(new EditMessageEventHandler(this.appNotifications, this.notificationsRepository));
+        this.eventBus.subscribe(new ReadMessageEventHandler(this.appNotifications, this.notificationsRepository));
+        this.eventBus.subscribe(new ReceivedMessageEventHandler(this.appNotifications, this.notificationsRepository));
         this.eventBus.subscribe(new DeletedMessageEventHandler(this.appNotifications, this.notificationsRepository));
         this.eventBus.subscribe(new EventIsDeletedEventHandler(this.notificationsRepository, this.appNotifications));
         this.eventBus.subscribe(new EventIsGoingToExpireEventHandler(this.notificationsRepository, this.appNotifications));
