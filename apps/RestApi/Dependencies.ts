@@ -87,6 +87,10 @@ import { NewUser } from "@/core/uniMatch/user/domain/events/NewUser";
 import { UserHasDeletedAccountHandler } from "@/core/uniMatch/matching/application/handlers/UserHasDeletedAccountHandler";
 import { ReadMessageEventHandler } from "@/core/uniMatch/notifications/application/handlers/ReadMessageEventHandler";
 import { ReceivedMessageEventHandler } from "@/core/uniMatch/notifications/application/handlers/ReceivedMessageEventHandler";
+import { DriveFileHandler } from "@/core/shared/infrastructure/fileHandler/DriveFileHandler";
+import { OAuth2Client } from "google-auth-library";
+import { google } from "googleapis";
+import path from "path";
 
 export class DependencyContainer {
 
@@ -130,7 +134,17 @@ export class DependencyContainer {
     }
     
     private createFileHandler(): IFileHandler {
-        return new FileHandler(this.server_url, this.server_port);
+        // const oauth2Client = new OAuth2Client('YOUR_CLIENT_ID', 'YOUR_CLIENT_SECRET', 'YOUR_REDIRECT_URL');
+        const keyFilePath = path.join(__dirname, 'credentials.json');
+        const scopes = ['https://www.googleapis.com/auth/drive.file'];
+
+        const auth = new google.auth.GoogleAuth({
+            keyFile: keyFilePath,
+            scopes: scopes
+        });
+
+        return new DriveFileHandler(auth);
+        // return new FileHandler(this.server_url, this.server_port);
     }
 
     private createSessionStatusRepository(): ISessionStatusRepository {

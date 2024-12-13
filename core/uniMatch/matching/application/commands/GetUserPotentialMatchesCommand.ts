@@ -15,6 +15,7 @@ export class GetUserPotentialMatchesCommand implements ICommand<GetUserPotential
 
     async run(request: GetUserPotentialMatchesDTO): Promise<Result<string[]>> {
         try {
+            console.log('Getting potential matches for user:', request.userId);
             const user = await this.repository.findByUserId(request.userId);
 
             if (!user) {

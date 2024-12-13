@@ -27,7 +27,7 @@ export class GetAllNotificationsCommand implements ICommand<GetAllNotificationsD
 
             return Result.success<NotificationDTO[]>(notificationDTOs);
         } catch (error: any) {
-            console.error(error);
+            console.log("notificaciones error: ", error);
             return Result.failure<NotificationDTO[]>(error);
         }
     }
