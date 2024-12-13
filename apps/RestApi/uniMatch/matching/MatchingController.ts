@@ -72,6 +72,7 @@ export class MatchingController {
     }
 
     async getUserPotentialMatches(req: Request, res: Response): Promise<void> {
+        console.log("GET USER POTENTIAL MATCHES");
         const userId = req.body.userId;
         const limit = Number(req.params.limit);
         const dto = {userId: userId, limit: limit} as GetUserPotentialMatchesDTO;
