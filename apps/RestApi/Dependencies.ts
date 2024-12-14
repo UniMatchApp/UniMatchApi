@@ -28,8 +28,8 @@ import {
 } from "@/core/uniMatch/user/infrastructure/TypeORM/repositories/TypeORMProfileRepository";
 import {EmailNotifications} from "@/core/shared/infrastructure/notifications/EmailNotifications";
 import {
-    TypeORMNotificationRepository
-} from "@/core/uniMatch/notifications/infrastructure/TypeORM/repositories/TypeORMNotificationRepository";
+    MongooseNotificationRepository
+} from "@/core/uniMatch/notifications/infrastructure/TypeORM/repositories/MongooseNotificationRepository";
 import {
     MongooseMessageRepository
 } from "@/core/uniMatch/message/infrastructure/TypeORM/repositories/MongooseMessageRepository";
@@ -164,7 +164,7 @@ export class DependencyContainer {
     }
 
     private createNotificationsRepository(): INotificationsRepository {
-        return this.useMocks ? new InMemoryNotificationRepository() : new TypeORMNotificationRepository();
+        return this.useMocks ? new InMemoryNotificationRepository() : new MongooseNotificationRepository();
     }
 
     private createEmailNotifications(): IEmailNotifications {
@@ -177,6 +177,15 @@ export class DependencyContainer {
 
     private createProfileRepository(): IProfileRepository {
         return this.useMocks ? new InMemoryProfileRepository() : new TypeORMProfileRepository();
+    }
+
+    private async logUserNotifications(userId: string): Promise<void> {
+        try {
+            const notifications = await this.notificationsRepository.getAllNotifications(userId);
+            console.log(`Notifications for user ${userId}:`, notifications);
+        } catch (error) {
+            console.error(`Failed to get notifications for user ${userId}:`, error);
+        }
     }
 
 

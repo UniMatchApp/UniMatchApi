@@ -1,38 +1,56 @@
-import {Notification} from '../../../domain/Notification';
-import {NotificationTypeEnum} from '../../../domain/enum/NotificationTypeEnum';
-import {NotificationEntity} from '../models/NotificationEntity';
-import {NotificationStatusEnumFromString} from '../../../domain/enum/NotificationStatusEnum';
-import {NotificationPayload} from '../../../domain/NotificationPayload';
-import {EventNotificationPayload} from '../../../domain/entities/EventNotificationPayload';
-import {MessageNotificationPayload} from '../../../domain/entities/MessageNotificationPayload';
-import {MatchNotificationPayload} from '../../../domain/entities/MatchNotificationPayload';
-import {AppNotificationPayload} from '../../../domain/entities/AppNotificationPayload';
-import {MapperError} from '@/core/shared/exceptions/MapperError';
-import {ObjectId} from 'mongodb';
+import { Notification } from '../../../domain/Notification';
+import { NotificationTypeEnum } from '../../../domain/enum/NotificationTypeEnum';
+import { INotificationEntity, NotificationEntity } from '../models/NotificationEntity';
+import { NotificationStatusEnumFromString } from '../../../domain/enum/NotificationStatusEnum';
+import { NotificationPayload } from '../../../domain/NotificationPayload';
+import { EventNotificationPayload } from '../../../domain/entities/EventNotificationPayload';
+import { MessageNotificationPayload } from '../../../domain/entities/MessageNotificationPayload';
+import { MatchNotificationPayload } from '../../../domain/entities/MatchNotificationPayload';
+import { AppNotificationPayload } from '../../../domain/entities/AppNotificationPayload';
+import { MapperError } from '@/core/shared/exceptions/MapperError';
 
 export class NotificationMapper {
-    static toDomain(entity: NotificationEntity): Notification {
+    static toDomain(entity: INotificationEntity): Notification {
         let payload: NotificationPayload | undefined;
 
         switch (entity.payload.type) {
             case NotificationTypeEnum.EVENT:
                 const eventPayload = entity.payload as EventNotificationPayload;
-                payload = new EventNotificationPayload(entity.contentId, eventPayload.title, eventPayload.status);
+                payload = new EventNotificationPayload(
+                    entity.contentId,
+                    eventPayload.title,
+                    eventPayload.status
+                );
                 break;
             case NotificationTypeEnum.MESSAGE:
                 const messagePayload = entity.payload as MessageNotificationPayload;
-                payload = new MessageNotificationPayload(entity.contentId, messagePayload.content, messagePayload.sender, messagePayload.contentStatus, messagePayload.receptionStatus, messagePayload.deletedStatus, messagePayload.attachment);
+                payload = new MessageNotificationPayload(
+                    entity.contentId,
+                    messagePayload.content,
+                    messagePayload.sender,
+                    messagePayload.contentStatus,
+                    messagePayload.receptionStatus,
+                    messagePayload.deletedStatus,
+                    messagePayload.attachment
+                );
                 break;
             case NotificationTypeEnum.MATCH:
                 const matchPayload = entity.payload as MatchNotificationPayload;
-                payload = new MatchNotificationPayload(entity.contentId, matchPayload.userMatched, matchPayload.isLiked);
+                payload = new MatchNotificationPayload(
+                    entity.contentId,
+                    matchPayload.userMatched,
+                    matchPayload.isLiked
+                );
                 break;
             case NotificationTypeEnum.APP:
                 const appPayload = entity.payload as AppNotificationPayload;
-                payload = new AppNotificationPayload(entity.contentId, appPayload.title, appPayload.description);
+                payload = new AppNotificationPayload(
+                    entity.contentId,
+                    appPayload.title,
+                    appPayload.description
+                );
                 break;
             default:
-                console.log(entity.payload.getType);
                 throw new MapperError('Unknown notification type');
         }
 
@@ -47,54 +65,60 @@ export class NotificationMapper {
             payload
         );
 
-        notification.setId(entity.entityId);
+        notification.setId(entity._id);
         notification.status = entity.status;
-      
+
         return notification;
     }
 
-    static toEntity(notification: Notification): NotificationEntity {
-        const entity = new NotificationEntity();
+    static toEntity(notification: Notification): INotificationEntity {
         const status = NotificationStatusEnumFromString(notification.status);
 
-        entity.entityId = notification.getId();
-        entity.contentId = notification.contentId;
-        entity.status = status;
-        entity.date = notification.date;
-        entity.recipient = notification.recipient;
+        const payload: NotificationPayload = (() => {
+            switch (notification.payload.getType) {
+                case NotificationTypeEnum.EVENT:
+                    return new EventNotificationPayload(
+                        notification.contentId,
+                        (notification.payload as EventNotificationPayload).title!,
+                        (notification.payload as EventNotificationPayload).status
+                    );
+                case NotificationTypeEnum.MESSAGE:
+                    const messagePayload = notification.payload as MessageNotificationPayload;
+                    return new MessageNotificationPayload(
+                        notification.contentId,
+                        messagePayload.content,
+                        messagePayload.sender,
+                        messagePayload.contentStatus,
+                        messagePayload.receptionStatus,
+                        messagePayload.deletedStatus,
+                        messagePayload.attachment
+                    );
+                case NotificationTypeEnum.MATCH:
+                    const matchPayload = notification.payload as MatchNotificationPayload;
+                    return new MatchNotificationPayload(
+                        notification.contentId,
+                        matchPayload.userMatched,
+                        matchPayload.isLiked
+                    );
+                case NotificationTypeEnum.APP:
+                    const appPayload = notification.payload as AppNotificationPayload;
+                    return new AppNotificationPayload(
+                        notification.contentId,
+                        appPayload.title,
+                        appPayload.description
+                    );
+                default:
+                    throw new MapperError('Unknown notification type');
+            }
+        })();
 
-        switch (notification.payload.getType) {
-            case NotificationTypeEnum.EVENT:
-                entity.payload = new EventNotificationPayload(
-                    notification.contentId,
-                    (notification.payload as EventNotificationPayload).title!,
-                    (notification.payload as EventNotificationPayload).status
-                );
-                break;
-            case NotificationTypeEnum.MESSAGE:
-                const messagePayload = notification.payload as MessageNotificationPayload;
-                entity.payload = new MessageNotificationPayload(notification.contentId, messagePayload.content, messagePayload.sender, messagePayload.contentStatus, messagePayload.receptionStatus, messagePayload.deletedStatus, messagePayload.attachment);
-                break;
-            case NotificationTypeEnum.MATCH:
-                const matchPayload = notification.payload as MatchNotificationPayload;
-                entity.payload = new MatchNotificationPayload(
-                    notification.contentId,
-                    matchPayload.userMatched,
-                    matchPayload.isLiked
-                );
-                break;
-            case NotificationTypeEnum.APP:
-                const appPayload = notification.payload as AppNotificationPayload;
-                entity.payload = new AppNotificationPayload(
-                    notification.contentId,
-                    appPayload.title,
-                    appPayload.description
-                );
-                break;
-            default:
-                throw new Error('Unknown notification type');
-        }
-
-        return entity;
+        return new NotificationEntity({
+            _id: notification.getId(),
+            status: status,
+            contentId: notification.contentId,
+            payload: payload,
+            date: notification.date,
+            recipient: notification.recipient
+        });
     }
 }
