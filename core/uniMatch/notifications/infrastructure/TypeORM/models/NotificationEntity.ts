@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model, Document, Model } from 'mongoose';
 import { NotificationStatusEnum } from '../../../domain/enum/NotificationStatusEnum';
 import { MessageNotificationPayload } from '../../../domain/entities/MessageNotificationPayload';
 import { EventNotificationPayload } from '../../../domain/entities/EventNotificationPayload';

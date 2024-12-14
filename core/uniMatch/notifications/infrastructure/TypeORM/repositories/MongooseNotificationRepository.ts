@@ -7,61 +7,77 @@ import { INotificationEntity, NotificationSchema } from '../models/NotificationE
 import { Model } from 'mongoose';
 
 export class MongooseNotificationRepository implements INotificationsRepository {
-
-    private notificationEntity: Model<INotificationEntity> | undefined;
+    private notificationEntity: Model<INotificationEntity> | null = null;
+    private ready: Promise<void>;
 
     constructor() {
-        this.notificationEntity = undefined;
-        this.initializeDatabaseConnection();
+        this.ready = this.initialize();
     }
 
-    private initializeDatabaseConnection() {
+    private async initialize() {
         try {
             const connection = await connectToDatabase();
             this.notificationEntity = connection.model('Notification', NotificationSchema);
+            console.log('MongooseNotificationRepository initialized successfully');
         } catch (error) {
-            console.error('Error connecting to the database: ', error);
-            throw error;
+            console.error('Failed to initialize MongooseNotificationRepository:', error);
+            throw new Error('Database initialization failed');
+        }
+    }
+
+    private async ensureInitialized(): Promise<void> {
+        if (!this.notificationEntity) {
+            await this.ready;
+            if (!this.notificationEntity) {
+                throw new Error('Notification repository is not initialized');
+            }
         }
     }
 
     async deleteAll(): Promise<void> {
-        await this.notificationEntity.deleteMany({});
+        await this.ensureInitialized();
+        await this.notificationEntity!.deleteMany({});
     }
 
     async findAll(): Promise<Notification[]> {
-        const entities = await this.notificationEntity.find();
+        await this.ensureInitialized();
+        const entities = await this.notificationEntity!.find();
         return entities.map(NotificationMapper.toDomain);
     }
 
     async existsById(id: string): Promise<boolean> {
-        const count = await this.notificationEntity.countDocuments({ _id: id });
+        await this.ensureInitialized();
+        const count = await this.notificationEntity!.countDocuments({ _id: id });
         return count > 0;
     }
 
     async create(notification: Notification): Promise<void> {
+        await this.ensureInitialized();
         const notificationEntity = NotificationMapper.toEntity(notification);
         console.log('Creating notification: ', notificationEntity);
-        await new this.notificationEntity(notificationEntity).save();
+        await new this.notificationEntity!(notificationEntity).save();
     }
 
     async findById(id: string): Promise<Notification | null> {
-        const entity = await this.notificationEntity.findById({ _id: id });
+        await this.ensureInitialized();
+        const entity = await this.notificationEntity!.findById({ _id: id });
         return entity ? NotificationMapper.toDomain(entity.toObject()) : null;
     }
 
     async deleteById(id: string): Promise<void> {
-        await this.notificationEntity.findByIdAndDelete(id);
+        await this.ensureInitialized();
+        await this.notificationEntity!.findByIdAndDelete(id);
     }
 
     async update(entity: Notification, id: string): Promise<Notification> {
+        await this.ensureInitialized();
         const existingEntity = await this.findById(id);
         if (!existingEntity) {
             throw new Error('Notification not found');
         }
 
         const updatedEntity = NotificationMapper.toEntity(entity);
-        const result = await this.notificationEntity.findByIdAndUpdate(
+        const result = await this.notificationEntity!.findByIdAndUpdate(
             id,
             updatedEntity,
             { new: true }
@@ -75,14 +91,16 @@ export class MongooseNotificationRepository implements INotificationsRepository 
     }
 
     async deleteAllNotificationsByRecipient(recipient: string): Promise<void> {
-        await this.notificationEntity.deleteMany({ recipient });
+        await this.ensureInitialized();
+        await this.notificationEntity!.deleteMany({ recipient });
     }
 
     async findLastNotificationByTypeAndTypeId(
         type: NotificationTypeEnum,
         typeId: string
     ): Promise<Notification | null> {
-        const entity = await this.notificationEntity.findOne({
+        await this.ensureInitialized();
+        const entity = await this.notificationEntity!.findOne({
             contentId: typeId,
             'payload.type': type,
         }).sort({ date: -1 });
@@ -94,7 +112,8 @@ export class MongooseNotificationRepository implements INotificationsRepository 
         type: NotificationTypeEnum,
         typeId: string
     ): Promise<Notification[]> {
-        const entities = await this.notificationEntity.find({
+        await this.ensureInitialized();
+        const entities = await this.notificationEntity!.find({
             contentId: typeId,
             'payload.type': type,
         });
@@ -103,7 +122,8 @@ export class MongooseNotificationRepository implements INotificationsRepository 
     }
 
     async getAllNotifications(userId: string): Promise<Notification[]> {
-        const entities = await this.notificationEntity.find({ recipient: userId });
+        await this.ensureInitialized();
+        const entities = await this.notificationEntity!.find({ recipient: userId });
         return entities.map(NotificationMapper.toDomain);
     }
 }

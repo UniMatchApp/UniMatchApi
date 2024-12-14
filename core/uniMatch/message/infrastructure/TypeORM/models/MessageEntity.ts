@@ -32,4 +32,4 @@ const MessageSchema = new Schema<IMessageEntity>({
 
 const MessageEntity = model<IMessageEntity>('Message', MessageSchema);
 
-export { IMessageEntity, MessageEntity };
+export { IMessageEntity, MessageEntity, MessageSchema };

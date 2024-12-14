@@ -1,38 +1,59 @@
 import connectToDatabase from '../Config';
-import {IMessageRepository} from '../../../application/ports/IMessageRepository';
-import {Message} from '../../../domain/Message';
-import {MessageMapper} from '../mappers/MessageMapper';
-import {MessageEntity} from '../models/MessageEntity';
+import { IMessageRepository } from '../../../application/ports/IMessageRepository';
+import { Message } from '../../../domain/Message';
+import { MessageMapper } from '../mappers/MessageMapper';
+import { IMessageEntity, MessageSchema } from '../models/MessageEntity';
+import { Model } from 'mongoose';
 
 export class MongooseMessageRepository implements IMessageRepository {
+    private messageEntity: Model<IMessageEntity> | null = null;
+    private ready: Promise<void>;
+
 
     constructor() {
-        // Conectar a la base de datos al inicializar el repositorio
-        connectToDatabase().catch((err) => {
-            console.error('Error connecting to the database: ', err);
-        });
+        this.ready = this.initialize();
+    }
+
+
+    private async initialize() {
+        try {
+            const connection = await connectToDatabase();
+            this.messageEntity = connection.model('Message', MessageSchema);
+            console.log('MongooseMessageRepository initialized successfully');
+        } catch (error) {
+            console.error('Failed to initialize Message Repository:', error);
+            throw new Error('Database initialization failed');
+        }
+    }
+
+    private async ensureInitialized(): Promise<void> {
+        if (!this.messageEntity) {
+            await this.ready;
+            if (!this.messageEntity) {
+                throw new Error('Message repository is not initialized');
+            }
+        }
     }
 
     async deleteAll(): Promise<void> {
-        await MessageEntity.deleteMany({});
+        await this.ensureInitialized();
+        await this.messageEntity!.deleteMany({});
     }
 
     async findLastMessagesOfUser(userId: string): Promise<Message[]> {
-        const entities = await MessageEntity.find({sender: userId})
-            .sort({timestamp: -1});
-
+        await this.ensureInitialized();
+        const entities = await this.messageEntity!.find({ sender: userId }).sort({ timestamp: -1 });
         return entities.map(MessageMapper.toDomain);
     }
 
     async findLastMessagesBetweenUsers(userId: string, otherUserId: string): Promise<Message[]> {
-        const entities = await MessageEntity.find({
+        await this.ensureInitialized();
+        const entities = await this.messageEntity!.find({
             $or: [
-                {sender: userId, recipient: otherUserId},
-                {sender: otherUserId, recipient: userId}
+                { sender: userId, recipient: otherUserId },
+                { sender: otherUserId, recipient: userId }
             ]
-        })
-            .sort({timestamp: -1});
-
+        }).sort({ timestamp: -1 });
         return entities.map(MessageMapper.toDomain);
     }
 
@@ -42,50 +63,49 @@ export class MongooseMessageRepository implements IMessageRepository {
         after: number,
         limit: number
     ): Promise<Message[]> {
+        await this.ensureInitialized();
         const afterDate = new Date(after);
-
-        const entities = await MessageEntity.find({
+        const entities = await this.messageEntity!.find({
             $or: [
-                {sender: userId, recipient: otherUserId},
-                {sender: otherUserId, recipient: userId}
+                { sender: userId, recipient: otherUserId },
+                { sender: otherUserId, recipient: userId }
             ],
-            timestamp: {$gt: afterDate}
-        })
-            .sort({timestamp: 1})
-            .limit(limit);
-
+            timestamp: { $gt: afterDate }
+        }).sort({ timestamp: 1 }).limit(limit);
         return entities.map(MessageMapper.toDomain);
     }
 
-
     async findMessagesOfUserPaginated(userId: string, after: number, limit: number): Promise<Message[]> {
-        const entities = await MessageEntity.find({
+        await this.ensureInitialized();
+        const entities = await this.messageEntity!.find({
             $and: [
-                {$or: [{sender: userId}, {recipient: userId}]},
-                {$or: [{createdAt: {$gt: new Date(after)}}, {updatedAt: {$gt: new Date(after)}}]}
+                { $or: [{ sender: userId }, { recipient: userId }] },
+                { $or: [{ createdAt: { $gt: new Date(after) } }, { updatedAt: { $gt: new Date(after) } }] }
             ]
-        })
-            .sort({timestamp: 1})
-            .limit(limit);
+        }).sort({ timestamp: 1 }).limit(limit);
         return entities.map(MessageMapper.toDomain);
     }
 
     async findById(id: string): Promise<Message | null> {
-        const entity = await MessageEntity.findById(id);
+        await this.ensureInitialized();
+        const entity = await this.messageEntity!.findById(id);
         return entity ? MessageMapper.toDomain(entity) : null;
     }
 
     async create(message: Message): Promise<void> {
+        await this.ensureInitialized();
         const messageEntity = MessageMapper.toEntity(message);
         console.log('Creating message: ', messageEntity);
-        await messageEntity.save();
+        await new this.messageEntity!(messageEntity).save();
     }
 
     async deleteById(id: string): Promise<void> {
-        await MessageEntity.findByIdAndDelete(id);
+        await this.ensureInitialized();
+        await this.messageEntity!.findByIdAndDelete(id);
     }
 
     async update(entity: Message, id: string): Promise<Message> {
+        await this.ensureInitialized();
         const existingEntity = await this.findById(id);
         if (!existingEntity) {
             throw new Error('Message not found');
@@ -93,17 +113,19 @@ export class MongooseMessageRepository implements IMessageRepository {
 
         const updatedEntity = MessageMapper.toEntity(entity);
         updatedEntity.id = id;
-        await MessageEntity.findByIdAndUpdate(id, updatedEntity, {new: true});
+        await this.messageEntity!.findByIdAndUpdate(id, updatedEntity, { new: true });
         return MessageMapper.toDomain(updatedEntity);
     }
 
     async findAll(): Promise<Message[]> {
-        const entities = await MessageEntity.find();
+        await this.ensureInitialized();
+        const entities = await this.messageEntity!.find();
         return entities.map(MessageMapper.toDomain);
     }
 
     async existsById(id: string): Promise<boolean> {
-        const count = await MessageEntity.countDocuments({_id: id});
+        await this.ensureInitialized();
+        const count = await this.messageEntity!.countDocuments({ _id: id });
         return count > 0;
     }
 }
