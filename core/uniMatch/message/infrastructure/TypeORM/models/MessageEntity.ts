@@ -3,7 +3,7 @@ import { MessageReceptionStatusEnum, MessageDeletedStatusType, MessageReceptionS
 import { ObjectId } from 'mongodb';
 
 interface IMessageEntity extends Document {
-    _id: ObjectId;
+    _id: string;
     content: string;
     receptionStatus: MessageReceptionStatusType;
     contentStatus: MessageContentStatusEnum;
