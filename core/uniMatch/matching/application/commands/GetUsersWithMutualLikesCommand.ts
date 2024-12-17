@@ -22,10 +22,6 @@ export class GetUsersWithMutualLikesCommand implements ICommand<GetUsersWithMutu
 
             const mutualLikes = await this.matchingRepository.findMutualLikes(request.userId);
 
-            if (mutualLikes.length === 0) {
-                return Result.failure<string[]>(new NotFoundError("No mutual likes found"));
-            }
-
             return Result.success<string[]>(mutualLikes.map((node: Node) => node.userId));
         } catch (error: any) {
             console.error(error);

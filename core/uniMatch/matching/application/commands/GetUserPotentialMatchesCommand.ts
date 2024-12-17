@@ -33,7 +33,7 @@ export class GetUserPotentialMatchesCommand implements ICommand<GetUserPotential
             if (potentialMatches.length === 0) {
                 return Result.failure<string[]>(new NotFoundError("No potential matches found"));
             }
-
+            console.log('Potential matches:', potentialMatches.map((node: Node) => node.userId));
             return Result.success<string[]>(potentialMatches.map((node: Node) => node.userId));
         } catch (error: any) {
             console.error('Error getting potential matches:', error);

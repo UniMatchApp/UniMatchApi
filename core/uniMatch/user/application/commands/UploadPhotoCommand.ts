@@ -22,6 +22,7 @@ export class UploadPhotoCommand implements ICommand<UploadPhotoDTO, string> {
             const photo = request.attachment;
             
             const photoUrl= await this.fileHandler.save(UUID.generate().toString(), photo);
+            
             if (!photoUrl) {
                 return Result.failure<string>(new NullPointerError(`Photo url is null`));
             }
