@@ -38,7 +38,7 @@ export class DriveFileHandler implements IFileHandler {
                 parents: ['1Y7siaaujpdYZsucYmr2WiO8VImoXGtSr'],  
             };
 
-            
+
             const res = await this.driveService.files.create({
                 requestBody: fileMetadata,
                 media: {
@@ -57,8 +57,8 @@ export class DriveFileHandler implements IFileHandler {
             await this.driveService.permissions.create({
                 fileId: fileId,
                 requestBody: {
-                    role: 'reader', // 'reader' allows anyone to view
-                    type: 'anyone', // Makes the file accessible to anyone
+                    role: 'reader',
+                    type: 'anyone',
                 }
             });
 

@@ -39,7 +39,6 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
                 return Result.failure<Profile>(new AuthenticationError(`User with id ${request.userId} has already registered`));
             }
 
-            console.log("request.attachment:", request.attachment);
             const profileUrl = await this.fileHandler.save(UUID.generate().toString(), request.attachment);
 
             const location = request.latitude && request.longitude  ? new Location(request.latitude, request.longitude) : undefined

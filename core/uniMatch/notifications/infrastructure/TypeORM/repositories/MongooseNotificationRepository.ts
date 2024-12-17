@@ -54,7 +54,6 @@ export class MongooseNotificationRepository implements INotificationsRepository 
     async create(notification: Notification): Promise<void> {
         await this.ensureInitialized();
         const notificationEntity = NotificationMapper.toEntity(notification);
-        console.log('Creating notification: ', notificationEntity);
         await new this.notificationEntity!(notificationEntity).save();
     }
 

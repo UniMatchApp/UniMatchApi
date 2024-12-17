@@ -3,7 +3,7 @@ import {UserDislikedSomebodyCommand} from '@/core/uniMatch/matching/application/
 import {UserDislikedSomebodyDTO} from '@/core/uniMatch/matching/application/DTO/userDislikedSomebodyDTO';
 import {ErrorHandler} from '../../utils/ErrorHandler';
 import {Result} from "@/core/shared/domain/Result";
-import { UserLikedSomebodyCommand } from '@/core/uniMatch/matching/application/commands/UserLikedSomebodyCommand';
+import { UserLikedSomebodyCommand } from '@/core/uniMatch/matching/application/commands/userLikedSomebodyCommand';
 import {UserLikedSomebodyDTO} from '@/core/uniMatch/matching/application/DTO/userLikedSomebodyDTO';
 import {IEventBus} from '@/core/shared/application/IEventBus';
 import {IMatchingRepository} from "@/core/uniMatch/matching/application/ports/IMatchingRepository";
@@ -90,7 +90,6 @@ export class MatchingController {
     async getMutualLikes(req: Request, res: Response): Promise<void> {
         const userId = req.body.userId;
         const dto = {userId: userId} as GetUsersWithMutualLikesDTO;
-        console.warn("GET MUTUAL LIKES: " + dto.userId);
         const command = new GetUsersWithMutualLikesCommand(this.matchingRepository);
         return command.run(dto).then((result: Result<string[]>) => {
             if (result.isSuccess()) {
