@@ -16,7 +16,7 @@ export class UserHasChangedSexPriorityEventHandler implements IEventHandler {
             const userId = event.getAggregateId();
             const genderPriority = event.getPayload().get("priority");
 
-            if (!userId || !genderPriority) {
+            if (!userId) {
                 throw new EventError("User ID and gender priority are required to update a user's sex priority.");
             }
     
@@ -25,7 +25,7 @@ export class UserHasChangedSexPriorityEventHandler implements IEventHandler {
                 throw new EventError("User not found");
             }
     
-            user.genderPriority = new Gender(Gender.fromString(genderPriority));
+            user.genderPriority = genderPriority ? new Gender(Gender.fromString(genderPriority)) : undefined;
             await this.repository.update(user, user.getId());
         } catch (error : any) {
             console.error(error);
