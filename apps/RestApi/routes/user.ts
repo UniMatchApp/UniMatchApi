@@ -25,7 +25,7 @@ router.put('/height', validateAndRefreshToken, userController.changeHeight.bind(
 router.put('/horoscope', validateAndRefreshToken, userController.changeHoroscope.bind(userController));
 router.put('/interests', validateAndRefreshToken, userController.changeInterests.bind(userController));
 router.put('/job', validateAndRefreshToken, userController.changeJob.bind(userController));
-router.put('/password', validateAndRefreshToken, userController.changePassword.bind(userController));
+router.put('/password/:id', userController.changePassword.bind(userController));
 router.put('/personality', validateAndRefreshToken, userController.changePersonality.bind(userController));
 router.put('/pets', validateAndRefreshToken, userController.changePets.bind(userController));
 router.put('/fact', validateAndRefreshToken, userController.changeFact.bind(userController));

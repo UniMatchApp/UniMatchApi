@@ -374,7 +374,7 @@ export class UserController {
     }
 
     async changePassword(req: Request, res: Response): Promise<void> {
-        const userId = req.body.userId;
+        const userId = req.body.userId || req.params.id;
         const password = req.body.password;
         const command = new ChangePasswordCommand(this.userRepository, this.eventBus);
         const dto = {id: userId, newPassword: password} as ChangePasswordDTO;
