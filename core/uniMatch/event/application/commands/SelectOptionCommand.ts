@@ -23,12 +23,12 @@ export class SelectOptionCommand implements ICommand<SelectOptionDTO, void> {
                 throw new AuthorizationError(`User ${request.userId} is not a participant of the event`);
             }
 
-            const task = event.tasks.find(t => t.title === request.title);
-            if (!task) {
-                throw new NotFoundError("Task not found");
+            const survey = event.surveys.find(t => t.title === request.title);
+            if (!survey) {
+                throw new NotFoundError("Survey not found");
             }
 
-            task.selectOption(request.option, request.userId);
+            survey.selectOption(request.option, request.userId);
 
             await this.repository.update(event, request.eventId);
 

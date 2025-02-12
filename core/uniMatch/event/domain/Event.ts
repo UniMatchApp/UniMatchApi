@@ -4,7 +4,7 @@ import { DomainError } from "@/core/shared/exceptions/DomainError";
 import { Location } from "@/core/shared/domain/Location";
 import { EventIsDeleted } from "./events/EventIsDeletedEvent";
 import { EventIsModified } from "./events/EventIsModifiedEvent";
-import { Task } from "./Task";
+import { Survey } from "./Survey";
 
 export class Event extends AggregateRoot {
     private readonly MAX_SIZE: number = 1000000; // 1MB
@@ -16,7 +16,7 @@ export class Event extends AggregateRoot {
     private _participants: string[] = [];
     private _likes: string[] = [];
     private _attachment?: string;
-    private _tasks: Task[] = [];
+    private _surveys: Survey[] = [];
 
     constructor(
         title: string,
@@ -27,7 +27,7 @@ export class Event extends AggregateRoot {
         likes: string[] = [],
         price?: number,
         attachment?: string,
-        tasks: Task[] = []
+        surveys: Survey[] = []
     ) {
         super();
         this.title = title;
@@ -38,7 +38,7 @@ export class Event extends AggregateRoot {
         this.participants = participants;
         this.likes = likes;
         this.attachment = attachment;
-        this._tasks = tasks;
+        this.surveys = surveys;
     }
 
 
@@ -118,12 +118,12 @@ export class Event extends AggregateRoot {
         this._attachment = value;
     }
 
-    public get tasks(): Task[] {
-        return this._tasks;
+    public get surveys(): Survey[] {
+        return this._surveys;
     }
 
-    public set tasks(value: Task[]) {
-        this._tasks = value;
+    public set surveys(value: Survey[]) {
+        this._surveys = value;
     }
 
     public addParticipant(participantId: string): void {
@@ -165,22 +165,22 @@ export class Event extends AggregateRoot {
         return true;
     }
 
-    public addTask(task: Task): void {
-        if (this._tasks.some((t) => t.title === task.title)) {
-            throw new DomainError('The task already exists.');
+    public addSurvey(survey: Survey): void {
+        if (this._surveys.some((t) => t.title === survey.title)) {
+            throw new DomainError('The survey already exists.');
         }
-        this._tasks.push(task);
+        this._surveys.push(survey);
     }
 
-    public removeTask(task: Task): void {
-        this._tasks = this._tasks.filter((t) => t !== task);
+    public removeSurvey(survey: Survey): void {
+        this._surveys = this._surveys.filter((t) => t !== survey);
     }
 
-    public removeTaskByTitle(title: string): void {
-        if (!this._tasks.some((t) => t.title === title)) {
-            throw new DomainError(`The task "${title}" does not exist.`);
+    public removeSurveyByTitle(title: string): void {
+        if (!this._surveys.some((t) => t.title === title)) {
+            throw new DomainError(`The survey "${title}" does not exist.`);
         }
-        this._tasks = this._tasks.filter((t) => t.title !== title);
+        this._surveys = this._surveys.filter((t) => t.title !== title);
     }
 
     public delete(): void {

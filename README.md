@@ -27,7 +27,7 @@ Contains configuration files for different services like databases and message b
 
 ## Key Components
 
-- **Controllers**: Handle incoming HTTP requests and delegate tasks to the appropriate services or commands.
+- **Controllers**: Handle incoming HTTP requests and delegate surveys to the appropriate services or commands.
     - **Example**: `UserController`, `EventController`, `MessageController`.
 
 - **Commands**: Encapsulate the business logic for specific actions.

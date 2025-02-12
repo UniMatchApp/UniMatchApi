@@ -1,4 +1,4 @@
-import { TaskDTO } from "./TaskDTO";
+import { SurveyDTO } from "./SurveyDTO";
 
 export interface EditEventDTO {
     eventId: string,

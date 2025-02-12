@@ -1,20 +1,20 @@
 import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
 import { IEventRepository } from "../ports/IEventRepository";
-import { Task } from "../../domain/Task";
-import { CreateTaskDTO } from "../DTO/CreateTaskDTO";
+import { Survey } from "../../domain/Survey";
+import { CreateSurveyDTO } from "../DTO/CreateSurveyDTO";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { AuthorizationError } from "@/core/shared/exceptions/AuthorizationError";
 import { EventDTO, EventMapper } from "../DTO/EventDTO";
 
-export class CreateTaskCommand implements ICommand<CreateTaskDTO, EventDTO> {
+export class CreateSurveyCommand implements ICommand<CreateSurveyDTO, EventDTO> {
     private repository: IEventRepository;
 
     constructor(repository: IEventRepository) {
         this.repository = repository;
     }
 
-    async run(request: CreateTaskDTO): Promise<Result<EventDTO>> {
+    async run(request: CreateSurveyDTO): Promise<Result<EventDTO>> {
         try {
             const event = await this.repository.findById(request.eventId);
             if (!event) {
@@ -25,9 +25,9 @@ export class CreateTaskCommand implements ICommand<CreateTaskDTO, EventDTO> {
                 throw new AuthorizationError(`User ${request.userId} is not the owner of the event`);
             }
 
-            const task = new Task(request.task.title, request.task.options);
+            const survey = new Survey(request.survey.title, request.survey.options);
 
-            event.addTask(task);
+            event.addSurvey(survey);
 
             await this.repository.update(event, request.eventId);
 

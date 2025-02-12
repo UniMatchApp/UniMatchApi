@@ -1,6 +1,6 @@
 import { DomainError } from "@/core/shared/exceptions/DomainError";
 
-export class Task {
+export class Survey {
     private _title: string;
     private _options: Map<string, Set<string>>;
   

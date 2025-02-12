@@ -17,9 +17,9 @@ router.post('/participate/:id', validateAndRefreshToken, eventController.partici
 router.post('/unparticipate/:id', validateAndRefreshToken, eventController.removeParticipation.bind(eventController));
 router.post('like/:id', validateAndRefreshToken, eventController.likeEvent.bind(eventController));
 router.post('dislike/:id', validateAndRefreshToken, eventController.dislikeEvent.bind(eventController));
-router.put('/:id', validateAndRefreshToken, eventController.createTask.bind(eventController));
-router.delete('/:id/task/:title', validateAndRefreshToken, eventController.deleteTask.bind(eventController));
-router.put('/:id/task/:title/select', validateAndRefreshToken, eventController.selectTask.bind(eventController));
-router.put('/:id/task/:title/deselect', validateAndRefreshToken, eventController.deselectTask.bind(eventController));
+router.put('/:id', validateAndRefreshToken, eventController.createSurvey.bind(eventController));
+router.delete('/:id/survey/:title', validateAndRefreshToken, eventController.deleteSurvey.bind(eventController));
+router.put('/:id/survey/:title/select', validateAndRefreshToken, eventController.selectSurvey.bind(eventController));
+router.put('/:id/survey/:title/deselect', validateAndRefreshToken, eventController.deselectSurvey.bind(eventController));
 
 export {router};

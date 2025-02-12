@@ -22,11 +22,11 @@ import { ErrorHandler } from '../../utils/ErrorHandler';
 import { CreateNewEventDTO } from '@/core/uniMatch/event/application/DTO/CreateNewEventDTO';
 import { IFileHandler } from '@/core/shared/application/IFileHandler';
 import { EventDTO } from '@/core/uniMatch/event/application/DTO/EventDTO';
-import { CreateTaskCommand } from '@/core/uniMatch/event/application/commands/CreateTaskCommand';
-import { TaskDTO } from '@/core/uniMatch/event/application/DTO/TaskDTO';
-import { CreateTaskDTO } from '@/core/uniMatch/event/application/DTO/CreateTaskDTO';
-import { DeleteTaskCommand } from '@/core/uniMatch/event/application/commands/DeleteTaskCommand';
-import { DeleteTaskDTO } from '@/core/uniMatch/event/application/DTO/DeleteTaskDTO';
+import { CreateSurveyCommand } from '@/core/uniMatch/event/application/commands/CreateSurveyCommand';
+import { SurveyDTO } from '@/core/uniMatch/event/application/DTO/SurveyDTO';
+import { CreateSurveyDTO } from '@/core/uniMatch/event/application/DTO/CreateSurveyDTO';
+import { DeleteSurveyCommand } from '@/core/uniMatch/event/application/commands/DeleteSurveyCommand';
+import { DeleteSurveyDTO } from '@/core/uniMatch/event/application/DTO/DeleteSurveyDTO';
 import { SelectOptionCommand } from '@/core/uniMatch/event/application/commands/SelectOptionCommand';
 import { SelectOptionDTO } from '@/core/uniMatch/event/application/DTO/SelectOptionDTO';
 import { DeselectOptionCommand } from '@/core/uniMatch/event/application/commands/DeselectOptionCommand';
@@ -170,16 +170,16 @@ export class EventController {
         });
     }
 
-    async createTask(req: Request, res: Response): Promise<void> {
+    async createSurvey(req: Request, res: Response): Promise<void> {
         var id = req.params.id;
         var userId = req.body.userId;
         var title = req.body.title;
         var options = req.body.options;
 
-        const TaskDTO = { title: title, options: options } as TaskDTO;
-        const dto = { eventId: id, userId: userId, task: TaskDTO } as CreateTaskDTO;
+        const SurveyDTO = { title: title, options: options } as SurveyDTO;
+        const dto = { eventId: id, userId: userId, survey: SurveyDTO } as CreateSurveyDTO;
 
-        var command = new CreateTaskCommand(this.eventRepository);
+        var command = new CreateSurveyCommand(this.eventRepository);
 
         return command.run(dto).then((result: Result<EventDTO>) => {
             if (result.isSuccess()) {
@@ -191,13 +191,13 @@ export class EventController {
         });
     }
 
-    async deleteTask(req: Request, res: Response): Promise<void> {
+    async deleteSurvey(req: Request, res: Response): Promise<void> {
         var eventId = req.params.id;
         var userId = req.body.userId;
         var title = req.params.title;
 
-        var command = new DeleteTaskCommand(this.eventRepository);
-        var dto = { eventId: eventId, userId: userId, title: title } as DeleteTaskDTO;
+        var command = new DeleteSurveyCommand(this.eventRepository);
+        var dto = { eventId: eventId, userId: userId, title: title } as DeleteSurveyDTO;
 
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
@@ -209,7 +209,7 @@ export class EventController {
         });
     }
 
-    async selectTask(req: Request, res: Response): Promise<void> {
+    async selectSurvey(req: Request, res: Response): Promise<void> {
         var eventId = req.params.id;
         var userId = req.body.userId;
         var title = req.params.title;
@@ -228,7 +228,7 @@ export class EventController {
         });
     }
 
-    async deselectTask(req: Request, res: Response): Promise<void> {
+    async deselectSurvey(req: Request, res: Response): Promise<void> {
         var eventId = req.params.id;
         var userId = req.body.userId;
         var title = req.params.title;

@@ -8,7 +8,7 @@ import { Location } from "@/core/shared/domain/Location";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
 import { FileError } from "@/core/shared/exceptions/FileError";
 import { EventDTO, EventMapper } from "../DTO/EventDTO";
-import { Task } from "../../domain/Task";
+import { Survey } from "../../domain/Survey";
 
 export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, EventDTO> {
     private repository: IEventRepository;
@@ -52,10 +52,10 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, EventD
                 attachmentPath
             )
 
-            if (request.tasks) {
-                request.tasks.forEach(task => {
-                    const taskEntity = new Task(task.title, task.options);
-                    event.addTask(taskEntity);
+            if (request.surveys) {
+                request.surveys.forEach(survey => {
+                    const surveyEntity = new Survey(survey.title, survey.options);
+                    event.addSurvey(surveyEntity);
                 });
             }
 

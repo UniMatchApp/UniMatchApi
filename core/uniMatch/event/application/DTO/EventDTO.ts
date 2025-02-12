@@ -1,4 +1,4 @@
-import { TaskDTO, TaskMapper } from "./TaskDTO";
+import { SurveyDTO, SurveyMapper } from "./SurveyDTO";
 import { Event } from "../../domain/Event";
 
 export interface EventDTO {
@@ -10,7 +10,7 @@ export interface EventDTO {
     participants: string[];
     likes: string[];
     attachment?: string;
-    tasks: TaskDTO[];
+    surveys: SurveyDTO[];
   }
   
   export class EventMapper {
@@ -28,7 +28,7 @@ export interface EventDTO {
         participants: event.participants,
         likes: event.likes,
         attachment: event.attachment,
-        tasks: event.tasks.map(task => TaskMapper.map(task)),
+        surveys: event.surveys.map(survey => SurveyMapper.map(survey)),
       };
     }
   }

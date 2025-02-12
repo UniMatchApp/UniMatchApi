@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
 import { EventEntity } from './EventEntity';
 
-@Entity('tasks')
-export class TaskEntity {
+@Entity('surveys')
+export class SurveyEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
@@ -12,6 +12,6 @@ export class TaskEntity {
   @Column('jsonb', { default: [] })
   options!: Map<string, Set<string>>;
 
-  @ManyToOne(() => EventEntity, event => event.tasks)
+  @ManyToOne(() => EventEntity, event => event.surveys)
   event!: EventEntity;
 }

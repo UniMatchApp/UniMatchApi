@@ -1,21 +1,21 @@
-import { TaskEntity } from '../models/TaskEntity';
-import { Task } from '../../../domain/Task';
+import { SurveyEntity } from '../models/SurveyEntity';
+import { Survey } from '../../../domain/Survey';
 
-export class TaskMapper {
-  static toDomain(entity: TaskEntity): Task {
-    const task = new Task(entity.title, []);
+export class SurveyMapper {
+  static toDomain(entity: SurveyEntity): Survey {
+    const survey = new Survey(entity.title, []);
     entity.options.forEach(optionSet => {
         optionSet.forEach(option => {
-            task.addOption(option);
+            survey.addOption(option);
         });
     });
-    return task;
+    return survey;
   }
 
-  static toEntity(task: Task): TaskEntity {
-    const entity = new TaskEntity();
-    entity.title = task.title;
-    entity.options = task.options;
+  static toEntity(survey: Survey): SurveyEntity {
+    const entity = new SurveyEntity();
+    entity.title = survey.title;
+    entity.options = survey.options;
     return entity;
   }
 }

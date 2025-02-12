@@ -1,4 +1,4 @@
-import { TaskDTO } from "./TaskDTO";
+import { SurveyDTO } from "./SurveyDTO";
 
 export interface CreateNewEventDTO {
     title: string,
@@ -9,5 +9,5 @@ export interface CreateNewEventDTO {
     ownerId: string,
     attachment?: File,
     price?: number,
-    tasks?: TaskDTO[]
+    surveys?: SurveyDTO[]
 }

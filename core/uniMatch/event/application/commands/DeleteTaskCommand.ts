@@ -2,18 +2,18 @@ import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
 import { IEventRepository } from "../ports/IEventRepository";
 import { IEventBus } from "@/core/shared/application/IEventBus";
-import { DeleteTaskDTO } from "../DTO/DeleteTaskDTO";
+import { DeleteSurveyDTO } from "../DTO/DeleteSurveyDTO";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
 import { AuthorizationError } from "@/core/shared/exceptions/AuthorizationError";
 
-export class DeleteTaskCommand implements ICommand<DeleteTaskDTO, void> {
+export class DeleteSurveyCommand implements ICommand<DeleteSurveyDTO, void> {
     private repository: IEventRepository;
 
     constructor(repository: IEventRepository) {
         this.repository = repository;
     }
 
-    async run(request: DeleteTaskDTO): Promise<Result<void>> {
+    async run(request: DeleteSurveyDTO): Promise<Result<void>> {
         try {
             const event = await this.repository.findById(request.eventId);
             if (!event) {
@@ -24,7 +24,7 @@ export class DeleteTaskCommand implements ICommand<DeleteTaskDTO, void> {
                 throw new AuthorizationError(`User ${request.userId} is not the owner of the event`);
             }
 
-            event.removeTaskByTitle(request.title);
+            event.removeSurveyByTitle(request.title);
 
             await this.repository.update(event, request.eventId);
 
