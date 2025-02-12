@@ -1,29 +1,38 @@
 import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
 import { IEventRepository } from "../ports/IEventRepository";
-import { LikeEventDTO } from "../DTO/LikeEventDTO";
+import { Task } from "../../domain/Task";
+import { CreateTaskDTO } from "../DTO/CreateTaskDTO";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import { AuthorizationError } from "@/core/shared/exceptions/AuthorizationError";
 import { EventDTO, EventMapper } from "../DTO/EventDTO";
 
-export class DislikeEventCommand implements ICommand<LikeEventDTO, EventDTO> {
+export class CreateTaskCommand implements ICommand<CreateTaskDTO, EventDTO> {
     private repository: IEventRepository;
 
     constructor(repository: IEventRepository) {
         this.repository = repository;
     }
 
-    async run(request: LikeEventDTO): Promise<Result<EventDTO>> {
+    async run(request: CreateTaskDTO): Promise<Result<EventDTO>> {
         try {
             const event = await this.repository.findById(request.eventId);
-            
             if (!event) {
-                return Result.failure<EventDTO>(new NotFoundError("Event not found"));
+                throw new NotFoundError("Event not found");
             }
 
-            event.dislike(request.userId);
+            if (event.ownerId !== request.userId) {
+                throw new AuthorizationError(`User ${request.userId} is not the owner of the event`);
+            }
+
+            const task = new Task(request.task.title, request.task.options);
+
+            event.addTask(task);
+
             await this.repository.update(event, request.eventId);
 
             const mappedEvent = EventMapper.map(event);
+
             return Result.success<EventDTO>(mappedEvent);
         } catch (error: any) {
             return Result.failure<EventDTO>(error);

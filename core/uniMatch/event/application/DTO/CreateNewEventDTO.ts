@@ -1,3 +1,5 @@
+import { TaskDTO } from "./TaskDTO";
+
 export interface CreateNewEventDTO {
     title: string,
     date: Date,
@@ -7,4 +9,5 @@ export interface CreateNewEventDTO {
     ownerId: string,
     attachment?: File,
     price?: number,
+    tasks?: TaskDTO[]
 }

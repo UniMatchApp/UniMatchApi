@@ -4,6 +4,7 @@ import { DomainError } from "@/core/shared/exceptions/DomainError";
 import { Location } from "@/core/shared/domain/Location";
 import { EventIsDeleted } from "./events/EventIsDeletedEvent";
 import { EventIsModified } from "./events/EventIsModifiedEvent";
+import { Task } from "./Task";
 
 export class Event extends AggregateRoot {
     private readonly MAX_SIZE: number = 1000000; // 1MB
@@ -15,6 +16,7 @@ export class Event extends AggregateRoot {
     private _participants: string[] = [];
     private _likes: string[] = [];
     private _attachment?: string;
+    private _tasks: Task[] = [];
 
     constructor(
         title: string,
@@ -24,7 +26,8 @@ export class Event extends AggregateRoot {
         participants: string[] = [],
         likes: string[] = [],
         price?: number,
-        attachment?: string
+        attachment?: string,
+        tasks: Task[] = []
     ) {
         super();
         this.title = title;
@@ -35,6 +38,7 @@ export class Event extends AggregateRoot {
         this.participants = participants;
         this.likes = likes;
         this.attachment = attachment;
+        this._tasks = tasks;
     }
 
 
@@ -114,6 +118,14 @@ export class Event extends AggregateRoot {
         this._attachment = value;
     }
 
+    public get tasks(): Task[] {
+        return this._tasks;
+    }
+
+    public set tasks(value: Task[]) {
+        this._tasks = value;
+    }
+
     public addParticipant(participantId: string): void {
         if (!this._participants.includes(participantId)) {
             this._participants.push(participantId);
@@ -151,6 +163,24 @@ export class Event extends AggregateRoot {
         }
 
         return true;
+    }
+
+    public addTask(task: Task): void {
+        if (this._tasks.some((t) => t.title === task.title)) {
+            throw new DomainError('The task already exists.');
+        }
+        this._tasks.push(task);
+    }
+
+    public removeTask(task: Task): void {
+        this._tasks = this._tasks.filter((t) => t !== task);
+    }
+
+    public removeTaskByTitle(title: string): void {
+        if (!this._tasks.some((t) => t.title === title)) {
+            throw new DomainError(`The task "${title}" does not exist.`);
+        }
+        this._tasks = this._tasks.filter((t) => t.title !== title);
     }
 
     public delete(): void {
