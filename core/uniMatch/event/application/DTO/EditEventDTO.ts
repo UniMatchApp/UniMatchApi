@@ -1,3 +1,5 @@
+import { SurveyDTO } from "./SurveyDTO";
+
 export interface EditEventDTO {
     eventId: string,
     title: string,
@@ -7,5 +9,5 @@ export interface EditEventDTO {
     altitude: number,
     ownerId: string,
     attachment?: File,
-    price?: number,
+    price?: number
 }

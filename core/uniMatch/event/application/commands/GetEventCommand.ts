@@ -1,29 +1,29 @@
 import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
 import { IEventRepository } from "../ports/IEventRepository";
-import { Event } from "../../domain/Event";
 import { GetEventDTO } from "../DTO/GetEventDTO";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import { EventDTO, EventMapper } from "../DTO/EventDTO";
 
-export class GetEventCommand implements ICommand<GetEventDTO, Event> {
+export class GetEventCommand implements ICommand<GetEventDTO, EventDTO> {
     private readonly repository: IEventRepository;
 
     constructor(repository: IEventRepository) {
         this.repository = repository;
     }
 
-    async run(request: GetEventDTO): Promise<Result<Event>> {
+    async run(request: GetEventDTO): Promise<Result<EventDTO>> {
         try {
-
             const event = await this.repository.findById(request.eventId);
 
             if (!event) {
-                return Result.failure<Event>(new NotFoundError("Event not found"));
+                return Result.failure<EventDTO>(new NotFoundError("Event not found"));
             }
 
-            return Result.success<Event>(event);
-        } catch (error : any) {
-            return Result.failure<Event>(error);
+            const mappedEvent = EventMapper.map(event);
+            return Result.success<EventDTO>(mappedEvent);
+        } catch (error: any) {
+            return Result.failure<EventDTO>(error);
         }
     }
 }

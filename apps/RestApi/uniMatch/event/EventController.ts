@@ -20,21 +20,31 @@ import { LikeEventDTO } from '@/core/uniMatch/event/application/DTO/LikeEventDTO
 import { ParticipateEventDTO } from '@/core/uniMatch/event/application/DTO/ParticipateEventDTO';
 import { ErrorHandler } from '../../utils/ErrorHandler';
 import { CreateNewEventDTO } from '@/core/uniMatch/event/application/DTO/CreateNewEventDTO';
+import { IFileHandler } from '@/core/shared/application/IFileHandler';
+import { EventDTO } from '@/core/uniMatch/event/application/DTO/EventDTO';
+import { CreateSurveyCommand } from '@/core/uniMatch/event/application/commands/CreateSurveyCommand';
+import { SurveyDTO } from '@/core/uniMatch/event/application/DTO/SurveyDTO';
+import { CreateSurveyDTO } from '@/core/uniMatch/event/application/DTO/CreateSurveyDTO';
+import { DeleteSurveyCommand } from '@/core/uniMatch/event/application/commands/DeleteSurveyCommand';
+import { DeleteSurveyDTO } from '@/core/uniMatch/event/application/DTO/DeleteSurveyDTO';
+import { SelectOptionCommand } from '@/core/uniMatch/event/application/commands/SelectOptionCommand';
+import { SelectOptionDTO } from '@/core/uniMatch/event/application/DTO/SelectOptionDTO';
+import { DeselectOptionCommand } from '@/core/uniMatch/event/application/commands/DeselectOptionCommand';
 
 export class EventController {
     private readonly eventRepository: IEventRepository;
     private readonly eventBus: IEventBus;
-    private readonly fileHandler: FileHandler;
+    private readonly fileHandler: IFileHandler;
 
-    constructor(eventRepository: IEventRepository, eventBus: IEventBus) {
+    constructor(eventRepository: IEventRepository, eventBus: IEventBus, fileHandler: IFileHandler) {
         this.eventRepository = eventRepository;
         this.eventBus = eventBus;
-        this.fileHandler = new FileHandler();
+        this.fileHandler = fileHandler;
     }
 
     async getAll(req: Request, res: Response): Promise<void> {
         var query = new GetEventsCommand(this.eventRepository);
-        return query.run().then((result: Result<Event[]>) => {
+        return query.run().then((result: Result<EventDTO[]>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -47,7 +57,7 @@ export class EventController {
     async getOne(req: Request, res: Response): Promise<void> {
         var query = new GetEventCommand(this.eventRepository);
         var dto = { eventId: req.params.id } as GetEventDTO;
-        return query.run(dto).then((result: Result<Event>) => {
+        return query.run(dto).then((result: Result<EventDTO>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -61,7 +71,7 @@ export class EventController {
         var userId = req.body.userId;
         var dto = { ownerId: userId, ...req.body } as CreateNewEventDTO;
         var command = new CreateNewEventCommand(this.eventRepository, this.fileHandler, this.eventBus);
-        return command.run(dto).then((result: Result<Event>) => {
+        return command.run(dto).then((result: Result<EventDTO>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -75,7 +85,7 @@ export class EventController {
         var id = req.body.userId;
         var command = new EditEventCommand(this.eventRepository, this.eventBus, this.fileHandler);
         var dto = { eventId: id, ...req.body } as EditEventDTO;
-        return command.run(dto).then((result: Result<Event>) => {
+        return command.run(dto).then((result: Result<EventDTO>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -105,7 +115,7 @@ export class EventController {
         var userId = req.body.userId;
         var command = new LikeEventCommand(this.eventRepository);
         var dto = { eventId: id, userId: userId } as LikeEventDTO;
-        return command.run(dto).then((result: Result<Event>) => {
+        return command.run(dto).then((result: Result<EventDTO>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -120,7 +130,7 @@ export class EventController {
         var userId = req.body.userId;
         var command = new DislikeEventCommand(this.eventRepository);
         var dto = { eventId: id, userId: userId } as LikeEventDTO;
-        return command.run(dto).then((result: Result<Event>) => {
+        return command.run(dto).then((result: Result<EventDTO>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -135,7 +145,7 @@ export class EventController {
         var userId = req.body.userId;
         var command = new ParticipateEventCommand(this.eventRepository);
         var dto = { eventId: id, userId: userId } as ParticipateEventDTO;
-        return command.run(dto).then((result: Result<Event>) => {
+        return command.run(dto).then((result: Result<EventDTO>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
@@ -150,7 +160,84 @@ export class EventController {
         var userId = req.body.userId;
         var command = new RemoveParticipationCommand(this.eventRepository);
         var dto = { eventId: id, userId: userId } as ParticipateEventDTO;
-        return command.run(dto).then((result: Result<Event>) => {
+        return command.run(dto).then((result: Result<EventDTO>) => {
+            if (result.isSuccess()) {
+                res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async createSurvey(req: Request, res: Response): Promise<void> {
+        var id = req.params.id;
+        var userId = req.body.userId;
+        var title = req.body.title;
+        var options = req.body.options;
+
+        const SurveyDTO = { title: title, options: options } as SurveyDTO;
+        const dto = { eventId: id, userId: userId, survey: SurveyDTO } as CreateSurveyDTO;
+
+        var command = new CreateSurveyCommand(this.eventRepository);
+
+        return command.run(dto).then((result: Result<EventDTO>) => {
+            if (result.isSuccess()) {
+                res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async deleteSurvey(req: Request, res: Response): Promise<void> {
+        var eventId = req.params.id;
+        var userId = req.body.userId;
+        var title = req.params.title;
+
+        var command = new DeleteSurveyCommand(this.eventRepository);
+        var dto = { eventId: eventId, userId: userId, title: title } as DeleteSurveyDTO;
+
+        return command.run(dto).then((result: Result<void>) => {
+            if (result.isSuccess()) {
+                res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async selectSurvey(req: Request, res: Response): Promise<void> {
+        var eventId = req.params.id;
+        var userId = req.body.userId;
+        var title = req.params.title;
+        var option = req.body.option;
+
+        var command = new SelectOptionCommand(this.eventRepository);
+        var dto = { eventId: eventId, userId: userId, title: title, option: option } as SelectOptionDTO;
+
+        return command.run(dto).then((result: Result<void>) => {
+            if (result.isSuccess()) {
+                res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async deselectSurvey(req: Request, res: Response): Promise<void> {
+        var eventId = req.params.id;
+        var userId = req.body.userId;
+        var title = req.params.title;
+        var option = req.body.option;
+
+        var command = new DeselectOptionCommand(this.eventRepository);
+        var dto = { eventId: eventId, userId: userId, title: title, option: option } as SelectOptionDTO;
+
+        return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {

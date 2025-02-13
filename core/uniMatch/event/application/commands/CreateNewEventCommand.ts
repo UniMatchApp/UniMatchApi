@@ -7,8 +7,10 @@ import { IEventBus } from "@/core/shared/application/IEventBus";
 import { Location } from "@/core/shared/domain/Location";
 import { IFileHandler } from "@/core/shared/application/IFileHandler";
 import { FileError } from "@/core/shared/exceptions/FileError";
+import { EventDTO, EventMapper } from "../DTO/EventDTO";
+import { Survey } from "../../domain/Survey";
 
-export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, Event> {
+export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, EventDTO> {
     private repository: IEventRepository;
     private fileHandler: IFileHandler;
     private eventBus: IEventBus;
@@ -20,7 +22,7 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, Event>
         this.eventBus = eventBus;
     }
 
-    async run(request: CreateNewEventDTO): Promise<Result<Event>> {
+    async run(request: CreateNewEventDTO): Promise<Result<EventDTO>> {
          
        try {
             const location = new Location(
@@ -31,7 +33,7 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, Event>
           
             const attachment = request.attachment;
             if (attachment && !attachment.name) {
-                return Result.failure<Event>(new FileError("attachment name is invalid"));
+                return Result.failure<EventDTO>(new FileError("attachment name is invalid"));
             }
 
             let attachmentPath: string | undefined = undefined;
@@ -50,14 +52,22 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, Event>
                 attachmentPath
             )
 
+            if (request.surveys) {
+                request.surveys.forEach(survey => {
+                    const surveyEntity = new Survey(survey.title, survey.options);
+                    event.addSurvey(surveyEntity);
+                });
+            }
+
             
             await this.repository.create(event);
 
             this.eventBus.publish(event.pullDomainEvents());
 
-            return Result.success<Event>(event);
+            const mappedEvent = EventMapper.map(event);
+            return Result.success<EventDTO>(mappedEvent);
         } catch (error : any) {
-            return Result.failure<Event>(error);
+            return Result.failure<EventDTO>(error);
         }
     }
 }

@@ -2,6 +2,7 @@ import { Location } from '@/core/shared/domain/Location';
 import { EventEntity } from '../models/EventEntity';
 import { Event } from "../../../domain/Event";
 import { TransformFromUndefinedToNull } from '@/core/shared/infrastructure/decorators/TransformFromUndefinedToNull';
+import { SurveyMapper } from './SurveyMapper';
 
 export class EventMapper {
   static toDomain(entity: EventEntity): Event {
@@ -17,6 +18,10 @@ export class EventMapper {
       entity.attachment ?? undefined
     );
     event.setId(entity.id);
+
+    const surveys = entity.surveys.map(SurveyMapper.toDomain);
+    event.surveys = surveys;
+
     return event;
   }
 
@@ -34,6 +39,7 @@ export class EventMapper {
     entity.participants = event.participants;
     entity.likes = event.likes;
     entity.attachment = event.attachment;
+    entity.surveys = event.surveys.map(SurveyMapper.toEntity);
     return entity;
   }
 }

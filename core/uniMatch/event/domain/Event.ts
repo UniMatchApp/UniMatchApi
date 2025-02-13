@@ -4,6 +4,7 @@ import { DomainError } from "@/core/shared/exceptions/DomainError";
 import { Location } from "@/core/shared/domain/Location";
 import { EventIsDeleted } from "./events/EventIsDeletedEvent";
 import { EventIsModified } from "./events/EventIsModifiedEvent";
+import { Survey } from "./Survey";
 
 export class Event extends AggregateRoot {
     private readonly MAX_SIZE: number = 1000000; // 1MB
@@ -15,6 +16,7 @@ export class Event extends AggregateRoot {
     private _participants: string[] = [];
     private _likes: string[] = [];
     private _attachment?: string;
+    private _surveys: Survey[] = [];
 
     constructor(
         title: string,
@@ -24,7 +26,8 @@ export class Event extends AggregateRoot {
         participants: string[] = [],
         likes: string[] = [],
         price?: number,
-        attachment?: string
+        attachment?: string,
+        surveys: Survey[] = []
     ) {
         super();
         this.title = title;
@@ -35,6 +38,7 @@ export class Event extends AggregateRoot {
         this.participants = participants;
         this.likes = likes;
         this.attachment = attachment;
+        this.surveys = surveys;
     }
 
 
@@ -114,6 +118,14 @@ export class Event extends AggregateRoot {
         this._attachment = value;
     }
 
+    public get surveys(): Survey[] {
+        return this._surveys;
+    }
+
+    public set surveys(value: Survey[]) {
+        this._surveys = value;
+    }
+
     public addParticipant(participantId: string): void {
         if (!this._participants.includes(participantId)) {
             this._participants.push(participantId);
@@ -151,6 +163,24 @@ export class Event extends AggregateRoot {
         }
 
         return true;
+    }
+
+    public addSurvey(survey: Survey): void {
+        if (this._surveys.some((t) => t.title === survey.title)) {
+            throw new DomainError('The survey already exists.');
+        }
+        this._surveys.push(survey);
+    }
+
+    public removeSurvey(survey: Survey): void {
+        this._surveys = this._surveys.filter((t) => t !== survey);
+    }
+
+    public removeSurveyByTitle(title: string): void {
+        if (!this._surveys.some((t) => t.title === title)) {
+            throw new DomainError(`The survey "${title}" does not exist.`);
+        }
+        this._surveys = this._surveys.filter((t) => t.title !== title);
     }
 
     public delete(): void {

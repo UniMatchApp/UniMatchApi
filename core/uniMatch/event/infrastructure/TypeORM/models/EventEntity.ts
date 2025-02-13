@@ -1,4 +1,5 @@
-import { Entity, Column, Unique } from 'typeorm';
+import { Entity, Column, Unique, OneToMany } from 'typeorm';
+import { SurveyEntity } from './SurveyEntity';
 
 @Entity('events')
 @Unique(['id'])
@@ -35,4 +36,7 @@ export class EventEntity {
 
   @Column({ type: 'text', nullable: true })
   attachment?: string | null;
+
+  @OneToMany(() => SurveyEntity, survey => survey.event, { cascade: true, eager: true }) 
+  surveys!: SurveyEntity[];
 }
