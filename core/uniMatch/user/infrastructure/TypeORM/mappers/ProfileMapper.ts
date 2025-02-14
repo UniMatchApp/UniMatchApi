@@ -32,7 +32,7 @@ export class ProfileMapper {
             gender,
             sexualOrientation,
             relationshipType,
-            entity.birthday,
+            new Date(entity.birthday),
             entity.interests,
             entity.wall,
             location
@@ -91,7 +91,7 @@ export class ProfileMapper {
         entity.valuesAndBeliefs = profile.valuesAndBeliefs;
         entity.wall = profile.wall;
         entity.preferredImage = profile.preferredImage;
-        entity.birthday = profile.birthday;
+        entity.birthday = profile.birthday.toString();
         entity.maxDistance = profile.maxDistance;
         entity.ageRange = profile.ageRange;
         entity.genderPriority = profile.genderPriority?.value;

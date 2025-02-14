@@ -14,7 +14,7 @@ const AppDataSource = new DataSource({
     password: process.env.EVENT_DB_PASSWORD || 'test',
     database: process.env.EVENT_DB_NAME || 'test',
     entities: [EventEntity],
-    synchronize: false
+    synchronize: false,
 });
 
 
