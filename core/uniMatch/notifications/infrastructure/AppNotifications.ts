@@ -84,17 +84,19 @@ export class AppNotifications implements IAppNotifications {
         }
     
         const payload = {
-            to: fcmToken,
-            notification: {
-                title,
-                body,
-            },
-            data: {
-                id: notification.getId(),
-                contentId: notification.contentId,
-                status: notification.status,
-                date: notification.date,
-                recipient: notification.recipient,
+            message: {
+                token: fcmToken,
+                notification: {
+                    title,
+                    body,
+                },
+                data: {
+                    id: notification.getId(),
+                    contentId: notification.contentId,
+                    status: notification.status,
+                    date: notification.date,
+                    recipient: notification.recipient,
+                },
             },
         };
     
@@ -102,7 +104,7 @@ export class AppNotifications implements IAppNotifications {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `key=${this.firebaseServerKey}`,
+                Authorization: `Bearer ${this.firebaseServerKey}`,
             },
             body: JSON.stringify(payload),
         });

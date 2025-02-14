@@ -92,6 +92,9 @@ import { OAuth2Client } from "google-auth-library";
 import { google } from "googleapis";
 import path from "path";
 import { NotificationTokenProvider } from "./utils/NotificationTokenProvider";
+import dotenv from 'dotenv';
+
+dotenv.config({ path: path.resolve(__dirname, 'main.env') });
 
 export class DependencyContainer {
 
@@ -99,6 +102,7 @@ export class DependencyContainer {
     readonly server_url = process.env.SERVER_URL || 'http://localhost';
     readonly server_port = process.env.SERVER_PORT || '3000';
     readonly firebase_server_key = process.env.FIREBASE_SERVER_KEY || 'firebase_server_key';
+    
 
     // Dependencias compartidas
     readonly eventBus = new InMemoryEventBus();
@@ -136,6 +140,8 @@ export class DependencyContainer {
         this.subscribeHandlers();
 
         console.log(this.constructor.name + " using -> " + (this.useMocks ? "Mocks" : "Real implementations"));
+
+        console.log("firebase_server_key: ", this.firebase_server_key);
     }
     
     private createFileHandler(): IFileHandler {
