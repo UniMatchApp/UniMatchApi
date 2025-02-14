@@ -1,31 +1,42 @@
-import {WebSocket} from "ws";
-import {Notification} from "@/core/uniMatch/notifications/domain/Notification";
-import {IAppNotifications} from "@/core/uniMatch/notifications/application/ports/IAppNotifications";
-import {WebSocketsClientHandler} from "@/core/shared/infrastructure/clientHandler/WebSocketsClientHandler";
+import { WebSocket } from "ws";
+import { Notification } from "@/core/uniMatch/notifications/domain/Notification";
+import { IAppNotifications } from "@/core/uniMatch/notifications/application/ports/IAppNotifications";
+import { WebSocketsClientHandler } from "@/core/shared/infrastructure/clientHandler/WebSocketsClientHandler";
+import fetch from "node-fetch";
+import { NotificationTypeEnum } from "../domain/enum/NotificationTypeEnum";
+import { AppNotificationPayload } from "../domain/entities/AppNotificationPayload";
+import { EventNotificationPayload } from "../domain/entities/EventNotificationPayload";
+import { MatchNotificationPayload } from "../domain/entities/MatchNotificationPayload";
+import { MessageNotificationPayload } from "../domain/entities/MessageNotificationPayload";
+import { INotificationTokenProvider } from "../application/ports/INotificationTokenProvider";
 
 export class AppNotifications implements IAppNotifications {
     private webSocketController: WebSocketsClientHandler;
+    private notificationTokenProvider: INotificationTokenProvider;
+    private firebaseServerKey: string;
 
-    constructor(webSocketsNotificationsHandler: WebSocketsClientHandler) {
+    constructor(webSocketsNotificationsHandler: WebSocketsClientHandler, notificationTokenProvider: INotificationTokenProvider, firebaseServerKey: string) {
         this.webSocketController = webSocketsNotificationsHandler;
+        this.firebaseServerKey = firebaseServerKey;
+        this.notificationTokenProvider = notificationTokenProvider;
     }
 
     async sendNotification(notification: Notification, recipient?: string): Promise<void> {
         const client = this.webSocketController.getClient(recipient || notification.recipient);
+        const fcmToken = await this.notificationTokenProvider.getNotificationToken(notification.recipient);
 
-        if (!(client && client.socket.notification?.readyState === WebSocket.OPEN)) {
-            return;
+        if (client && client.socket.notification?.readyState === WebSocket.OPEN) {
+            client.socket.notification.send(JSON.stringify({
+                id: notification.getId(),
+                contentId: notification.contentId,
+                status: notification.status,
+                date: notification.date,
+                payload: notification.payload,
+                recipient: notification.recipient
+            }));
+        } else if (fcmToken) {
+            await this.sendPushNotification(notification, fcmToken);
         }
-
-        client.socket.notification.send(JSON.stringify({
-            id: notification.getId(),
-            contentId: notification.contentId,
-            status: notification.status,
-            date: notification.date,
-            payload: notification.payload,
-            recipient: notification.recipient
-        }));
-
     }
 
     async sendNotificationToMany(notifications: Notification[]): Promise<void> {
@@ -37,4 +48,68 @@ export class AppNotifications implements IAppNotifications {
     async checkNotificationStatus(notification: Notification): Promise<boolean> {
         return !!this.webSocketController.getClient(notification.recipient);
     }
+
+    async sendPushNotification(notification: Notification, fcmToken: string): Promise<void> {
+        let title = "Notification";
+        let body = "You have a new notification";
+    
+        switch (notification.payload.type) {
+            case NotificationTypeEnum.APP:
+                const appPayload = notification.payload as AppNotificationPayload;
+                title = appPayload.title;
+                body = appPayload.description;
+                break;
+    
+            case NotificationTypeEnum.EVENT:
+                const eventPayload = notification.payload as EventNotificationPayload;
+                title = eventPayload.title;
+                body = `Event status: ${eventPayload.status}`;
+                break;
+    
+            case NotificationTypeEnum.MATCH:
+                const matchPayload = notification.payload as MatchNotificationPayload;
+                title = "New Match!";
+                body = `${matchPayload.userMatched} ${matchPayload.isLiked ? "liked" : "disliked"} you!`;
+                break;
+    
+            case NotificationTypeEnum.MESSAGE:
+                const messagePayload = notification.payload as MessageNotificationPayload;
+                title = `New message from ${messagePayload.sender}`;
+                body = messagePayload.content;
+                break;
+    
+            default:
+                console.warn("Unknown notification type:", notification.payload.type);
+                break;
+        }
+    
+        const payload = {
+            to: fcmToken,
+            notification: {
+                title,
+                body,
+            },
+            data: {
+                id: notification.getId(),
+                contentId: notification.contentId,
+                status: notification.status,
+                date: notification.date,
+                recipient: notification.recipient,
+            },
+        };
+    
+        const response = await fetch("https://fcm.googleapis.com/fcm/send", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `key=${this.firebaseServerKey}`,
+            },
+            body: JSON.stringify(payload),
+        });
+    
+        if (!response.ok) {
+            console.error("Failed to send push notification:", await response.text());
+        }
+    }
+    
 }

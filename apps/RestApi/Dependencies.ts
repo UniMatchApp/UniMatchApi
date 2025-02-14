@@ -91,12 +91,14 @@ import { DriveFileHandler } from "@/core/shared/infrastructure/fileHandler/Drive
 import { OAuth2Client } from "google-auth-library";
 import { google } from "googleapis";
 import path from "path";
+import { NotificationTokenProvider } from "./utils/NotificationTokenProvider";
 
 export class DependencyContainer {
 
     // Variables de entorno
     readonly server_url = process.env.SERVER_URL || 'http://localhost';
     readonly server_port = process.env.SERVER_PORT || '3000';
+    readonly firebase_server_key = process.env.FIREBASE_SERVER_KEY || 'firebase_server_key';
 
     // Dependencias compartidas
     readonly eventBus = new InMemoryEventBus();
@@ -114,6 +116,7 @@ export class DependencyContainer {
     emailNotifications: IEmailNotifications;
     userRepository: IUserRepository;
     profileRepository: IProfileRepository;
+    notificationTokenProvider: NotificationTokenProvider;
 
     constructor(private useMocks: boolean) {
 
@@ -123,10 +126,12 @@ export class DependencyContainer {
         this.matchingRepository = this.createMatchingRepository();
         this.messageRepository = this.createMessageRepository();
         this.notificationsRepository = this.createNotificationsRepository();
-        this.appNotifications = new AppNotifications(this.wsClientHandler);
         this.emailNotifications = this.createEmailNotifications();
         this.userRepository = this.createUserRepository();
         this.profileRepository = this.createProfileRepository();
+
+        this.notificationTokenProvider = new NotificationTokenProvider(this.userRepository);
+        this.appNotifications = new AppNotifications(this.wsClientHandler, this.notificationTokenProvider, this.firebase_server_key);
 
         this.subscribeHandlers();
 
