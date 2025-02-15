@@ -4,6 +4,7 @@ import path from 'path';
 import { UserEntity } from './models/UserEntity';
 import { ProfileEntity } from './models/ProfileEntity';
 import { ReportedUsersEntity } from './models/ReportedUsersEntity';
+import { fa, tr } from '@faker-js/faker/.';
 
 const envFilePath = path.resolve(__dirname, 'user.env');
 dotenv.config({ path: envFilePath });

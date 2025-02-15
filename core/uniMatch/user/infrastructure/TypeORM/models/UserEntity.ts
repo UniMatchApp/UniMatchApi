@@ -10,6 +10,9 @@ export class UserEntity {
     @Column({ type: 'varchar', length: 255, unique: true })
     privateKey!: string;
 
+    @Column({ type: 'varchar', length: 255, unique: false, default: '' })
+    notificationToken!: string;
+
     @Column({ type: 'timestamp' })
     registrationDate!: Date;
 

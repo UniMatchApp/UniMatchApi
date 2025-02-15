@@ -61,6 +61,7 @@ export class MockEmailNotifications implements IEmailNotifications {
     private async sendEmailToOne(to: string, subject: string, body: string, attachments?: string[]): Promise<void> {
         const emailId = this.generateEmailId();
         console.log(`Mock: Sending email to ${to} with subject "${subject}"`);
+        console.log(`Mock: Body: ${body}`);
         this.emailLog.set(emailId, { to, subject, body, attachments, status: true });
     }
 

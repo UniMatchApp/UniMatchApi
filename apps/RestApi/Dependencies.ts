@@ -140,8 +140,6 @@ export class DependencyContainer {
         this.subscribeHandlers();
 
         console.log(this.constructor.name + " using -> " + (this.useMocks ? "Mocks" : "Real implementations"));
-
-        console.log("firebase_server_key: ", this.firebase_server_key);
     }
     
     private createFileHandler(): IFileHandler {
@@ -179,7 +177,8 @@ export class DependencyContainer {
     }
 
     private createEmailNotifications(): IEmailNotifications {
-        return this.useMocks ? new MockEmailNotifications() : new EmailNotifications();
+        // return this.useMocks ? new MockEmailNotifications() : new EmailNotifications();
+        return new MockEmailNotifications();
     }
 
     private createUserRepository(): IUserRepository {

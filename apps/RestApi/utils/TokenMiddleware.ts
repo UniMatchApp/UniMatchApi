@@ -47,24 +47,26 @@ const handleUserExists = (userId: string, fcmtoken: string, next: NextFunction, 
 
 export const validateAndRefreshToken = (req: Request, res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization;
+  const fcmToken = req.headers['x-fcm-token'];
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    sendErrorResponse(res, 'Token no proporcionado o inválido');
+    sendErrorResponse(res, 'Token de autenticación no proporcionado o inválido');
     return;
   }
 
   const token = authHeader.split(' ')[1];
+
+  if (!fcmToken) {
+    sendErrorResponse(res, 'Token FCM no proporcionado');
+    return;
+  }
 
   try {
     const decoded = dependencies.tokenService.validateToken(token) as jwt.JwtPayload;
 
     req.body = req.body || {};
     req.body.userId = decoded.id;
-
-    if (!req.body.fcmtoken) {
-      sendErrorResponse(res, 'Token FCM no proporcionado');
-      return;
-    }
+    req.body.fcmtoken = fcmToken;
 
     handleUserExists(req.body.userId, req.body.fcmtoken, next, res);
   } catch (error: any) {
@@ -73,3 +75,4 @@ export const validateAndRefreshToken = (req: Request, res: Response, next: NextF
     }
   }
 };
+
