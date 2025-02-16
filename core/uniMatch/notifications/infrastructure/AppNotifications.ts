@@ -13,11 +13,9 @@ import { INotificationTokenProvider } from "../application/ports/INotificationTo
 export class AppNotifications implements IAppNotifications {
     private webSocketController: WebSocketsClientHandler;
     private notificationTokenProvider: INotificationTokenProvider;
-    private firebaseServerKey: string;
 
-    constructor(webSocketsNotificationsHandler: WebSocketsClientHandler, notificationTokenProvider: INotificationTokenProvider, firebaseServerKey: string) {
+    constructor(webSocketsNotificationsHandler: WebSocketsClientHandler, notificationTokenProvider: INotificationTokenProvider) {
         this.webSocketController = webSocketsNotificationsHandler;
-        this.firebaseServerKey = firebaseServerKey;
         this.notificationTokenProvider = notificationTokenProvider;
     }
 
@@ -52,6 +50,7 @@ export class AppNotifications implements IAppNotifications {
     async sendPushNotification(notification: Notification, fcmToken: string): Promise<void> {
         let title = "Notification";
         let body = "You have a new notification";
+        const firebaseServerKey = await this.notificationTokenProvider.generateServerKey();
     
         switch (notification.payload.type) {
             case NotificationTypeEnum.APP:
@@ -96,6 +95,7 @@ export class AppNotifications implements IAppNotifications {
                     status: notification.status,
                     date: notification.date,
                     recipient: notification.recipient,
+                    type: notification.payload.type,
                 },
             },
         };
@@ -104,7 +104,7 @@ export class AppNotifications implements IAppNotifications {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${this.firebaseServerKey}`,
+                Authorization: `Bearer ${firebaseServerKey}`,
             },
             body: JSON.stringify(payload),
         });
