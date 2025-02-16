@@ -42,6 +42,11 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
             const profileUrl = await this.fileHandler.save(UUID.generate().toString(), request.attachment);
 
             const location = request.latitude && request.longitude  ? new Location(request.latitude, request.longitude) : undefined
+
+            const birthday = new Date(request.birthday);
+            if (isNaN(birthday.getTime())) {
+                return Result.failure<Profile>(new Error("Invalid birthday date"));
+            }
  
             const profile = new Profile(
                 request.userId,
@@ -51,7 +56,7 @@ export class CreateNewProfileCommand implements ICommand<CreateNewProfileDTO, Pr
                 new Gender(Gender.fromString(request.gender)),
                 new SexualOrientation(SexualOrientation.fromString(request.sexualOrientation)),
                 RelationshipType.fromString(request.relationshipType),
-                request.birthday,
+                birthday,
                 [],
                 [profileUrl],
                 location
