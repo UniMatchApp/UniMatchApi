@@ -50,6 +50,7 @@ export class AppNotifications implements IAppNotifications {
     async sendPushNotification(notification: Notification, fcmToken: string): Promise<void> {
         let title = "Notification";
         let body = "You have a new notification";
+        let sender = undefined;
         const firebaseServerKey = await this.notificationTokenProvider.generateServerKey();
     
         switch (notification.payload.type) {
@@ -68,13 +69,15 @@ export class AppNotifications implements IAppNotifications {
             case NotificationTypeEnum.MATCH:
                 const matchPayload = notification.payload as MatchNotificationPayload;
                 title = "New Match!";
-                body = `${matchPayload.userMatched} ${matchPayload.isLiked ? "liked" : "disliked"} you!`;
+                body = `Somebody has ${matchPayload.isLiked ? "liked" : "disliked"} you!`;
+                sender = matchPayload.userMatched;
                 break;
     
             case NotificationTypeEnum.MESSAGE:
                 const messagePayload = notification.payload as MessageNotificationPayload;
-                title = `New message from ${messagePayload.sender}`;
+                title = 'You have received a new message';
                 body = messagePayload.content;
+                sender = messagePayload.sender;
                 break;
     
             default:
@@ -85,22 +88,21 @@ export class AppNotifications implements IAppNotifications {
         const payload = {
             message: {
                 token: fcmToken,
-                notification: {
+                data: {
                     title,
                     body,
-                },
-                data: {
                     id: notification.getId(),
                     contentId: notification.contentId,
                     status: notification.status,
                     date: notification.date,
                     recipient: notification.recipient,
                     type: notification.payload.type,
+                    sender
                 },
             },
         };
     
-        const response = await fetch("https://fcm.googleapis.com/fcm/send", {
+        const response = await fetch("https://fcm.googleapis.com/v1/projects/272536925458/messages:send", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

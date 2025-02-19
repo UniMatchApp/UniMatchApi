@@ -101,8 +101,6 @@ export class DependencyContainer {
     // Variables de entorno
     readonly server_url = process.env.SERVER_URL || 'http://localhost';
     readonly server_port = process.env.SERVER_PORT || '3000';
-    readonly firebase_server_key = process.env.FIREBASE_SERVER_KEY || 'firebase_server_key';
-    
 
     // Dependencias compartidas
     readonly eventBus = new InMemoryEventBus();
@@ -135,7 +133,7 @@ export class DependencyContainer {
         this.profileRepository = this.createProfileRepository();
 
         this.notificationTokenProvider = new NotificationTokenProvider(this.userRepository);
-        this.appNotifications = new AppNotifications(this.wsClientHandler, this.notificationTokenProvider, this.firebase_server_key);
+        this.appNotifications = new AppNotifications(this.wsClientHandler, this.notificationTokenProvider);
 
         this.subscribeHandlers();
 
