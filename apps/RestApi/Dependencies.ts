@@ -5,7 +5,6 @@ import {
 } from "@/core/uniMatch/status/infrastructure/InMemory/InMemorySessionStatusRepository";
 import {IEmailNotifications} from "@/core/shared/application/IEmailNotifications";
 import {MockEmailNotifications} from "@/core/shared/infrastructure/notifications/MockEmailNotifications";
-import {FileHandler} from "@/core/shared/infrastructure/fileHandler/FileHandler";
 import {IProfileRepository} from "@/core/uniMatch/user/application/ports/IProfileRepository";
 import {InMemoryProfileRepository} from "@/core/uniMatch/user/infrastructure/InMemory/InMemoryProfileRepository";
 import {IEventRepository} from "@/core/uniMatch/event/application/ports/IEventRepository";
@@ -93,6 +92,7 @@ import { google } from "googleapis";
 import path from "path";
 import { NotificationTokenProvider } from "./utils/NotificationTokenProvider";
 import dotenv from 'dotenv';
+import { FileHandler } from "@/core/shared/infrastructure/fileHandler/FileHandler";
 
 dotenv.config({ path: path.resolve(__dirname, 'main.env') });
 
@@ -150,7 +150,8 @@ export class DependencyContainer {
             scopes: scopes
         });
 
-        return new DriveFileHandler(auth);
+        // return new DriveFileHandler(auth);
+        return new FileHandler("http://localhost", "3000");
         // return new FileHandler(this.server_url, this.server_port);
     }
 
@@ -225,5 +226,5 @@ export class DependencyContainer {
 
 }
 
-export const dependencies = new DependencyContainer(false);
+export const dependencies = new DependencyContainer(true );
 
