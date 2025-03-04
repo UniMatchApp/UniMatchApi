@@ -81,6 +81,8 @@ import { ChangePetsDTO } from '@/core/uniMatch/user/application/DTO/ChangePetsDT
 import { ChangeSmokesDTO } from '@/core/uniMatch/user/application/DTO/ChangeSmokesDTO';
 import { ChangeSportsDTO } from '@/core/uniMatch/user/application/DTO/ChangeSportsDTO';
 import { ChangeValuesAndBeliefsDTO } from '@/core/uniMatch/user/application/DTO/ChangeValuesAndBeliefsDTO';
+import { GetProfileInfoCommand } from '@/core/uniMatch/user/application/commands/GetProfileInfoCommand';
+import { ProfileInfoDTO } from '@/core/uniMatch/user/application/DTO/ProfileInfoDTO';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -163,6 +165,20 @@ export class UserController {
                 ErrorHandler.handleError(error, res);
             }
         });
+    }
+
+    async getProfileInfo(req: Request, res: Response): Promise<void> {
+        const id = req.params.id;
+        const query = new GetProfileInfoCommand(this.profileRepository);
+        const dto = {id: id} as GetProfileDTO;
+        return query.run(dto).then((result: Result<ProfileInfoDTO> ) => {
+            if (result.isSuccess()) {
+                res.json(result); 
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        })
     }
 
     async blockUser(req: Request, res: Response): Promise<void> {
