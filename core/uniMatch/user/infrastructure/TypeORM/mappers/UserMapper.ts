@@ -8,6 +8,7 @@ export class UserMapper {
         const user = new User(
             entity.email,
             entity.password,
+            entity.notificationToken,
             entity.blockedUsers
         );
         user.setId(entity.id);
@@ -48,6 +49,7 @@ export class UserMapper {
             return reportedEntity;
         });
         entity.privateKey = user.privateKey;
+        entity.notificationToken = user.notificationToken;
 
         return entity;
     }

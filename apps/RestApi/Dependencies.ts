@@ -5,7 +5,6 @@ import {
 } from "@/core/uniMatch/status/infrastructure/InMemory/InMemorySessionStatusRepository";
 import {IEmailNotifications} from "@/core/shared/application/IEmailNotifications";
 import {MockEmailNotifications} from "@/core/shared/infrastructure/notifications/MockEmailNotifications";
-import {FileHandler} from "@/core/shared/infrastructure/fileHandler/FileHandler";
 import {IProfileRepository} from "@/core/uniMatch/user/application/ports/IProfileRepository";
 import {InMemoryProfileRepository} from "@/core/uniMatch/user/infrastructure/InMemory/InMemoryProfileRepository";
 import {IEventRepository} from "@/core/uniMatch/event/application/ports/IEventRepository";
@@ -91,6 +90,11 @@ import { DriveFileHandler } from "@/core/shared/infrastructure/fileHandler/Drive
 import { OAuth2Client } from "google-auth-library";
 import { google } from "googleapis";
 import path from "path";
+import { NotificationTokenProvider } from "./utils/NotificationTokenProvider";
+import dotenv from 'dotenv';
+import { FileHandler } from "@/core/shared/infrastructure/fileHandler/FileHandler";
+
+dotenv.config({ path: path.resolve(__dirname, 'main.env') });
 
 export class DependencyContainer {
 
@@ -114,6 +118,7 @@ export class DependencyContainer {
     emailNotifications: IEmailNotifications;
     userRepository: IUserRepository;
     profileRepository: IProfileRepository;
+    notificationTokenProvider: NotificationTokenProvider;
 
     constructor(private useMocks: boolean) {
 
@@ -123,10 +128,12 @@ export class DependencyContainer {
         this.matchingRepository = this.createMatchingRepository();
         this.messageRepository = this.createMessageRepository();
         this.notificationsRepository = this.createNotificationsRepository();
-        this.appNotifications = new AppNotifications(this.wsClientHandler);
         this.emailNotifications = this.createEmailNotifications();
         this.userRepository = this.createUserRepository();
         this.profileRepository = this.createProfileRepository();
+
+        this.notificationTokenProvider = new NotificationTokenProvider(this.userRepository);
+        this.appNotifications = new AppNotifications(this.wsClientHandler, this.notificationTokenProvider);
 
         this.subscribeHandlers();
 
@@ -143,7 +150,8 @@ export class DependencyContainer {
             scopes: scopes
         });
 
-        return new DriveFileHandler(auth);
+        // return new DriveFileHandler(auth);
+        return new FileHandler("http://localhost", "3000");
         // return new FileHandler(this.server_url, this.server_port);
     }
 
@@ -168,7 +176,8 @@ export class DependencyContainer {
     }
 
     private createEmailNotifications(): IEmailNotifications {
-        return this.useMocks ? new MockEmailNotifications() : new EmailNotifications();
+        // return this.useMocks ? new MockEmailNotifications() : new EmailNotifications();
+        return new MockEmailNotifications();
     }
 
     private createUserRepository(): IUserRepository {
@@ -217,5 +226,5 @@ export class DependencyContainer {
 
 }
 
-export const dependencies = new DependencyContainer(false);
+export const dependencies = new DependencyContainer(true );
 

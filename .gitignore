@@ -8,3 +8,4 @@ package-lock.json
 dist
 createRandomUserAndProfile.ts
 borrar.ts
+*.http

@@ -15,12 +15,14 @@ export class User extends AggregateRoot {
     private _blockedUsers: string[] = [];
     private _reportedUsers: ReportedUser[] = [];
     private _registered: boolean;
+    private _notificationToken: string;
 
     constructor(
         email: string,
         password: string,
+        notificationToken: string,
         blockedUsers: string[] = [],
-        registered: boolean = false
+        registered: boolean = false,
     ) {
         super();
         this._privateKey = OTPManager.generateSecret();
@@ -29,6 +31,7 @@ export class User extends AggregateRoot {
         this.password = password;
         this._blockedUsers = blockedUsers;
         this._registered = registered;
+        this._notificationToken = notificationToken;
     }
 
     public get privateKey(): string {
@@ -49,6 +52,14 @@ export class User extends AggregateRoot {
     
     public validateVerificationCode(code: string): boolean {
         return OTPManager.validateCode(code, this._privateKey);
+    }
+
+    public get notificationToken(): string {
+        return this._notificationToken;
+    }
+
+    public set notificationToken(value: string) {
+        this._notificationToken = value;
     }
 
     public get registrationDate(): Date {

@@ -31,6 +31,10 @@ const envFiles = [
     {
         src: path.resolve('core/shared/shared.env'),
         dest: path.resolve('dist/apps/RestApi/shared.env')
+    },
+    {
+        src: path.resolve('apps/RestApi/main.env'),
+        dest: path.resolve('dist/apps/RestApi/main.env')
     }
 
 ];

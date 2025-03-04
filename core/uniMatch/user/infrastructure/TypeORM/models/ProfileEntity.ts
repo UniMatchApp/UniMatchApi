@@ -81,8 +81,8 @@ export class ProfileEntity {
     @Column({ type: 'text' })
     preferredImage!: string;
 
-    @Column({ type: 'date' })
-    birthday!: Date;
+    @Column({ type: 'text' })
+    birthday!: string;
 
     @Column('int', { default: 50 })
     maxDistance!: number;

@@ -3,6 +3,7 @@ import { google, drive_v3 } from 'googleapis';
 import * as path from 'path';
 import { GoogleAuth } from 'google-auth-library';
 import { Readable } from 'stream';
+import { fileTypeFromBuffer } from 'file-type';
 
 export class DriveFileHandler implements IFileHandler {
 
@@ -14,7 +15,7 @@ export class DriveFileHandler implements IFileHandler {
             version: 'v3',
             auth: auth,
         });
-        
+
         auth.getProjectId().then(projectId => {
             console.log(`Autenticado en el proyecto: ${projectId}`);
         });
@@ -30,20 +31,30 @@ export class DriveFileHandler implements IFileHandler {
         }
 
         const buffer = Buffer.from(await data.arrayBuffer());
+
+        // Detectar el tipo MIME real del archivo
+        const fileType = await fileTypeFromBuffer(buffer);
+        if (!fileType || !this.isValidFileType(fileType.mime)) {
+            throw new Error("Invalid file type detected from content.");
+        }
+
+        if (data.type !== fileType.mime) {
+            throw new Error("Declared file type does not match actual file type.");
+        }
+
         const stream = Readable.from(buffer);
 
         try {
             const fileMetadata = {
                 name: fileName,
-                parents: ['1Y7siaaujpdYZsucYmr2WiO8VImoXGtSr'],  
+                parents: ['1Y7siaaujpdYZsucYmr2WiO8VImoXGtSr'],
             };
-
 
             const res = await this.driveService.files.create({
                 requestBody: fileMetadata,
                 media: {
                     mimeType: data.type,
-                    body: stream
+                    body: stream,
                 },
                 fields: 'id, webContentLink',
             });
@@ -59,7 +70,7 @@ export class DriveFileHandler implements IFileHandler {
                 requestBody: {
                     role: 'reader',
                     type: 'anyone',
-                }
+                },
             });
 
             const fileLink = `https://drive.google.com/uc?id=${fileId}&export=download`;
@@ -71,8 +82,6 @@ export class DriveFileHandler implements IFileHandler {
             throw new Error(`Failed to upload file to Drive: ${error.message}`);
         }
     }
-
-    
 
     async read(filePath: string): Promise<File> {
         try {
@@ -86,7 +95,7 @@ export class DriveFileHandler implements IFileHandler {
             res.data.on('data', chunk => chunks.push(chunk));
             await new Promise(resolve => res.data.on('end', resolve));
             const fileBuffer = Buffer.concat(chunks);
-            
+
             return new File([fileBuffer], filePath);
         } catch (error: any) {
             throw new Error(`Failed to read file from Drive: ${error.message}`);
@@ -99,17 +108,16 @@ export class DriveFileHandler implements IFileHandler {
             if (!matches) {
                 throw new Error('Invalid file link');
             }
-    
-            const fileId = matches[0]; 
-    
+
+            const fileId = matches[0];
+
             await this.driveService.files.delete({
                 fileId: fileId,
             });
-    
+
             console.log(`File with ID: ${fileId} deleted successfully.`);
         } catch (error: any) {
             throw new Error(`Failed to delete file from Drive: ${error.message}`);
         }
     }
-    
 }

@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-
 import { IFileHandler } from '@/core/shared/application/IFileHandler';
 import { promisify } from 'util';
+import { fileTypeFromBuffer } from 'file-type';
 
 const writeFile = promisify(fs.writeFile);
 
@@ -10,30 +10,48 @@ export class FileHandler implements IFileHandler {
 
     private readonly server_url: string;
     private readonly server_port: string;
+    private readonly allowedFileTypes: string[] = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
     constructor(server_url: string, server_port: string) {
         this.server_url = server_url;
         this.server_port = server_port;
     }
 
-    private readonly allowedFileTypes: string[] = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-
+    private isValidFileType(fileType: string): boolean {
+        return this.allowedFileTypes.includes(fileType);
+    }
 
     async save(fileName: string, data: File): Promise<string> {
-        const extname = path.extname(fileName) || (data.type ? `.${data.type.split('/')[1]}` : '.txt');
-        
+        if (!this.isValidFileType(data.type)) {
+            throw new Error("Invalid file type.");
+        }
+
+        const buffer = Buffer.from(await data.arrayBuffer());
+
+        // Detectar el tipo MIME real del archivo
+        const fileType = await fileTypeFromBuffer(buffer);
+        if (!fileType || !this.isValidFileType(fileType.mime)) {
+            throw new Error("Invalid file type detected from content.");
+        }
+
+        if (data.type !== fileType.mime) {
+            throw new Error("Declared file type does not match actual file type.");
+        }
+
+        const extname = path.extname(fileName) || `.${fileType.ext}`;
         const filePath = path.join(__dirname, 'uploads', fileName + extname);
-    
+
         return new Promise(async (resolve, reject) => {
             const serverUrl = `${this.server_url}:${this.server_port}/uploads/${fileName}${extname}`;
             const writeStream = fs.createWriteStream(filePath);
-    
+
             writeStream.on('finish', () => resolve(serverUrl));
-            writeStream.write(Buffer.from(await data.arrayBuffer()));
-            writeStream.end(() => resolve(serverUrl));
+            writeStream.on('error', (err) => reject(err));
+
+            writeStream.write(buffer);
+            writeStream.end();
         });
     }
-
 
     async read(filePath: string): Promise<File> {
         return new Promise((resolve, reject) => {
@@ -47,7 +65,6 @@ export class FileHandler implements IFileHandler {
         });
     }
 
-    
     async delete(filePath: string): Promise<void> {
         const uploadsDir = path.join(__dirname, 'uploads');
 
@@ -65,10 +82,4 @@ export class FileHandler implements IFileHandler {
             });
         });
     }
-
-    private isValidFileType(fileType: string): boolean {
-        return this.allowedFileTypes.includes(fileType);
-    }
 }
-
-
