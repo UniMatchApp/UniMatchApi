@@ -2,6 +2,7 @@ import { SurveyDTO, SurveyMapper } from "./SurveyDTO";
 import { Event } from "../../domain/Event";
 
 export interface EventDTO {
+    eventId: string;
     title: string;
     price?: number;
     location: { latitude: number; longitude: number; altitude?: number };
@@ -16,6 +17,7 @@ export interface EventDTO {
   export class EventMapper {
     static map(event: Event): EventDTO {
       return {
+        eventId: event.getId(),
         title: event.title,
         price: event.price,
         location: {
