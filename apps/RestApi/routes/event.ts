@@ -22,4 +22,4 @@ router.delete('/:id/survey/:title', validateAndRefreshToken, eventController.del
 router.put('/:id/survey/:title/select', validateAndRefreshToken, eventController.selectSurvey.bind(eventController));
 router.put('/:id/survey/:title/deselect', validateAndRefreshToken, eventController.deselectSurvey.bind(eventController));
 
-export {router};
+export {router};    

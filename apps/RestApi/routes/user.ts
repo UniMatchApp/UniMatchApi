@@ -53,6 +53,6 @@ router.post('/auth/:email/forgot-password', userController.forgotPassword.bind(u
 router.post('/auth/:email/resend-code', userController.resendCode.bind(userController));
 router.post('/auth/:email/verify-code/:code', userController.verifyCode.bind(userController));
 
-router.get('profile/:id/name', userController.getProfileInfo.bind(userController));
+router.get('/profile/:id/info', userController.getProfileInfo.bind(userController));
 
 export {router};

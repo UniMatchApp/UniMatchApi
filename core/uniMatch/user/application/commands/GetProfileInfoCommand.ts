@@ -16,7 +16,6 @@ export class GetProfileInfoCommand implements ICommand<GetProfileDTO, ProfileInf
     async run(request: GetProfileDTO): Promise<Result<ProfileInfoDTO>> {
         try {
             const profile = await this.repository.findByUserId(request.id);
-            console.log("Profile: ", profile);
             if (!profile) {
                 return Result.failure<ProfileInfoDTO>(new NotFoundError(`Profile with id ${request.id} not found`));
             }
@@ -24,7 +23,7 @@ export class GetProfileInfoCommand implements ICommand<GetProfileDTO, ProfileInf
                 ProfileInfoDTO.fromProfile(profile)
             );
         } catch (error: any) {
-            return Result.failure<ProfileInfoDTO>(error);
+            return Result.failure<ProfileInfoDTO>(new Error(`Errorres ${error}`));
         }
     }
 }
