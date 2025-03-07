@@ -15,8 +15,8 @@ router.put('/:id', validateAndRefreshToken, fileUploadMiddleware, eventControlle
 router.delete('/:id', validateAndRefreshToken, eventController.delete.bind(eventController));
 router.post('/participate/:id', validateAndRefreshToken, eventController.participateEvent.bind(eventController));
 router.post('/unparticipate/:id', validateAndRefreshToken, eventController.removeParticipation.bind(eventController));
-router.post('like/:id', validateAndRefreshToken, eventController.likeEvent.bind(eventController));
-router.post('dislike/:id', validateAndRefreshToken, eventController.dislikeEvent.bind(eventController));
+router.post('/like/:id', validateAndRefreshToken, eventController.likeEvent.bind(eventController));
+router.post('/dislike/:id', validateAndRefreshToken, eventController.dislikeEvent.bind(eventController));
 router.put('/:id', validateAndRefreshToken, eventController.createSurvey.bind(eventController));
 router.delete('/:id/survey/:title', validateAndRefreshToken, eventController.deleteSurvey.bind(eventController));
 router.put('/:id/survey/:title/select', validateAndRefreshToken, eventController.selectSurvey.bind(eventController));
