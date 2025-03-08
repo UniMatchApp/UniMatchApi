@@ -40,6 +40,7 @@ import {MessageDTO} from "@/core/uniMatch/message/application/DTO/MessageDTO";
 import {IFileHandler} from "@/core/shared/application/IFileHandler";
 import { MessageHasBeenReceivedCommand } from '@/core/uniMatch/message/application/commands/MessageHasBeenReceivedCommand';
 import { MessageHasBeenReceivedDTO } from '@/core/uniMatch/message/application/DTO/MessageHasBeenReceivedDTO';
+import { tr } from '@faker-js/faker/.';
 
 
 export class MessageController {
@@ -87,9 +88,8 @@ export class MessageController {
     async deleteMessage(req: Request, res: Response): Promise<void> {
         const userId = req.body.userId;
         const messageId = req.params.messageId;
-        const deleteForBoth = Boolean(req.query.deleteForBoth === 'true');
         const command = new DeleteMessageCommand(this.messageRepository, this.eventBus, this.fileHandler);
-        const dto = {userId: userId, messageId: messageId, deleteForBoth: deleteForBoth} as DeleteMessageDTO;
+        const dto = {userId: userId, messageId: messageId} as DeleteMessageDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result);

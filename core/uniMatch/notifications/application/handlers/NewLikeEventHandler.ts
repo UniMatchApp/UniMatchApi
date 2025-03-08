@@ -3,6 +3,7 @@ import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { Notification } from "../../domain/Notification";
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { IAppNotifications } from "../ports/IAppNotifications";
+import { EventError } from "@/core/shared/exceptions/EventError";
 
 export class NewLikeEventHandler implements IEventHandler {
     private readonly repository: INotificationsRepository;
@@ -20,7 +21,7 @@ export class NewLikeEventHandler implements IEventHandler {
             const target = event.getPayload().get("target");
     
             if (!user || !target) {
-                throw new Error("User and Target are required to create a notification.");
+                throw new EventError("User and Target are required to create a notification.");
             }
     
             const notification = Notification.createMatchNotification(

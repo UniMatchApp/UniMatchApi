@@ -2,7 +2,6 @@ import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { Message } from "../Message";
 import {MessageDeletedStatusType } from "@/core/shared/domain/MessageReceptionStatusEnum";
 import { MessageDTO } from "../../application/DTO/MessageDTO";
-import { r } from "@faker-js/faker/dist/airline-BLb3y-7w";
 
 export class DeletedMessageEvent extends DomainEvent {
     private constructor(
