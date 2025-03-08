@@ -1,6 +1,7 @@
 import {IMessageRepository} from "@/core/uniMatch/message/application/ports/IMessageRepository";
 import {Message} from "@/core/uniMatch/message/domain/Message";
 import {user1, user2} from "@/core/uniMatch/user/domain/mocks/MockUsers";
+import { MessageDeletedStatusEnum } from "@/core/shared/domain/MessageReceptionStatusEnum";
 
 export class InMemoryMessageRepository implements IMessageRepository {
 
@@ -72,26 +73,28 @@ export class InMemoryMessageRepository implements IMessageRepository {
 
     async findLastMessagesBetweenUsers(userId: string, otherUserId: string): Promise<Message[]> {
         return Object.values(this.messages)
-            .filter(
-                message =>
-                    (message.sender === userId && message.recipient === otherUserId) ||
-                    (message.sender === otherUserId && message.recipient === userId)
+            .filter(message =>
+                ((message.sender === userId && message.recipient === otherUserId && message.deletedStatus.sender !== MessageDeletedStatusEnum.DELETED) ||
+                (message.sender === otherUserId && message.recipient === userId && message.deletedStatus.recipient !== MessageDeletedStatusEnum.DELETED))
             )
             .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-    }
+    }    
 
     async findLastMessagesOfUser(userId: string): Promise<Message[]> {
         return Object.values(this.messages)
-            .filter(message => message.sender === userId || message.recipient === userId)
+            .filter(message => 
+                (message.sender === userId && message.deletedStatus.sender !== MessageDeletedStatusEnum.DELETED) ||
+                (message.recipient === userId && message.deletedStatus.recipient !== MessageDeletedStatusEnum.DELETED)
+            )
             .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     }
+    
 
     async findMessagesBetweenUsersPaginated(userId: string, otherUserId: string, after: number, limit: number): Promise<Message[]> {
         return Object.values(this.messages)
-            .filter(
-                message =>
-                    (message.sender === userId && message.recipient === otherUserId) ||
-                    (message.sender === otherUserId && message.recipient === userId)
+            .filter(message =>
+                ((message.sender === userId && message.recipient === otherUserId && message.deletedStatus.sender !== MessageDeletedStatusEnum.DELETED) ||
+                (message.sender === otherUserId && message.recipient === userId && message.deletedStatus.recipient !== MessageDeletedStatusEnum.DELETED))
             )
             .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
             .slice(after, after + limit);
@@ -100,7 +103,10 @@ export class InMemoryMessageRepository implements IMessageRepository {
     findMessagesOfUserPaginated(userId: string, after: number, limit: number): Promise<Message[]> {
         return Promise.resolve(
             Object.values(this.messages)
-                .filter(message => message.sender === userId || message.recipient === userId)
+                .filter(message => 
+                    (message.sender === userId && message.deletedStatus.sender !== MessageDeletedStatusEnum.DELETED) ||
+                    (message.recipient === userId && message.deletedStatus.recipient !== MessageDeletedStatusEnum.DELETED)
+                )
                 .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
                 .slice(after, after + limit)
         );

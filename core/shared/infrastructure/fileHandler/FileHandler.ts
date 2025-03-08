@@ -3,6 +3,7 @@ import path from 'path';
 import { IFileHandler } from '@/core/shared/application/IFileHandler';
 import { promisify } from 'util';
 import { fileTypeFromBuffer } from 'file-type';
+import crypto from 'crypto';
 
 const writeFile = promisify(fs.writeFile);
 
@@ -10,7 +11,15 @@ export class FileHandler implements IFileHandler {
 
     private readonly server_url: string;
     private readonly server_port: string;
-    private readonly allowedFileTypes: string[] = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    private readonly allowedFileTypes: string[] = [
+        'image/jpeg', 
+        'image/png', 
+        'image/gif', 
+        'image/webp',
+        'image/jpg',
+        'video/mp4',
+        'video/webm'
+    ];
 
     constructor(server_url: string, server_port: string) {
         this.server_url = server_url;
@@ -19,6 +28,10 @@ export class FileHandler implements IFileHandler {
 
     private isValidFileType(fileType: string): boolean {
         return this.allowedFileTypes.includes(fileType);
+    }
+
+    private generateRandomFileName(extension: string): string {
+        return crypto.randomBytes(16).toString('hex') + extension;
     }
 
     async save(fileName: string, data: File): Promise<string> {
@@ -38,11 +51,13 @@ export class FileHandler implements IFileHandler {
             throw new Error("Declared file type does not match actual file type.");
         }
 
+        // Generar un nombre aleatorio para el archivo
         const extname = path.extname(fileName) || `.${fileType.ext}`;
-        const filePath = path.join(__dirname, 'uploads', fileName + extname);
+        const randomFileName = this.generateRandomFileName(extname);
+        const filePath = path.join(__dirname, 'uploads', randomFileName);
 
         return new Promise(async (resolve, reject) => {
-            const serverUrl = `${this.server_url}:${this.server_port}/uploads/${fileName}${extname}`;
+            const serverUrl = `${this.server_url}:${this.server_port}/uploads/${randomFileName}`;
             const writeStream = fs.createWriteStream(filePath);
 
             writeStream.on('finish', () => resolve(serverUrl));

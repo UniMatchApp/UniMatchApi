@@ -3,7 +3,6 @@ import { Result } from "@/core/shared/domain/Result";
 import { UserIsTypingDTO } from "../DTO/UserIsTypingDTO";
 import { ISessionStatusRepository } from "../ports/ISessionStatusRepository";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
-import { r } from "@faker-js/faker/dist/airline-BLb3y-7w";
 
 export class UserIsTypingCommand implements ICommand<UserIsTypingDTO, string> {
     private readonly repository: ISessionStatusRepository;
