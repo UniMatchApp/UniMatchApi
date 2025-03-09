@@ -30,7 +30,7 @@ export class DeleteMessageCommand implements ICommand<DeleteMessageDTO, void> {
                 this.fileHandler.delete(message.attachment);
             }
 
-            if (request.deleteForBoth == undefined) {
+            if (request.deleteForBoth == undefined && message.sender === request.userId) {
                 request.deleteForBoth = true;
             }
 

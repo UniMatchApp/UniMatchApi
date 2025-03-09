@@ -29,14 +29,25 @@ export class ReceivedMessageEventHandler implements IEventHandler {
             const contentStatus = event.getPayload().get("contentStatus");
             const receptionStatus = event.getPayload().get("receptionStatus");
             const deletedStatus = event.getPayload().get("deletedStatus");
+            const createdAt = event.getPayload().get("createdAt");
+            const updatedAt = event.getPayload().get("updatedAt");
 
             if (!messageId || !newContent || !recipient || !sender) {
                 throw new Error("Required fields are missing.");
             }
 
+            if (!contentStatus || !receptionStatus || !deletedStatus) {
+                throw new Error("Content status, reception status and deleted status are required to read a message.");
+            }
+
+            if (!createdAt || !updatedAt) {
+                throw new Error("Original message creation date and last update date are required to read a message.");
+            }
+
             const notification = Notification.createMessageNotification(
                 messageId,
-                new Date(),
+                parseInt(createdAt, 10),
+                parseInt(updatedAt, 10),
                 recipient,
                 newContent,
                 sender,

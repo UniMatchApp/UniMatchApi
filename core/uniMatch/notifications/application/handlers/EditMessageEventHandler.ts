@@ -33,6 +33,8 @@ export class EditMessageEventHandler implements IEventHandler {
             const contentStatus = event.getPayload().get("contentStatus");
             const receptionStatus = event.getPayload().get("receptionStatus");
             const deletedStatus = event.getPayload().get("deletedStatus");
+            const createdAt = event.getPayload().get("createdAt");
+            const updatedAt = event.getPayload().get("updatedAt");
 
             if (!messageId || !newContent || !recipient) {
                 throw new EventError("Recipient, MessageID and new content are required to edit a message.");
@@ -44,6 +46,10 @@ export class EditMessageEventHandler implements IEventHandler {
 
             if (!sender) {
                 throw new EventError("Sender is required to edit a message.");
+            }1
+
+            if (!createdAt || !updatedAt) {
+                throw new EventError("Original message creation date and last update date are required to edit a message.");
             }
 
             const oldNotification = await this.repository.findLastNotificationByTypeAndTypeId(NotificationTypeEnum.MESSAGE, messageId);
@@ -54,7 +60,8 @@ export class EditMessageEventHandler implements IEventHandler {
 
             const notification = Notification.createMessageNotification(
                 messageId,
-                new Date(),
+                parseInt(createdAt, 10),
+                parseInt(updatedAt, 10),
                 recipient,
                 newContent,
                 sender,
