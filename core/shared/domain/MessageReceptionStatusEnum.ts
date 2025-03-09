@@ -17,7 +17,7 @@ export function validateMessageReceptionStatusType(value: string | undefined): v
 }
 
 export function validateDeletedMessageStatusType(value: string | undefined): value is MessageDeletedStatusType {
-    return value === "DELETED_FOR_BOTH" || value === "NOT_DELETED";
+    return value === "DELETED" || value === "NOT_DELETED";
 }
 
 export enum MessageDeletedStatusEnum {

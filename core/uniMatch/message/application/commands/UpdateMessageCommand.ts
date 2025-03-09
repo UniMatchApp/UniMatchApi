@@ -7,11 +7,12 @@ import {IFileHandler} from "@/core/shared/application/IFileHandler";
 import {NotFoundError} from "@/core/shared/exceptions/NotFoundError";
 import {ValidationError} from "@/core/shared/exceptions/ValidationError";
 import {
+    MessageDeletedStatusEnum,
     MessageReceptionStatusType,
+    validateDeletedMessageStatusType,
     validateMessageReceptionStatusType
 } from "@/core/shared/domain/MessageReceptionStatusEnum";
 import {MessageDTO} from "@/core/uniMatch/message/application/DTO/MessageDTO";
-import { r } from "@faker-js/faker/dist/airline-BLb3y-7w";
 
 export class UpdateMessageCommand implements ICommand<UpdateMessageDTO, MessageDTO> {
     private readonly repository: IMessageRepository;

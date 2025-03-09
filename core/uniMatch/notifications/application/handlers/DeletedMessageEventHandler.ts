@@ -9,6 +9,7 @@ import {
 } from "@/core/shared/domain/MessageReceptionStatusEnum";
 import {INotificationsRepository} from "../ports/INotificationsRepository";
 import {NotificationTypeEnum} from "../../domain/enum/NotificationTypeEnum";
+import { EventError } from "@/core/shared/exceptions/EventError";
 
 export class DeletedMessageEventHandler implements IEventHandler {
     private readonly appNotifications: IAppNotifications;
@@ -21,16 +22,16 @@ export class DeletedMessageEventHandler implements IEventHandler {
 
     async handle(event: DomainEvent): Promise<void> {
         try {
-            const messageId = event.getPayload().get("messageId");
-            const recipient = event.getAggregateId();
+            const messageId = event.getAggregateId();
+            const recipient = event.getPayload().get("recipient");
             const sender = event.getPayload().get("sender");
 
             if (!messageId || !recipient) {
-                throw new ErrorEvent("Recipient and MessageID is required to delete a message.");
+                throw new EventError("Recipient and MessageID is required to delete a message.");
             }
 
             if (!sender) {
-                throw new ErrorEvent("Sender is required to delete a message.");
+                throw new EventError("Sender is required to delete a message.");
             }
 
             const oldNotification = await this.repository.findLastNotificationByTypeAndTypeId(NotificationTypeEnum.MESSAGE, messageId)

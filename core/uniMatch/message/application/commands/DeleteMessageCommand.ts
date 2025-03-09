@@ -30,6 +30,10 @@ export class DeleteMessageCommand implements ICommand<DeleteMessageDTO, void> {
                 this.fileHandler.delete(message.attachment);
             }
 
+            if (request.deleteForBoth == undefined) {
+                request.deleteForBoth = true;
+            }
+
             if (request.deleteForBoth && message.sender !== request.userId) {
                 return Result.failure<void>(new ValidationError('User is not the sender and is not allowed to delete this message for both users'));
             }

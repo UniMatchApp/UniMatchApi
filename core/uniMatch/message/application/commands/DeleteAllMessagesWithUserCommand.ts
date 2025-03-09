@@ -30,7 +30,7 @@ export class DeleteAllMessagesWithUserCommand implements ICommand<DeleteAllUserM
 
             for (const message of userMessages) {
                 message.deleteForBoth(userId);
-                await this.repository.create(message);
+                await this.repository.update(message, message.getId());
                 this.eventBus.publish(message.pullDomainEvents());
             }
 

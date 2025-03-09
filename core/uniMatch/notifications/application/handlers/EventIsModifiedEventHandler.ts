@@ -4,6 +4,7 @@ import { Notification } from "../../domain/Notification";
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { EventStatusEnum } from "../../domain/enum/EventStatusEnum";
 import { IAppNotifications } from "../ports/IAppNotifications";
+import { EventError } from "@/core/shared/exceptions/EventError";
 
 export class EventIsModifiedEventHandler implements IEventHandler {
     private readonly repository: INotificationsRepository;
@@ -20,7 +21,7 @@ export class EventIsModifiedEventHandler implements IEventHandler {
             const recipient = event.getAggregateId();
     
             if (!eventName || !recipient) {
-                throw new ErrorEvent("Recipient and Event Name are required to create a notification.");
+                throw new EventError("Recipient and Event Name are required to create a notification.");
             }
     
             const notification = Notification.createEventNotification(

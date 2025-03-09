@@ -4,6 +4,7 @@ import * as path from 'path';
 import { GoogleAuth } from 'google-auth-library';
 import { Readable } from 'stream';
 import { fileTypeFromBuffer } from 'file-type';
+import crypto from 'crypto';
 
 export class DriveFileHandler implements IFileHandler {
 
@@ -25,6 +26,10 @@ export class DriveFileHandler implements IFileHandler {
         return this.allowedFileTypes.includes(fileType);
     }
 
+    private generateRandomFileName(extension: string): string {
+        return crypto.randomBytes(16).toString('hex') + extension;
+    }
+
     async save(fileName: string, data: File): Promise<string> {
         if (!this.isValidFileType(data.type)) {
             throw new Error("Invalid file type.");
@@ -42,11 +47,15 @@ export class DriveFileHandler implements IFileHandler {
             throw new Error("Declared file type does not match actual file type.");
         }
 
+        // Generar un nombre aleatorio para el archivo
+        const extname = path.extname(fileName) || `.${fileType.ext}`;
+        const randomFileName = this.generateRandomFileName(extname);
+
         const stream = Readable.from(buffer);
 
         try {
             const fileMetadata = {
-                name: fileName,
+                name: randomFileName,  // Usar el nombre aleatorio
                 parents: ['1Y7siaaujpdYZsucYmr2WiO8VImoXGtSr'],
             };
 

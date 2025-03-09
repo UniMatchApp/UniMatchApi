@@ -11,6 +11,7 @@ import { Notification } from "../../domain/Notification";
 import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { NotificationTypeEnum } from "../../domain/enum/NotificationTypeEnum";
 import { de } from "@faker-js/faker/.";
+import { EventError } from "@/core/shared/exceptions/EventError";
 
 
 export class EditMessageEventHandler implements IEventHandler {
@@ -34,15 +35,15 @@ export class EditMessageEventHandler implements IEventHandler {
             const deletedStatus = event.getPayload().get("deletedStatus");
 
             if (!messageId || !newContent || !recipient) {
-                throw new ErrorEvent("Recipient, MessageID and new content are required to edit a message.");
+                throw new EventError("Recipient, MessageID and new content are required to edit a message.");
             }
 
             if (!contentStatus || !receptionStatus || !deletedStatus) {
-                throw new ErrorEvent("Content status, reception status and deleted status are required to edit a message.");
+                throw new EventError("Content status, reception status and deleted status are required to edit a message.");
             }
 
             if (!sender) {
-                throw new ErrorEvent("Sender is required to edit a message.");
+                throw new EventError("Sender is required to edit a message.");
             }
 
             const oldNotification = await this.repository.findLastNotificationByTypeAndTypeId(NotificationTypeEnum.MESSAGE, messageId);

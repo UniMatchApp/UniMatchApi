@@ -3,6 +3,7 @@ import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { Notification } from "../../domain/Notification";
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { IEmailNotifications } from "@/core/shared/application/IEmailNotifications";
+import { EventError } from "@/core/shared/exceptions/EventError";
 
 export class UserHasChangedPasswordEventHandler implements IEventHandler {
     private readonly repository: INotificationsRepository;
@@ -18,7 +19,7 @@ export class UserHasChangedPasswordEventHandler implements IEventHandler {
             const recipient = event.getAggregateId();
 
             if (!recipient) {
-                throw new ErrorEvent("Recipient is required to create a notification.");
+                throw new EventError("Recipient is required to create a notification.");
             }
     
             const notification = Notification.createAppNotification(

@@ -100,9 +100,8 @@ export class WebSocketController {
                                     targetClient.socket.status.send(JSON.stringify({type: 'typing', userId: userId}));
                                 }
                             }
-                        }else{
-                            console.error('Error:', command.getError());
                         }
+                        
                         break;
                     }
 

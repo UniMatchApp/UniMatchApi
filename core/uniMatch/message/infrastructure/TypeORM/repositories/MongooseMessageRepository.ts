@@ -4,6 +4,7 @@ import { Message } from '../../../domain/Message';
 import { MessageMapper } from '../mappers/MessageMapper';
 import { IMessageEntity, MessageSchema } from '../models/MessageEntity';
 import { Model } from 'mongoose';
+import { MessageDeletedStatusEnum } from '@/core/shared/domain/MessageReceptionStatusEnum';
 
 export class MongooseMessageRepository implements IMessageRepository {
     private messageEntity: Model<IMessageEntity> | null = null;
@@ -42,20 +43,28 @@ export class MongooseMessageRepository implements IMessageRepository {
 
     async findLastMessagesOfUser(userId: string): Promise<Message[]> {
         await this.ensureInitialized();
-        const entities = await this.messageEntity!.find({ sender: userId }).sort({ timestamp: -1 });
+        const entities = await this.messageEntity!.find({
+            $or: [
+                { sender: userId, deletedStatusSender: { $ne: MessageDeletedStatusEnum.DELETED } },
+                { recipient: userId, deletedStatusRecipient: { $ne: MessageDeletedStatusEnum.DELETED } }
+            ]
+        }).sort({ createdAt: -1 });
+        
         return entities.map(MessageMapper.toDomain);
     }
+    
 
     async findLastMessagesBetweenUsers(userId: string, otherUserId: string): Promise<Message[]> {
         await this.ensureInitialized();
         const entities = await this.messageEntity!.find({
             $or: [
-                { sender: userId, recipient: otherUserId },
-                { sender: otherUserId, recipient: userId }
+                { sender: userId, recipient: otherUserId, deletedStatusSender: { $ne: MessageDeletedStatusEnum.DELETED } },
+                { sender: otherUserId, recipient: userId, deletedStatusRecipient: { $ne: MessageDeletedStatusEnum.DELETED } }
             ]
-        }).sort({ timestamp: -1 });
+        }).sort({ createdAt: -1 });
+        
         return entities.map(MessageMapper.toDomain);
-    }
+    }    
 
     async findMessagesBetweenUsersPaginated(
         userId: string,
@@ -67,11 +76,12 @@ export class MongooseMessageRepository implements IMessageRepository {
         const afterDate = new Date(after);
         const entities = await this.messageEntity!.find({
             $or: [
-                { sender: userId, recipient: otherUserId },
-                { sender: otherUserId, recipient: userId }
+                { sender: userId, recipient: otherUserId, deletedStatusSender: { $ne: MessageDeletedStatusEnum.DELETED } },
+                { sender: otherUserId, recipient: userId, deletedStatusRecipient: { $ne: MessageDeletedStatusEnum.DELETED } }
             ],
-            timestamp: { $gt: afterDate }
-        }).sort({ timestamp: 1 }).limit(limit);
+            createdAt: { $gt: afterDate }
+        }).sort({ createdAt: 1 }).limit(limit);
+        
         return entities.map(MessageMapper.toDomain);
     }
 
@@ -79,10 +89,21 @@ export class MongooseMessageRepository implements IMessageRepository {
         await this.ensureInitialized();
         const entities = await this.messageEntity!.find({
             $and: [
-                { $or: [{ sender: userId }, { recipient: userId }] },
-                { $or: [{ createdAt: { $gt: new Date(after) } }, { updatedAt: { $gt: new Date(after) } }] }
+                {
+                    $or: [
+                        { sender: userId, deletedStatusSender: { $ne: MessageDeletedStatusEnum.DELETED } },
+                        { recipient: userId, deletedStatusRecipient: { $ne: MessageDeletedStatusEnum.DELETED } }
+                    ]
+                },
+                {
+                    $or: [
+                        { createdAt: { $gt: new Date(after) } },
+                        { updatedAt: { $gt: new Date(after) } }
+                    ]
+                }
             ]
-        }).sort({ timestamp: 1 }).limit(limit);
+        }).sort({ createdAt: 1 }).limit(limit);
+        
         return entities.map(MessageMapper.toDomain);
     }
 

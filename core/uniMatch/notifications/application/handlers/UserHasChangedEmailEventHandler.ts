@@ -3,6 +3,7 @@ import { INotificationsRepository } from "../ports/INotificationsRepository";
 import { Notification } from "../../domain/Notification";
 import { DomainEvent } from "@/core/shared/domain/DomainEvent";
 import { IEmailNotifications } from "@/core/shared/application/IEmailNotifications";
+import { EventError } from "@/core/shared/exceptions/EventError";
 
 export class UserHasChangedEmailEventHandler implements IEventHandler {
     private readonly repository: INotificationsRepository;
@@ -19,7 +20,7 @@ export class UserHasChangedEmailEventHandler implements IEventHandler {
             const recipient = event.getAggregateId();
     
             if (!email || !recipient) {
-                throw new ErrorEvent("Recipient and Email are required to create a notification.");
+                throw new EventError("Recipient and Email are required to create a notification.");
             }
     
             const notification = Notification.createAppNotification(
