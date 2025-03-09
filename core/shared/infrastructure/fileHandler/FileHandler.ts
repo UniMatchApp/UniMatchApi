@@ -35,9 +35,10 @@ export class FileHandler implements IFileHandler {
     }
 
     async save(fileName: string, data: File): Promise<string> {
-        if (!this.isValidFileType(data.type)) {
+            /* if (!this.isValidFileType(data.type)) {
+            console.log(`File type: ${data.type}`);
             throw new Error("Invalid file type.");
-        }
+        } */
 
         const buffer = Buffer.from(await data.arrayBuffer());
 
@@ -47,9 +48,9 @@ export class FileHandler implements IFileHandler {
             throw new Error("Invalid file type detected from content.");
         }
 
-        if (data.type !== fileType.mime) {
+        /* if (data.type !== fileType.mime) {
             throw new Error("Declared file type does not match actual file type.");
-        }
+        } */
 
         // Generar un nombre aleatorio para el archivo
         const extname = path.extname(fileName) || `.${fileType.ext}`;

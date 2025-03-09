@@ -13,6 +13,7 @@ export class NodeMapper {
         const genderPriority = entity.genderPriority ? new Gender(Gender.fromString(entity.genderPriority)) : undefined;
         const relationshipType = RelationshipType.fromString(entity.relationshipType);
         const ageRange = entity.ageRange;
+        const lookingRandom = entity.lookingRandom;
 
         const node = new Node(
             entity.userId,
@@ -22,7 +23,8 @@ export class NodeMapper {
             gender,
             relationshipType,
             genderPriority,
-            location
+            location,
+            lookingRandom
         );
 
         node.setId(entity.entityId);
@@ -39,6 +41,7 @@ export class NodeMapper {
             domain.maxDistance,
             domain.gender.toString(),
             domain.relationshipType.toString(),
+            domain.lookingRandom,
             domain.genderPriority?.toString(),
             domain.location?.toString()
 

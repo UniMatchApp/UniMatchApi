@@ -9,6 +9,7 @@ export class NodeEntity {
     genderPriority?: string;
     latitude?: number;
     longitude?: number;
+    lookingRandom: boolean;
 
     constructor(
         id: string,
@@ -18,8 +19,9 @@ export class NodeEntity {
         maxDistance: number,
         gender: string,
         relationshipType: string,
+        lookingRandom: boolean,
         genderPriority?: string,
-        location?: string
+        location?: string,
     ) {
         this.entityId = id;
         this.userId = userId;
@@ -29,6 +31,7 @@ export class NodeEntity {
         this.gender = gender;
         this.relationshipType = relationshipType;
         this.genderPriority = genderPriority;
+        this.lookingRandom = lookingRandom;
         if (location) {
             const [latitude, longitude] = location.split(',');
             this.latitude = parseFloat(latitude);

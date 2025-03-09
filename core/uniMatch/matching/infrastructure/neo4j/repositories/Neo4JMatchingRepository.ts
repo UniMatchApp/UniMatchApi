@@ -52,11 +52,12 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
                 MATCH (u1:User {userId: $userId})
                 MATCH (u2:User)
                 WHERE u2.userId <> $userId
+                    AND ((u1.lookingRandom = true AND u2.lookingRandom = true) OR (u1.lookingRandom = true AND u2.lookingRandom = false))
                     AND (u1.genderPriority IS NULL OR u2.gender = u1.genderPriority)
                     AND NOT (u1)-[:DISLIKES]->(u2)
                     AND NOT (u1)-[:LIKES]->(u2)
                 WITH u2,
-                    (CASE 
+                    (CASE
                         WHEN u1.longitude IS NULL OR u2.longitude IS NULL THEN 1
                         WHEN u2.age >= u1.ageRange[0] AND u2.age <= u1.ageRange[1] THEN 1
                         WHEN u1.maxDistance = 0 OR point.distance(
@@ -83,6 +84,10 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
         } finally {
             await session.close();
         }
+    }
+
+    async findRandomPotentialMatch(userId: string): Promise<Node[]> {
+        return this.findPotentialMatches(userId, 1);
     }
     
     
