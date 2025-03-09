@@ -3,7 +3,6 @@ import { Gender } from "@/core/shared/domain/Gender";
 import { Location } from "@/core/shared/domain/Location";
 import { RelationshipType } from "@/core/shared/domain/RelationshipType";
 import { Like } from "./relations/Like";
-import { th } from "@faker-js/faker/.";
 import { NewLike } from "./events/NewLike";
 import { Dislike } from "./relations/Dislike";
 import { NewDislike } from "./events/NewDislike";
@@ -17,6 +16,7 @@ export class Node extends AggregateRoot {
     private _genderPriority?: Gender;
     private _relationshipType: RelationshipType;
     private _location?: Location;
+    private _lookingRandom: boolean;
 
     constructor(
         userId: string,
@@ -27,6 +27,7 @@ export class Node extends AggregateRoot {
         relationshipType: RelationshipType,
         genderPriority?: Gender,
         location?: Location,
+        lookingRandom: boolean = false,
     ) {
         super();
         this._userId = userId;
@@ -37,6 +38,7 @@ export class Node extends AggregateRoot {
         this._gender = gender;
         this._genderPriority = genderPriority;
         this._relationshipType = relationshipType;
+        this._lookingRandom = lookingRandom;
     }
 
     public get userId(): string {
@@ -50,7 +52,6 @@ export class Node extends AggregateRoot {
     public get ageRange(): [number, number] {
         return this._ageRange;
     }
-
 
     public get location(): Location | undefined {
         return this._location;
@@ -70,6 +71,10 @@ export class Node extends AggregateRoot {
 
     public get gender(): Gender {
         return this._gender;
+    }
+
+    public get lookingRandom(): boolean {
+        return this._lookingRandom;
     }
 
     public set userId(value: string) {
@@ -102,6 +107,10 @@ export class Node extends AggregateRoot {
 
     public set gender(value: Gender) {
         this._gender = value;
+    }
+
+    public set lookingRandom(value: boolean) {
+        this._lookingRandom = value;
     }
 
     public like(node: Node): Like {

@@ -1,6 +1,8 @@
+import { AggregateRoot } from '@/core/shared/domain/AggregateRoot ';
 import { ChatStatusEnum } from './enum/ChatStatusEnum';
+import { LookingForRandomEvent } from './events/LookingForRandomEvent';
 
-export class SessionStatus {
+export class SessionStatus extends AggregateRoot{
     private readonly _userId: string;
     private _status: string;
     private _targetUser?: string;
@@ -10,6 +12,7 @@ export class SessionStatus {
         status: string,
         targetUser?: string
     ) {
+        super();
         this._userId = userId;
         this._status = status;
         this._targetUser = targetUser;
@@ -39,6 +42,16 @@ export class SessionStatus {
     public stopTyping() {
         this.status = ChatStatusEnum.ONLINE;
         this._targetUser = undefined;
+    }
+
+    public startFindingRandom() {
+        this.status = ChatStatusEnum.FINDING_RANDOM;
+        this.recordEvent(LookingForRandomEvent.from(this.userId, ChatStatusEnum.FINDING_RANDOM));
+    }
+
+    public stopFindingRandom() {
+        this.status = ChatStatusEnum.ONLINE;
+        this.recordEvent(LookingForRandomEvent.from(this.userId, ChatStatusEnum.ONLINE));
     }
 
 }

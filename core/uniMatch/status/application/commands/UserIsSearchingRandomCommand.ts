@@ -1,31 +1,32 @@
 import { ICommand } from "@/core/shared/application/ICommand";
 import { Result } from "@/core/shared/domain/Result";
-import { UserIsTypingDTO } from "../DTO/UserIsTypingDTO";
 import { ISessionStatusRepository } from "../ports/ISessionStatusRepository";
 import { NotFoundError } from "@/core/shared/exceptions/NotFoundError";
+import { UserIsSearchingRandomDTO } from "../DTO/UserIsSearchingRandomDTO";
+import { IEventBus } from "@/core/shared/application/IEventBus";
 
-export class UserIsTypingCommand implements ICommand<UserIsTypingDTO, string> {
+export class UserIsSearchingRandomCommand implements ICommand<UserIsSearchingRandomDTO, string> {
     private readonly repository: ISessionStatusRepository;
+    private eventBus: IEventBus;
 
-    constructor(repository: ISessionStatusRepository) {
+    constructor(repository: ISessionStatusRepository, eventBus: IEventBus) {
         this.repository = repository;
+        this.eventBus = eventBus;
     }
 
-    async run(request: UserIsTypingDTO): Promise<Result<string>> {
+    async run(request: UserIsSearchingRandomDTO): Promise<Result<string>> {
         try {
             const status = await this.repository.findById(request.userId);
             if (!status) {
                 return Result.failure<string>(new NotFoundError('User not found'));
             }
 
-            const targetStatus = await this.repository.findById(request.targetUserId);
-            if (!targetStatus) {
-                return Result.failure<string>(new NotFoundError('Target user not found'));
-            }
-
-            status.startTyping(request.targetUserId);
+            status.startFindingRandom();
             await this.repository.update(status, status.userId);
-            return Result.success(request.targetUserId);
+
+            this.eventBus.publish(status.pullDomainEvents());
+
+            return Result.success(request.userId);
         } catch (error : any) {
             return Result.failure<string>(error);
         }

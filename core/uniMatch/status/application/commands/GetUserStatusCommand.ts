@@ -19,6 +19,10 @@ export class GetUserStatusCommand implements ICommand<GetUserStatusDTO, ChatStat
                 return Result.success<ChatStatusEnum>(ChatStatusEnum.OFFLINE);
             }
 
+            if (targetStatus.status === ChatStatusEnum.FINDING_RANDOM) {
+                return Result.success<ChatStatusEnum>(ChatStatusEnum.FINDING_RANDOM);
+            }
+
             if (targetStatus.status === ChatStatusEnum.TYPING) {
                 if (targetStatus.targetUser === request.userId) {
                     return Result.success<ChatStatusEnum>(ChatStatusEnum.TYPING);

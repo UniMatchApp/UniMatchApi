@@ -75,6 +75,10 @@ export class InMemoryMatchingRepository implements IMatchingRepository {
 
         const potentialMatches = Object.values(this.nodes)
             .filter(node => {
+                const isLookingForRandom = (node.lookingRandom && user.lookingRandom) || (node.lookingRandom && !user.lookingRandom);
+                return isLookingForRandom;
+            })
+            .filter(node => {
                 const isDifferentUser = node.userId !== userId;
                 return isDifferentUser;
             })
@@ -107,6 +111,10 @@ export class InMemoryMatchingRepository implements IMatchingRepository {
             });
     
         return potentialMatches;
+    }
+
+    async findRandomPotentialMatch(userId: string): Promise<Node[]> {
+        return this.findPotentialMatches(userId, 1);
     }
     
     
