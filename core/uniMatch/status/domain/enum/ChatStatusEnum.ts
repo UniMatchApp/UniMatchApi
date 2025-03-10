@@ -1,6 +1,7 @@
 export enum ChatStatusEnum {
     ONLINE = "ONLINE",
     TYPING = "TYPING",
-    OFFLINE = "OFFLINE"
+    OFFLINE = "OFFLINE",
+    FINDING_RANDOM = "FINDING_RANDOM",
 }
 

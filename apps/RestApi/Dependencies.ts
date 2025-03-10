@@ -93,6 +93,8 @@ import path from "path";
 import { NotificationTokenProvider } from "./utils/NotificationTokenProvider";
 import dotenv from 'dotenv';
 import { FileHandler } from "@/core/shared/infrastructure/fileHandler/FileHandler";
+import { LookingForRandomEvent } from "@/core/uniMatch/status/domain/events/LookingForRandomEvent";
+import { LookingForRandomEventHandler } from "@/core/uniMatch/matching/application/handlers/LookingForRandomEventHandler";
 
 dotenv.config({ path: path.resolve(__dirname, 'main.env') });
 
@@ -211,6 +213,7 @@ export class DependencyContainer {
         this.eventBus.subscribe(new NewLikeEventHandler(this.notificationsRepository, this.appNotifications));
         this.eventBus.subscribe(new UserHasChangedEmailEventHandler(this.notificationsRepository, this.emailNotifications));
         this.eventBus.subscribe(new UserHasChangedPasswordEventHandler(this.notificationsRepository, this.emailNotifications));
+        this.eventBus.subscribe(new LookingForRandomEventHandler(this.matchingRepository));
 
         this.eventBus.subscribe(new UserHasDeletedAccountHandler(this.matchingRepository));
         this.eventBus.subscribe(new NewProfileEventHandler(this.matchingRepository));

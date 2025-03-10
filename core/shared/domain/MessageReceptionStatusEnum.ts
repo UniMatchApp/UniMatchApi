@@ -1,7 +1,7 @@
 export type MessageContentStatusType = "NOT_EDITED" | "EDITED"; // En base al sender
 export type MessageReceptionStatusType = "SENT" | "RECEIVED" | "READ" ; // En base al sender
 export type MessageDeletedStatusType =
-    "DELETED"  | "NOT_DELETED"; // En base al sender
+    "DELETED"  | "NOT_DELETED" | "DELETED_FOR_BOTH"; // En base al sender
 
 export type MessageDeletedUsersType = {
     sender: MessageDeletedStatusType;
@@ -22,7 +22,8 @@ export function validateDeletedMessageStatusType(value: string | undefined): val
 
 export enum MessageDeletedStatusEnum {
     DELETED = "DELETED",
-    NOT_DELETED = "NOT_DELETED"
+    NOT_DELETED = "NOT_DELETED",
+    DELETED_FOR_BOTH = "DELETED_FOR_BOTH"
 }
 
 export enum MessageContentStatusEnum {

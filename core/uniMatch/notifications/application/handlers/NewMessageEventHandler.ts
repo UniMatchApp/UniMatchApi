@@ -10,6 +10,7 @@ import {
     validateMessageReceptionStatusType
 } from "@/core/shared/domain/MessageReceptionStatusEnum";
 import { EventError } from "@/core/shared/exceptions/EventError";
+import { parse } from "path";
 
 export class NewMessageEventHandler implements IEventHandler {
     private readonly repository: INotificationsRepository;
@@ -28,6 +29,8 @@ export class NewMessageEventHandler implements IEventHandler {
             const contentStatus: string | undefined = event.getPayload().get("contentStatus");
             const receptionStatus: string | undefined = event.getPayload().get("receptionStatus");
             const deletedStatus: string | undefined = event.getPayload().get("deletedStatus");
+            const createdAt: string | undefined = event.getPayload().get("createdAt");
+            const updatedAt: string | undefined = event.getPayload().get("updatedAt");
             const id = event.getAggregateId();
     
             if (!sender || !recipient) {
@@ -50,9 +53,14 @@ export class NewMessageEventHandler implements IEventHandler {
                 throw new EventError("Deleted status value is not valid: " + deletedStatus);
             }
 
+            if (!createdAt || !updatedAt) {
+                throw new EventError("Original message creation date and last update date are required to create a notification.");
+            }
+
             const notification = Notification.createMessageNotification(
                 id,
-                new Date(),
+                parseInt(createdAt, 10),
+                parseInt(updatedAt, 10),
                 recipient,
                 content,
                 sender,

@@ -48,12 +48,15 @@ export class MongooseMessageRepository implements IMessageRepository {
                 { sender: userId, deletedStatusSender: { $ne: MessageDeletedStatusEnum.DELETED } },
                 { recipient: userId, deletedStatusRecipient: { $ne: MessageDeletedStatusEnum.DELETED } }
             ]
-        }).sort({ createdAt: -1 });
+        })
+        .sort({ 
+            createdAt: -1,
+            updatedAt: -1
+        });
         
         return entities.map(MessageMapper.toDomain);
     }
     
-
     async findLastMessagesBetweenUsers(userId: string, otherUserId: string): Promise<Message[]> {
         await this.ensureInitialized();
         const entities = await this.messageEntity!.find({
@@ -61,7 +64,11 @@ export class MongooseMessageRepository implements IMessageRepository {
                 { sender: userId, recipient: otherUserId, deletedStatusSender: { $ne: MessageDeletedStatusEnum.DELETED } },
                 { sender: otherUserId, recipient: userId, deletedStatusRecipient: { $ne: MessageDeletedStatusEnum.DELETED } }
             ]
-        }).sort({ createdAt: -1 });
+        })
+        .sort({ 
+            createdAt: -1,
+            updatedAt: -1
+        });
         
         return entities.map(MessageMapper.toDomain);
     }    
@@ -80,7 +87,12 @@ export class MongooseMessageRepository implements IMessageRepository {
                 { sender: otherUserId, recipient: userId, deletedStatusRecipient: { $ne: MessageDeletedStatusEnum.DELETED } }
             ],
             createdAt: { $gt: afterDate }
-        }).sort({ createdAt: 1 }).limit(limit);
+        })
+        .sort({ 
+            createdAt: 1,
+            updatedAt: 1
+        })
+        .limit(limit);
         
         return entities.map(MessageMapper.toDomain);
     }
@@ -102,7 +114,12 @@ export class MongooseMessageRepository implements IMessageRepository {
                     ]
                 }
             ]
-        }).sort({ createdAt: 1 }).limit(limit);
+        })
+        .sort({ 
+            createdAt: 1,
+            updatedAt: 1
+        })
+        .limit(limit);
         
         return entities.map(MessageMapper.toDomain);
     }

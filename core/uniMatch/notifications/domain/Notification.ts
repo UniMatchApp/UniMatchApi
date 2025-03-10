@@ -49,7 +49,8 @@ export class Notification extends AggregateRoot {
 
     public static createMessageNotification(
         contentId: string,
-        date: Date,
+        originalDate: number,
+        updatedDate: number,
         recipient: string,
         content: string,
         sender: string,
@@ -58,8 +59,8 @@ export class Notification extends AggregateRoot {
         deletedStatus: MessageDeletedStatusType,
         attachment?: string,
     ): Notification {
-        const payload = new MessageNotificationPayload(contentId, content, sender, contentStatus, receptionStatus, deletedStatus, attachment);
-        return new Notification(contentId, date, recipient, payload);
+        const payload = new MessageNotificationPayload(contentId, content, sender, originalDate, updatedDate, contentStatus, receptionStatus, deletedStatus, attachment);
+        return new Notification(contentId, new Date(), recipient, payload);
     }
 
     public static createMatchNotification(

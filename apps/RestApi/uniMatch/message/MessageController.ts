@@ -40,7 +40,6 @@ import {MessageDTO} from "@/core/uniMatch/message/application/DTO/MessageDTO";
 import {IFileHandler} from "@/core/shared/application/IFileHandler";
 import { MessageHasBeenReceivedCommand } from '@/core/uniMatch/message/application/commands/MessageHasBeenReceivedCommand';
 import { MessageHasBeenReceivedDTO } from '@/core/uniMatch/message/application/DTO/MessageHasBeenReceivedDTO';
-import { tr } from '@faker-js/faker/.';
 
 
 export class MessageController {

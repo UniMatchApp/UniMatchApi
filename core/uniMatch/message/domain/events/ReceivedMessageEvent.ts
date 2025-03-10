@@ -12,6 +12,8 @@ export class ReceivedMessageEvent extends DomainEvent {
         contentStatus: MessageContentStatusEnum,
         receptionStatus: MessageReceptionStatusEnum,
         deletedStatus: MessageDeletedStatusEnum,
+        createdAt: number,
+        updatedAt: number,
         attachment?: string
     ) {
         super(aggregateId, "read-message");
@@ -24,6 +26,8 @@ export class ReceivedMessageEvent extends DomainEvent {
         this.getPayload().set("contentStatus", contentStatus);
         this.getPayload().set("receptionStatus", receptionStatus);
         this.getPayload().set("deletedStatus", deletedStatus);
+        this.getPayload().set("createdAt", createdAt.toString());
+        this.getPayload().set("updatedAt", updatedAt.toString());
     }
 
     public static from(message: Message, requester: string): ReceivedMessageEvent {
@@ -36,6 +40,8 @@ export class ReceivedMessageEvent extends DomainEvent {
             messageDTO.contentStatus as MessageContentStatusEnum,
             messageDTO.receptionStatus as MessageReceptionStatusEnum,
             messageDTO.deletedStatus as MessageDeletedStatusEnum,
+            messageDTO.createdAt,
+            messageDTO.updatedAt,
             messageDTO.attachment
         );
     }

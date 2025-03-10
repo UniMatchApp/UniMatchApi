@@ -12,6 +12,8 @@ export class NewMessageEvent extends DomainEvent {
                 contentStatus: string,
                 receptionStatus: string,
                 deletedStatus: string,
+                createdAt: number,
+                updatedAt: number,
                 attachment?: string,
     ) {
         super(aggregateId, "new-message");
@@ -24,6 +26,8 @@ export class NewMessageEvent extends DomainEvent {
         if (attachment) {
             this.getPayload().set("attachment", attachment);
         }
+        this.getPayload().set("createdAt", createdAt.toString());
+        this.getPayload().set("updatedAt", updatedAt.toString());
     }
 
     public static from(message: Message, requester: string): NewMessageEvent {
@@ -36,6 +40,8 @@ export class NewMessageEvent extends DomainEvent {
             messageDTO.contentStatus,
             messageDTO.receptionStatus,
             messageDTO.deletedStatus,
+            messageDTO.createdAt,
+            messageDTO.updatedAt,
             messageDTO.attachment
         );
     }

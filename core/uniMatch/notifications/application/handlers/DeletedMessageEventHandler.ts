@@ -42,13 +42,14 @@ export class DeletedMessageEventHandler implements IEventHandler {
 
             const notification = Notification.createMessageNotification(
                 messageId,
-                new Date(),
+                new Date().getTime(),
+                new Date().getTime(),
                 recipient,
                 "Message deleted",
                 sender,
                 MessageContentStatusEnum.NOT_EDITED,
                 MessageReceptionStatusEnum.SENT,
-                MessageDeletedStatusEnum.DELETED,
+                MessageDeletedStatusEnum.DELETED_FOR_BOTH,
                 undefined);
 
             this.appNotifications.sendNotification(notification);
