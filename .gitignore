@@ -6,6 +6,6 @@ package-lock.json
 .idea
 .idea/
 dist
-createRandomUserAndProfile.ts
+createRandomUserAndProfile.*
 borrar.ts
 *.http

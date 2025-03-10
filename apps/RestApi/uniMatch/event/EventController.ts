@@ -105,6 +105,7 @@ export class EventController {
                 res.json(result);
             } else {
                 const error = result.getError();
+                console.log(error);
                 ErrorHandler.handleError(error, res);
             }
         });

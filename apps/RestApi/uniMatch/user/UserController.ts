@@ -659,6 +659,7 @@ export class UserController {
                 }
             } else {
                 const error = result.getError();
+                console.log(error);
                 ErrorHandler.handleError(error, res);
             }
         });

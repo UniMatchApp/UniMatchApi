@@ -223,8 +223,7 @@ export class DependencyContainer {
         this.eventBus.subscribe(new UserHasChangedGenderEventHandler(this.matchingRepository));
         
     }
-
 }
 
-export const dependencies = new DependencyContainer(false);
+export const dependencies = new DependencyContainer(true);
 
