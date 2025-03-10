@@ -25,6 +25,7 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, EventD
     async run(request: CreateNewEventDTO): Promise<Result<EventDTO>> {
          
        try {
+            console.log("Request date: ", request);
             const location = new Location(
                 request.latitude,
                 request.longitude,
@@ -40,11 +41,13 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, EventD
             if(attachment) {
                 attachmentPath = await this.fileHandler.save(attachment.name, attachment);
             }
-
+            
+            let date = new Date(request.date);
+            console.log("new date", date);
             const event = new Event(
                 request.title,
                 location,
-                request.date,
+                date,
                 request.ownerId,
                 [],
                 [],

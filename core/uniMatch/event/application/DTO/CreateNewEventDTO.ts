@@ -2,7 +2,7 @@ import { SurveyDTO } from "./SurveyDTO";
 
 export interface CreateNewEventDTO {
     title: string,
-    date: Date,
+    date: string,
     latitude: number,
     longitude: number,
     altitude: number,
