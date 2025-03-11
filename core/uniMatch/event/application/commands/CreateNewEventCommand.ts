@@ -9,6 +9,8 @@ import { IFileHandler } from "@/core/shared/application/IFileHandler";
 import { FileError } from "@/core/shared/exceptions/FileError";
 import { EventDTO, EventMapper } from "../DTO/EventDTO";
 import { Survey } from "../../domain/Survey";
+import { SurveyDTO, SurveyMapper } from "../DTO/SurveyDTO";
+import { CreateSurveyDTO } from "../DTO/CreateSurveyDTO";
 
 export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, EventDTO> {
     private repository: IEventRepository;
@@ -31,7 +33,7 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, EventD
                 request.longitude,
                 request.altitude
             )
-          
+            
             const attachment = request.attachment;
             if (attachment && !attachment.name) {
                 return Result.failure<EventDTO>(new FileError("attachment name is invalid"));
@@ -55,12 +57,25 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, EventD
                 attachmentPath
             )
 
+            
+
             if (request.surveys) {
-                request.surveys.forEach(survey => {
-                    const surveyEntity = new Survey(survey.title, survey.options);
-                    event.addSurvey(surveyEntity);
+                // Parseamos si es string, o usamos el objeto directamente
+                let surveysDTO: any = typeof request.surveys === "string" ? JSON.parse(request.surveys) : request.surveys;
+                
+
+                
+                if (surveysDTO.surveys) {
+                  surveysDTO = surveysDTO.surveys;
+                }
+
+
+                surveysDTO.forEach((surveyDTO: CreateSurveyDTO) => {
+                  const survey = SurveyMapper.toDomain(surveyDTO);
+                  event.addSurvey(survey);
                 });
-            }
+              }
+              
 
             
             await this.repository.create(event);

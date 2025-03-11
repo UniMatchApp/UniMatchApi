@@ -1,7 +1,6 @@
 import { SurveyDTO } from "./SurveyDTO";
 
 export interface CreateSurveyDTO {
-    eventId: string,
-    userId: string,
-    survey: SurveyDTO
+    title: string;
+    options: string[];
 }

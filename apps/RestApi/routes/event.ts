@@ -10,7 +10,7 @@ const eventController = new EventController(dependencies.eventRepository, depend
 
 router.get('/', eventController.getAll.bind(eventController));
 router.get('/:id', eventController.getOne.bind(eventController));
-router.post('/', validateAndRefreshToken, fileUploadMiddleware, eventController.create.bind(eventController));
+router.post('/', fileUploadMiddleware, validateAndRefreshToken, eventController.create.bind(eventController));
 router.put('/:id', validateAndRefreshToken, fileUploadMiddleware, eventController.update.bind(eventController));
 router.delete('/:id', validateAndRefreshToken, eventController.delete.bind(eventController));
 router.post('/participate/:id', validateAndRefreshToken, eventController.participateEvent.bind(eventController));

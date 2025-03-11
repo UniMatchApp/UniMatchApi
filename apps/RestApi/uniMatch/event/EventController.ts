@@ -69,6 +69,7 @@ export class EventController {
 
     async create(req: Request, res: Response): Promise<void> {
         var userId = req.body.userId;
+        console.log("Request body: ", req.body);
         var dto = { ownerId: userId, ...req.body } as CreateNewEventDTO;
         var command = new CreateNewEventCommand(this.eventRepository, this.fileHandler, this.eventBus);
         return command.run(dto).then((result: Result<EventDTO>) => {

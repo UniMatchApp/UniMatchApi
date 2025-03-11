@@ -21,6 +21,7 @@ export class GetEventCommand implements ICommand<GetEventDTO, EventDTO> {
             }
 
             const mappedEvent = EventMapper.map(event);
+            console.log("Mapped event: ", mappedEvent);
             return Result.success<EventDTO>(mappedEvent);
         } catch (error: any) {
             return Result.failure<EventDTO>(error);

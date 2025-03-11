@@ -63,7 +63,6 @@ export const validateAndRefreshToken = (req: Request, res: Response, next: NextF
 
   try {
     const decoded = dependencies.tokenService.validateToken(token) as jwt.JwtPayload;
-
     req.body = req.body || {};
     req.body.userId = decoded.id;
     req.body.fcmtoken = fcmToken;
