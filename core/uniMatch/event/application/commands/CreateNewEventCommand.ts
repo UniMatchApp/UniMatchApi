@@ -51,7 +51,7 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, EventD
                 location,
                 date,
                 request.ownerId,
-                [],
+                [request.ownerId],
                 [],
                 request.price,
                 attachmentPath
