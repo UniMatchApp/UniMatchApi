@@ -38,6 +38,7 @@ export class DeletedMessageEventHandler implements IEventHandler {
 
             if (oldNotification) {
                 await this.repository.deleteById(oldNotification.getId());
+                this.appNotifications.deletePushNotification(oldNotification?.getId(), recipient);
             }
 
             const notification = Notification.createMessageNotification(
@@ -53,6 +54,7 @@ export class DeletedMessageEventHandler implements IEventHandler {
                 undefined);
 
             this.appNotifications.sendNotification(notification);
+            
         } catch (error: any) {
             console.error(error);
         }

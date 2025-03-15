@@ -53,11 +53,6 @@ export class EditMessageEventHandler implements IEventHandler {
             }
 
             const oldNotification = await this.repository.findLastNotificationByTypeAndTypeId(NotificationTypeEnum.MESSAGE, messageId);
-
-            if (oldNotification) {
-                await this.repository.deleteById(oldNotification.getId());
-            }
-
             const notification = Notification.createMessageNotification(
                 messageId,
                 parseInt(createdAt, 10),
@@ -68,7 +63,13 @@ export class EditMessageEventHandler implements IEventHandler {
                 contentStatus as MessageContentStatusEnum,
                 receptionStatus as MessageReceptionStatusEnum,
                 deletedStatus as MessageDeletedStatusEnum,
-                attachment);
+                attachment
+            );
+
+            if (oldNotification) {
+                await this.repository.deleteById(oldNotification.getId());
+                await this.appNotifications.editPushNotification(oldNotification.getId(), notification); 
+            }
 
             console.log("EditMessageEventHandler: ", notification);
             
