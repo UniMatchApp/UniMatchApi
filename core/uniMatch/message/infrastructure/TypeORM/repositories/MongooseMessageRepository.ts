@@ -45,7 +45,7 @@ export class MongooseMessageRepository implements IMessageRepository {
         await this.ensureInitialized();
         const entities = await this.messageEntity!.find({
             $or: [
-                { sender: userId, deletedStatusSender: { $ne: MessageDeletedStatusEnum.DELETED } },
+                { sender: userId , deletedStatusSender: { $ne: MessageDeletedStatusEnum.DELETED } },
                 { recipient: userId, deletedStatusRecipient: { $ne: MessageDeletedStatusEnum.DELETED } }
             ]
         })

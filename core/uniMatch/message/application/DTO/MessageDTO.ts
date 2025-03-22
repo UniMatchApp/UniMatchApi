@@ -18,10 +18,13 @@ export namespace MessageDTO {
     function mustShowAsDeleted(requesterId: string, message: Message): MessageDeletedStatusType {
         const {recipient, sender} = message.deletedStatus;
         if (recipient === "DELETED" && sender === "DELETED") {
-            return "DELETED";
+            return "DELETED_FOR_BOTH";
         }
-        if ((message.sender === requesterId && sender === "DELETED") || (message.recipient === requesterId && recipient === "DELETED")) {
-            return "DELETED";
+        if (message.sender === requesterId && sender === "DELETED") {
+            return "DELETED_BY_SENDER";
+        }
+        if (message.recipient === requesterId && recipient === "DELETED") {
+            return "DELETED_BY_RECIPIENT";
         }
         return "NOT_DELETED";
     }

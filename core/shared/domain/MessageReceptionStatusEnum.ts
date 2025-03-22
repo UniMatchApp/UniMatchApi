@@ -1,7 +1,7 @@
 export type MessageContentStatusType = "NOT_EDITED" | "EDITED"; // En base al sender
 export type MessageReceptionStatusType = "SENT" | "RECEIVED" | "READ" ; // En base al sender
 export type MessageDeletedStatusType =
-    "DELETED"  | "NOT_DELETED" | "DELETED_FOR_BOTH"; // En base al sender
+    "DELETED"  | "NOT_DELETED" | "DELETED_FOR_BOTH" | "DELETED_BY_SENDER" | "DELETED_BY_RECIPIENT";
 
 export type MessageDeletedUsersType = {
     sender: MessageDeletedStatusType;
