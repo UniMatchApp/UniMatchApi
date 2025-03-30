@@ -19,7 +19,7 @@ router.post('/like/:id', validateAndRefreshToken, eventController.likeEvent.bind
 router.post('/dislike/:id', validateAndRefreshToken, eventController.dislikeEvent.bind(eventController));
 router.put('/:id', validateAndRefreshToken, eventController.createSurvey.bind(eventController));
 router.delete('/:id/survey/:title', validateAndRefreshToken, eventController.deleteSurvey.bind(eventController));
-router.put('/:id/survey/:title/select', validateAndRefreshToken, eventController.selectSurvey.bind(eventController));
-router.put('/:id/survey/:title/deselect', validateAndRefreshToken, eventController.deselectSurvey.bind(eventController));
+router.put('/:id/survey/select', validateAndRefreshToken, eventController.selectSurvey.bind(eventController));
+router.put('/:id/survey/deselect', validateAndRefreshToken, eventController.deselectSurvey.bind(eventController));
 
 export {router};    

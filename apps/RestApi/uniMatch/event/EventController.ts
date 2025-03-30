@@ -215,7 +215,7 @@ export class EventController {
     async selectSurvey(req: Request, res: Response): Promise<void> {
         var eventId = req.params.id;
         var userId = req.body.userId;
-        var title = req.params.title;
+        var title = req.body.title;
         var option = req.body.option;
 
         var command = new SelectOptionCommand(this.eventRepository);
@@ -234,7 +234,7 @@ export class EventController {
     async deselectSurvey(req: Request, res: Response): Promise<void> {
         var eventId = req.params.id;
         var userId = req.body.userId;
-        var title = req.params.title;
+        var title = req.body.title;
         var option = req.body.option;
 
         var command = new DeselectOptionCommand(this.eventRepository);

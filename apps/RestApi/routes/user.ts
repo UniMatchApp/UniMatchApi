@@ -45,14 +45,18 @@ router.post('/profile', fileUploadMiddleware, validateAndRefreshToken, userContr
 router.post('', userController.createUser.bind(userController));
 router.delete('/delete-photo/:photoUrl', validateAndRefreshToken, userController.deletePhoto.bind(userController));
 router.delete('', validateAndRefreshToken, userController.deleteUser.bind(userController));
+router.get('', validateAndRefreshToken, userController.getUsers.bind(userController));
 router.get('/:id', userController.getProfile.bind(userController));
 router.post('/report/:targetId', validateAndRefreshToken, userController.reportUser.bind(userController));
 router.post('/photo', fileUploadMiddleware, validateAndRefreshToken, userController.uploadPhoto.bind(userController));
 router.post('/auth/login', userController.login.bind(userController));
+router.post('/auth/admin/login', userController.adminLogin.bind(userController));
 router.post('/auth/:email/forgot-password', userController.forgotPassword.bind(userController));
 router.post('/auth/:email/resend-code', userController.resendCode.bind(userController));
 router.post('/auth/:email/verify-code/:code', userController.verifyCode.bind(userController));
 
 router.get('/profile/:id/info', userController.getProfileInfo.bind(userController));
+
+router.post('/auth', userController.revalidateSession.bind(userController));
 
 export {router};

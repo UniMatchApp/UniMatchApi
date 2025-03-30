@@ -63,8 +63,6 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, EventD
                 // Parseamos si es string, o usamos el objeto directamente
                 let surveysDTO: any = typeof request.surveys === "string" ? JSON.parse(request.surveys) : request.surveys;
                 
-
-                
                 if (surveysDTO.surveys) {
                   surveysDTO = surveysDTO.surveys;
                 }
@@ -74,9 +72,7 @@ export class CreateNewEventCommand implements ICommand<CreateNewEventDTO, EventD
                   const survey = SurveyMapper.toDomain(surveyDTO);
                   event.addSurvey(survey);
                 });
-              }
-              
-
+            }
             
             await this.repository.create(event);
 

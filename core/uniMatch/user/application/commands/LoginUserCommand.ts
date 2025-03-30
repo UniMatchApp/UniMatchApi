@@ -32,7 +32,6 @@ export class LoginUserCommand implements ICommand<LoginUserDTO, UserDTO> {
                 return Result.failure<UserDTO>(new AuthenticationError(`Invalid password for email ${request.email}`));
             }
 
-
             if (!user.registered) {
                 const code = user.generateVerificationCode();
                 this.emailRepository.confirmLoginEmail(user.email, code);
@@ -48,7 +47,6 @@ export class LoginUserCommand implements ICommand<LoginUserDTO, UserDTO> {
             } as UserDTO;
 
             return Result.success<UserDTO>(userDTO);
-
         } catch (error: any) {
             return Result.failure<UserDTO>(error);
         }

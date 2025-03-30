@@ -18,12 +18,24 @@ export class InMemoryEventRepository implements IEventRepository {
                 50,
                 "concert.jpg",
                 [new Survey("Duardo o Tiga?", ["Duardo", "Tiga"])]
+            ),
+            new Event(
+                "Concierto de Metal",
+                new Location(40.7128, -74.0060, 10),
+                new Date("2025-06-15T20:00:00"),
+                "b449400b-1716-4474-b8aa-2d0585422702",
+                ["a449400b-1716-4474-b8aa-2d0585422701", "b449400b-1716-4474-b8aa-2d0585422702"],
+                ["a449400b-1716-4474-b8aa-2d0585422701"],
+                50,
+                "concert.jpg",
+                [new Survey("Duardo o Tiga?", ["Duardo", "Tiga"])]
             )
 
         
         ];
         
         _list_of_events[0].setId("10f577ad-9efa-4365-9015-94f7da265701");
+        _list_of_events[1].setId("10f577ad-9efa-4365-9015-94f7da265702");
 
         _list_of_events.forEach(event => {
             this.events[event.getId().toString()] = event;

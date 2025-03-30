@@ -3,6 +3,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import path from 'path';
+import cors from "cors";
 
 import { router as indexRouter } from './routes/index';
 import { router as docsRouter } from './routes/docs';
@@ -13,7 +14,15 @@ import { router as notificationRouter } from './routes/notifications';
 import { router as messageRouter } from './routes/messages';
 import { router as sessionRouter } from './routes/session';
 
+const corsOptions = {
+    origin: "*",
+    methods: "GET,PUT,OPTIONS,POST,DELETE",
+}
+
 const app = express();
+
+
+app.use(cors(corsOptions));
 
 // Configurar la carpeta "static" para servir archivos estáticos
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

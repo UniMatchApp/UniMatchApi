@@ -83,6 +83,7 @@ import { ChangeSportsDTO } from '@/core/uniMatch/user/application/DTO/ChangeSpor
 import { ChangeValuesAndBeliefsDTO } from '@/core/uniMatch/user/application/DTO/ChangeValuesAndBeliefsDTO';
 import { GetProfileInfoCommand } from '@/core/uniMatch/user/application/commands/GetProfileInfoCommand';
 import { ProfileInfoDTO } from '@/core/uniMatch/user/application/DTO/ProfileInfoDTO';
+import { GetUsersCommand } from '@/core/uniMatch/user/application/commands/GetUsersCommand';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -143,11 +144,13 @@ export class UserController {
 
     async createProfile(req: Request, res: Response): Promise<void> {
         const command = new CreateNewProfileCommand(this.userRepository, this.profileRepository, this.fileHandler, this.eventBus);
+        console.log("Creating profile with data", req.body);
         return command.run(req.body).then((result: Result<Profile>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
                 const error = result.getError();
+                console.log("Error creating profile", error);
                 ErrorHandler.handleError(error, res);
             }
         });
@@ -659,10 +662,55 @@ export class UserController {
                 }
             } else {
                 const error = result.getError();
-                console.log(error);
                 ErrorHandler.handleError(error, res);
             }
         });
     }
+
+    async adminLogin(req: Request, res: Response): Promise<void> {
+        const command = new LoginUserCommand(this.userRepository, this.emailNotifications);
+        return command.run(req.body).then((result: Result<UserDTO>) => {
+            if (result.isSuccess()) {
+                const user = result.getValue();
+                if (user) {
+                    const token = this.tokenService.generateToken({id: user.id});
+                    const newResult = Result.success<{user: UserDTO, token: string}>({user: user, token: token});
+                    res.json(newResult);
+                } else {
+                    ErrorHandler.handleError(new Error("User not found"), res);
+                }
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async getUsers(req: Request, res: Response): Promise<void> {
+        const command = new GetUsersCommand(this.userRepository);
+        return command.run(req.body).then((result: Result<UserDTO[]>) => {
+            if (result.isSuccess()) {
+                res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async revalidateSession(req: Request, res: Response): Promise<void> {
+        const token = req.body.token;
+        try {
+            if (!token) {
+                throw new Error('Token is undefined');
+            }
+            this.tokenService.validateToken(token);
+
+            res.json({ valid: true });  
+        } catch (error: any) {
+            res.json({ valid: false });
+        }
+    }
+    
 
 }
