@@ -84,7 +84,10 @@ import { ChangeValuesAndBeliefsDTO } from '@/core/uniMatch/user/application/DTO/
 import { GetProfileInfoCommand } from '@/core/uniMatch/user/application/commands/GetProfileInfoCommand';
 import { ProfileInfoDTO } from '@/core/uniMatch/user/application/DTO/ProfileInfoDTO';
 import { GetUsersCommand } from '@/core/uniMatch/user/application/commands/GetUsersCommand';
+import { IReportedUserRepository } from '@/core/uniMatch/user/application/ports/IReportedUserRepository';
 import { GetReportCommand } from '@/core/uniMatch/user/application/commands/getReportCommand';
+import { GetAllReportsCommand } from '@/core/uniMatch/user/application/commands/getAllReportsCommands';
+import { ReportedUser } from '@/core/uniMatch/user/domain/ReportedUser';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -93,17 +96,20 @@ export class UserController {
     private readonly eventBus: IEventBus;
     private readonly fileHandler: IFileHandler;
     private readonly tokenService: TokenService;
+    private readonly reportedRepository: IReportedUserRepository;
 
     constructor(
         userRepository: IUserRepository, 
         profileRepository: IProfileRepository, 
         emailNotifications: IEmailNotifications, 
+        reportedRepository: IReportedUserRepository,
         eventBus: IEventBus,
         fileHandler: IFileHandler,
         tokenService: TokenService
     ) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
+        this.reportedRepository = reportedRepository;
         this.emailNotifications = emailNotifications;
         this.eventBus = eventBus;
         this.fileHandler = fileHandler;
@@ -715,11 +721,11 @@ export class UserController {
 
     async getReport(req: Request, res: Response): Promise<void> {
         const userId = req.params.userId;
-        const command = new GetReportCommand(this.userRepository);
+        const command = new GetReportCommand(this.reportedRepository);
         
         return command.run(userId).then((result: Result<ReportUserDTO[]>) => {
             if (result.isSuccess()) {
-                res.json(result.getValue());
+                res.json(result);
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
@@ -728,8 +734,8 @@ export class UserController {
     }
 
     async getAllReports(req: Request, res: Response): Promise<void> {
-        const command = new GetAllReportsCommand(this.userRepository);
-        return command.run(req.body).then((result: Result<ReportedUser[]>) => {
+        const command = new GetAllReportsCommand(this.reportedRepository);
+        return command.run(req.body).then((result: Result<ReportUserDTO[]>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {

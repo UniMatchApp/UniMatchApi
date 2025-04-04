@@ -95,6 +95,9 @@ import dotenv from 'dotenv';
 import { FileHandler } from "@/core/shared/infrastructure/fileHandler/FileHandler";
 import { LookingForRandomEvent } from "@/core/uniMatch/status/domain/events/LookingForRandomEvent";
 import { LookingForRandomEventHandler } from "@/core/uniMatch/matching/application/handlers/LookingForRandomEventHandler";
+import { IReportedUserRepository } from "@/core/uniMatch/user/application/ports/IReportedUserRepository";
+import { TypeORMReportedUserRepository } from "@/core/uniMatch/user/infrastructure/TypeORM/repositories/TypeORMReportedUserRepository";
+import { InMemoryReportedRepository } from "@/core/uniMatch/user/infrastructure/InMemory/InMemoryReportedRepository";
 
 dotenv.config({ path: path.resolve(__dirname, 'main.env') });
 
@@ -120,6 +123,7 @@ export class DependencyContainer {
     emailNotifications: IEmailNotifications;
     userRepository: IUserRepository;
     profileRepository: IProfileRepository;
+    reportedUserRepository: IReportedUserRepository;
     notificationTokenProvider: NotificationTokenProvider;
 
     constructor(private useMocks: boolean) {
@@ -133,6 +137,7 @@ export class DependencyContainer {
         this.emailNotifications = this.createEmailNotifications();
         this.userRepository = this.createUserRepository();
         this.profileRepository = this.createProfileRepository();
+        this.reportedUserRepository = this.createReportedUserRepository(); 
 
         this.notificationTokenProvider = new NotificationTokenProvider(this.userRepository);
         this.appNotifications = new AppNotifications(this.wsClientHandler, this.notificationTokenProvider);
@@ -141,6 +146,11 @@ export class DependencyContainer {
 
         console.log(this.constructor.name + " using -> " + (this.useMocks ? "Mocks" : "Real implementations"));
     }
+
+    createReportedUserRepository(): IReportedUserRepository {
+        return this.useMocks ? new InMemoryReportedRepository() : new TypeORMReportedUserRepository();
+    }
+
     
     private createFileHandler(): IFileHandler {
         // const oauth2Client = new OAuth2Client('YOUR_CLIENT_ID', 'YOUR_CLIENT_SECRET', 'YOUR_REDIRECT_URL');

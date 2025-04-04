@@ -52,12 +52,12 @@ router.post('/auth/admin/login', userController.adminLogin.bind(userController))
 router.post('/auth/:email/forgot-password', userController.forgotPassword.bind(userController));
 router.post('/auth/:email/resend-code', userController.resendCode.bind(userController));
 router.post('/auth/:email/verify-code/:code', userController.verifyCode.bind(userController));
-router.get('/report', validateAndRefreshToken, userController.getReport.bind(userController));
-router.get('/report/:targetId', validateAndRefreshToken, userController.getAllReports.bind(userController));
 router.post('/report/:targetId', validateAndRefreshToken, userController.reportUser.bind(userController));
 
 router.get('/profile/:id/info', userController.getProfileInfo.bind(userController));
 router.get('', userController.getUsers.bind(userController));
+router.get('/report', userController.getReport.bind(userController));
+router.get('/report/:targetId', userController.getAllReports.bind(userController));
 
 router.post('/auth', userController.revalidateSession.bind(userController));
 

@@ -7,6 +7,7 @@ export class ReportedUserMapper {
         const reportedUser = new ReportedUser(
             entity.userId,
             entity.predefinedReason,
+            entity.details,
             entity.comment
         );
         reportedUser.setId(entity.id);
