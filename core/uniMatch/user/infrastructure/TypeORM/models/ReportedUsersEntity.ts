@@ -1,3 +1,4 @@
+import { fa } from "@faker-js/faker/.";
 import { Entity, Column, Unique } from "typeorm";
 
 @Entity('reported_users')
@@ -14,4 +15,10 @@ export class ReportedUsersEntity {
 
     @Column({ type: 'text', nullable: true })
     comment?: string;
+
+    @Column({ type: 'text', nullable: false })
+    details!: string;
+
+    @Column({ type: 'text', nullable: false })
+    timestamp!: string; // ISO 8601 format
 }

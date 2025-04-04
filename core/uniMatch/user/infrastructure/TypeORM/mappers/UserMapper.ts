@@ -23,6 +23,7 @@ export class UserMapper {
             const reportedUser = new ReportedUser(
                 reported.userId,
                 reported.predefinedReason,
+                reported.details,
                 reported.comment
             );
             reportedUser.setId(reported.id);
@@ -45,6 +46,8 @@ export class UserMapper {
             reportedEntity.id = reported.getId().toString();
             reportedEntity.userId = reported.userId;
             reportedEntity.predefinedReason = reported.predefinedReason;
+            reportedEntity.details = reported.details;
+            reportedEntity.timestamp = reported.timestamp;
             reportedEntity.comment = reported.comment || "";
             return reportedEntity;
         });
