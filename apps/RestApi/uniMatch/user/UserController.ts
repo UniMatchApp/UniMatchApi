@@ -84,6 +84,7 @@ import { ChangeValuesAndBeliefsDTO } from '@/core/uniMatch/user/application/DTO/
 import { GetProfileInfoCommand } from '@/core/uniMatch/user/application/commands/GetProfileInfoCommand';
 import { ProfileInfoDTO } from '@/core/uniMatch/user/application/DTO/ProfileInfoDTO';
 import { GetUsersCommand } from '@/core/uniMatch/user/application/commands/GetUsersCommand';
+import { GetReportCommand } from '@/core/uniMatch/user/application/commands/getReportCommand';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -710,6 +711,32 @@ export class UserController {
         } catch (error: any) {
             res.json({ valid: false });
         }
+    }
+
+    async getReport(req: Request, res: Response): Promise<void> {
+        const userId = req.params.userId;
+        const command = new GetReportCommand(this.userRepository);
+        
+        return command.run(userId).then((result: Result<ReportUserDTO[]>) => {
+            if (result.isSuccess()) {
+                res.json(result.getValue());
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async getAllReports(req: Request, res: Response): Promise<void> {
+        const command = new GetAllReportsCommand(this.userRepository);
+        return command.run(req.body).then((result: Result<ReportedUser[]>) => {
+            if (result.isSuccess()) {
+                res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
     }
     
 

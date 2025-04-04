@@ -4,6 +4,7 @@ import { ReportedUser } from "../../../domain/ReportedUser";
 import { IReportedUserRepository } from "../../../application/ports/IReportedUserRepository";
 import { ReportedUserMapper } from "../mappers/ReportedUserMapper";
 import AppDataSource from '../Config';
+import { ReportUserDTO } from "../../../application/DTO/ReportUserDTO";
 
 export class TypeORMReportedUserRepository implements IReportedUserRepository {
     private readonly reportedUserRepository: Repository<ReportedUsersEntity>;
@@ -64,4 +65,32 @@ export class TypeORMReportedUserRepository implements IReportedUserRepository {
         const entity = await this.reportedUserRepository.findOne({ where: { userId } });
         return entity ? ReportedUserMapper.toDomain(entity) : undefined;
     }
+
+    async getReportsByUserId(userId: string): Promise<ReportUserDTO[]> {
+        const entities = await this.reportedUserRepository.find({ where: { userId } });
+        return entities.map(entity => ({
+            id: entity.id,
+            reportedUserId: entity.userId,
+            predefinedReason: entity.predefinedReason,
+            details: entity.details,
+            comment: entity.comment || "",
+            createdAt: entity.timestamp
+        }));
+    }
+    
+    
+    async getReports(): Promise<ReportUserDTO[]> {
+        const entities = await this.reportedUserRepository.find();
+        return entities.map(entity => ({
+            id: entity.id,
+            reportedUserId: entity.userId,
+            predefinedReason: entity.predefinedReason,
+            details: entity.details,
+            comment: entity.comment || "",
+            createdAt: entity.timestamp
+        }));
+    }
+    
+    
+    
 }

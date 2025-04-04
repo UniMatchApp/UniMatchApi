@@ -29,7 +29,7 @@ export class ReportUserCommand implements ICommand<ReportUserDTO, void> {
             if(userToReport.isUserBlocked(request.reportedUserId)) {
                 return Result.failure<void>(new DuplicateError(`User with id ${request.reportedUserId} is already blocked`));
             } 
-            const reportedUser = new ReportedUser(request.reportedUserId, request.predefinedReason, request.comment);
+            const reportedUser = new ReportedUser(request.reportedUserId, request.predefinedReason, request.comment, request.extraDetails);
             userToReport.reportUser(reportedUser);
             user.blockUser(request.reportedUserId);
 
