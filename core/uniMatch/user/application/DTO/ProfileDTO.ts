@@ -30,7 +30,6 @@ export interface ProfileDTO {
     valuesAndBeliefs?: string;
     genderPriority?: string;
     fact?: string;
-
 }
 
 export namespace ProfileDTO {
