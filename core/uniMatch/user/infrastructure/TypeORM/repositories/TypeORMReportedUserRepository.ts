@@ -66,8 +66,8 @@ export class TypeORMReportedUserRepository implements IReportedUserRepository {
         return entity ? ReportedUserMapper.toDomain(entity) : undefined;
     }
 
-    async getReportsByUserId(userId: string): Promise<ReportUserDTO[]> {
-        const entities = await this.reportedUserRepository.find({ where: { userId } });
+    async getReportsByUserId(userId: string): Promise<ReportedUser[]> {
+        return await this.reportedUserRepository.find({ where: { userId } });
         return entities.map(entity => ({
             id: entity.id,
             reportedUserId: entity.userId,
@@ -76,21 +76,5 @@ export class TypeORMReportedUserRepository implements IReportedUserRepository {
             comment: entity.comment || "",
             createdAt: entity.timestamp
         }));
-    }
-    
-    
-    async getReports(): Promise<ReportUserDTO[]> {
-        const entities = await this.reportedUserRepository.find();
-        return entities.map(entity => ({
-            id: entity.id,
-            reportedUserId: entity.userId,
-            predefinedReason: entity.predefinedReason,
-            details: entity.details,
-            comment: entity.comment || "",
-            createdAt: entity.timestamp
-        }));
-    }
-    
-    
-    
+    }  
 }

@@ -735,6 +735,7 @@ export class UserController {
     }
 
     async getAllReports(req: Request, res: Response): Promise<void> {
+        console.log("Getting all reports");
         const command = new GetAllReportsCommand(this.reportedRepository);
         return command.run().then((result: Result<ReportUserDTO[]>) => {
             if (result.isSuccess()) {

@@ -11,14 +11,13 @@ export class InMemoryReportedRepository implements IReportedUserRepository {
         return Array.from(this.reports.values()).find(report => report.userId === userId);
     }
 
-    async getReportsByUserId(userId: string): Promise<ReportUserDTO[]> {
+    async getReportsByUserId(userId: string): Promise<ReportedUser[]> {
         return Array.from(this.reports.values())
             .filter(report => report.userId === userId)
-            .map(report => this.toDTO(report));
     }
 
-    async getReports(): Promise<ReportUserDTO[]> {
-        return Array.from(this.reports.values()).map(report => this.toDTO(report));
+    async getReports(): Promise<ReportedUser[]> {
+        return Array.from(this.reports.values());
     }
 
     async create(entity: ReportedUser): Promise<void> {

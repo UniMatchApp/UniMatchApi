@@ -14,9 +14,24 @@ export class GetAllReportsCommand implements ICommand<string, ReportUserDTO[]> {
 
     async run(): Promise<Result<ReportUserDTO[]>> {
         try { 
-            const reports = await this.repository.getReports();
+            const reports = await this.repository.findAll();
+
+            if (!reports) {
+                console.log("No reports found");
+                return Result.failure<ReportUserDTO[]>(new NotFoundError(`No reports found`));
+            }
+
+            const reportsDTO: ReportUserDTO[] = reports.map(report => ({
+                id: report.getId().toString(),
+                reportedUserId: report.userId,
+                predefinedReason: report.predefinedReason,
+                details: report.details,
+                comment: report.comment,
+                createdAt: report.timestamp,
+            }));
+
             console.log("Reports hechos: ", reports);
-            return Result.success<ReportUserDTO[]>(reports);
+            return Result.success<ReportUserDTO[]>(reportsDTO);
         } catch (error: any) {
             return Result.failure<ReportUserDTO[]>(error);
         }
