@@ -26,7 +26,9 @@ export class TypeORMUserRepository implements IUserRepository {
     }
 
     async findById(id: string): Promise<User | null> {
+        console.log(`Finding user by ID: ${id}`);
         const entity = await this.userRepository.findOne({where: {id}});
+        console.log(`User found: ${JSON.stringify(entity)}`);
         return entity ? UserMapper.toDomain(entity) : null;
     }
 

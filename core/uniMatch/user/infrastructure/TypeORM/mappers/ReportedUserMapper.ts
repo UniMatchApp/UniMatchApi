@@ -20,7 +20,9 @@ export class ReportedUserMapper {
         entity.id = reportedUser.getId();
         entity.userId = reportedUser.userId;
         entity.predefinedReason = reportedUser.predefinedReason;
+        entity.details = reportedUser.details;
         entity.comment = reportedUser.comment || "";
+        entity.timestamp = reportedUser.timestamp;
         return entity;
     }
 }

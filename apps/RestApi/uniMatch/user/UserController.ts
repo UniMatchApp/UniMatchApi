@@ -643,13 +643,14 @@ export class UserController {
     async reportUser(req: Request, res: Response): Promise<void> {
         const userId = req.body.userId;
         const targetId = req.params.targetId;
-        const command = new ReportUserCommand(this.userRepository);
+        const command = new ReportUserCommand(this.userRepository, this.reportedRepository);
         const dto = {id: userId, reportedUserId: targetId, ...req.body} as ReportUserDTO;
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
                 const error = result.getError();
+                console.log("Error reporting user", error);
                 ErrorHandler.handleError(error, res);
             }
         });

@@ -170,7 +170,6 @@ export class User extends AggregateRoot {
     
     public reportUser(reportedUser: ReportedUser): void {
         this._reportedUsers.push(reportedUser);
-
     }
 
     public getReportedUsers(): { userId: string, predefinedReason: string, comment?: string }[] {

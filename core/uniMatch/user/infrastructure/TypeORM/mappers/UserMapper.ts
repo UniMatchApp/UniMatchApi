@@ -24,11 +24,13 @@ export class UserMapper {
                 reported.userId,
                 reported.predefinedReason,
                 reported.details,
-                reported.comment
+                reported.comment,
+                reported.timestamp
             );
             reportedUser.setId(reported.id);
             return reportedUser;
         });
+        console.log(`UserMapper.toDomain: ${JSON.stringify(user)}`);
         return user;
     }
 

@@ -56,10 +56,10 @@ export const validateAndRefreshToken = (req: Request, res: Response, next: NextF
 
   const token = authHeader.split(' ')[1];
 
-  if (!fcmToken) {
-    sendErrorResponse(res, 'Token FCM no proporcionado');
-    return;
-  }
+  // if (!fcmToken) {
+  //   sendErrorResponse(res, 'Token FCM no proporcionado');
+  //   return;
+  // }
 
   try {
     const decoded = dependencies.tokenService.validateToken(token) as jwt.JwtPayload;

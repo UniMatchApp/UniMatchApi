@@ -1,20 +1,19 @@
 import { AggregateRoot } from "@/core/shared/domain/AggregateRoot ";
-import { Entity } from "@/core/shared/domain/Entity";
 
 export class ReportedUser extends AggregateRoot {
     private readonly _userId: string;
     private _predefinedReason: string;
     private _comment?: string;
     private _details: string;
-    private readonly _timestamp: string;
+    private _timestamp: string;
 
-    constructor(userId: string, predefinedReason: string, details: string, comment?: string) {
+    constructor(userId: string, predefinedReason: string, details: string, comment?: string, timestamp: string = new Date().toISOString()) {
         super();
         this._userId = userId;
         this._predefinedReason = predefinedReason;
         this._comment = comment;
         this._details = details;
-        this._timestamp = new Date().toISOString();
+        this._timestamp = timestamp;
     }
 
     public get userId(): string {
