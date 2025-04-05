@@ -12,14 +12,10 @@ export class GetAllReportsCommand implements ICommand<string, ReportUserDTO[]> {
         this.repository = repository;
     }
 
-    async run(userId: string): Promise<Result<ReportUserDTO[]>> {
-        try {
-            const user = await this.repository.findById(userId);
-            if (!user) {
-                return Result.failure<ReportUserDTO[]>(new NotFoundError(`User with id ${userId} not found`));
-            }
-            
+    async run(): Promise<Result<ReportUserDTO[]>> {
+        try { 
             const reports = await this.repository.getReports();
+            console.log("Reports hechos: ", reports);
             return Result.success<ReportUserDTO[]>(reports);
         } catch (error: any) {
             return Result.failure<ReportUserDTO[]>(error);

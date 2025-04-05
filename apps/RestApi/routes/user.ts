@@ -10,9 +10,10 @@ const userController = new UserController(
     dependencies.userRepository,
     dependencies.profileRepository,
     dependencies.emailNotifications,
+    dependencies.reportedUserRepository,
     dependencies.eventBus,
     dependencies.fileHandler,
-    dependencies.tokenService
+    dependencies.tokenService,
 );
 
 router.post('/block/:targetId', validateAndRefreshToken, userController.blockUser.bind(userController));
@@ -56,8 +57,8 @@ router.post('/report/:targetId', validateAndRefreshToken, userController.reportU
 
 router.get('/profile/:id/info', userController.getProfileInfo.bind(userController));
 router.get('', userController.getUsers.bind(userController));
-router.get('/report', userController.getReport.bind(userController));
-router.get('/report/:targetId', userController.getAllReports.bind(userController));
+router.get('/report', userController.getAllReports.bind(userController));
+router.get('/report/:targetId', userController.getReport.bind(userController));
 
 router.post('/auth', userController.revalidateSession.bind(userController));
 
