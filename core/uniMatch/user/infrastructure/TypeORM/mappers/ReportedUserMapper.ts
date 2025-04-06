@@ -8,7 +8,8 @@ export class ReportedUserMapper {
             entity.userId,
             entity.predefinedReason,
             entity.details,
-            entity.comment
+            entity.comment,
+            entity.timestamp,
         );
         reportedUser.setId(entity.id);
         return reportedUser;
