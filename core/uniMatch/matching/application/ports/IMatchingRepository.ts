@@ -12,4 +12,5 @@ export interface IMatchingRepository extends IRepository<Node> {
     findMutualLikes(userId: string): Promise<Node[]>;
     deleteByUserId(userId: string): Promise<void>;
     findRandomPotentialMatch(userId: string): Promise<Node[]>;
+    getTotalMatchesNumber(): Promise<number>;
 }

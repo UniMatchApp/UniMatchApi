@@ -16,5 +16,6 @@ router.post('/like/:likedUserId', validateAndRefreshToken, matchingController.us
 router.get('/likes', validateAndRefreshToken, matchingController.usersThatLikedUser.bind(matchingController));
 router.get('/potential-matches/:limit', validateAndRefreshToken, matchingController.getUserPotentialMatches.bind(matchingController));
 router.get('/mutual-likes', validateAndRefreshToken, matchingController.getMutualLikes.bind(matchingController));
+router.get('/number', matchingController.getMatches.bind(matchingController));
 
 export {router};

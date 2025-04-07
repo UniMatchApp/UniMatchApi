@@ -27,6 +27,18 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
         console.log("Neo4JMatchingRepository::constructor() -> Neo4j driver created")
     }
 
+    async getTotalMatchesNumber(): Promise<number> {
+        const session = this.driver.session();
+    
+        try {
+            const result = await session.run('MATCH ()-[r]->() RETURN count(r) as total');
+            const record = result.records[0];
+            return record.get('total').toInt();
+        } finally {
+            await session.close();
+        }
+    }
+
     async findUsersThatLikeUser(userId: string): Promise<Node[]> {
         const session = this.driver.session();
         try {

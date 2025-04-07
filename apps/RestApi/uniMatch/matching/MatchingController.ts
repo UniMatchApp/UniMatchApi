@@ -16,16 +16,29 @@ import {GetUsersWithMutualLikesDTO} from '@/core/uniMatch/matching/application/D
 import {
     GetUserPotentialMatchesCommand
 } from '@/core/uniMatch/matching/application/commands/GetUserPotentialMatchesCommand';
+import { GetTotalMatchesNumberCommand } from '@/core/uniMatch/matching/application/commands/GetTotalMatchesNumberCommand';
 
 export class MatchingController {
 
     private readonly matchingRepository: IMatchingRepository;
-    private readonly eventBus: IEventBus
+    private readonly eventBus: IEventBus;
 
     constructor(matchingRepository: IMatchingRepository,
                 eventBus: IEventBus) {
         this.matchingRepository = matchingRepository;
         this.eventBus = eventBus;
+    }
+
+    async getMatches(req: Request, res: Response): Promise<void> {
+        const command = new GetTotalMatchesNumberCommand(this.matchingRepository);
+        return command.run().then((result: Result<number>) => {
+            if (result.isSuccess()) {
+                res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
     }
 
     async userDislikedSomebody(req: Request, res: Response): Promise<void> {
@@ -42,6 +55,7 @@ export class MatchingController {
             }
         });
     }
+    
 
     async userLikedSomebody(req: Request, res: Response): Promise<void> {
         const userId = req.body.userId;
