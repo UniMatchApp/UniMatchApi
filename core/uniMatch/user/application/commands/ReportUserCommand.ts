@@ -36,11 +36,10 @@ export class ReportUserCommand implements ICommand<ReportUserDTO, void> {
                 return Result.failure<void>(new DuplicateError(`User with id ${request.reportedUserId} is already blocked`));
             } 
             const reportedUser = new ReportedUser(request.reportedUserId, request.predefinedReason, request.details, request.comment);
-
             reportedUser.setId(request.id);
-            userToReport.reportUser(reportedUser);
 
             user.blockUser(request.reportedUserId);
+            user.reportUser(reportedUser);
 
             await this.repository.update(user, user.getId());
 
