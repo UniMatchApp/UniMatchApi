@@ -7,6 +7,7 @@ import {
     mockProfile4,
     mockProfile5
 } from "@/core/uniMatch/user/domain/mocks/MockProfiles";
+import { StatisticsDTO } from "../../application/DTO/StatisticsDTO";
 
 export class InMemoryProfileRepository implements IProfileRepository {
     private profiles: { [id: string]: Profile } = {
@@ -20,6 +21,9 @@ export class InMemoryProfileRepository implements IProfileRepository {
 
     constructor() {
         console.log("InMemoryProfileRepository created with profiles: ", this.profiles)
+    }
+    getStatistics(): Promise<StatisticsDTO[]> {
+        throw new Error("Method not implemented.");
     }
 
     async create(entity: Profile): Promise<void> {

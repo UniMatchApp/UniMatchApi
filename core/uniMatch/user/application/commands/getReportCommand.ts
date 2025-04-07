@@ -18,11 +18,24 @@ export class GetReportCommand implements ICommand<string, ReportUserDTO[]> {
             if (!user) {
                 return Result.failure<ReportUserDTO[]>(new NotFoundError(`User with id ${userId} not found`));
             }
-            
+
             const reports = await this.repository.getReportsByUserId(userId);
-            return Result.success<ReportUserDTO[]>(reports);
+
+            const reportUserDTOs: ReportUserDTO[] = reports.map((report) => {
+                return {
+                    id: report.getId().toString(),
+                    reportedUserId: report.userId.toString(),
+                    predefinedReason: report.predefinedReason,
+                    details: report.details,
+                    comment: report.comment,
+                    createdAt: report.timestamp
+                };
+            });
+
+            return Result.success<ReportUserDTO[]>(reportUserDTOs);
         } catch (error: any) {
             return Result.failure<ReportUserDTO[]>(error);
         }
     }
 }
+

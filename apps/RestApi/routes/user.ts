@@ -61,6 +61,8 @@ router.get('/reports', userController.getAllReports.bind(userController));
 router.get('/report/:targetId', userController.getReport.bind(userController));
 router.post('/auth', userController.revalidateSession.bind(userController));
 
+router.get('/statistics', userController.getStatistics.bind(userController));
+
 router.get('/:id', userController.getProfile.bind(userController));
 
 export {router};

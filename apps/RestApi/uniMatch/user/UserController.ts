@@ -88,6 +88,8 @@ import { IReportedUserRepository } from '@/core/uniMatch/user/application/ports/
 import { GetReportCommand } from '@/core/uniMatch/user/application/commands/getReportCommand';
 import { GetAllReportsCommand } from '@/core/uniMatch/user/application/commands/getAllReportsCommands';
 import { ReportedUser } from '@/core/uniMatch/user/domain/ReportedUser';
+import { StatisticsDTO } from '@/core/uniMatch/user/application/DTO/StatisticsDTO';
+import { GetStatisticsCommand } from '@/core/uniMatch/user/application/commands/GetStatisticsCommand';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -168,6 +170,18 @@ export class UserController {
         const query = new GetProfileCommand(this.profileRepository);
         const dto = {id: id} as GetProfileDTO;
         return query.run(dto).then((result: Result<ProfileDTO>) => {
+            if (result.isSuccess()) {
+                res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async getStatistics(req: Request, res: Response): Promise<void> {
+        const query = new GetStatisticsCommand(this.profileRepository);
+        return query.run().then((result: Result<StatisticsDTO[]>) => {
             if (result.isSuccess()) {
                 res.json(result);
             } else {
