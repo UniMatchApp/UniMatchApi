@@ -90,6 +90,7 @@ import { GetAllReportsCommand } from '@/core/uniMatch/user/application/commands/
 import { ReportedUser } from '@/core/uniMatch/user/domain/ReportedUser';
 import { StatisticsDTO } from '@/core/uniMatch/user/application/DTO/StatisticsDTO';
 import { GetStatisticsCommand } from '@/core/uniMatch/user/application/commands/GetStatisticsCommand';
+import { LoginAdminCommand } from '@/core/uniMatch/user/application/commands/LoginAdminCommand';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -690,7 +691,7 @@ export class UserController {
     }
 
     async adminLogin(req: Request, res: Response): Promise<void> {
-        const command = new LoginUserCommand(this.userRepository, this.emailNotifications);
+        const command = new LoginAdminCommand(this.userRepository, this.emailNotifications);
         return command.run(req.body).then((result: Result<UserDTO>) => {
             if (result.isSuccess()) {
                 const user = result.getValue();

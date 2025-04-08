@@ -19,6 +19,9 @@ export class UserEntity {
     @Column({ type: 'boolean', default: false })
     registered!: boolean;
 
+    @Column({ type: 'boolean', default: false })
+    administrator!: boolean;
+
     @Column({ type: 'varchar', length: 255, unique: true })
     email!: string;
     

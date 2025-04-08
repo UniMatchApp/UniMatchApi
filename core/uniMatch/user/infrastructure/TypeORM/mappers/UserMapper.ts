@@ -9,7 +9,8 @@ export class UserMapper {
             entity.email,
             entity.password,
             entity.notificationToken,
-            entity.blockedUsers
+            entity.blockedUsers,
+            entity.administrator
         );
         user.setId(entity.id);
 
@@ -55,6 +56,7 @@ export class UserMapper {
         });
         entity.privateKey = user.privateKey;
         entity.notificationToken = user.notificationToken;
+        entity.administrator = user.administrator;
 
         return entity;
     }

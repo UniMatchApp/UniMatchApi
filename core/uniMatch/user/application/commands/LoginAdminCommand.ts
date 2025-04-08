@@ -7,7 +7,7 @@ import {IEmailNotifications} from "@/core/shared/application/IEmailNotifications
 import {UserDTO} from "@/core/uniMatch/user/application/DTO/UserDTO";
 import {User} from "@/core/uniMatch/user/domain/User";
 
-export class LoginUserCommand implements ICommand<LoginUserDTO, UserDTO> {
+export class LoginAdminCommand implements ICommand<LoginUserDTO, UserDTO> {
     private readonly repository: IUserRepository;
     private readonly emailRepository: IEmailNotifications;
 
@@ -32,8 +32,8 @@ export class LoginUserCommand implements ICommand<LoginUserDTO, UserDTO> {
                 return Result.failure<UserDTO>(new AuthenticationError(`Invalid password for email ${request.email}`));
             }
 
-            if (user.administrator) {
-                return Result.failure<UserDTO>(new AuthenticationError(`User with email ${request.email} is an admin and cannot log as an user`));
+            if (!user.administrator) {
+                return Result.failure<UserDTO>(new AuthenticationError(`User with email ${request.email} is not an admin`));
             }
 
             if (!user.registered) {

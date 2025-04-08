@@ -33,9 +33,12 @@ export class TypeORMUserRepository implements IUserRepository {
     }
 
     async findAll(): Promise<User[]> {
-        const entities = await this.userRepository.find();
+        const entities = await this.userRepository.find({
+            where: { administrator: false }
+        });
         return entities.map(UserMapper.toDomain);
     }
+    
 
     async deleteById(id: string): Promise<void> {
         await this.userRepository.delete(id);

@@ -15,6 +15,7 @@ export class User extends AggregateRoot {
     private _blockedUsers: string[] = [];
     private _reportedUsers: ReportedUser[] = [];
     private _registered: boolean;
+    private _administrator: boolean;
     private _notificationToken: string;
 
     constructor(
@@ -23,6 +24,7 @@ export class User extends AggregateRoot {
         notificationToken: string,
         blockedUsers: string[] = [],
         registered: boolean = false,
+        administrator: boolean = false
     ) {
         super();
         this._privateKey = OTPManager.generateSecret();
@@ -32,6 +34,11 @@ export class User extends AggregateRoot {
         this._blockedUsers = blockedUsers;
         this._registered = registered;
         this._notificationToken = notificationToken;
+        this._administrator = administrator;
+    }
+
+    public get administrator(): boolean {
+        return this._administrator;
     }
 
     public get privateKey(): string {
