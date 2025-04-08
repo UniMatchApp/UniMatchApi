@@ -10,13 +10,14 @@ export class UserMapper {
             entity.password,
             entity.notificationToken,
             entity.blockedUsers,
+            entity.registered,
             entity.administrator
         );
+
+        console.log(`UserMapper.toDomain: ${entity.administrator}`);
         user.setId(entity.id);
 
         user.privateKey = entity.privateKey;
-
-        user.registered = entity.registered;
 
         user.registrationDate = entity.registrationDate;
 
@@ -31,7 +32,6 @@ export class UserMapper {
             reportedUser.setId(reported.id);
             return reportedUser;
         });
-        console.log(`UserMapper.toDomain: ${JSON.stringify(user)}`);
         return user;
     }
 
