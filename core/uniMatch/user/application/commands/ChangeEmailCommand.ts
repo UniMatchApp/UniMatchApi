@@ -28,6 +28,11 @@ export class ChangeEmailCommand implements ICommand<ChangeEmailDTO, string> {
                 return Result.failure<string>(new DuplicateError(`New email is the same as the current email`));
             }
 
+            const emailExists = await this.repository.emailExists(request.newEmail);
+            if (emailExists) {
+                return Result.failure<string>(new DuplicateError(`Email ${request.newEmail} already exists`));
+            }
+
             user.email = request.newEmail;
 
             await this.repository.update(user, user.getId());

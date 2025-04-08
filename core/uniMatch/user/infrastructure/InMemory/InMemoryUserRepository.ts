@@ -15,6 +15,10 @@ export class InMemoryUserRepository implements IUserRepository {
         console.log("InMemoryUserRepository created! with users: ", this.users);
     }
 
+    emailExists(email: string): Promise<boolean> {
+        return Promise.resolve(Object.values(this.users).some(user => user.email === email));
+    }
+
     async create(entity: User): Promise<void> {
         const id = entity.getId().toString();
         this.users[id] = entity;

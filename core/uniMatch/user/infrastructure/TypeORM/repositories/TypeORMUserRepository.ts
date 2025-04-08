@@ -20,6 +20,11 @@ export class TypeORMUserRepository implements IUserRepository {
         this.userRepository = AppDataSource.getRepository(UserEntity)
     }
 
+    async emailExists(email: string): Promise<boolean> {
+        const count = await this.userRepository.count({where: {email}});
+        return count > 0;
+    }
+
     async create(entity: User): Promise<void> {
         const userEntity = UserMapper.toEntity(entity);
         await this.userRepository.save(userEntity);
