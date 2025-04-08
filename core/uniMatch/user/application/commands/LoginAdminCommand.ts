@@ -32,6 +32,8 @@ export class LoginAdminCommand implements ICommand<LoginUserDTO, UserDTO> {
                 return Result.failure<UserDTO>(new AuthenticationError(`Invalid password for email ${request.email}`));
             }
 
+            console.log(`User ${user.administrator} `);
+
             if (!user.administrator) {
                 return Result.failure<UserDTO>(new AuthenticationError(`User with email ${request.email} is not an admin`));
             }

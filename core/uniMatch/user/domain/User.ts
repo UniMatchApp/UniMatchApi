@@ -35,6 +35,7 @@ export class User extends AggregateRoot {
         this._registered = registered;
         this._notificationToken = notificationToken;
         this._administrator = administrator;
+        console.log(`User created: ${this._administrator}`);
     }
 
     public get administrator(): boolean {
