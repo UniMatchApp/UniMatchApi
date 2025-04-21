@@ -57,18 +57,49 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
 
     async findPotentialMatches(userId: string, limit: number): Promise<Node[]> {
         const session = this.driver.session();
-        
+    
         try {
+            console.log(`🔍 Iniciando búsqueda de potenciales matches para el usuario: ${userId}`);
+    
+            // Primero obtenemos los datos del usuario u1
+            const userDataResult = await session.run(
+                `MATCH (u:User {userId: $userId}) RETURN u`,
+                { userId }
+            );
+    
+            if (userDataResult.records.length === 0) {
+                console.warn(`⚠️ No se encontró el usuario con userId: ${userId}`);
+                return [];
+            }
+    
+            const u1 = userDataResult.records[0].get('u').properties;
+            console.log('🧾 Datos del usuario u1:', {
+                age: u1.age,
+                ageRange: u1.ageRange,
+                genderPriority: u1.genderPriority,
+                relationshipType: u1.relationshipType,
+                lookingRandom: u1.lookingRandom,
+                latitude: u1.latitude,
+                longitude: u1.longitude,
+                maxDistance: u1.maxDistance
+            });
+    
+            // Luego ejecutamos la búsqueda de potenciales matches
             const result = await session.run(
                 `
                 MATCH (u1:User {userId: $userId})
                 MATCH (u2:User)
                 WHERE u2.userId <> $userId
-                    AND ((u1.lookingRandom = true AND u2.lookingRandom = true) OR (u1.lookingRandom = true AND u2.lookingRandom = false))
+                    AND (
+                        (u1.lookingRandom = true AND u2.lookingRandom = true) OR
+                        (u1.lookingRandom = true AND u2.lookingRandom = false) OR
+                        (u1.lookingRandom = false AND u2.lookingRandom = true) OR
+                        (u1.lookingRandom = false AND u2.lookingRandom = false)
+                    )
                     AND (u1.genderPriority IS NULL OR u2.gender = u1.genderPriority)
                     AND NOT (u1)-[:DISLIKES]->(u2)
                     AND NOT (u1)-[:LIKES]->(u2)
-                WITH u2,
+                WITH u1, u2,
                     (CASE
                         WHEN u1.longitude IS NULL OR u2.longitude IS NULL THEN 1
                         WHEN u2.age >= u1.ageRange[0] AND u2.age <= u1.ageRange[1] THEN 1
@@ -81,22 +112,43 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
                      CASE WHEN u2.relationshipType = u1.relationshipType THEN 1 ELSE 0 END) AS priority
                 ORDER BY priority DESC
                 LIMIT $sanitizedLimit
-                RETURN u2
+                RETURN u2, priority
                 `,
-                { userId: userId, sanitizedLimit: neo4j.Integer.fromNumber(limit) }
+                { userId, sanitizedLimit: neo4j.Integer.fromNumber(limit) }
             );
+    
+            console.log(`🔎 Número de candidatos encontrados: ${result.records.length}`);
+    
+            if (result.records.length === 0) {
+                console.warn('⚠️ No se encontraron candidatos. Revisa condiciones o datos del usuario.');
+            }
+    
+            result.records.forEach((record: any, i: number) => {
+                const userNode = record.get('u2').properties;
+                const priority = record.get('priority');
+                console.log(`🧪 Candidato ${i + 1}:`, {
+                    userId: userNode.userId,
+                    age: userNode.age,
+                    gender: userNode.gender,
+                    latitude: userNode.latitude,
+                    longitude: userNode.longitude,
+                    relationshipType: userNode.relationshipType,
+                    priority: priority.toInt?.() ?? priority
+                });
+            });
     
             return result.records.map((record: any): Node => {
                 const userNode: any = record.get('u2').properties;
                 return NodeMapper.toDomain(userNode);
             });
         } catch (error) {
-            console.error('Error fetching potential matches from Neo4j', error);
+            console.error('❌ Error fetching potential matches from Neo4j:', error);
             throw error;
         } finally {
             await session.close();
         }
     }
+    
 
     async findRandomPotentialMatch(userId: string): Promise<Node[]> {
         return this.findPotentialMatches(userId, 1);
@@ -128,18 +180,31 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
         const session = this.driver.session();
         try {
             await session.run(
-                'CREATE (u:User {entityId: $id, userId: $userId, age: $age, ageRange: $ageRange, latitude: $latitude, longitude: $longitude, maxDistance: $maxDistance, gender: $gender, relationshipType: $relationshipType, genderPriority: $genderPriority})',
+                `CREATE (u:User {
+                    entityId: $id,
+                    userId: $userId,
+                    age: $age,
+                    ageRange: $ageRange,
+                    latitude: $latitude,
+                    longitude: $longitude,
+                    maxDistance: $maxDistance,
+                    gender: $gender,
+                    relationshipType: $relationshipType,
+                    genderPriority: $genderPriority,
+                    lookingRandom: $lookingRandom
+                })`,
                 {
                     id: entity.getId(),
                     userId: entity.userId,
                     age: entity.age,
                     ageRange: entity.ageRange,
-                    latitude : entity.location?.latitude || null,
-                    longitude : entity.location?.longitude || null,
+                    latitude: entity.location?.latitude ?? null,
+                    longitude: entity.location?.longitude ?? null,
                     maxDistance: entity.maxDistance,
                     gender: entity.gender.toString(),
                     relationshipType: entity.relationshipType.toString(),
-                    genderPriority: entity.genderPriority?.toString() || null
+                    genderPriority: entity.genderPriority?.toString() ?? null,
+                    lookingRandom: entity.lookingRandom ?? false
                 }
             );
         } finally {
@@ -151,18 +216,27 @@ export class Neo4JMatchingRepository implements IMatchingRepository {
         const session = this.driver.session();
         try {
             await session.run(
-                'MATCH (u:User {entityId: $id}) ' +
-                'SET u.age = $age, u.latitude = $latitude, u.longitude = $longitude, u.ageRange = $ageRange, u.maxDistance = $maxDistance, u.gender = $gender, u.relationshipType = $relationshipType, u.genderPriority = $genderPriority',
+                `MATCH (u:User {entityId: $id})
+                 SET u.age = $age,
+                     u.latitude = $latitude,
+                     u.longitude = $longitude,
+                     u.ageRange = $ageRange,
+                     u.maxDistance = $maxDistance,
+                     u.gender = $gender,
+                     u.relationshipType = $relationshipType,
+                     u.genderPriority = $genderPriority,
+                     u.lookingRandom = $lookingRandom`,
                 {
                     id,
                     age: entity.age,
                     ageRange: entity.ageRange,
-                    latitude : entity.location?.latitude,
-                    longitude : entity.location?.longitude,
+                    latitude: entity.location?.latitude ?? null,
+                    longitude: entity.location?.longitude ?? null,
                     maxDistance: entity.maxDistance,
                     gender: entity.gender.toString(),
                     relationshipType: entity.relationshipType.toString(),
-                    genderPriority: entity.genderPriority?.toString() || null
+                    genderPriority: entity.genderPriority?.toString() ?? null,
+                    lookingRandom: entity.lookingRandom ?? false
                 }
             );
             return entity;
