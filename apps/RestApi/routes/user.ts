@@ -46,6 +46,7 @@ router.post('/profile', fileUploadMiddleware, validateAndRefreshToken, userContr
 router.post('', userController.createUser.bind(userController));
 router.delete('/delete-photo/:photoUrl', validateAndRefreshToken, userController.deletePhoto.bind(userController));
 router.delete('', validateAndRefreshToken, userController.deleteUser.bind(userController));
+router.delete('/admin/:id', validateAndRefreshToken, userController.adminDeleteUser.bind(userController));
 
 router.post('/photo', fileUploadMiddleware, validateAndRefreshToken, userController.uploadPhoto.bind(userController));
 router.post('/auth/login', userController.login.bind(userController));

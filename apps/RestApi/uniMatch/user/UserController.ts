@@ -91,6 +91,7 @@ import { ReportedUser } from '@/core/uniMatch/user/domain/ReportedUser';
 import { StatisticsDTO } from '@/core/uniMatch/user/application/DTO/StatisticsDTO';
 import { GetStatisticsCommand } from '@/core/uniMatch/user/application/commands/GetStatisticsCommand';
 import { LoginAdminCommand } from '@/core/uniMatch/user/application/commands/LoginAdminCommand';
+import { AdminDeleteUserCommand } from '@/core/uniMatch/user/application/commands/AdminDeleteUserCommand';
 
 export class UserController {
     private readonly userRepository: IUserRepository;
@@ -145,6 +146,21 @@ export class UserController {
         return command.run(dto).then((result: Result<void>) => {
             if (result.isSuccess()) {
                 res.json(result);
+            } else {
+                const error = result.getError();
+                ErrorHandler.handleError(error, res);
+            }
+        });
+    }
+
+    async adminDeleteUser(req: Request, res: Response): Promise<void> {
+        const id = req.body.userId;
+        const targetId = req.params.id;
+        const command = new AdminDeleteUserCommand(this.userRepository, this.profileRepository, this.eventBus);
+        const dto = { userId: id, targetId} as DeleteUserDTO;
+        return command.run(dto).then((result: Result<void>) => {
+            if (result.isSuccess()) {
+                res.json({ message: "User deleted successfully" });
             } else {
                 const error = result.getError();
                 ErrorHandler.handleError(error, res);
